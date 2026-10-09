@@ -49,3 +49,9 @@ Official references:
 - https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create
 - https://developers.openai.com/api/reference/resources/responses/methods/create
 - https://developers.openai.com/api/docs/guides/reasoning
+
+## Genuine sourced selector observation
+
+On October 9, 2026, a separate new synthetic board-study request passed exact current canonical-text/citation validation and selected the required AF risk and anticoagulant sections. Returned model: `gpt-4.1-mini-2025-04-14`; observed usage: 817 input / 39 output tokens; provider latency 2,195 ms; configured-rate estimated cost USD 0.0003892. Ingenium event `fd1493d1-f323-45ef-96f7-6f6284db23ca` was independently read back. The initial source preflight found an alias collision before any paid call; only the corrected request incurred inference, once.
+
+This is one narrow source-selection result, not a total-accuracy, exam-readiness or cheapest-model conclusion. The operator check is now disabled, and its durable identity prevents a paid repeat. Clinical quality adjudication and a multi-model benchmark remain separate work.
