@@ -1,0 +1,51 @@
+# Family medicine board study: scope and interpretation
+
+This app is an **independent family medicine board-exam study tool only**. It is not medical advice and must not be used to diagnose, treat, triage or make decisions for an actual patient. Original exam vignettes and roleplay cases are hypothetical. No ABFM affiliation, endorsement, official exam items, CME credit, clinician approval, complete examination syllabus or guaranteed board passage is asserted.
+
+## Current coverage
+
+Content inspected on **2026-10-09** comprises **105 distinct conditions with 210 original questions**, plus **six non-disease Foundations of Care topics with 12 original questions**. The combined practice bank therefore contains **222 questions**. The foundations topics do not increase the condition count. Each question has five options, one canonical keyed answer, its explanation, explanations for the four distractors and linked official sources.
+
+The [official ABFM blueprint](https://www.theabfm.org/family-medicine-exam-blueprint/) was checked directly. Its domain targets support practice allocation; matching those percentages does not demonstrate complete coverage of every objective or equivalent exam difficulty.
+
+| Blueprint domain | Official target | Current question count | Present study scope | Coverage limitation |
+|---|---:|---:|---|---|
+| Acute Care and Diagnosis | 35% | 74 | Original diagnostic and initial-approach vignettes across the condition library | Two questions per condition cannot cover every presentation, exception or population. |
+| Chronic Care Management | 25% | 98 | Original chronic-disease distinctions and longitudinal-management concepts | This domain is overrepresented in the raw bank; the bank is not a full longitudinal-care syllabus. |
+| Emergent and Urgent Care | 20% | 22 | Original time-critical hypothetical cases, including selected cardiovascular, neurologic, metabolic and obstetric conditions | A small study subset; neither a triage service nor validation of emergency-management competence. |
+| Preventive Care | 15% | 16 | Selected risk assessment, screening, prevention, surveillance and recurrence-prevention questions within condition modules | Does not cover all preventive services, schedules, age groups or risk categories. |
+| Foundations of Care | 5% | 12 | Selected statistics, evidence appraisal, test interpretation, shared decisions, health literacy, quality/safety and social-needs concepts | Policy and legal objectives still need additional source-supported material. These six topics are not exhaustive. |
+
+Counts use **question-level domain metadata**, which can differ from a condition's browsing category. A preventive question within a chronic or acute condition contributes to Preventive Care. The overall raw bank is not proportionally balanced. Mixed sessions sample its eligible questions using the blueprint allocation and rounding described in `shared/blueprint.js`.
+
+Twenty-, 40-, 80- and 100-question mixed sessions can represent all five domains with the current counts. A 10-question mixed session rounds to **4 acute, 3 chronic, 2 emergent, 1 preventive and 0 foundations**. The engine should show shortages and refuse a requested session when current source-eligible questions cannot fill it without repeats. Questions are unique within a session; later sessions can reuse the finite bank. A reused question is not an unseen examination item. Scores summarize the selected answered items and do not establish mastery of unseen material.
+
+See [the condition inventory](CONDITION_COVERAGE.md) for exact diagnoses and source gaps. One hundred conditions have a formal guideline or official-recommendation source; five have clearly labeled official-reference gaps. A recommendation or guideline link does not imply that a complete guideline has been reproduced. The six foundations topics use CDC/AHRQ educational references and recommendations, not disease-specific treatment guidelines. [Their source audit](source-audit/board_foundations.md) identifies actual checked pages, source locators, the archived stable-statistics reference and limits on incorporated text.
+
+## Study workflow
+
+Use the condition library for original source-linked summaries and two focused questions per condition. Board practice assembles mixed or domain-specific blocks and can target previously missed items or the domain with the lowest recorded practice accuracy. Optional timing is a **practice timer selected by the learner**, not official ABFM examination timing. Immediate feedback and feedback after finishing are separate study options.
+
+The engine records the selected option and grades it against the current canonical key. It separates answered-question accuracy, skipped questions and completion percentage. A skipped item is not a demonstrated correct answer. Results do not evaluate written clinical reasoning, clinical competence, professional qualifications, exam readiness or likelihood of passing. Imported score history is labeled untrusted and excluded from trusted adaptive selection.
+
+Save an original question to Review for spaced repetition. Recall ratings describe the learner's own perceived recall; they are not exam scores. User-written or edited cards are personal notes and require their own source checks. A user's “verified” flag is not independent clinician review. Existing personal notes should be preserved when starter exercises are revised.
+
+The original chat-quiz path supplies a canonical bank question and grades a deliberate A–E response. It shows the stored explanation, distractor explanations and references. Adding “because” and written reasoning does **not** make that reasoning independently evaluated. Canonical grading and local board-session assembly do not require a paid model inference. Source selection for other study questions may use the configured OpenAI model; the server renders only known source-linked text rather than accepting a generated clinical answer body.
+
+## Accuracy and educational boundaries
+
+All populated study records retain **`humanReviewed: false`**. An actual source check, a valid schema, a correct calculation and functional software tests are distinct from independent clinician verification of every teaching claim. No automated check establishes total accuracy or commercial content rights. The separate commercial approved corpus remains subject to its existing review and rights gates.
+
+The foundations review found its teaching concepts traceable to the recorded CDC/AHRQ locators and its keyed answers consistent with the supplied sections. The original arithmetic gives a risk ratio of `(10/200)/(20/200) = 0.50` and a positive predictive value of `90/(90+90) = 50%`; these are invented educational counts, not patient data or treatment-effect estimates. Source kinds and dates are labeled without inventing publication days or clinician identities. No copied exam question or source document is incorporated.
+
+Current source checks are dated **2026-10-09**, with the study records' check window ending **2026-11-09**. Monthly source maintenance must verify the actual recommendations and relevant source restrictions before updating a date. Changed or expired question fingerprints must block current canonical grading and active practice continuation; historical scores do not become proof of current knowledge. Unresolved source conflicts or unavailable supporting material must remain visible and ineligible for unsupported teaching. See [RAG design and limits](GUIDELINE_RAG.md), [clinical-content controls](CLINICAL_CONTENT.md) and [the validation ledger](VALIDATION_STATUS.md).
+
+The legacy 12 fictional simulations and six reflection labels are additional exercises, not sourced medical answer keys or official milestone evaluations. Any fictional drug list, dose, laboratory value or vital sign is scenario background and must not be presented as a recommended regimen or clinical rule. Uncited starter cards should be clearly labeled optional original exercise prompts; communication cards with an AHRQ reference remain short educational summaries. Generated speech and imported material cannot acquire verified clinical status merely by sounding authoritative or carrying a citation.
+
+Study-only notices and reference constraints are important boundaries, but do not certify that every free-form real-patient request will be recognized correctly. Source-selection requests should retain the explicit prohibition on patient diagnosis and care decisions, and clear actual-patient requests should redirect to the person's clinical team or appropriate urgent assistance rather than a simulated care decision. Do not collect patient identifiers.
+
+## Review evidence and release limits
+
+This document records a **read-only source/content and ethical-scope review** of the new foundations material, board engine, canonical quiz/answer paths and disclosure text. Previously checked source URLs and passing test suites were not fetched or run again. Counts came from current JSON inspection, not a repeated functional test. Functional browser/API outcomes belong in the validation ledger; this review does not substitute for them.
+
+The workflow now has a finite source-linked study bank, active recall, practice blocks, answer review and spaced repetition. **Exhaustive ABFM syllabus coverage, independent clinician review and predictive exam validation remain unfinished.** Expansion should follow the documented coverage gaps and source eligibility rules, not a promise that the current bank is complete. App-store publication still requires the owner's explicit permission; this document does not authorize it.

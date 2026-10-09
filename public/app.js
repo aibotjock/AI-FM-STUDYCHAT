@@ -1,6 +1,8 @@
 import { getDueCards, previewIntervals, studyStats } from '/shared/scheduler.js';
+import { ABFM_BLUEPRINT } from '/shared/blueprint.js';
 import { SCENARIOS, COMPETENCIES } from '/shared/content.js';
-import { createVoiceCoach, voiceSupported } from '/voice-chat.js';
+import { createSourcedVoiceCoach, sourcedVoiceSupported } from '/sourced-voice.js';
+const voiceSupported = () => sourcedVoiceSupported() && !window.FMNativeBilling;
 
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -29,7 +31,7 @@ const icon = name => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
 const navItems = [['today', 'Today'], ['coach', 'Coach'], ['review', 'Review'], ['library', 'Library'], ['progress', 'Progress']];
 const state = { cards: [], reviews: [], conversations: [], settings: { focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, competencyRatings: {} } };
 let status = { authenticated: false, aiConfigured: false, authRequired: false };
-let screen = ['today','coach','review','library','progress'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'coach';
+let screen = ['today','coach','review','library','progress','board'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'coach';
 let currentConversationId = null;
 let libraryTab = 'guidelines';
 let curriculumCatalog = null;
@@ -52,6 +54,26 @@ const curriculumAnswers = new Map();
 const curriculumSavedCards = new Set();
 let curriculumSavingCard = false;
 let curriculumSessionRevision = 0;
+let boardCatalog = null;
+let boardHistory = [];
+let boardActiveSummary = null;
+let boardActiveError = null;
+let boardSession = null;
+let boardResults = null;
+let boardLoading = false;
+let boardBusy = false;
+let boardError = '';
+let boardChoiceId = null;
+let boardCount = 20;
+let boardMode = 'mixed';
+let boardDomain = '';
+let boardTimed = false;
+let boardMinutes = 30;
+let boardFeedback = 'immediate';
+let boardRequest = 0;
+let boardCardBusy = '';
+const boardSavedCards = new Set();
+const chatSavedCards = new Set();
 let searchTerm = '';
 let topicFilter = '';
 let chatBusy = false;
@@ -87,16 +109,17 @@ let dialogRevision = 0;
 let startVoiceBusy = false;
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let voiceState = { phase: 'idle', active: false, message: 'Start voice for a spoken conversation.', muted: false, audioBlocked: false, userCaption: '', assistantCaption: '', warning: '' };
-const voiceCoach = createVoiceCoach({
-  request: (path, body) => api(path, { method: 'POST', body: JSON.stringify(body), keepalive: path === '/api/voice/stop' }),
+const voiceCoach = createSourcedVoiceCoach({
   onState: next => { voiceState = next; updateVoiceUI(); },
-  onTranscript: async body => {
-    const result = await mutate('/api/voice/transcript', 'POST', body);
-    if (result.conversation) {
-      const index = state.conversations.findIndex(item => item.id === result.conversation.id);
-      if (index >= 0) state.conversations[index] = result.conversation;
-    } else await refreshState();
-    if (screen === 'coach') render();
+  sendTurn: async ({ content, conversationId, requestId, signal }) => {
+    const linkedCondition=state.conversations.find(item=>item.id===conversationId)?.curriculumConditionId;
+    const result=await api('/api/chat',{method:'POST',body:JSON.stringify({conversationId,content,requestId,...(linkedCondition?{conditionIds:[linkedCondition]}:{})}),signal});
+    if(signal.aborted || currentConversationId!==conversationId) return {content:'',sourceVerified:false};
+    const item=result.conversation;
+    if(item){const index=state.conversations.findIndex(value=>value.id===item.id);if(index>=0)state.conversations[index]=item;}
+    const message=result.message || item?.messages?.findLast(value=>value.role==='assistant');
+    if(screen==='coach')render();
+    return {content:message?.content || '',sourceVerified:trustedStudySpeech(message)};
   },
 });
 
@@ -111,8 +134,8 @@ async function api(path, options = {}) {
   const response = await fetch(path, { ...options, headers: { 'Content-Type': 'application/json', ...options.headers } });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    if (response.status === 401 && path !== '/api/login') { status.authenticated = false; resetCurriculumState(); if (voiceCoach.active()) voiceCoach.stop('Voice stopped because your study session ended. Sign in again to continue.'); renderLogin(); }
-    throw new Error(payload.error || payload.message || `The request failed (${response.status}). Please try again.`);
+    if (response.status === 401 && path !== '/api/login') { status.authenticated = false; resetCurriculumState(); resetBoardState(); if (voiceCoach.active()) voiceCoach.stop('Voice stopped because your study session ended. Sign in again to continue.'); renderLogin(); }
+    const error = new Error(payload.error || payload.message || `The request failed (${response.status}). Please try again.`); error.details=payload; throw error;
   }
   return payload;
 }
@@ -153,22 +176,23 @@ function cardSourceStatusHtml(card) {
 function domainLabel(value) { return ({acute:'Acute care',chronic:'Chronic care',emergent:'Emergent and urgent care',preventive:'Preventive care',foundations:'Foundations of care'})[value] || value; }
 
 function todayLabel() { return new Date().toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' }); }
-function styleLabel() { return ({ socratic: 'Socratic · one question at a time', 'teach-quiz': 'Teach, then quiz', direct:'Clear, direct explanations' })[state.settings.coachStyle] || 'Socratic coaching'; }
+function styleLabel() { return 'Source-linked study'; }
 function focusLabel() { return ({ 'clinical-reasoning': 'Clinical reasoning', exam:'Exam preparation', balanced:'Balanced study' })[state.settings.focus] || 'Clinical reasoning'; }
 
 function renderNav() {
   const count = isLoaded ? dueCards().length : 0;
-  const html = navItems.map(([id, label]) => `<a href="#${id}" class="nav-link ${id === screen ? 'active' : ''}" ${id === screen ? 'aria-current="page"' : ''}>${icon(id)}<span>${label}</span>${id === 'review' && count ? `<span class="count">${count}</span>` : ''}</a>`).join('');
+  const navScreen = screen === 'board' ? 'library' : screen;
+  const html = navItems.map(([id, label]) => `<a href="#${id}" class="nav-link ${id === navScreen ? 'active' : ''}" ${id === navScreen ? 'aria-current="page"' : ''}>${icon(id)}<span>${label}</span>${id === 'review' && count ? `<span class="count">${count}</span>` : ''}</a>`).join('');
   $('#desktop-nav').innerHTML = html;
   $('#bottom-nav').innerHTML = html;
   const badge = $('#connection-badge');
-  badge.textContent = !navigator.onLine ? 'Offline' : status.privatePilot ? 'Private phone pilot' : status.aiConfigured ? 'AI configured' : 'Guided practice';
+  badge.textContent = !navigator.onLine ? 'Offline' : status.privatePilot ? 'Private phone pilot' : status.aiConfigured ? (status.mode === 'commercial' ? 'AI configured' : 'Source selection configured') : 'Study questions ready';
   badge.classList.toggle('live', status.aiConfigured && navigator.onLine);
   $('#network-notice').hidden = navigator.onLine;
 }
 
 function navigate(next) {
-  if (!navItems.some(([id]) => id === next)) return;
+  if (next !== 'board' && !navItems.some(([id]) => id === next)) return;
   if (recording) stopDictation();
   if (next !== 'coach' && voiceCoach.active()) voiceCoach.stop('Voice stopped when you left Coach. Your microphone is off.');
   if ($('#chat-input')) chatDraft = $('#chat-input').value;
@@ -183,8 +207,9 @@ function render() {
   renderNav();
   if (status.authRequired && !status.authenticated) return renderLogin();
   if (!isLoaded) return;
-  $('#main').innerHTML = ({ today: renderToday, coach: renderCoach, review: renderReview, library: renderLibrary, progress: renderProgress })[screen]();
+  $('#main').innerHTML = ({ today: renderToday, coach: renderCoach, review: renderReview, library: renderLibrary, progress: renderProgress, board: renderBoard })[screen]();
   if (screen === 'coach') { scrollChat(); resizeComposer(); }
+  if (screen === 'board' && !boardCatalog && !boardLoading && !boardError) loadBoard();
   if (screen === 'library' && libraryTab === 'guidelines' && !curriculumCatalog && !curriculumLoading && !curriculumError) loadCurriculum();
 }
 
@@ -200,50 +225,50 @@ function renderToday() {
   const s = stats();
   const due = dueCards().length;
   const weak = s.weakTopics.slice(0, 4);
-  return `${pilotNotice()}${pageHead(todayLabel(), 'Small steps. Lasting knowledge.', 'A focused daily rhythm for clearer clinical reasoning.')}
-    <section class="hero"><div><span class="eyebrow">YOUR NEXT ${esc(state.settings.dailyMinutes)} MINUTES, MADE INTENTIONAL</span><h2 class="hero-title">Turn what you know into<br>what you can recall.</h2><p>${due ? `${due} cards are ready. Start with recall, then work through one clinical question with your coach.` : 'Your reviews are complete. Strengthen your reasoning with one thoughtful conversation.'}</p><button class="button gold" data-action="${due ? 'start-review' : 'navigate'}" data-screen="coach">${due ? 'Start today’s reviews' : 'Talk with your coach'} ${icon('arrow')}</button></div><div class="hero-number">${due}<span>CARDS READY</span></div></section>
+  return `${studyOnlyNotice()}${pilotNotice()}${pageHead(todayLabel(), 'Small steps. Lasting knowledge.', 'A daily loop for family medicine board exam study.')}
+    <section class="hero"><div><span class="eyebrow">YOUR NEXT ${esc(state.settings.dailyMinutes)} MINUTES, MADE INTENTIONAL</span><h2 class="hero-title">Turn what you know into<br>what you can recall.</h2><p>${due ? `${due} cards are ready. Start with recall, then practice one original board-style question.` : 'Your reviews are complete. Strengthen your reasoning with one thoughtful conversation.'}</p><button class="button gold" data-action="${due ? 'start-review' : 'navigate'}" data-screen="coach">${due ? 'Start today’s reviews' : 'Talk with your coach'} ${icon('arrow')}</button></div><div class="hero-number">${due}<span>CARDS READY</span></div></section>
     <div class="metrics">${metric('Your daily rhythm', s.streak, s.streak ? 'Keep the habit growing' : 'Your first review starts it', 'streak', s.streak === 1 ? 'day' : 'days')}${metric('Reviewed today', s.reviewedToday, `Up to ${state.settings.newCardsPerDay} new cards each day`, 'review')}${metric('Recall success', s.recallRate === null ? '—' : `${s.recallRate}%`, s.totalReviews ? 'Self-rated Good or Easy' : 'Appears after your first review', 'target')}</div>
     <div class="today-grid"><section class="card"><div class="section-head"><h2>Your daily study plan</h2><span class="pill gold">${esc(state.settings.dailyMinutes)} min</span></div>
       <div class="daily-step"><span class="step-icon">${icon('review')}</span><div><h3>Recall before you reveal</h3><p>${due} cards ready · ${s.newRemaining} new available</p></div><button class="text-button" data-action="start-review">Review ↗</button></div>
-      <div class="daily-step"><span class="step-icon">${icon('coach')}</span><div><h3>Think through a clinical problem</h3><p>Make your reasoning visible, one question at a time</p></div><button class="text-button" data-action="starter" data-prompt="Coach me through a complex family medicine patient. Ask me one question at a time, and help me synthesize the key problems.">Start ↗</button></div>
+      <div class="daily-step"><span class="step-icon">${icon('target')}</span><div><h3>Practice board-style questions</h3><p>Blueprint-based sessions, feedback and missed-question review</p></div><button class="text-button" data-action="navigate" data-screen="board">Practice ↗</button></div>
       <div class="daily-step"><span class="step-icon">${icon('library')}</span><div><h3>Keep the insight that matters</h3><p>Turn a learning point into a focused recall card</p></div><button class="text-button" data-action="new-card">Add card ↗</button></div>
     </section><section class="card"><div class="section-head"><h2>Worth another look</h2><button class="text-button" data-action="navigate" data-screen="progress">Progress ↗</button></div>
     ${weak.length ? weak.map(item => `<div class="weak-row"><div><strong>${esc(item.topic)}</strong><small>${item.reviews} self-rated reviews</small></div><button class="pill ${item.recallRate < 70 ? 'gold' : 'green'}" data-action="topic-coach" data-topic="${esc(item.topic)}">${Math.round(item.recallRate)}% recall ↗</button></div>`).join('') : `<p class="subtitle" style="font-size:12px;margin:18px 0">Your reviews will reveal the topics that need more practice. Begin with an honest recall rating.</p><div class="focus-strip"><span class="topic-pill">Clinical synthesis</span><span class="topic-pill">Differential diagnosis</span><span class="topic-pill">Next best step</span></div>`}
-    </section></div><p class="footer-note">${focusLabel()} · ${styleLabel()} · Study data is saved on your app’s server. Educational use only; verify clinical details with current authoritative references.</p>`;
+    </section></div><p class="footer-note">${focusLabel()} · ${styleLabel()} · Study data is saved on your app’s server. Study only; not medical advice or for clinical use.</p>`;
 }
 
 function renderCoach() {
   const current = conversation();
   const messages = current?.messages || [];
   const lastAssistant = messages.filter(item => item.role === 'assistant').at(-1);
-  return `<div class="chat-page"><div class="chat-header"><div><span class="eyebrow">A SPACE TO THINK OUT LOUD</span><h1>Your study coach</h1><p class="subtitle">${esc(focusLabel())} · ${esc(state.settings.dailyMinutes)} minutes at your pace</p></div><div class="chat-title-tools"><button class="icon-button" data-action="history" aria-label="Open conversation history" title="Conversation history">${icon('history')}</button><button class="icon-button" data-action="new-chat" aria-label="Start a new conversation" title="New conversation">${icon('plus')}</button></div></div>
+  return `<div class="chat-page"><div class="chat-header"><div><span class="eyebrow">A SPACE TO THINK OUT LOUD</span><h1>Cited study questions</h1><p class="subtitle">${esc(focusLabel())} · ${esc(state.settings.dailyMinutes)} minutes at your pace</p></div><div class="chat-title-tools"><button class="icon-button" data-action="history" aria-label="Open conversation history" title="Conversation history">${icon('history')}</button><button class="icon-button" data-action="new-chat" aria-label="Start a new conversation" title="New conversation">${icon('plus')}</button></div></div>
     ${studyOnlyNotice()}${pilotNotice(true)}${status.mode === 'commercial' && !status.entitlement?.active ? '<div class="notice info" style="margin-bottom:13px">Your study cards are ready. Enable coaching with a verified Google Play subscription.<button class="text-button" data-action="billing">View subscription ↗</button></div>' : ''}
-    ${!status.aiConfigured && !status.privatePilot ? '<div class="notice info coach-setup-notice" style="margin-bottom:13px">Guided practice is ready. AI coaching is not configured yet.</div>' : ''}
-    <section class="chat-window" aria-label="Coach conversation"><div class="chat-toolbar"><div class="coach-id"><span class="coach-avatar">✦</span><div><strong>${esc(current?.title || 'Study coach')}</strong><small>${status.aiConfigured ? 'Personalized coaching' : 'Guided practice · scripted coaching'}</small></div></div><span class="chat-mode">${esc(current?.mode === 'simulation' ? 'Clinical case' : current?.mode === 'practice' ? 'Active recall' : styleLabel())}</span></div>
+    ${!status.aiConfigured && !status.privatePilot ? '<div class="notice info coach-setup-notice" style="margin-bottom:13px">Source-linked questions are ready. Optional AI reference selection is not configured.</div>' : ''}
+    <section class="chat-window" aria-label="Coach conversation"><div class="chat-toolbar"><div class="coach-id"><span class="coach-avatar">✦</span><div><strong>${esc(current?.title || 'Study coach')}</strong><small>${status.mode === 'commercial' ? (status.aiConfigured ? 'AI study coaching' : 'Study coaching setup') : 'Source-linked study'}</small></div></div><span class="chat-mode">${esc(current?.mode === 'simulation' ? 'Fictional study case' : current?.mode === 'practice' ? 'Active recall' : styleLabel())}</span></div>
     <div id="chat-messages" class="chat-messages" role="log" aria-label="Conversation messages" aria-live="polite" aria-relevant="additions">
-    ${messages.length ? messages.map(renderMessage).join('') : `<div class="chat-intro"><span class="intro-symbol" aria-hidden="true">✦</span><h1>Let’s make the next<br>clinical decision clearer.</h1><p>Choose a starting point, or bring a topic, a fictional case, or a question.</p><div class="prompt-grid">${[
-      ['Help me synthesize a complex patient', 'Coach me through synthesizing a complex family medicine patient. Use a fictional case and ask me one question at a time.'],
-      ['Quiz me on my weak topics', 'Quiz me on the topics I need to strengthen. Ask one active recall question at a time, wait for my answer, and give specific feedback.'],
-      ['Walk through a differential', 'Give me a fictional clinical presentation and coach me through a prioritized differential diagnosis, one question at a time.'],
-      ['Teach, then test my understanding', 'Help me learn a family medicine topic. Ask which topic I want first, teach it clearly, and then test my understanding.'],
+    ${messages.length ? messages.map(renderMessage).join('') : `<div class="chat-intro"><span class="intro-symbol" aria-hidden="true">✦</span><h1>Let’s prepare for your<br>family medicine boards.</h1><p>Choose a condition in Library → Study with Coach for cited questions, or open Board practice for a question session. Factual replies use fixed source-linked study text; reflection prompts do not grade your written reasoning.</p><div class="prompt-grid">${[
+      ['Fictional-case study instructions', 'Show me study instructions for a fictional exam case. I will choose a source-linked Library topic for factual practice.'],
+      ['How to choose a quiz topic', 'Show me how to choose a source-linked Library topic for an original board quiz.'],
+      ['Reflection worksheet instructions', 'Show me instructions for a study reflection worksheet. I will compare my own reasoning with sourced question explanations.'],
+      ['How to review missed questions', 'Show me how to review missed questions using Board practice and spaced recall cards.'],
     ].map(([label,prompt]) => `<button class="prompt-chip" data-action="starter" data-prompt="${esc(prompt)}">${esc(label)}<span>↗</span></button>`).join('')}</div></div>`}
     ${chatBusy ? '<div class="message assistant"><div class="avatar">✦</div><div class="message-body"><div class="message-label">Coach is thinking</div><div class="typing" role="status" aria-label="Coach is thinking"><i></i><i></i><i></i></div></div></div>' : ''}
-    </div><div class="chat-compose">${status.voiceEnabled ? `<div id="voice-controls" class="voice-controls">${voiceControlsHtml()}</div>` : ''}${chatError ? `<div class="notice error" style="margin-bottom:10px">${esc(chatError)} <button class="text-button" data-action="dismiss-chat-error">Dismiss</button></div>` : ''}<form id="chat-form"><div class="compose-row"><label class="screen-reader" for="chat-input">Message your study coach</label><textarea id="chat-input" name="content" rows="1" placeholder="${voiceState.active ? 'Stop voice to type a message…' : 'Ask your coach…'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''} maxlength="12000">${esc(chatDraft)}</textarea>${voiceDictationSupported() ? `<button type="button" class="icon-button mic-button ${recording ? 'recording' : ''}" data-action="dictate" aria-label="${recording ? 'Stop dictation' : 'Dictate a message'}" title="${recording ? 'Stop dictation' : 'Dictate text; review before sending'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('mic')}</button>` : ''}<button type="submit" class="icon-button send-button" aria-label="Send message" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('send')}</button></div><div class="composer-note"><span id="voice-status">${recording ? 'Dictating text… tap the mic to stop, then review and send.' : voiceDictationSupported() ? 'Type or dictate text. Review before sending.' : 'Type or use your phone keyboard’s microphone.'}</span><span>Enter to send · Shift + Enter for a new line</span></div></form></div></section>
-    <div class="chat-under"><small>Study use only. Not medical advice. Use fictional or de-identified cases.</small><button class="text-button" data-action="draft-cards" ${!lastAssistant || chatBusy || !canChat() ? 'disabled' : ''}>Create recall cards ↗</button></div></div>`;
+    </div><div class="chat-compose">${status.mode !== 'commercial' ? `<div id="voice-controls" class="voice-controls">${voiceControlsHtml()}</div>` : ''}${chatError ? `<div class="notice error" style="margin-bottom:10px">${esc(chatError)} <button class="text-button" data-action="dismiss-chat-error">Dismiss</button></div>` : ''}<form id="chat-form"><div class="compose-row"><label class="screen-reader" for="chat-input">Message your study coach</label><textarea id="chat-input" name="content" rows="1" placeholder="${voiceState.active ? 'Stop voice to type a message…' : 'Ask your coach…'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''} maxlength="12000">${esc(chatDraft)}</textarea>${voiceDictationSupported() ? `<button type="button" class="icon-button mic-button ${recording ? 'recording' : ''}" data-action="dictate" aria-label="${recording ? 'Stop dictation' : 'Dictate a message'}" title="${recording ? 'Stop dictation' : 'Dictate text; review before sending'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('mic')}</button>` : ''}<button type="submit" class="icon-button send-button" aria-label="Send message" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('send')}</button></div><div class="composer-note"><span id="voice-status">${recording ? 'Dictating text… tap the mic to stop, then review and send.' : voiceDictationSupported() ? 'Type or dictate text. Review before sending.' : 'Type or use your phone keyboard’s microphone.'}</span><span>Enter to send · Shift + Enter for a new line</span></div></form></div></section>
+    <div class="chat-under"><small>Study only. No medical advice or clinical use. Use fictional cases.</small><button class="text-button" data-action="draft-cards" ${!lastAssistant || chatBusy || !canChat() ? 'disabled' : ''}>Create recall cards ↗</button></div></div>`;
 }
 
 function voiceControlsHtml() {
   const active = voiceState.active;
-  return `<div class="voice-actions">${active ? `<button class="button secondary" data-action="voice-mute" aria-pressed="${voiceState.muted}">${voiceState.muted ? 'Unmute microphone' : 'Mute microphone'}</button><button class="button secondary" data-action="voice-interrupt" ${voiceState.phase === 'starting' ? 'disabled' : ''}>Interrupt coach</button><button class="button" data-action="voice-stop">Stop voice</button>` : `<button class="button" data-action="voice-start" ${chatBusy || startVoiceBusy || voiceState.setupPending || !status.aiConfigured || !voiceSupported() ? 'disabled' : ''}>${icon('mic')} ${voiceState.setupPending ? 'Finishing voice setup…' : startVoiceBusy ? 'Preparing voice…' : 'Start voice'}</button>`}${voiceState.audioBlocked ? '<button class="button secondary" data-action="voice-speaker">Enable speaker audio</button>' : ''}${voiceState.warning ? '<button class="text-button" data-action="voice-save">Save captions</button>' : ''}</div><p class="voice-session-status" role="status" aria-live="polite">${esc(voiceState.message)}</p>${voiceState.userCaption ? `<div class="voice-caption"><strong>You</strong><span>${esc(voiceState.userCaption)}</span></div>` : ''}${voiceState.assistantCaption ? `<div class="voice-caption"><strong>Coach</strong><span>${esc(voiceState.assistantCaption)}</span></div>` : ''}${voiceState.warning ? `<div class="notice error" role="alert">${esc(voiceState.warning)}</div>` : ''}<p class="voice-note">${voiceSupported() ? `Spoken AI replies · ${esc(status.voiceModel || 'gpt-realtime-2.1-mini')} · up to 10 minutes per call. Audio goes to OpenAI; this app saves text captions, not recordings. Voice is billed separately from text chat.` : 'Voice needs microphone access in an HTTPS Chrome or Safari browser.'} Voice speech remains unverified; use sourced text or board questions for guideline facts. Check captions for transcription errors.</p>`;
+  return `<div class="voice-actions">${active ? `<button class="button secondary" data-action="voice-mute" aria-pressed="${voiceState.muted}">${voiceState.muted ? 'Unmute microphone' : 'Mute microphone'}</button><button class="button secondary" data-action="voice-interrupt" ${voiceState.phase === 'starting' ? 'disabled' : ''}>Interrupt readout</button><button class="button" data-action="voice-stop">Stop voice</button>` : `<button class="button" data-action="voice-start" ${chatBusy || startVoiceBusy || !voiceSupported() ? 'disabled' : ''}>${icon('mic')} ${startVoiceBusy ? 'Preparing voice…' : 'Start sourced voice'}</button>`}${voiceState.audioBlocked ? '<button class="button secondary" data-action="voice-speaker">Read reply</button>' : ''}</div><p class="voice-session-status" role="status" aria-live="polite">${esc(voiceState.message)}</p>${voiceState.userCaption ? `<div class="voice-caption"><strong>You</strong><span>${esc(voiceState.userCaption)}</span></div>` : ''}${voiceState.assistantCaption ? `<div class="voice-caption"><strong>Coach</strong><span>${esc(voiceState.assistantCaption)}</span></div>` : ''}${voiceState.warning ? `<div class="notice error" role="alert">${esc(voiceState.warning)}</div>` : ''}<p class="voice-note">${voiceSupported() ? 'Speak a study question; device readout uses the exact source-linked text shown in chat, then listens for your next turn. Up to 10 minutes. Open a condition with Study with Coach for focused questions.' : 'Sourced voice needs HTTPS, browser speech recognition and device readout. If unavailable, dictate with your phone keyboard and use Read aloud.'} Your browser may send dictation to its speech service. Recognized text goes through the same study chat; this app saves no audio files. Check transcription. Study only, no medical advice or clinical use.</p>`;
 }
 function updateVoiceUI() {
   const controls = $('#voice-controls'); if (controls) controls.innerHTML = voiceControlsHtml();
   const input = $('#chat-input'); if (input) input.disabled = chatBusy || voiceState.active || !canChat();
-  for (const button of document.querySelectorAll('#chat-form button')) button.disabled = chatBusy || voiceState.active || !canChat();
+  for (const button of document.querySelectorAll('#chat-form button,.chat-study-choices button')) button.disabled = chatBusy || voiceState.active || !canChat();
 }
 async function startVoice() {
   if (chatBusy || startVoiceBusy || voiceCoach.active()) return;
-  if (!status.voiceEnabled) return notify('Voice is available in the owner’s private OpenAI study space.');
+  if (status.mode === 'commercial' || !voiceSupported()) return notify('Use your phone keyboard microphone and Read aloud where sourced voice is unsupported.');
   if (!navigator.onLine) return notify('Reconnect before starting voice.');
   startVoiceBusy = true; updateVoiceUI();
   try {
@@ -254,9 +279,31 @@ async function startVoice() {
   } finally { startVoiceBusy = false; updateVoiceUI(); }
 }
 
+function trustedStudySpeech(message) {
+  if(!message || message.sourceVerified!==true || message.importedEvidence || message.voiceTranscript) return false;
+  if(message.canonicalStudyProcess===true) return true;
+  return message.curriculum===true && message.grounded===true && message.current===true && Array.isArray(message.citations) && message.citations.length>0 && message.citations.every(source=>typeof source.expiresAt==='string' && Date.parse(`${source.expiresAt.slice(0,10)}T00:00:00Z`)>Date.now());
+}
 function renderMessage(message) {
   const role = message.role === 'user' ? 'user' : 'assistant';
-  return `<div class="message ${role}" data-message-id="${esc(message.id)}"><div class="avatar">${role === 'user' ? 'YOU' : '✦'}</div><div class="message-body"><div class="message-label">${role === 'user' ? 'You' : 'Study coach'}</div><div class="message-text">${esc(message.content)}</div>${message.voiceTranscript ? '<small class="model-metadata">Voice caption · check transcription; interrupted replies may include unplayed words.</small>' : ''}${role === 'assistant' ? renderAnswerEvidence(message) + renderModelMetadata(message) : ''}${role === 'assistant' ? `<div class="message-actions">${'speechSynthesis' in window ? `<button data-action="read-message" data-id="${esc(message.id)}">Read aloud</button>` : ''}<button data-action="card-from-message" data-id="${esc(message.id)}">Save as a card</button><button data-action="copy-message" data-id="${esc(message.id)}">Copy</button>${status.mode === 'commercial' ? `<button data-action="report-message" data-id="${esc(message.id)}">Report answer</button>` : ''}</div>` : ''}</div></div>`;
+  return `<div class="message ${role}" data-message-id="${esc(message.id)}"><div class="avatar">${role === 'user' ? 'YOU' : '✦'}</div><div class="message-body"><div class="message-label">${role === 'user' ? 'You' : 'Study coach'}</div><div class="message-text">${esc(message.content)}</div>${message.voiceTranscript ? '<small class="model-metadata">Voice caption · check transcription; interrupted replies may include unplayed words.</small>' : ''}${role === 'assistant' ? renderStudyQuestionControls(message) + renderAnswerEvidence(message) + renderModelMetadata(message) : ''}${role === 'assistant' ? `<div class="message-actions">${'speechSynthesis' in window && trustedStudySpeech(message) ? `<button data-action="read-message" data-id="${esc(message.id)}">Read aloud</button>` : ''}${message.studyAnswer && !message.studyAnswer.imported && trustedStudySpeech(message) ? `<button data-action="chat-study-card" data-id="${esc(message.id)}" ${chatSavedCards.has(message.studyAnswer.key) ? 'disabled' : ''}>${chatSavedCards.has(message.studyAnswer.key) ? 'Added to recall cards' : 'Save sourced recall card'}</button>` : `<button data-action="card-from-message" data-id="${esc(message.id)}">Save as a card</button>`}<button data-action="copy-message" data-id="${esc(message.id)}">Copy</button>${status.mode === 'commercial' ? `<button data-action="report-message" data-id="${esc(message.id)}">Report answer</button>` : ''}</div>` : ''}</div></div>`;
+}
+
+function renderStudyQuestionControls(message) {
+  const question = message.studyQuestion;
+  const last = conversation()?.messages?.filter(item=>item.role === 'assistant').at(-1);
+  if (!question || question.imported || !trustedStudySpeech(message) || last?.id !== message.id) return '';
+  const answered = conversation()?.messages?.some(item=>item.studyAnswer?.key === question.key && item.studyAnswer?.fingerprint === question.fingerprint);
+  if (answered) return '';
+  return `<div class="chat-study-choices" role="group" aria-label="Answer this original board-style question">${['A','B','C','D','E'].map(choice=>`<button class="button secondary" data-action="chat-study-answer" data-id="${esc(message.id)}" data-choice="${choice}" ${chatBusy || voiceState.active ? 'disabled' : ''}>${choice}</button>`).join('')}</div><small class="curriculum-limits">Choose A–E or type your answer. Feedback comes from the source-linked question bank.</small>`;
+}
+async function saveChatStudyCard(id) {
+  const message = conversation()?.messages?.find(item=>item.id === id);
+  const answer = message?.studyAnswer;
+  if (!answer || answer.imported || !trustedStudySpeech(message) || chatSavedCards.has(answer.key)) return;
+  const [conditionId,questionId] = answer.key.split(':');
+  await mutate(`/api/curriculum/${encodeURIComponent(conditionId)}/card`,'POST',{questionId});
+  chatSavedCards.add(answer.key); await refreshState(); render(); notify('Sourced recall card added.');
 }
 
 function beginReview() {
@@ -272,12 +319,12 @@ function renderReview() {
   return `<div class="review-layout">${pageHead('DAILY ACTIVE RECALL', 'Recall. Reflect. Repeat.', 'Try your answer before turning the card over.')}<div class="review-topline"><span>${reviewSession.completed + 1} of ${reviewSession.total} cards</span><span>${esc(current.state === 'new' ? 'New learning' : 'Scheduled review')}</span></div><div class="progress-track"><div class="progress-fill" style="width:${reviewSession.total ? reviewSession.completed / reviewSession.total * 100 : 0}%"></div></div><section class="review-card"><div class="section-head"><span class="pill gold">${esc(current.topic)}</span><button class="text-button" data-action="edit-card" data-id="${esc(current.id)}">Edit card ↗</button></div><h2 class="card-question">${esc(current.front)}</h2>${cardSourceStatusHtml(current)}${answerVisible ? `<div class="answer"><span class="answer-label">Compare with your answer</span>${esc(current.back)}</div><div class="source-link">${sourceHtml(current)}${current.verified ? ' · Marked verified by you' : ' · Verify this learning point'}</div>` : `<p class="recall-prompt">Say it out loud, write it down, or form a complete answer in your mind. The effort of retrieving is the useful part.</p><button class="button full reveal-button" data-action="reveal-answer">Reveal answer ${icon('arrow')}</button>`}</section>${answerVisible ? `<div class="ratings" aria-label="Rate your recall">${[['again','Again'],['hard','Hard'],['good','Good'],['easy','Easy']].map(([rating,label]) => `<button class="rating-button ${rating}" data-action="rate-card" data-rating="${rating}" ${reviewBusy ? 'disabled' : ''}>${label}<small>${esc(intervals[rating])}</small></button>`).join('')}</div><p class="rating-help">Again: missed it · Hard: recalled with difficulty<br>Good: correct with effort · Easy: immediate, confident recall</p>` : '<p class="rating-help">On a keyboard, press Space to reveal the answer.</p>'}${current.lapses >= 8 ? '<div class="notice" style="margin-top:18px">This card has repeated lapses. Try splitting it into smaller questions or ask your coach to explain the concept.</div>' : ''}</div>`;
 }
 
-function studyOnlyNotice() { return '<div class="notice info study-only-notice"><strong>Study use only · Not medical advice</strong><span>For learning and exam preparation. Do not use this app to diagnose, treat, or make decisions for a real patient.</span></div>'; }
+function studyOnlyNotice() { return '<div class="notice info study-only-notice"><strong>Board exam study only · No medical advice or clinical use</strong><span>For family medicine board learning and practice. Do not use this app to diagnose, treat, triage, or make decisions for a real patient.</span></div>'; }
 
 function renderLibrary() {
-  const tabs = [['guidelines','Guidelines & boards'],['cards','Recall cards'],['cases','Clinical cases'],['practice','Practice']];
+  const tabs = [['guidelines','Guidelines & boards'],['cards','Recall cards'],['cases','Fictional cases'],['practice','Study exercises']];
   return `${pageHead('BUILD YOUR KNOWLEDGE BASE', 'Your learning library.', 'Source-linked guideline summaries, original board practice and spaced repetition.', `<button class="button" data-action="new-card">${icon('plus')} Add card</button>`)}
-    ${studyOnlyNotice()}<div class="segmented library-tabs" aria-label="Library section">${tabs.map(([id,label])=>`<button data-action="library-tab" data-tab="${id}" class="${libraryTab === id ? 'active' : ''}" aria-pressed="${libraryTab === id}">${label}</button>`).join('')}</div>
+    ${studyOnlyNotice()}<section class="card board-entry"><div><h2>Family medicine board practice</h2><p>Build a question session, resume your work and review missed learning points.</p></div><button class="button" data-action="navigate" data-screen="board">Start board practice ${icon('arrow')}</button></section><div class="segmented library-tabs" aria-label="Library section">${tabs.map(([id,label])=>`<button data-action="library-tab" data-tab="${id}" class="${libraryTab === id ? 'active' : ''}" aria-pressed="${libraryTab === id}">${label}</button>`).join('')}</div>
     ${libraryTab === 'guidelines' ? renderCurriculum() : libraryTab === 'cards' ? renderCards() : libraryTab === 'cases' ? renderCases() : renderPractice()}`;
 }
 
@@ -389,7 +436,7 @@ async function coachCurriculumCondition() {
   if (!curriculumCondition || chatBusy) return;
   const item = curriculumCondition;
   await createConversation({title:`Study: ${item.title || item.name}`,mode:'practice',conditionId:item.id});
-  return sendMessage(`Study ${item.title || item.name} using the app’s source-linked guideline summaries. Ask me one board-style recall question at a time and explain the source-supported learning point after I answer. This is study use only, not medical advice.`);
+  return sendMessage(`Quiz me on ${item.title || item.name} using the app’s source-linked study summaries. Ask one original board-practice question at a time and explain the source-supported learning point after I answer. This is board study only, no medical advice or clinical use.`);
 }
 
 function renderCards() {
@@ -402,12 +449,114 @@ function renderCardResults(cards) {
   return cards.length ? `<div class="card-list">${cards.map(card => `<article class="library-card ${card.suspended ? 'suspended' : ''}"><div class="card-info"><div class="card-meta"><span class="pill">${esc(card.topic)}</span>${card.suspended ? '<span>Suspended</span>' : `<span>${card.state === 'new' ? 'New' : `Due ${dateString(card.dueAt)}`}</span>`}${card.lapses >= 8 ? '<span class="pill red">Consider rewriting</span>' : ''}</div><span class="card-front">${esc(card.front)}</span><details><summary class="text-button" style="padding-left:0;display:list-item;width:fit-content">Answer & reference</summary><p class="card-back">${esc(card.back)}</p><div class="card-meta">${sourceHtml(card)}<span>${card.verified ? 'Verified by you' : 'Verification recommended'}</span></div></details>${cardSourceStatusHtml(card)}</div><div class="card-actions"><button class="icon-button" data-action="edit-card" data-id="${esc(card.id)}" aria-label="Edit card">${icon('edit')}</button><button class="icon-button" data-action="suspend-card" data-id="${esc(card.id)}" aria-label="${card.suspended ? 'Resume' : 'Suspend'} card" title="${card.suspended ? 'Resume' : 'Suspend'} card">${icon(card.suspended ? 'play' : 'pause')}</button><button class="icon-button" data-action="delete-card" data-id="${esc(card.id)}" aria-label="Delete card">${icon('trash')}</button></div></article>`).join('')}</div>` : `<div class="empty-state"><h2>${state.cards.length ? 'No cards match yet.' : 'Keep one useful insight.'}</h2><p>${state.cards.length ? 'Try a broader search or choose another topic.' : 'A good card asks one clear question and gives one focused answer.'}</p><button class="button secondary" data-action="new-card">Create a recall card</button></div>`;
 }
 
+function resetBoardState() {
+  boardRequest++; boardCatalog=null;boardHistory=[];boardActiveSummary=null;boardActiveError=null;boardSession=null;boardResults=null;boardLoading=false;boardBusy=false;boardError='';boardChoiceId=null;boardSavedCards.clear();chatSavedCards.clear();
+}
+function boardDomains() {
+  return (boardCatalog?.domains || boardCatalog?.blueprint || ABFM_BLUEPRINT).map(item=>({ ...ABFM_BLUEPRINT.find(domain=>domain.id === (item.id || item.domain)),...item,id:item.id || item.domain,title:item.title || item.name || domainLabel(item.id || item.domain) }));
+}
+function boardDomainTitle(id) { return boardDomains().find(item=>item.id === id)?.title || domainLabel(id); }
+function boardSessionId(item = boardSession) { return item?.sessionId || item?.id; }
+function boardAvailableSizes() { return boardCatalog?.availableSizes || [10,20,40,80,100]; }
+function boardSizeAvailable(count) {
+  const sizes=boardAvailableSizes();
+  if(boardMode !== 'mixed') return true;
+  return sizes.some(item=>typeof item === 'number' ? item === count : (item.count || item.size) === count && item.available !== false);
+}
+function boardTimeLeft() {
+  if (!boardSession?.timed) return null;
+  const started=typeof boardSession.createdAt==='number'?boardSession.createdAt:Date.parse(boardSession.createdAt);
+  const deadline=boardSession.deadlineAt || (Number.isFinite(started) && boardSession.timeLimitSeconds ? started + boardSession.timeLimitSeconds*1000 : null);
+  if(deadline) return Math.max(0,Math.ceil((typeof deadline === 'number' ? deadline : Date.parse(deadline)) / 1000 - Date.now()/1000));
+  return Number.isFinite(boardSession.remainingSeconds) ? Math.max(0,boardSession.remainingSeconds) : null;
+}
+function boardClock(seconds) { return `${Math.floor(seconds/60)}:${String(Math.floor(seconds%60)).padStart(2,'0')}`; }
+function boardFeedbackHtml(feedback) {
+  if (!feedback) return '';
+  return `<div class="question-feedback ${feedback.correct ? 'correct' : 'incorrect'}" role="status"><h3>${feedback.correct ? 'Correct.' : 'Review this learning point.'}</h3><p>${esc(feedback.rationale || feedback.explanation || '')}</p><details class="board-option-explanations"><summary>Review all answer explanations</summary><ul>${(feedback.choices || []).map(choice=>`<li><strong>${esc(choice.id)}. ${esc(choice.text)}</strong><p>${esc(choice.explanation || '')}</p></li>`).join('')}</ul></details>${curriculumSources(feedback.sources || [],{compact:true})}<p class="curriculum-limits">Source-linked original educational explanation · Source checked ${esc(feedback.checkedAt || 'date unavailable')} · Check due ${esc(feedback.expiresAt || 'date unavailable')}. Clinician review pending; not medical advice or for clinical use.</p></div>`;
+}
+function renderBoard() {
+  let body;
+  if(boardLoading && !boardCatalog) body='<div class="loading-line" role="status"><span class="spinner"></span> Opening board practice…</div>';
+  else if(boardResults) body=renderBoardResults();
+  else if(boardSession?.question) body=renderBoardSession();
+  else body=renderBoardSetup();
+  return `<div class="board-page">${pageHead('FAMILY MEDICINE BOARD EXAM STUDY','Board practice.','Original questions, sourced explanations and a study loop you can repeat.','<button class="button secondary" data-action="navigate" data-screen="library">← Library</button>')}${studyOnlyNotice()}${boardError ? `<div class="notice error" role="alert">${esc(boardError)}<button class="text-button" data-action="board-dismiss-error">Dismiss</button>${!boardCatalog ? '<button class="text-button" data-action="board-retry">Try again</button>' : ''}</div>` : ''}${boardActiveError?`<div class="notice" role="status">${esc(boardActiveError.error || 'The saved session needs current source checks.')} Start a replacement study session with current questions below.</div>`:''}${body}<p class="footer-note">Original practice, not an official ABFM examination. This question bank supports study but does not cover every exam objective or predict a passing score. Source-linked summaries and automated checks are not clinician review.</p></div>`;
+}
+function renderBoardSetup() {
+  const domains=boardDomains();
+  return `${boardActiveSummary?`<section class="notice info board-resume-notice"><div><strong>Unfinished study session</strong><span>${boardActiveSummary.answeredCount || 0} of ${boardActiveSummary.count || 0} answered${boardActiveSummary.timed?' · Practice timer continues':''}</span></div><button class="button secondary" data-action="board-resume" data-id="${esc(boardSessionId(boardActiveSummary))}">Resume session</button></section>`:''}<section class="card board-setup"><h2>Build a study session</h2><p class="subtitle">Mixed sessions use the current ABFM content blueprint with rounded question counts. A focused domain session or missed-question drill follows your own study needs.</p><form id="board-start-form"><div class="form-row"><div class="form-field"><label for="board-mode">Session type</label><select id="board-mode" name="mode"><option value="mixed" ${boardMode==='mixed'?'selected':''}>Blueprint-based mixed practice</option><option value="domain" ${boardMode==='domain'?'selected':''}>Focus on one domain</option><option value="missed" ${boardMode==='missed'?'selected':''}>Previously missed questions</option></select></div><div class="form-field"><label for="board-count">Questions</label><select id="board-count" name="count">${[10,20,40,80,100].map(count=>`<option value="${count}" ${boardCount===count?'selected':''} ${boardSizeAvailable(count)?'':'disabled'}>${count}${boardSizeAvailable(count)?'':' · needs more current questions'}</option>`).join('')}</select></div></div>${boardMode==='domain'?`<div class="form-field"><label for="board-domain">Study domain</label><select id="board-domain" name="domain" required>${domains.map(domain=>`<option value="${esc(domain.id)}" ${boardDomain===domain.id?'selected':''}>${esc(domain.title)}${Number.isFinite(domain.questionCount || domain.available) ? ` · ${domain.questionCount || domain.available} questions` : ''}</option>`).join('')}</select></div>`:''}<div class="form-field"><label for="board-feedback">Explanation timing</label><select id="board-feedback" name="feedback"><option value="immediate" ${boardFeedback==='immediate'?'selected':''}>After each answer</option><option value="end" ${boardFeedback==='end'?'selected':''}>At the end of the session</option></select></div><label class="check-field"><input id="board-timed" name="timed" type="checkbox" ${boardTimed?'checked':''}>Use a practice timer</label>${boardTimed?`<div class="form-field"><label for="board-minutes">Practice time limit in minutes</label><input id="board-minutes" name="minutes" type="number" min="1" max="240" value="${boardMinutes}" required><small>Your own practice setting, not official ABFM examination timing. The timer continues if you leave this page.</small></div>`:'<p class="curriculum-limits">Untimed by default. Pause and return when your schedule allows.</p>'}<button class="button full" type="submit" ${boardBusy || !boardCatalog?'disabled':''}>${boardBusy?'Starting session…':boardActiveSummary || boardActiveError?'Replace unfinished session':'Start original board practice'}</button>${boardActiveSummary || boardActiveError?'<p class="curriculum-limits">Starting a replacement discards the unfinished session. Completed session history is kept.</p>':''}</form></section><section class="card board-blueprint"><h2>Question bank and content blueprint</h2><div class="board-domain-grid">${domains.map(domain=>`<div><strong>${esc(domain.title)}</strong><span>${esc(domain.percent ?? domain.weight ?? '')}% of mixed practice${Number.isFinite(domain.questionCount ?? domain.available) ? ` · ${domain.questionCount ?? domain.available} current questions` : ''}</span></div>`).join('')}</div><p class="curriculum-limits">Bank size and source coverage differ by domain. A session that needs unavailable or expired questions is blocked, rather than silently changing the requested blueprint mix. A small study bank may repeat questions across sessions.</p></section>${boardHistory.length?`<section class="card board-history"><h2>Your study sessions</h2>${boardHistory.slice(0,12).map(item=>`<div class="weak-row"><div><strong>${esc(item.mode==='mixed'?'Mixed board practice':item.mode==='missed'?'Missed-question drill':boardDomainTitle(item.domain))}</strong><small>${Number(item.count || item.total)||0} questions · ${item.trusted===false?'Imported summary · not reverified':esc(item.status || 'saved')} · ${esc(dateString(item.updatedAt || item.startedAt || item.createdAt))}</small></div>${item.trusted===false?'<span class="pill">Historical summary only</span>':`<button class="button secondary" data-action="board-resume" data-id="${esc(boardSessionId(item))}">${['completed','expired'].includes(item.status)?'Review results':'Resume'}</button>`}</div>`).join('')}</section>`:''}`;
+}
+function renderBoardSession() {
+  const item=boardSession,q=item.question,selected=item.selectedChoiceId || boardChoiceId;
+  const graded=Boolean(item.selectedChoiceId),left=boardTimeLeft(),expired=left===0;
+  const feedback=item.feedback;
+  return `<section class="card board-session" aria-labelledby="board-session-heading" data-time-expired="${expired}"><div class="review-topline"><span>Question ${(item.position || 0)+1} of ${item.count}</span><span>${item.answeredCount || 0} answered${left===null?'':` · <strong id="board-clock" role="timer">${boardClock(left)}</strong>`}</span></div><div class="progress-track"><div class="progress-fill" style="width:${item.count?(item.answeredCount || 0)/item.count*100:0}%"></div></div><span class="eyebrow">ORIGINAL QUESTION · ${esc(boardDomainTitle(q.domain))}</span><h2 id="board-session-heading">${esc(q.conditionTitle || 'Family medicine study')}</h2><p class="question-stem">${esc(q.stem)}</p><div class="question-choices" role="group" aria-label="Choose one answer">${(q.choices || []).map(choice=>`<button class="question-choice ${selected===choice.id?'selected':''} ${feedback?.correctChoiceId===choice.id?'correct':''} ${feedback && selected===choice.id && !feedback.correct?'incorrect':''}" data-action="board-choice" data-id="${esc(choice.id)}" aria-pressed="${selected===choice.id}" ${graded || boardBusy || expired?'disabled':''}><span class="choice-letter">${esc(choice.id)}</span><span>${esc(choice.text)}</span>${feedback?.correctChoiceId===choice.id?'<span class="choice-mark">Correct</span>':''}</button>`).join('')}</div>${expired?'<div class="notice" role="status">Practice time is up. Finish to review the questions and explanations.</div>':graded&&!feedback?'<div class="notice info" role="status">Answer saved. Explanations will appear when you finish this practice session.</div>':''}${boardFeedbackHtml(feedback)}<div class="question-actions">${!graded?`<button class="button" data-action="board-answer" ${!boardChoiceId || boardBusy || expired?'disabled':''}>${boardBusy?'Saving answer…':'Submit answer'}</button>`:feedback?`<button class="button secondary" data-action="board-save-card" data-key="${esc(q.key)}" ${boardCardBusy || boardSavedCards.has(q.key)?'disabled':''}>${boardSavedCards.has(q.key)?'Added to recall cards':'Save sourced recall card'}</button>`:''}${item.position>0?`<button class="button secondary" data-action="board-position" data-index="${item.position-1}" ${boardBusy?'disabled':''}>← Previous</button>`:''}${item.position<item.count-1?`<button class="button secondary" data-action="board-position" data-index="${item.position+1}" ${boardBusy?'disabled':''}>${graded?'Next question':'Skip for now'} ${icon('arrow')}</button>`:''}<button class="button ${graded&&item.position===item.count-1?'':'secondary'}" data-action="board-finish" ${boardBusy?'disabled':''}>Finish & review</button><button class="text-button" data-action="board-home" ${boardBusy?'disabled':''}>Save & leave session</button></div><p class="curriculum-limits">Answers save on the server. Source check ${esc(q.checkedAt || 'date unavailable')} · Check due ${esc(q.expiresAt || 'date unavailable')}. Educational practice only.</p></section>`;
+}
+function renderBoardResults() {
+  const result=boardResults,questions=result.questions || [],missed=questions.filter(item=>!item.feedback?.correct);
+  const domains=result.domainResults || [];
+  return `<section class="card board-result-summary"><span class="eyebrow">YOUR STUDY SESSION RESULTS</span><h2>${result.correct || 0} correct of ${result.total || result.count || questions.length} questions</h2><p>${result.answered || 0} answered · ${result.skipped || 0} unanswered${Number.isFinite(result.accuracy)?` · ${Math.round(result.accuracy)}% of answered questions`:''}</p><p class="curriculum-limits">This describes your answers in this original study bank. It is not an official score, a clinical assessment or a prediction of passing ABFM.</p><div class="inline-actions"><button class="button" data-action="board-home">Build another session</button><button class="button secondary" data-action="board-missed">Practice previously missed questions</button></div></section><section class="card"><h2>Study performance by domain</h2><div class="board-domain-results">${domains.map(domain=>`<div class="weak-row"><div><strong>${esc(boardDomainTitle(domain.domain || domain.id))}</strong><small>${domain.correct || 0} correct of ${domain.total || domain.answered || 0} questions${Number.isFinite(domain.accuracy)?` · ${Math.round(domain.accuracy)}% of answered`:''}</small></div><button class="button secondary" data-action="board-focus" data-domain="${esc(domain.domain || domain.id)}">Practice domain</button></div>`).join('')}</div></section><section class="board-result-review"><h2>Review missed or unanswered learning points (${missed.length})</h2>${missed.length?'':'<div class="notice info">You answered every question correctly in this session. Continue spaced recall and use other study resources to cover objectives outside this bank.</div>'}${questions.map((q,index)=>`<details class="card board-result-question" ${!q.feedback?.correct?'open':''}><summary><span class="pill ${q.feedback?.correct?'green':'gold'}">${q.selectedChoiceId?q.feedback?.correct?'Correct':'Missed':'Unanswered'}</span> ${index+1}. ${esc(q.conditionTitle || boardDomainTitle(q.domain))}</summary><p class="question-stem">${esc(q.stem)}</p><ol class="board-result-choices" type="A">${(q.choices || []).map(choice=>`<li>${esc(choice.text)}${q.selectedChoiceId===choice.id?' · Your answer':''}${q.feedback?.correctChoiceId===choice.id?' · Correct answer':''}</li>`).join('')}</ol>${boardFeedbackHtml(q.feedback)}<button class="button secondary" data-action="board-save-card" data-key="${esc(q.key)}" ${boardCardBusy || boardSavedCards.has(q.key)?'disabled':''}>${boardSavedCards.has(q.key)?'Added to recall cards':'Save sourced recall card'}</button></details>`).join('')}</section>`;
+}
+function applyBoardResponse(data) {
+  const view=data.view || data.active || data;
+  if(view.questions || ['completed','expired'].includes(view.status) && !view.question){boardResults=view;boardSession=null;boardActiveSummary=null;}
+  else {boardSession=view;boardResults=null;boardActiveSummary=view;}
+  boardChoiceId=null;boardError='';boardActiveError=null;
+}
+async function loadBoard() {
+  const request=++boardRequest;boardLoading=true;boardError='';if(screen==='board')render();
+  try{const data=await api('/api/board-practice');if(request!==boardRequest)return;boardCatalog=data.catalog;boardHistory=data.history || [];boardActiveSummary=data.active || null;boardActiveError=data.activeError || null;}
+  catch(error){if(request===boardRequest)boardError=error.message;}
+  finally{if(request===boardRequest){boardLoading=false;if(screen==='board')render();}}
+}
+async function startBoardSession(form) {
+  if(boardBusy)return;const data=new FormData(form);boardCount=Number(data.get('count'));boardMode=data.get('mode');boardDomain=data.get('domain') || boardDomain;boardTimed=data.get('timed')==='on';boardMinutes=Number(data.get('minutes') || boardMinutes);boardFeedback=data.get('feedback');
+  boardBusy=true;boardError='';render();const request=boardRequest;
+  try{const result=await mutate(`/api/board-practice/${boardActiveSummary || boardActiveError?'restart':'start'}`,'POST',{count:boardCount,mode:boardMode,...(boardMode==='domain'?{domain:boardDomain}:{}),timed:boardTimed,...(boardTimed?{timeLimitSeconds:boardMinutes*60}:{}),feedback:boardFeedback});if(request!==boardRequest)return;applyBoardResponse(result);}
+  catch(error){if(request===boardRequest)boardError=error.details?.code==='INSUFFICIENT_COVERAGE' ? `${error.message} ${error.details.gaps?.map(gap=>`${boardDomainTitle(gap.domain)}: ${gap.available} available, ${gap.required} needed`).join('; ') || ''}` : error.message;}
+  finally{if(request===boardRequest){boardBusy=false;render();window.scrollTo({top:0,behavior:'instant'});}}
+}
+async function openBoardSession(id,index) {
+  if(boardBusy)return;boardBusy=true;boardError='';if(screen==='board')render();const request=boardRequest;
+  try{const result=await api(`/api/board-practice/${encodeURIComponent(id)}${Number.isInteger(index)?`?index=${index}`:''}`);if(request!==boardRequest)return;applyBoardResponse(result);}
+  catch(error){if(request===boardRequest)boardError=error.message;}
+  finally{if(request===boardRequest){boardBusy=false;if(screen==='board')render();}}
+}
+async function answerBoardSession() {
+  if(!boardChoiceId || boardBusy || !boardSession?.question)return;const id=boardSessionId(),key=boardSession.question.key,choiceId=boardChoiceId,request=boardRequest;
+  boardBusy=true;boardError='';render();
+  try{const result=await mutate(`/api/board-practice/${encodeURIComponent(id)}/answer`,'POST',{questionKey:key,choiceId});if(request!==boardRequest)return;applyBoardResponse(result);}
+  catch(error){if(request===boardRequest)boardError=error.message;}
+  finally{if(request===boardRequest){boardBusy=false;render();}}
+}
+function finishBoardPrompt() {
+  if(!boardSession || boardBusy)return;
+  const remaining=boardSession.count-(boardSession.answeredCount || 0);
+  if(remaining>0 && boardTimeLeft()!==0) return dialog('Finish this study session?',`${remaining} question${remaining===1?' is':'s are'} unanswered. You can review all explanations after finishing.`, '<p class="subtitle">Unanswered questions are recorded as skipped. You can start a new missed-question drill afterward.</p>','<button class="button secondary" data-action="close-dialog">Keep practicing</button><button class="button" data-action="board-confirm-finish">Finish & review</button>');
+  return finishBoardSession();
+}
+async function finishBoardSession() {
+  if(!boardSession || boardBusy)return;const id=boardSessionId(),request=boardRequest;$('#app-dialog').close();boardBusy=true;boardError='';render();
+  try{const result=await mutate(`/api/board-practice/${encodeURIComponent(id)}/finish`,'POST',{});if(request!==boardRequest)return;applyBoardResponse(result);}
+  catch(error){if(request===boardRequest)boardError=error.message;}
+  finally{if(request===boardRequest){boardBusy=false;render();window.scrollTo({top:0,behavior:'instant'});}}
+}
+async function saveBoardCard(key) {
+  if(boardCardBusy || boardSavedCards.has(key))return;
+  const [conditionId,questionId]=key.split(':');boardCardBusy=key;render();const request=boardRequest;
+  try{await mutate(`/api/curriculum/${encodeURIComponent(conditionId)}/card`,'POST',{questionId});if(request!==boardRequest)return;boardSavedCards.add(key);await refreshState();notify('Sourced recall card added to spaced review.');}
+  catch(error){if(request===boardRequest)boardError=error.message;}
+  finally{if(request===boardRequest){boardCardBusy='';render();}}
+}
+setInterval(()=>{if(screen!=='board' || !boardSession?.question)return;const clock=$('#board-clock'),left=boardTimeLeft();if(clock && left!==null){clock.textContent=boardClock(left);if(left===0 && $('.board-session')?.dataset.timeExpired!=='true')render();}},1000);
+
 function renderCases() {
-  return `<div class="notice info" style="margin-bottom:20px">These are fictional educational cases. Your coach helps you explain your thinking; it does not assess your real clinical competence.</div><div class="scenario-grid">${SCENARIOS.map(scenario => `<article class="scenario-card"><div class="scenario-top"><span class="pill gold">${esc(scenario.category)}</span><span class="pill">${esc(scenario.difficulty)}</span></div><h3>${esc(scenario.title)}</h3><p>${esc(scenario.description)}</p><div class="scenario-bottom"><small>${esc(scenario.estimatedMinutes || 10)} minute practice</small><button class="button secondary" data-action="start-case" data-id="${esc(scenario.id)}">Work through case ${icon('arrow')}</button></div></article>`).join('')}</div>`;
+  return `<div class="notice info" style="margin-bottom:20px">These fictional prompts are optional study reflection worksheets. Use current Library or Board practice questions for sourced facts and graded answers. Written reasoning and clinical competence are not assessed.</div><div class="scenario-grid">${SCENARIOS.map(scenario => `<article class="scenario-card"><div class="scenario-top"><span class="pill gold">${esc(scenario.category)}</span><span class="pill">${esc(scenario.difficulty)}</span></div><h3>${esc(scenario.title)}</h3><p>${esc(scenario.description)}</p><div class="scenario-bottom"><small>${esc(scenario.estimatedMinutes || 10)} minute practice</small><button class="button secondary" data-action="start-case" data-id="${esc(scenario.id)}">Open study instructions ${icon('arrow')}</button></div></article>`).join('')}</div>`;
 }
 
 function renderPractice() {
-  return `<section class="practice-card"><span class="eyebrow">MAKE YOUR THINKING VISIBLE</span><h2>Practice the decisions behind the answer.</h2><p>Choose an exercise. Explain your reasoning before your coach gives feedback. Use specific cases and repeat the areas that feel uncertain.</p><div class="practice-options">${[
+  return `<section class="practice-card"><span class="eyebrow">MAKE YOUR THINKING VISIBLE</span><h2>Use a structured study worksheet.</h2><p>These optional exercises provide scripted study instructions. For graded answers, choose a source-linked question in Library or Board practice. Your written reasoning is not graded.</p><div class="practice-options">${[
     ['Clinical synthesis', 'Help me practice clinical synthesis with a fictional complex family medicine patient. Ask for my concise problem representation, then challenge my prioritization, one question at a time.'],
     ['Differential diagnosis', 'Give me a fictional family medicine case to practice differential diagnosis. Ask me to prioritize diagnoses and explain evidence for and against each, one question at a time.'],
     ['Next best step', 'Quiz me on next best steps in family medicine. Present one fictional case, ask for my next step and reasoning, and wait for my answer.'],
@@ -423,9 +572,9 @@ function renderProgress() {
     <div class="metrics progress-metrics">${metric('Total reviews',s.totalReviews,'Every effort to retrieve counts','review')}${metric('Recall success',s.recallRate === null ? '—' : `${s.recallRate}%`,'Self-rated Good or Easy','target')}${metric('Current streak',s.streak,'Days with at least one review','streak',s.streak === 1 ? 'day' : 'days')}</div>
     <div class="grid two"><section class="card"><div class="section-head"><h2>Your review rhythm</h2><span class="pill">Last 14 days</span></div><div class="chart-bars" role="img" aria-label="Review activity: ${esc(activity.map(item => `${item.date}: ${item.count} reviews`).join('; '))}">${activity.map((item,index) => `<div class="chart-day"><span class="chart-count">${item.count || ''}</span><div class="chart-bar ${index === activity.length - 1 ? 'today' : ''}" style="height:${Math.max(3,item.count/max*85)}px"></div><small>${esc(new Date(`${item.date}T12:00:00`).toLocaleDateString(undefined,{weekday:'narrow'}))}</small></div>`).join('')}</div><p class="footer-note" style="margin-bottom:0">Consistency creates more chances to retrieve. There’s no requirement for a perfect streak.</p></section>
     <section class="card"><div class="section-head"><h2>Topics to revisit</h2><span class="pill">Recall ratings</span></div>${s.weakTopics.length ? s.weakTopics.slice(0,4).map(topic => `<div class="weak-row"><div><strong>${esc(topic.topic)}</strong><small>${topic.reviews} reviews · ${topic.lapses} Again ratings</small></div><button class="text-button" data-action="topic-coach" data-topic="${esc(topic.topic)}">${Math.round(topic.recallRate)}% ↗</button></div>`).join('') : '<p class="subtitle" style="font-size:12px;margin-top:20px">Your first reviews will start to show your strengths and gaps. These statistics measure self-rated card recall.</p>'}</section></div>
-    <div class="section-head" style="margin-top:30px"><h2>Reflect on your practice</h2><span class="pill">Self-assessment</span></div><div class="notice info">These six broad competency areas are prompts for reflection. Your personal confidence ratings are educational and are not ACGME milestone levels, board readiness, or an official clinical assessment.</div>
-    <div class="competency-list">${COMPETENCIES.map(item => `<section class="competency-card"><div class="competency-top"><span class="competency-abbr">${esc(item.abbr)}</span><h3>${esc(item.name)}</h3></div><p>${esc(item.description)}</p><label class="confidence-label" for="confidence-${esc(item.id)}">My confidence in deliberate practice</label><select id="confidence-${esc(item.id)}" class="confidence-select" data-competency="${esc(item.id)}"><option value="">Choose your confidence</option>${[[1,'Starting to explore'],[2,'I need frequent support'],[3,'I can explain with support'],[4,'I can explain consistently'],[5,'I can teach my reasoning']].map(([value,label]) => `<option value="${value}" ${Number(state.settings.competencyRatings?.[item.id]) === value ? 'selected' : ''}>${esc(label)}</option>`).join('')}</select><button class="text-button" style="padding-left:0" data-action="starter" data-prompt="Help me practice ${esc(item.name.toLowerCase())} through a fictional family medicine scenario. Ask me one question at a time, then provide specific educational feedback.">Practice this area ↗</button></section>`).join('')}</div>
-    <p class="footer-note">${s.leeches ? `${s.leeches} card${s.leeches === 1 ? '' : 's'} has repeated lapses. Rewrite these into smaller, clearer questions. ` : ''}Scheduling supports practice; it cannot guarantee durable learning or safe clinical performance.</p>`;
+    <div class="section-head" style="margin-top:30px"><h2>Reflect on your study</h2><span class="pill">Self-assessment</span></div><div class="notice info">These six broad competency areas are prompts for reflection. Your personal confidence ratings are educational and are not ACGME milestone levels, board readiness, or an official clinical assessment.</div>
+    <div class="competency-list">${COMPETENCIES.map(item => `<section class="competency-card"><div class="competency-top"><span class="competency-abbr">${esc(item.abbr)}</span><h3>${esc(item.name)}</h3></div><p>${esc(item.description)}</p><label class="confidence-label" for="confidence-${esc(item.id)}">My confidence explaining this study topic</label><select id="confidence-${esc(item.id)}" class="confidence-select" data-competency="${esc(item.id)}"><option value="">Choose your confidence</option>${[[1,'Starting to explore'],[2,'I need frequent support'],[3,'I can explain with support'],[4,'I can explain consistently'],[5,'I can teach my reasoning']].map(([value,label]) => `<option value="${value}" ${Number(state.settings.competencyRatings?.[item.id]) === value ? 'selected' : ''}>${esc(label)}</option>`).join('')}</select><button class="text-button" style="padding-left:0" data-action="starter" data-prompt="Help me practice ${esc(item.name.toLowerCase())} through a fictional family medicine scenario. Ask me one question at a time, then provide specific educational feedback.">Open study instructions ↗</button></section>`).join('')}</div>
+    <p class="footer-note">${s.leeches ? `${s.leeches} card${s.leeches === 1 ? '' : 's'} has repeated lapses. Rewrite these into smaller, clearer questions. ` : ''}Scheduling supports practice; it cannot guarantee durable learning or a passing board score.</p>`;
 }
 
 function dialog(title, subtitle, body, footer = '') {
@@ -437,7 +586,7 @@ function closeDialog() { if (formBusy) return; $('#app-dialog').close(); }
 
 function settingsDialog() {
   const s = state.settings;
-  dialog('A study rhythm that fits.', 'Adjust your coach and your daily learning load.', `<form id="settings-form"><div class="form-field"><label for="study-focus">Study focus</label><select id="study-focus" name="focus">${[['clinical-reasoning','Clinical reasoning & synthesis'],['exam','Exam preparation'],['balanced','Balanced learning']].map(([value,label]) => `<option value="${value}" ${s.focus === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-field"><label for="coach-style">Coaching style</label><select id="coach-style" name="coachStyle">${[['socratic','Socratic: one question at a time'],['teach-quiz','Explain first, then quiz me'],['direct','Give clear, direct explanations']].map(([value,label]) => `<option value="${value}" ${s.coachStyle === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-row"><div class="form-field"><label for="daily-minutes">Minutes per day</label><input id="daily-minutes" name="dailyMinutes" type="number" min="5" max="120" required value="${s.dailyMinutes}"></div><div class="form-field"><label for="new-limit">New cards per day</label><input id="new-limit" name="newCardsPerDay" type="number" min="0" max="50" required value="${s.newCardsPerDay}"></div></div><div class="form-field"><label for="study-timezone">Study timezone</label><input id="study-timezone" name="timeZone" value="${esc(s.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone)}" required><small>Used for daily limits and streaks. Example: America/New_York.</small></div><div class="notice info">${status.aiConfigured ? `AI coaching is configured with ${esc(status.provider || 'your selected provider')}${status.model ? ` (${esc(status.model)})` : ''}. ${status.mode === 'commercial' ? 'Answer sources and review dates appear when available.' : 'Provider access is managed by the app owner.'}` : status.mode === 'commercial' ? 'AI coaching is being prepared by the app owner. Cards and reviews are available while the app is tested.' : 'Guided practice is available now. Configure an AI provider in your host settings to enable conversational coaching.'}</div><div id="settings-error" class="form-error" role="alert"></div></form>${status.modelSelectionEnabled ? modelSettingsHtml() : ''}<div class="form-section"><h3>Take your learning with you</h3><div class="inline-actions"><button class="button secondary" data-action="export">Export backup</button><button class="button secondary" data-action="import-backup">Restore backup</button></div><p class="footer-note" style="margin-bottom:0">Backups include your cards, review history, conversations, and preferences. Keep the file private.</p></div><div class="form-section"><h3>Use it from your phone</h3><p class="subtitle" style="font-size:12px">Open your hosted app’s HTTPS address. On Android, choose “Install app” or “Add to Home screen” in your browser menu. On iPhone, open Safari, tap Share, then “Add to Home Screen”.</p><p class="footer-note" style="margin:0">${status.voiceEnabled ? 'Tap Start voice in Coach for a continuous spoken conversation. Allow your browser’s microphone; speak to interrupt, or use Mute and Stop. Voice stops when the app is hidden and after ten minutes.' : 'Use your phone keyboard’s microphone to dictate. Read-aloud is available where your browser supports it.'} The composer mic dictates text for review before sending. Chat and saved progress require a connection.</p></div>${status.mode === 'commercial' ? commercialSettings() : ''}${status.authRequired ? '<div class="form-section"><button class="button secondary" data-action="logout">Lock study space</button></div>' : ''}`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button type="submit" form="settings-form" class="button">Save preferences</button>');
+  dialog('A study rhythm that fits.', 'Save your study goals and daily learning load.', `<form id="settings-form"><div class="form-field"><label for="study-focus">Saved study goal</label><select id="study-focus" name="focus">${[['clinical-reasoning','Clinical reasoning & synthesis'],['exam','Exam preparation'],['balanced','Balanced learning']].map(([value,label]) => `<option value="${value}" ${s.focus === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-field"><label for="coach-style">Saved study approach</label><select id="coach-style" name="coachStyle">${[['socratic','Question-first study goal'],['teach-quiz','Read, then practice goal'],['direct','Reference-first study goal']].map(([value,label]) => `<option value="${value}" ${s.coachStyle === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><p class="curriculum-limits">These are saved study goals. They do not rewrite fixed sourced answers or assess clinical reasoning. Choose a condition in Library or use Board practice for graded questions; reflections are scripted study instructions.</p><div class="form-row"><div class="form-field"><label for="daily-minutes">Minutes per day</label><input id="daily-minutes" name="dailyMinutes" type="number" min="5" max="120" required value="${s.dailyMinutes}"></div><div class="form-field"><label for="new-limit">New cards per day</label><input id="new-limit" name="newCardsPerDay" type="number" min="0" max="50" required value="${s.newCardsPerDay}"></div></div><div class="form-field"><label for="study-timezone">Study timezone</label><input id="study-timezone" name="timeZone" value="${esc(s.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone)}" required><small>Used for daily limits and streaks. Example: America/New_York.</small></div><div class="notice info">${status.aiConfigured ? `${status.mode === 'commercial' ? 'AI study coaching is configured' : 'Source selection is configured'} with ${esc(status.provider || 'your selected provider')}${status.model ? ` (${esc(status.model)})` : ''}. ${status.mode === 'commercial' ? 'Answer sources and review dates appear when available.' : 'Cited answers are fixed study text. Provider access is managed by the app owner.'}` : status.mode === 'commercial' ? 'AI coaching is being prepared by the app owner. Cards and reviews are available while the app is tested.' : 'Source-linked questions and fixed explanations are available now. An optional AI provider can select relevant references; it does not write new factual answers.'}</div><div id="settings-error" class="form-error" role="alert"></div></form>${status.modelSelectionEnabled ? modelSettingsHtml() : ''}<div class="form-section"><h3>Take your learning with you</h3><div class="inline-actions"><button class="button secondary" data-action="export">Export backup</button><button class="button secondary" data-action="import-backup">Restore backup</button></div><p class="footer-note" style="margin-bottom:0">Backups include your cards, review history, conversations, preferences and practice history. Keep the file private.</p></div><div class="form-section"><h3>Use it from your phone</h3><p class="subtitle" style="font-size:12px">Open your hosted app’s HTTPS address. On Android, choose “Install app” or “Add to Home screen” in your browser menu. On iPhone, open Safari, tap Share, then “Add to Home Screen”.</p><p class="footer-note" style="margin:0">Sourced voice reads the same canonical study text visible in Coach, with citations. It pauses while reading and listens afterward. Use Interrupt readout, Mute or Stop; hiding the app stops recognition. Browser speech support varies. Use your phone keyboard microphone and Read aloud if unavailable. The composer mic dictates text for review before sending. Chat and saved progress require a connection.</p></div>${status.mode === 'commercial' ? commercialSettings() : ''}${status.authRequired ? '<div class="form-section"><button class="button secondary" data-action="logout">Lock study space</button></div>' : ''}`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button type="submit" form="settings-form" class="button">Save preferences</button>');
 }
 
 function modelSettingsHtml() {
@@ -490,7 +639,7 @@ function renderModelMetadata(message) {
 
 function cardDialog(card = null, preset = {}) {
   const data = card || preset;
-  dialog(card ? 'Make this card clearer.' : 'Keep one useful insight.', 'One focused question. One answer you can check.', `<form id="card-form" data-id="${esc(card?.id || '')}"><div class="form-field"><label for="card-front">Question / prompt</label><textarea id="card-front" name="front" required maxlength="2000" placeholder="What should I be able to recall?">${esc(data.front)}</textarea></div><div class="form-field"><label for="card-back">Answer</label><textarea id="card-back" name="back" required maxlength="8000" placeholder="A focused answer, in your own words.">${esc(data.back)}</textarea></div><div class="form-field"><label for="card-topic">Topic</label><input id="card-topic" name="topic" required maxlength="100" placeholder="e.g. Clinical synthesis" value="${esc(data.topic || 'Family medicine')}"></div><div class="form-field"><label for="source-title">Reference title</label><input id="source-title" name="sourceTitle" maxlength="300" value="${esc(data.sourceTitle)}" placeholder="Guideline, textbook, or personal study note"></div><div class="form-field"><label for="source-url">Reference link</label><input id="source-url" name="sourceUrl" type="url" maxlength="2000" value="${esc(data.sourceUrl)}" placeholder="https://…"><small>Check source details and the current recommendation before clinical use.</small></div><label class="check-field"><input type="checkbox" name="verified" ${data.verified ? 'checked' : ''}>I checked this answer against a reliable source</label><div id="card-error" class="form-error" role="alert"></div></form>`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button class="button" type="submit" form="card-form">Save recall card</button>');
+  dialog(card ? 'Make this card clearer.' : 'Keep one useful insight.', 'One focused question. One answer you can check.', `<form id="card-form" data-id="${esc(card?.id || '')}"><div class="form-field"><label for="card-front">Question / prompt</label><textarea id="card-front" name="front" required maxlength="2000" placeholder="What should I be able to recall?">${esc(data.front)}</textarea></div><div class="form-field"><label for="card-back">Answer</label><textarea id="card-back" name="back" required maxlength="8000" placeholder="A focused answer, in your own words.">${esc(data.back)}</textarea></div><div class="form-field"><label for="card-topic">Topic</label><input id="card-topic" name="topic" required maxlength="100" placeholder="e.g. Clinical synthesis" value="${esc(data.topic || 'Family medicine')}"></div><div class="form-field"><label for="source-title">Reference title</label><input id="source-title" name="sourceTitle" maxlength="300" value="${esc(data.sourceTitle)}" placeholder="Guideline, textbook, or personal study note"></div><div class="form-field"><label for="source-url">Reference link</label><input id="source-url" name="sourceUrl" type="url" maxlength="2000" value="${esc(data.sourceUrl)}" placeholder="https://…"><small>Check the current official source when studying this answer. This app is not for clinical use.</small></div><label class="check-field"><input type="checkbox" name="verified" ${data.verified ? 'checked' : ''}>I checked this answer against a reliable source</label><div id="card-error" class="form-error" role="alert"></div></form>`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button class="button" type="submit" form="card-form">Save recall card</button>');
 }
 
 function historyDialog() {
@@ -609,6 +758,7 @@ function preserveDictationEdits(value) {
 function readMessage(id) {
   const message = conversation()?.messages?.find(item => item.id === id);
   if (!message || !('speechSynthesis' in window)) return;
+  if(!trustedStudySpeech(message)) return notify('Readout is available only for current canonical sourced study text. Open the current condition summary.');
   if (speechSynthesis.speaking) { speechSynthesis.cancel(); notify('Read-aloud stopped.'); return; }
   const speech = new SpeechSynthesisUtterance(message.content);
   speech.lang = navigator.language || 'en-US';
@@ -665,7 +815,7 @@ async function exportBackup() {
 }
 
 function importBackupDialog() {
-  dialog('Restore your study backup.', 'This replaces the saved study data on this server.', `<div class="notice" style="margin-bottom:18px">Export your current data first if you want to keep it. Restoring a backup replaces cards, reviews, conversations, and preferences.</div><form id="restore-form"><div class="form-field"><label for="backup-file">Choose your backup JSON file</label><input id="backup-file" name="backup" type="file" accept="application/json,.json" required></div><label class="check-field"><input type="checkbox" name="confirmed" required>I understand this will replace my current study data</label><div id="restore-error" class="form-error" role="alert"></div></form>`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button class="button" type="submit" form="restore-form">Restore backup</button>');
+  dialog('Restore your study backup.', 'This replaces the saved study data on this server.', `<div class="notice" style="margin-bottom:18px">Export your current data first if you want to keep it. Restoring a backup replaces cards, reviews, conversations, preferences and saved board practice. Restored practice summaries and references remain unverified.</div><form id="restore-form"><div class="form-field"><label for="backup-file">Choose your backup JSON file</label><input id="backup-file" name="backup" type="file" accept="application/json,.json" required></div><label class="check-field"><input type="checkbox" name="confirmed" required>I understand this will replace my current study data</label><div id="restore-error" class="form-error" role="alert"></div></form>`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button class="button" type="submit" form="restore-form">Restore backup</button>');
 }
 
 function renderLogin() {
@@ -689,8 +839,10 @@ function renderAnswerEvidence(message) {
   const grounded = message.grounded === true || message.evidence?.grounded === true;
   const humanReviewed = message.humanReview === true || message.evidence?.humanReview === true;
   const imported = message.importedEvidence === true;
+  const currentStudyText=trustedStudySpeech(message);
+  const legacyWarning=!currentStudyText ? '<small class="evidence-status unverified-study-text">Unverified AI, imported or historical study text. Use current source-linked questions for guideline facts; not for clinical use.</small>' : '';
   const explanation = imported ? 'Imported references have not been reverified against the current corpus.' : curriculum ? `${grounded ? 'Retrieved summaries support this study reply.' : 'Source-linked study response.'} ${humanReviewed ? 'Clinician review recorded.' : 'Clinician review pending; a citation does not guarantee correctness.'}` : 'References support educational review. Verify their applicability and currency.';
-  return `${message.unsupported === true ? '<div class="answer-abstention">The available study evidence does not support an answer. Check a current official source.</div>' : ''}${curriculum ? `<small class="evidence-status">${grounded ? 'Grounded in retrieved study summaries' : 'Evidence coverage limited'} · ${humanReviewed ? 'Clinician review recorded' : 'Clinician review pending'}</small>` : ''}${sourceList ? `<details class="answer-sources"><summary>${imported ? 'Imported' : 'Source-linked'} study references (${sources.length})</summary><ul>${sourceList}</ul><p>${esc(explanation)} Study use only; not medical advice.</p></details>` : ''}`;
+  return `${legacyWarning}${message.unsupported === true ? '<div class="answer-abstention">The available study evidence does not support an answer. Check a current official source.</div>' : ''}${curriculum ? `<small class="evidence-status">${grounded ? 'Grounded in retrieved study summaries' : 'Evidence coverage limited'} · ${humanReviewed ? 'Clinician review recorded' : 'Clinician review pending'}</small>` : ''}${sourceList ? `<details class="answer-sources"><summary>${imported ? 'Imported' : 'Source-linked'} study references (${sources.length})</summary><ul>${sourceList}</ul><p>${esc(explanation)} Study only; no medical advice or clinical use.</p></details>` : ''}`;
 }
 
 function renderAccountLogin() {
@@ -812,6 +964,20 @@ async function handleAction(button) {
   if (chatBusy && ['new-chat','history','select-conversation','start-case','practice-prompt','starter','topic-coach','curriculum-coach'].includes(action)) return notify('Wait for your coach’s reply before starting another conversation.');
   switch(action) {
     case 'navigate': return navigate(button.dataset.screen);
+    case 'chat-study-answer': { const message=conversation()?.messages?.find(item=>item.id===id); if(!message?.studyQuestion || message.studyQuestion.imported || message.importedEvidence) return; return sendMessage(button.dataset.choice); }
+    case 'chat-study-card': return saveChatStudyCard(id);
+    case 'board-retry': return loadBoard();
+    case 'board-dismiss-error': boardError='';return render();
+    case 'board-resume': return openBoardSession(id);
+    case 'board-choice': if(!boardBusy && !boardSession?.selectedChoiceId){boardChoiceId=id;boardError='';render();}return;
+    case 'board-answer': return answerBoardSession();
+    case 'board-position': return openBoardSession(boardSessionId(),Number(button.dataset.index));
+    case 'board-finish': return finishBoardPrompt();
+    case 'board-confirm-finish': return finishBoardSession();
+    case 'board-save-card': return saveBoardCard(button.dataset.key);
+    case 'board-home': boardSession=null;boardResults=null;boardChoiceId=null;boardError='';await loadBoard();return render();
+    case 'board-focus': boardMode='domain';boardDomain=button.dataset.domain;boardSession=null;boardResults=null;boardChoiceId=null;return render();
+    case 'board-missed': boardMode='missed';boardSession=null;boardResults=null;boardChoiceId=null;return render();
     case 'settings': if (isLoaded) settingsDialog(); return;
     case 'models': return modelDialog();
     case 'model-test': return testSelectedModel(button);
@@ -865,7 +1031,7 @@ async function handleAction(button) {
     case 'import-cards': return importCardsDialog();
     case 'export': return exportBackup();
     case 'import-backup': return importBackupDialog();
-    case 'logout': await mutate('/api/logout','POST'); closeDialog(); status.authenticated=false; isLoaded=false; state.cards=[];state.conversations=[];state.reviews=[];resetCurriculumState(); return renderLogin();
+    case 'logout': await mutate('/api/logout','POST'); closeDialog(); status.authenticated=false; isLoaded=false; state.cards=[];state.conversations=[];state.reviews=[];resetCurriculumState(); resetBoardState(); return renderLogin();
   }
 }
 
@@ -880,6 +1046,7 @@ document.addEventListener('submit', async event => {
   event.preventDefault();
   const form=event.target;
   if(form.id==='chat-form') return sendMessage($('#chat-input').value);
+  if(form.id==='board-start-form') return startBoardSession(form);
   if(formBusy) return;
   const data=new FormData(form);
   const submit=event.submitter;
@@ -905,7 +1072,7 @@ document.addEventListener('submit', async event => {
       errorId = 'delete-account-error';
       if (data.get('confirmation') !== 'DELETE') throw new Error('Type DELETE exactly to confirm account deletion.');
       await mutate('/api/account/delete', 'POST', { confirmation: 'DELETE' });
-      $('#app-dialog').close(); state.cards=[];state.reviews=[];state.conversations=[];state.settings={};isLoaded=false;currentConversationId=null;resetCurriculumState();
+      $('#app-dialog').close(); state.cards=[];state.reviews=[];state.conversations=[];state.settings={};isLoaded=false;currentConversationId=null;resetCurriculumState();resetBoardState();
       status=await api('/api/status'); accountFormMode='login';renderLogin();notify('Your account and saved study content were deleted.');
     } else if(form.id==='login-form') {
       errorId='login-error';
@@ -950,7 +1117,7 @@ document.addEventListener('submit', async event => {
       if(file.size>16*1024*1024) throw new Error('The backup is too large. The maximum is 16 MB.');
       const backup=JSON.parse(await file.text());
       await mutate('/api/import','POST',backup);
-      currentConversationId=null;reviewSession=null;await refreshState();$('#app-dialog').close();render();notify('Your study backup is restored.');
+      currentConversationId=null;reviewSession=null;resetBoardState();resetCurriculumState();await refreshState();$('#app-dialog').close();render();notify('Your study backup is restored.');
     }
   } catch(error) {
     const target=errorId && document.getElementById(errorId);
@@ -966,6 +1133,7 @@ document.addEventListener('input', event=>{
 });
 document.addEventListener('change',async event=>{
   try {
+    if(['board-mode','board-count','board-domain','board-feedback','board-timed'].includes(event.target.id)){const form=$('#board-start-form');const data=new FormData(form);boardMode=data.get('mode');boardCount=Number(data.get('count'));boardDomain=data.get('domain') || boardDomain;boardFeedback=data.get('feedback');boardTimed=data.get('timed')==='on';boardMinutes=Number(data.get('minutes') || boardMinutes);render();}
     if(event.target.id==='condition-domain') {curriculumDomain=event.target.value;await loadCurriculum();}
     if(event.target.id==='topic-filter') {topicFilter=event.target.value;render();}
     if(event.target.id==='openai-model') { $('#model-profile').innerHTML=modelProfileHtml(event.target.value); $('#test-model-button').disabled=!status.aiConfigured || event.target.value!==status.model; }

@@ -18,6 +18,11 @@ try {
         const result = await runIngeniumConnectionCheck({ baseUrl: `http://127.0.0.1:${port}/`, flushTelemetry: () => server.flushIngeniumTelemetry() });
         console.log('Ingenium registration check:', JSON.stringify(result));
       }
+      if (process.env.STUDY_INITIAL_SOURCE_CHECK === 'source-v1') {
+        const { runStudySourceCheck } = await import('./study-check.js');
+        const result = await runStudySourceCheck({ baseUrl: `http://127.0.0.1:${port}/`, flushTelemetry: () => server.flushIngeniumTelemetry() });
+        console.log('Study source selector check:', JSON.stringify(result));
+      }
     });
     const shutdown = async () => { await server.closeVoiceSessions(); server.close(() => process.exit(0)); };
     process.on('SIGTERM', shutdown);

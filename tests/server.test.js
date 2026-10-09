@@ -6,13 +6,17 @@ import { join } from 'node:path';
 import { once } from 'node:events';
 import { request as httpRequest } from 'node:http';
 import { createApp } from '../server/index.js';
+import { createStudyCurriculum } from '../server/study-curriculum.js';
+import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
 
 const ACCESS_TOKEN = 'test-access-token-at-least-24-characters';
 const cardInput = { front: 'What should I recall?', back: 'One clear idea.', topic: 'Recall', sourceTitle: '', sourceUrl: '', verified: false };
 
 async function fixture(t, options = {}) {
   const dataDir = options.dataDir || mkdtempSync(join(tmpdir(), 'studychat-test-'));
-  const server = createApp({ dataDir, env: options.env || {}, ...(options.fetchImpl ? { fetchImpl: options.fetchImpl } : {}) });
+  const curriculum = createStudyCurriculum({ records: [studyCondition()], now: () => STUDY_NOW });
+  const foundations = createStudyCurriculum({ records: [], now: () => STUDY_NOW });
+  const server = createApp({ dataDir, curriculum, foundations, env: options.env || {}, ...(options.fetchImpl ? { fetchImpl: options.fetchImpl } : {}) });
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
   const url = `http://127.0.0.1:${server.address().port}`;
@@ -119,13 +123,15 @@ test('card import and full restore validate atomically; backups keep review hist
   assert.deepEqual(restored.settings, backup.settings);
 });
 
-test('offline coaching is explicitly labeled, durable, and creates only unsaved drafts', async t => {
+test('offline study navigation is scripted, durable, and cannot create uncited conversation drafts', async t => {
   const app = await fixture(t);
   const conversation = (await app.request('/api/conversations', 'POST', { title: 'Reasoning practice', mode: 'coach' })).result;
   const chat = await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'I want to practice synthesis.', requestId: 'offline-request-1' });
   assert.equal(chat.response.status, 200);
-  assert.equal(chat.result.offline, true);
-  assert.match(chat.result.message.content, /fixed reasoning prompts/);
+  assert.equal(chat.result.message.scripted, true);
+  assert.equal(chat.result.message.canonicalStudyProcess, true);
+  assert.equal(chat.result.message.sourceVerified, true);
+  assert.match(chat.result.message.content, /Scripted prompt; no factual or clinical answer/);
   assert.equal(chat.result.conversation.messages.length, 2);
   const replay = await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'I want to practice synthesis.', requestId: 'offline-request-1' });
   assert.equal(replay.result.message.id, chat.result.message.id);
@@ -143,7 +149,7 @@ test('offline coaching is explicitly labeled, durable, and creates only unsaved 
   assert.equal((await app.request('/api/import', 'POST', invalidDate)).response.status, 400);
   const countBefore = (await app.request('/api/state')).result.cards.length;
   const drafts = await app.request('/api/chat/cards', 'POST', { conversationId: conversation.id });
-  assert.equal(drafts.result.cards.length, 3);
+  assert.equal(drafts.result.cards.length, 0);
   assert.ok(drafts.result.cards.every(card => card.verified === false));
   assert.equal((await app.request('/api/state')).result.cards.length, countBefore);
   assert.equal((await app.request(`/api/conversations/${conversation.id}`, 'DELETE')).response.status, 200);
@@ -167,26 +173,31 @@ test('conversation limits reserve room for a reply and permit an unresolved-mess
 
 test('provider failures preserve the user message, hide provider details, and retry without duplication', async t => {
   let calls = 0;
+  const requests = [];
   const app = await fixture(t, { env: { OPENAI_API_KEY: 'secret-test-key' }, fetchImpl: async (url, request) => {
-    assert.equal(url, 'https://api.openai.com/v1/chat/completions');
-    assert.equal(request.headers.Authorization, 'Bearer secret-test-key');
     const body = JSON.parse(request.body);
-    assert.equal(body.model, 'gpt-4.1-mini');
-    assert.match(body.messages[0].content, /one question at a time/);
+    requests.push({ url, authorizationMatches: request.headers.Authorization === 'Bearer secret-test-key', body });
     if (++calls === 1) return new Response('secret-test-key provider internals', { status: 500 });
-    return Response.json({ choices: [{ message: { content: 'Which detail changes your differential most?' } }] });
+    return Response.json({ choices: [{ message: { content: JSON.stringify({ chunkIds: ['asthma:management'], questionId: null, unsupported: false }) } }] });
   } });
   const conversation = (await app.request('/api/conversations', 'POST', { mode: 'coach' })).result;
-  const request = { conversationId: conversation.id, content: 'Help me reason.', requestId: 'provider-retry' };
+  const request = { conversationId: conversation.id, content: 'Study asthma.', requestId: 'provider-retry' };
   const failed = await app.request('/api/chat', 'POST', request);
   assert.equal(failed.response.status, 502);
   assert.equal(JSON.stringify(failed.result).includes('secret-test-key'), false);
   assert.equal((await app.request('/api/state')).result.conversations[0].messages.length, 1);
   const success = await app.request('/api/chat', 'POST', request);
+  assert.equal(success.response.status, 200, JSON.stringify(success.result));
   assert.equal(success.result.offline, false);
   assert.equal(success.result.conversation.messages.length, 2);
   assert.equal((await app.request('/api/chat', 'POST', request)).result.conversation.messages.length, 2);
   assert.equal(calls, 2);
+  for (const request of requests) {
+    assert.equal(request.url, 'https://api.openai.com/v1/chat/completions');
+    assert.equal(request.authorizationMatches, true);
+    assert.equal(request.body.model, 'gpt-4.1-mini');
+    assert.ok(request.body.messages.some(message => /server renders only the canonical selected text/.test(message.content)));
+  }
 });
 
 test('same-conversation lock prevents concurrent replies, deletes, and backup restores', async t => {
@@ -197,11 +208,11 @@ test('same-conversation lock prevents concurrent replies, deletes, and backup re
   const app = await fixture(t, { env: { OPENAI_API_KEY: 'test' }, fetchImpl: async () => {
     markStarted();
     await pending;
-    return Response.json({ choices: [{ message: { content: 'What is the central uncertainty?' } }] });
+    return Response.json({ choices: [{ message: { content: JSON.stringify({ chunkIds: ['asthma:management'], questionId: null, unsupported: false }) } }] });
   } });
   const conversation = (await app.request('/api/conversations', 'POST', { mode: 'practice' })).result;
   const backup = (await app.request('/api/export')).result;
-  const active = app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Start.' });
+  const active = app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Study asthma.' });
   await started;
   assert.equal((await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Another message.' })).response.status, 409);
   assert.equal((await app.request(`/api/conversations/${conversation.id}`, 'DELETE')).response.status, 409);
@@ -217,7 +228,7 @@ test('slow uploads cannot overwrite a deleted card or restore over an active coa
   const pending = new Promise(resolve => { release = resolve; });
   const app = await fixture(t, { env: { OPENAI_API_KEY: 'test' }, fetchImpl: async () => {
     markStarted(); await pending;
-    return Response.json({ choices: [{ message: { content: 'Describe your reasoning.' } }] });
+    return Response.json({ choices: [{ message: { content: JSON.stringify({ chunkIds: ['asthma:management'], questionId: null, unsupported: false }) } }] });
   } });
   async function beginUpload(path, method, value) {
     const body = Buffer.from(JSON.stringify(value));
@@ -245,7 +256,7 @@ test('slow uploads cannot overwrite a deleted card or restore over an active coa
   const conversation = (await app.request('/api/conversations', 'POST', { mode: 'coach' })).result;
   const backup = (await app.request('/api/export')).result;
   const restore = await beginUpload('/api/import', 'POST', backup);
-  const active = app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Start practice.' });
+  const active = app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Study asthma.' });
   await started;
   assert.equal((await restore.finish()).status, 409);
   release();
@@ -253,17 +264,18 @@ test('slow uploads cannot overwrite a deleted card or restore over an active coa
   assert.equal((await app.request('/api/state')).result.conversations.find(item => item.id === conversation.id).messages.length, 2);
 });
 
-test('AI flashcards strip provider claims of verification and fabricated URLs', async t => {
+test('uncited AI flashcard generation cannot dispatch a provider or fabricate source provenance', async t => {
+  let calls = 0;
   const app = await fixture(t, { env: { OPENAI_API_KEY: 'test' }, fetchImpl: async (url, request) => {
+    calls++;
     const input = JSON.parse(request.body);
     return Response.json({ choices: [{ message: { content: input.response_format ? JSON.stringify({ cards: [{ ...cardInput, verified: true, sourceUrl: 'https://invented.example/guideline', sourceTitle: 'Invented authority' }] }) : 'Try recalling the concept first.' } }] });
   } });
   const conversation = (await app.request('/api/conversations', 'POST', { mode: 'coach' })).result;
   await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Teach recall.' });
   const drafts = (await app.request('/api/chat/cards', 'POST', { conversationId: conversation.id })).result.cards;
-  assert.equal(drafts[0].verified, false);
-  assert.equal(drafts[0].sourceUrl, '');
-  assert.equal(drafts[0].sourceTitle, 'Coach conversation — unverified');
+  assert.deepEqual(drafts, []);
+  assert.equal(calls, 0);
 });
 
 test('oversized growth rolls back without detaching other active chats, and every export can restore', async t => {
@@ -273,11 +285,11 @@ test('oversized growth rolls back without detaching other active chats, and ever
   const pending = new Promise(resolve => { release = resolve; });
   const app = await fixture(t, { env: { OPENAI_API_KEY: 'test' }, fetchImpl: async () => {
     markStarted(); await pending;
-    return Response.json({ choices: [{ message: { content: 'Keep reasoning one step at a time.' } }] });
+    return Response.json({ choices: [{ message: { content: JSON.stringify({ chunkIds: ['asthma:management'], questionId: null, unsupported: false }) } }] });
   } });
   const conversation = (await app.request('/api/conversations', 'POST', { mode: 'coach' })).result;
   const backup = (await app.request('/api/export')).result;
-  backup.conversations[0].messages = Array.from({ length: 900 }, (_, index) => ({ id: `large-${index}`, role: 'assistant', content: 'x'.repeat(18000), createdAt: 1000 }));
+  backup.conversations[0].messages = Array.from({ length: 900 }, (_, index) => ({ id: `large-${index}`, role: 'assistant', content: 'x'.repeat(18000), createdAt: 1000, sourceVerified: false }));
   const targetBytes = 16 * 1024 * 1024 - 8192;
   let extra = targetBytes - Buffer.byteLength(JSON.stringify(backup));
   for (const message of backup.conversations[0].messages) {
@@ -286,7 +298,7 @@ test('oversized growth rolls back without detaching other active chats, and ever
   }
   assert.equal(extra, 0);
   assert.equal((await app.request('/api/import', 'POST', backup)).response.status, 200);
-  const active = app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Continue.', requestId: 'large-test-request' });
+  const active = app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Study asthma.', requestId: 'large-test-request' });
   await started;
   assert.equal((await app.request('/api/cards', 'POST', { ...cardInput, front: 'f'.repeat(2000), back: 'b'.repeat(8000) })).response.status, 413);
   release();

@@ -1,4 +1,4 @@
-# Android release preparation — Family Medicine Study Coach
+# Android release preparation — Family Medicine Board Study
 
 Prepared October 9, 2026. Publication is **on hold until the owner explicitly
 approves deployment and store submission**. Source changes and GitHub preparation
@@ -71,7 +71,7 @@ Suggested Console configuration:
 | Console object | Value |
 |---|---|
 | Subscription product | `family_medicine_monthly` |
-| Subscription name | Family Medicine Study Coach |
+| Subscription name | Family Medicine Board Study |
 | Base plan | `monthly`, auto-renewing, one-month period |
 | US base price | USD 4.99 |
 | Acquisition offer | `trial-3-days`, 3-day free trial, then the base plan |

@@ -8,6 +8,8 @@ import { randomUUID } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
 import { createAiProvider, AiProviderError } from '../server/ai-provider.js';
 import { createApp } from '../server/index.js';
+import { createStudyCurriculum } from '../server/study-curriculum.js';
+import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
 import { INGENIUM_TELEMETRY_ENDPOINT } from '../server/ingenium-telemetry.js';
 
 // Tests use only synthetic local fetch replacements. Never send study content
@@ -20,6 +22,8 @@ const INGEST_KEY = `ia_${'x'.repeat(43)}`;
 const ORGANIZATION = '11111111-2222-4333-8444-555555555555';
 const PROMPT = 'Private prompt marker: synthetic recall study question.';
 const ANSWER = 'Private answer marker: choose a recall concept.';
+const STUDY_QUERY = 'Private prompt marker: explain asthma management for board study.';
+const STUDY_SELECTOR = JSON.stringify({ chunkIds: ['asthma:management'], questionId: null, unsupported: false });
 const messages = [{ role: 'system', content: 'Private system instructions marker.' }, { role: 'user', content: PROMPT }];
 const reply = (model = MODEL, content = ANSWER, overrides = {}) => ({ model, choices: [{ message: { content }, finish_reason: 'stop' }], usage: { prompt_tokens: 100, completion_tokens: 20 }, ...overrides });
 const metadataKeys = ['provider', 'requestedModel', 'returnedModel', 'endpoint', 'usage', 'estimatedCostUsd', 'latencyMs', 'pricingBasis', 'recordedAt'].sort();
@@ -84,7 +88,9 @@ test('inactive optional Claude adapter also projects metadata without prompt, an
 async function fixture(t, { telemetryFails = false } = {}) {
   const dataDir = mkdtempSync(join(tmpdir(), 'studychat-ingenium-hook-'));
   const providerCalls = [], events = [], catalogCalls = [];
-  const server = createApp({ dataDir, env: { STUDY_ACCESS_TOKEN: ACCESS_TOKEN, AI_PROVIDER: 'openai', OPENAI_API_KEY: PROVIDER_KEY, INGENIUM_TELEMETRY_KEY: INGEST_KEY, INGENIUM_TELEMETRY_ORGANIZATION_ID: ORGANIZATION }, fetchImpl: async (url, options) => {
+  const curriculum = createStudyCurriculum({ records: [studyCondition()], now: () => STUDY_NOW });
+  const foundations = createStudyCurriculum({ records: [], now: () => STUDY_NOW });
+  const server = createApp({ dataDir, curriculum, foundations, env: { STUDY_ACCESS_TOKEN: ACCESS_TOKEN, AI_PROVIDER: 'openai', OPENAI_API_KEY: PROVIDER_KEY, INGENIUM_TELEMETRY_KEY: INGEST_KEY, INGENIUM_TELEMETRY_ORGANIZATION_ID: ORGANIZATION }, fetchImpl: async (url, options) => {
     if (url === INGENIUM_TELEMETRY_ENDPOINT) {
       assert.equal(options.method, 'POST');
       assert.equal(options.redirect, 'error');
@@ -103,7 +109,8 @@ async function fixture(t, { telemetryFails = false } = {}) {
     const body = JSON.parse(options.body);
     providerCalls.push(body);
     const isCheck = body.messages.some(message => message.content.includes('exactly READY'));
-    return Response.json(reply(body.model, isCheck ? 'READY' : ANSWER));
+    if (!isCheck) assert.ok(body.messages.some(message => message.content.includes('STUDY_REFERENCE_DATA')));
+    return Response.json(reply(body.model, isCheck ? 'READY' : STUDY_SELECTOR));
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   const baseUrl = `http://127.0.0.1:${server.address().port}`;
@@ -125,15 +132,22 @@ function assertEventHasNoStudyContent(event) {
   assert.equal(event.source, 'app_observed');
   assert.equal(event.inputTokens, 100);
   assert.equal(event.outputTokens, 20);
-  assert.doesNotMatch(JSON.stringify(event), /Private|mock-provider-key|mock-owner-access|ia_x+/);
+  assert.doesNotMatch(JSON.stringify(event), /Private|mock-provider-key|mock-owner-access|ia_x+|Mock management fact|asthma|inhaler/);
+}
+
+function assertCanonicalReply(result) {
+  assert.match(result.body.message.content, /Mock management fact: review inhaler technique/);
+  assert.equal(result.body.message.sourceVerified, true);
+  assert.equal(result.body.message.curriculum, true);
+  assert.equal(result.body.message.humanReview, false);
 }
 
 test('real app provider wiring emits one bounded metadata event per completed request and replays produce none', async t => {
   const app = await fixture(t);
-  const chatRequest = { conversationId: app.conversation.id, content: PROMPT, requestId: 'wiring-chat-once' };
+  const chatRequest = { conversationId: app.conversation.id, content: STUDY_QUERY, requestId: 'wiring-chat-once' };
   const first = await app.request('/api/chat', 'POST', chatRequest);
   assert.equal(first.status, 200);
-  assert.equal(first.body.message.content, ANSWER);
+  assertCanonicalReply(first);
   assert.equal(app.providerCalls.length, 1);
   assert.equal(app.events.length, 1);
   assertEventHasNoStudyContent(app.events[0]);
@@ -156,9 +170,9 @@ test('real app provider wiring emits one bounded metadata event per completed re
 
 test('metadata receiver failure preserves the app answer and all exposed status excludes private credentials', async t => {
   const app = await fixture(t, { telemetryFails: true });
-  const completed = await app.request('/api/chat', 'POST', { conversationId: app.conversation.id, content: PROMPT, requestId: 'receiver-failure-once' });
+  const completed = await app.request('/api/chat', 'POST', { conversationId: app.conversation.id, content: STUDY_QUERY, requestId: 'receiver-failure-once' });
   assert.equal(completed.status, 200);
-  assert.equal(completed.body.message.content, ANSWER);
+  assertCanonicalReply(completed);
   assert.equal(app.providerCalls.length, 1);
   assert.equal(app.events.length, 1);
   assertEventHasNoStudyContent(app.events[0]);
@@ -171,8 +185,9 @@ test('metadata receiver failure preserves the app answer and all exposed status 
 test('selecting an owner model retains the metadata observer and reports the selected identity', async t => {
   const app = await fixture(t);
   assert.equal((await app.request('/api/model', 'PUT', { model: MODEL_TWO })).status, 200);
-  const completed = await app.request('/api/chat', 'POST', { conversationId: app.conversation.id, content: PROMPT, requestId: 'selected-model-observer' });
+  const completed = await app.request('/api/chat', 'POST', { conversationId: app.conversation.id, content: STUDY_QUERY, requestId: 'selected-model-observer' });
   assert.equal(completed.status, 200);
+  assertCanonicalReply(completed);
   assert.equal(completed.body.message.ai.requestedModel, MODEL_TWO);
   assert.equal(app.providerCalls.length, 1);
   assert.equal(app.events.length, 1);
@@ -193,14 +208,18 @@ test('durable metadata outbox survives restart and retries the same event UUID w
     }
     assert.equal(url, 'https://api.openai.com/v1/chat/completions');
     providerCalls++;
-    return Response.json(reply());
+    const body = JSON.parse(options.body);
+    assert.ok(body.messages.some(message => message.content.includes('STUDY_REFERENCE_DATA')));
+    return Response.json(reply(body.model, STUDY_SELECTOR));
   };
   t.after(async () => {
     for (const server of servers) if (server.listening) await new Promise(resolve => server.close(resolve));
     rmSync(dataDir, { recursive: true, force: true });
   });
   async function start() {
-    const server = createApp({ dataDir, env, fetchImpl });
+    const curriculum = createStudyCurriculum({ records: [studyCondition()], now: () => STUDY_NOW });
+    const foundations = createStudyCurriculum({ records: [], now: () => STUDY_NOW });
+    const server = createApp({ dataDir, env, curriculum, foundations, fetchImpl });
     servers.push(server);
     server.listen(0, '127.0.0.1'); await once(server, 'listening');
     const baseUrl = `http://127.0.0.1:${server.address().port}`;
@@ -216,10 +235,10 @@ test('durable metadata outbox survives restart and retries the same event UUID w
   assert.equal((await first.request('/api/ingenium-status')).status, 401);
   assert.equal((await first.request('/api/login', 'POST', { token: ACCESS_TOKEN })).status, 200);
   const conversation = (await first.request('/api/conversations', 'POST', { mode: 'coach' })).body;
-  const chatRequest = { conversationId: conversation.id, content: PROMPT, requestId: 'durable-single-inference' };
+  const chatRequest = { conversationId: conversation.id, content: STUDY_QUERY, requestId: 'durable-single-inference' };
   const completed = await first.request('/api/chat', 'POST', chatRequest);
   assert.equal(completed.status, 200);
-  assert.equal(completed.body.message.content, ANSWER);
+  assertCanonicalReply(completed);
   await first.server.flushIngeniumTelemetry();
   assert.equal(providerCalls, 1);
   assert.ok(events.length >= 1);
@@ -236,7 +255,7 @@ test('durable metadata outbox survives restart and retries the same event UUID w
   assert.equal(stored.length, 1);
   assert.equal(stored[0].request_id, eventId);
   assert.equal(stored[0].status, 'pending');
-  assert.doesNotMatch(stored[0].metadata, /Private|mock-provider-key|mock-owner-access|ia_x+/);
+  assert.doesNotMatch(stored[0].metadata, /Private|mock-provider-key|mock-owner-access|ia_x+|Mock management fact|asthma|inhaler/);
   await new Promise(resolve => first.server.close(resolve));
   const attemptsBeforeRestart = events.length;
   receiverAvailable = true;
@@ -268,9 +287,9 @@ test('a full metadata outbox stays capped at 500 pending events while the app pr
   for (let index = 0; index < 500; index++) insert.run(randomUUID(), metadata, Date.now() + index);
   database.exec('COMMIT');
   database.close();
-  const completed = await app.request('/api/chat', 'POST', { conversationId: app.conversation.id, content: PROMPT, requestId: 'full-outbox-single-inference' });
+  const completed = await app.request('/api/chat', 'POST', { conversationId: app.conversation.id, content: STUDY_QUERY, requestId: 'full-outbox-single-inference' });
   assert.equal(completed.status, 200);
-  assert.equal(completed.body.message.content, ANSWER);
+  assertCanonicalReply(completed);
   assert.equal(app.providerCalls.length, 1);
   const status = await app.request('/api/ingenium-status');
   assert.equal(status.status, 200);

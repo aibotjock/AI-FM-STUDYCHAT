@@ -1,0 +1,1031 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-09",
+  "topicType": "foundations",
+  "conditions": [
+    {
+      "id": "foundations-evidence-appraisal",
+      "name": "Evidence appraisal and measures of association",
+      "aliases": [
+        "evidence appraisal",
+        "relative risk",
+        "confounding"
+      ],
+      "specialty": "Foundations of care",
+      "domain": "foundations",
+      "recordType": "foundation",
+      "keywords": [
+        "risk ratio",
+        "observational study",
+        "causal inference",
+        "bias"
+      ],
+      "overview": "Exam study of risk comparisons and threats to interpretation. Worked numbers and study scenarios are fictional, not treatment-effect estimates.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-risk-ratio",
+          "title": "Principles of Epidemiology: Lesson 3, Section 5 — Measures of Association",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://archive.cdc.gov/www_cdc_gov/csels/dsepd/ss1978/lesson3/section5.html",
+          "kind": "official-clinical-reference",
+          "edition": "Third edition; archived page last reviewed May 18, 2012",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Risk ratio: definition and method for calculating risk ratio",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Archived official educational reference for stable statistical definitions; not a current clinical guideline. All example numbers here are original."
+        },
+        {
+          "id": "cdc-observational-bias",
+          "title": "Biases to Consider in Vaccine Effectiveness Studies",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/flu-vaccines-work/php/effectivenessqa/biases-to-consider.html",
+          "kind": "official-clinical-reference",
+          "edition": "Web page dated August 14, 2024",
+          "publishedDate": "2024-08-14",
+          "checkedAt": "2026-10-09",
+          "locator": "Confounding; selection bias; information bias",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Definitions are applied to an original hypothetical study, not a claim about any vaccine or treatment."
+        }
+      ],
+      "sections": [
+        {
+          "id": "risk-ratio",
+          "title": "Relative risk",
+          "text": "A risk ratio divides event risk in the group of interest by event risk in the comparison group. One indicates equal observed risks; values below one indicate lower observed risk.",
+          "sourceIds": [
+            "cdc-risk-ratio"
+          ]
+        },
+        {
+          "id": "worked-comparison",
+          "title": "Original worked comparison",
+          "text": "In a fictional study, 10 events among 200 participants versus 20 among 200 gives risks of 5% and 10%, and a risk ratio of 0.50. These invented counts describe association.",
+          "sourceIds": [
+            "cdc-risk-ratio"
+          ]
+        },
+        {
+          "id": "bias",
+          "title": "Interpret association cautiously",
+          "text": "Observational comparisons may be distorted by confounding, selection bias or differences in information collection. A factor associated with both exposure and outcome can confound their measured relationship.",
+          "sourceIds": [
+            "cdc-observational-bias"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "foundations-evidence-appraisal-q1",
+          "stem": "An invented cohort study records an event in 10 of 200 people with exposure X and 20 of 200 without X. Which risk ratio compares the exposed group with the unexposed group?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "0.05"
+            },
+            {
+              "id": "B",
+              "text": "0.50"
+            },
+            {
+              "id": "C",
+              "text": "1.00"
+            },
+            {
+              "id": "D",
+              "text": "2.00"
+            },
+            {
+              "id": "E",
+              "text": "10.00"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "The risks are 10/200 and 20/200. Dividing 0.05 by 0.10 gives 0.50.",
+          "distractorExplanations": {
+            "A": "0.05 is the exposed risk alone.",
+            "C": "One would indicate equal observed risks.",
+            "D": "Two reverses the requested comparison.",
+            "E": "Ten is an event count, not this ratio."
+          },
+          "sectionIds": [
+            "risk-ratio",
+            "worked-comparison"
+          ],
+          "sourceIds": [
+            "cdc-risk-ratio"
+          ],
+          "domain": "foundations",
+          "learningObjective": "Calculate risk ratio from two fictional event risks.",
+          "difficulty": "application"
+        },
+        {
+          "id": "foundations-evidence-appraisal-q2",
+          "stem": "In a fictional observational study, exposure X is associated with hospital admission. Older age is more common among people with X and independently increases admission risk. Which issue most directly threatens the unadjusted association?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "A perfectly randomized exposure"
+            },
+            {
+              "id": "B",
+              "text": "A guaranteed causal effect of X"
+            },
+            {
+              "id": "C",
+              "text": "Specificity of an unrelated test"
+            },
+            {
+              "id": "D",
+              "text": "Confounding by age"
+            },
+            {
+              "id": "E",
+              "text": "Absence of any possible bias"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Age is associated with both exposure and outcome; it can distort the observed exposure-outcome relationship.",
+          "distractorExplanations": {
+            "A": "The study is observational, not randomized.",
+            "B": "Association alone does not establish that claim.",
+            "C": "Test specificity does not address this imbalance.",
+            "E": "The described imbalance supplies a potential bias."
+          },
+          "sectionIds": [
+            "bias"
+          ],
+          "sourceIds": [
+            "cdc-observational-bias"
+          ],
+          "domain": "foundations",
+          "learningObjective": "Recognize a potential confounder in an observational comparison.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "foundations-diagnostic-testing",
+      "name": "Diagnostic test interpretation",
+      "aliases": [
+        "diagnostic testing",
+        "positive predictive value",
+        "sensitivity",
+        "specificity"
+      ],
+      "specialty": "Foundations of care",
+      "domain": "foundations",
+      "recordType": "foundation",
+      "keywords": [
+        "test accuracy",
+        "false positive",
+        "prevalence",
+        "denominator"
+      ],
+      "overview": "Exam study of test-result denominators and population context using fictional counts; no patient-specific diagnostic interpretation.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-epidemiology-glossary",
+          "title": "Epidemiology Glossary",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/reproductive-health/glossary/index.html",
+          "kind": "official-clinical-reference",
+          "edition": "Web page dated May 14, 2024",
+          "publishedDate": "2024-05-14",
+          "checkedAt": "2026-10-09",
+          "locator": "Predictive value positive; sensitivity; specificity",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "cdc-laboratory-context",
+          "title": "Optimizing Epidemiology–Laboratory Collaborations",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/field-epi-manual/php/chapters/epi-lab-collaboration.html",
+          "kind": "official-clinical-reference",
+          "edition": "CDC Field Epidemiology Manual web chapter; displayed edition not specified",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Interpreting Laboratory Results: sensitivity, specificity, prevalence and source population",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Official epidemiology teaching reference; no condition-specific testing recommendation is asserted."
+        }
+      ],
+      "sections": [
+        {
+          "id": "denominators",
+          "title": "Choose the correct denominator",
+          "text": "Sensitivity concerns people with disease; specificity concerns people without disease. Positive predictive value concerns people with a positive result: what fraction truly have the condition?",
+          "sourceIds": [
+            "cdc-epidemiology-glossary"
+          ]
+        },
+        {
+          "id": "worked-ppv",
+          "title": "Original predictive-value example",
+          "text": "If a fictional dataset has 90 true-positive and 90 false-positive results, its positive predictive value is 90/(90+90), or 50%. The denominator includes all positive results.",
+          "sourceIds": [
+            "cdc-epidemiology-glossary"
+          ]
+        },
+        {
+          "id": "population-context",
+          "title": "Apply population context",
+          "text": "Interpretation considers sensitivity, specificity and disease prevalence. Check whether the population used to estimate test characteristics differs from the population being tested.",
+          "sourceIds": [
+            "cdc-laboratory-context"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "foundations-diagnostic-testing-q1",
+          "stem": "A fictional test dataset contains 90 true-positive, 90 false-positive, 10 false-negative and 810 true-negative results. What is the positive predictive value?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "50%"
+            },
+            {
+              "id": "B",
+              "text": "90%"
+            },
+            {
+              "id": "C",
+              "text": "10%"
+            },
+            {
+              "id": "D",
+              "text": "81%"
+            },
+            {
+              "id": "E",
+              "text": "100%"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "There are 180 positive results, of which 90 are true positives: 90/180 equals 50%.",
+          "distractorExplanations": {
+            "B": "90% uses the sensitivity denominator.",
+            "C": "10% is the disease prevalence here.",
+            "D": "81% is not the requested fraction.",
+            "E": "False positives make 100% incorrect."
+          },
+          "sectionIds": [
+            "denominators",
+            "worked-ppv"
+          ],
+          "sourceIds": [
+            "cdc-epidemiology-glossary"
+          ],
+          "domain": "foundations",
+          "learningObjective": "Distinguish positive predictive value from sensitivity using original counts.",
+          "difficulty": "application"
+        },
+        {
+          "id": "foundations-diagnostic-testing-q2",
+          "stem": "A fictional test was evaluated in one population and is now discussed for a population with different disease prevalence. What is the most appropriate interpretive consideration?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Ignore the populations once a result is positive"
+            },
+            {
+              "id": "B",
+              "text": "Assume every positive result establishes disease"
+            },
+            {
+              "id": "C",
+              "text": "Use specificity alone to infer predictive value"
+            },
+            {
+              "id": "D",
+              "text": "Assume the original predictive value transfers unchanged"
+            },
+            {
+              "id": "E",
+              "text": "Consider prevalence and differences between the two populations"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "CDC identifies prevalence and the population used to estimate test characteristics as important interpretive considerations.",
+          "distractorExplanations": {
+            "A": "Population context remains relevant.",
+            "B": "A positive result can be false positive.",
+            "C": "One characteristic alone omits relevant context.",
+            "D": "Different populations require reassessment of context."
+          },
+          "sectionIds": [
+            "population-context"
+          ],
+          "sourceIds": [
+            "cdc-laboratory-context"
+          ],
+          "domain": "foundations",
+          "learningObjective": "Identify population context when interpreting diagnostic-test performance.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "foundations-shared-decisions",
+      "name": "Shared decision making",
+      "aliases": [
+        "shared decision making",
+        "SHARE approach"
+      ],
+      "specialty": "Foundations of care",
+      "domain": "foundations",
+      "recordType": "foundation",
+      "keywords": [
+        "patient values",
+        "tradeoffs",
+        "preferences",
+        "decision aid"
+      ],
+      "overview": "Study collaborative decision making in fictional exam encounters; this module supplies communication concepts, not a treatment recommendation.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "ahrq-sdm-definition",
+          "title": "About Shared Decision Making",
+          "organization": "Agency for Healthcare Research and Quality",
+          "url": "https://www.ahrq.gov/sdm/about/index.html",
+          "kind": "official-recommendation",
+          "edition": "Page last reviewed May 2023",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "What is SDM?; Why SDM?",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "ahrq-share-steps",
+          "title": "The SHARE Approach Essential Steps of Shared Decision Making",
+          "organization": "Agency for Healthcare Research and Quality",
+          "url": "https://www.ahrq.gov/health-literacy/professional-training/shared-decision/tools/share-poster.html",
+          "kind": "official-recommendation",
+          "edition": "Page last reviewed September 2020",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Steps 1–5",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "values",
+          "title": "Evidence and values",
+          "text": "Shared decision making combines evidence with the person’s goals, values, preferences and circumstances. Understanding trade-offs and what matters to the person is central.",
+          "sourceIds": [
+            "ahrq-sdm-definition"
+          ]
+        },
+        {
+          "id": "comparison",
+          "title": "Discuss options",
+          "text": "SHARE begins by inviting participation, then comparing benefits and harms and eliciting preferences before reaching a decision together.",
+          "sourceIds": [
+            "ahrq-share-steps"
+          ]
+        },
+        {
+          "id": "revisit",
+          "title": "Revisit the decision",
+          "text": "The SHARE process includes follow-up: revisit the decision and assess how implementation is going, rather than treating a choice as permanently settled.",
+          "sourceIds": [
+            "ahrq-share-steps"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "foundations-shared-decisions-q1",
+          "stem": "In a fictional exam encounter, two evidence-supported options offer different burdens and benefits. The person understands the options but has not explained which outcomes matter most. Which next step best supports shared decision making?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Choose the option preferred by the clinician"
+            },
+            {
+              "id": "B",
+              "text": "Ask a relative to decide without participation"
+            },
+            {
+              "id": "C",
+              "text": "Explore the person’s goals and preferences"
+            },
+            {
+              "id": "D",
+              "text": "Treat the decision aid as the final decision"
+            },
+            {
+              "id": "E",
+              "text": "Avoid discussing trade-offs"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "An informed comparison must be connected to the person’s own goals, preferences and circumstances.",
+          "distractorExplanations": {
+            "A": "Clinician preference alone omits the person’s values.",
+            "B": "This bypasses the person’s participation.",
+            "D": "A tool supports dialogue; it does not replace it.",
+            "E": "Trade-offs are part of informed collaboration."
+          },
+          "sectionIds": [
+            "values"
+          ],
+          "sourceIds": [
+            "ahrq-sdm-definition"
+          ],
+          "domain": "foundations",
+          "learningObjective": "Integrate values and evidence in a preference-sensitive exam scenario.",
+          "difficulty": "application"
+        },
+        {
+          "id": "foundations-shared-decisions-q2",
+          "stem": "A fictional exam patient and clinician select an option after reviewing its benefits, harms and personal fit. Which action completes the follow-through emphasized in AHRQ’s SHARE process?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Declare that the choice can never be reconsidered"
+            },
+            {
+              "id": "B",
+              "text": "Arrange to revisit the decision and its implementation"
+            },
+            {
+              "id": "C",
+              "text": "Stop asking about the person’s preferences"
+            },
+            {
+              "id": "D",
+              "text": "Promise that the selected option has no harms"
+            },
+            {
+              "id": "E",
+              "text": "Repeat only the clinician’s preferred option"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "SHARE includes evaluating the decision, with a plan to revisit it and monitor implementation.",
+          "distractorExplanations": {
+            "A": "A decision may need to be revisited.",
+            "C": "Preferences remain relevant during follow-through.",
+            "D": "This promise omits discussed harms.",
+            "E": "Follow-through is broader than repeating one option."
+          },
+          "sectionIds": [
+            "revisit"
+          ],
+          "sourceIds": [
+            "ahrq-share-steps"
+          ],
+          "domain": "foundations",
+          "learningObjective": "Recognize follow-up as part of shared decision making.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "foundations-health-literacy",
+      "name": "Health literacy and clear communication",
+      "aliases": [
+        "health literacy",
+        "universal precautions",
+        "plain language",
+        "teach-back"
+      ],
+      "specialty": "Foundations of care",
+      "domain": "foundations",
+      "recordType": "foundation",
+      "keywords": [
+        "understanding",
+        "communication",
+        "jargon",
+        "organizational health literacy"
+      ],
+      "overview": "Study communication and comprehension in fictional vignettes. Universal precautions apply to communication, not to a claim of clinical safety from this app.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "ahrq-literacy-introduction",
+          "title": "Health Literacy Universal Precautions Toolkit, 3rd Edition: Introduction",
+          "organization": "Agency for Healthcare Research and Quality",
+          "url": "https://www.ahrq.gov/health-literacy/improve/precautions/intro.html",
+          "kind": "official-recommendation",
+          "edition": "Third edition; page last reviewed February 2024",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "What Are Health Literacy Universal Precautions?; Why Use Health Literacy Universal Precautions?",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "ahrq-clear-communication",
+          "title": "Communicate Clearly: Tool 4",
+          "organization": "Agency for Healthcare Research and Quality",
+          "url": "https://www.ahrq.gov/health-literacy/improve/precautions/tool4.html",
+          "kind": "official-recommendation",
+          "edition": "Third edition; page last reviewed April 2024",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Actions: clear spoken communication and confirming understanding",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "universal",
+          "title": "Use universal precautions",
+          "text": "Difficulty understanding health information cannot reliably be inferred from appearance or education. AHRQ recommends making communication understandable and confirming comprehension with everyone.",
+          "sourceIds": [
+            "ahrq-literacy-introduction"
+          ]
+        },
+        {
+          "id": "plain-language",
+          "title": "Plain language",
+          "text": "Use familiar words, a clear pace and a limited set of important points. Replace jargon and vague descriptions with concrete explanations.",
+          "sourceIds": [
+            "ahrq-clear-communication"
+          ]
+        },
+        {
+          "id": "confirm",
+          "title": "Confirm understanding",
+          "text": "Ask the person to explain important information in their own words. This gives more information about understanding than a yes-or-no question about whether everything is clear.",
+          "sourceIds": [
+            "ahrq-clear-communication"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "foundations-health-literacy-q1",
+          "stem": "In a fictional exam vignette, a university professor seems comfortable discussing a complex plan. Which communication approach best follows health literacy universal precautions?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Skip comprehension checks because of education"
+            },
+            {
+              "id": "B",
+              "text": "Use more technical terms to demonstrate expertise"
+            },
+            {
+              "id": "C",
+              "text": "Reserve clear explanations for people who fail a literacy test"
+            },
+            {
+              "id": "D",
+              "text": "Use understandable explanations and confirm comprehension"
+            },
+            {
+              "id": "E",
+              "text": "Assume professional status guarantees comprehension"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Universal precautions simplify communication and confirm understanding for everyone, because difficulty can occur in any person.",
+          "distractorExplanations": {
+            "A": "Education does not establish comprehension.",
+            "B": "Extra jargon does not support understanding.",
+            "C": "Universal precautions are not reserved for a subgroup.",
+            "E": "Status does not guarantee comprehension."
+          },
+          "sectionIds": [
+            "universal"
+          ],
+          "sourceIds": [
+            "ahrq-literacy-introduction"
+          ],
+          "domain": "foundations",
+          "learningObjective": "Apply universal precautions without relying on educational status.",
+          "difficulty": "application"
+        },
+        {
+          "id": "foundations-health-literacy-q2",
+          "stem": "In a fictional teaching encounter, an explanation has been given using familiar language. Which question best checks understanding?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "How would you describe the main steps in your own words?"
+            },
+            {
+              "id": "B",
+              "text": "You understand everything, correct?"
+            },
+            {
+              "id": "C",
+              "text": "Could you repeat each technical term exactly?"
+            },
+            {
+              "id": "D",
+              "text": "Can we assume the handout answered everything?"
+            },
+            {
+              "id": "E",
+              "text": "Would you agree that the explanation was simple?"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Asking for an explanation in the person’s own words helps confirm understanding of the important information.",
+          "distractorExplanations": {
+            "B": "A yes-or-no response provides limited evidence.",
+            "C": "Repeating terms does not demonstrate the main meaning.",
+            "D": "A handout alone does not confirm comprehension.",
+            "E": "Perceived simplicity does not demonstrate understanding."
+          },
+          "sectionIds": [
+            "plain-language",
+            "confirm"
+          ],
+          "sourceIds": [
+            "ahrq-clear-communication"
+          ],
+          "domain": "foundations",
+          "learningObjective": "Distinguish an open comprehension check from reassurance-seeking questions.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "foundations-quality-safety",
+      "name": "Quality improvement and systems safety",
+      "aliases": [
+        "quality improvement",
+        "PDSA",
+        "systems safety",
+        "patient safety"
+      ],
+      "specialty": "Foundations of care",
+      "domain": "foundations",
+      "recordType": "foundation",
+      "keywords": [
+        "process measure",
+        "outcome measure",
+        "near miss",
+        "system factors"
+      ],
+      "overview": "Study improvement methods and systems thinking through invented exam scenarios. The app does not provide a clinical incident-management service.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "ahrq-pdsa",
+          "title": "Plan-Do-Study-Act Worksheet, Directions, and Examples",
+          "organization": "Agency for Healthcare Research and Quality",
+          "url": "https://www.ahrq.gov/health-literacy/improve/precautions/tool2b.html",
+          "kind": "official-recommendation",
+          "edition": "Third edition; page last reviewed March 2024",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "PDSA directions; Plan, Do, Study and Act",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "ahrq-measure-types",
+          "title": "Types of Health Care Quality Measures",
+          "organization": "Agency for Healthcare Research and Quality",
+          "url": "https://www.ahrq.gov/talkingquality/measures/types.html",
+          "kind": "official-clinical-reference",
+          "edition": "Page last reviewed July 2015",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Structural Measures; Process Measures; Outcome Measures",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "ahrq-systems-investigation",
+          "title": "System-Focused Event Investigation and Analysis Guide",
+          "organization": "Agency for Healthcare Research and Quality",
+          "url": "https://www.ahrq.gov/patient-safety/settings/hospital/candor/modules/guide4.html",
+          "kind": "official-recommendation",
+          "edition": "CANDOR Toolkit; page last reviewed August 2022",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "A Systems Approach; follow-up and measurement",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "pdsa",
+          "title": "Test and learn",
+          "text": "PDSA plans a small change and a measurement, tries it, studies the results, then adapts or expands based on learning. Small, brief tests can precede broader implementation.",
+          "sourceIds": [
+            "ahrq-pdsa"
+          ]
+        },
+        {
+          "id": "measures",
+          "title": "Differentiate measures",
+          "text": "Structure describes capacity or systems; process describes what is done; outcome describes effects on health. Outcomes can reflect factors beyond an individual provider’s control.",
+          "sourceIds": [
+            "ahrq-measure-types"
+          ]
+        },
+        {
+          "id": "systems",
+          "title": "Identify system factors",
+          "text": "Safety-event investigation examines contributing processes, technology and working conditions. Its prevention goal requires addressing system vulnerabilities and measuring whether changes work.",
+          "sourceIds": [
+            "ahrq-systems-investigation"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "foundations-quality-safety-q1",
+          "stem": "In a fictional improvement exercise, a team wants to test a new reminder. Which initial plan best follows the PDSA method?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Deploy everywhere without defining an outcome"
+            },
+            {
+              "id": "B",
+              "text": "Decide success only from enthusiasm"
+            },
+            {
+              "id": "C",
+              "text": "Avoid observing workflow during the test"
+            },
+            {
+              "id": "D",
+              "text": "Promise the first design will never change"
+            },
+            {
+              "id": "E",
+              "text": "Test a small change, define a measure and time frame, then review results"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "A small, measurable test supports learning before adaptation or broader implementation.",
+          "distractorExplanations": {
+            "A": "This removes the opportunity for a defined small test.",
+            "B": "Enthusiasm alone does not assess the planned result.",
+            "C": "Observations inform learning during the test.",
+            "D": "Iteration is part of the method."
+          },
+          "sectionIds": [
+            "pdsa"
+          ],
+          "sourceIds": [
+            "ahrq-pdsa"
+          ],
+          "domain": "foundations",
+          "learningObjective": "Identify a small, measurable improvement test in an exam scenario.",
+          "difficulty": "application"
+        },
+        {
+          "id": "foundations-quality-safety-q2",
+          "stem": "In a fictional safety vignette, several staff members have nearly selected the wrong item from the same confusing electronic menu. Which response best addresses recurrence from a systems perspective?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Label only the latest staff member as careless"
+            },
+            {
+              "id": "B",
+              "text": "Declare safety assured because no harm occurred"
+            },
+            {
+              "id": "C",
+              "text": "Investigate the interface and workflow, redesign contributing hazards and evaluate the change"
+            },
+            {
+              "id": "D",
+              "text": "Require everyone to memorize the current menu permanently"
+            },
+            {
+              "id": "E",
+              "text": "Suppress reports to improve the safety statistics"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "A recurring interface hazard calls for investigation of contributing system factors and evaluation of corrective changes.",
+          "distractorExplanations": {
+            "A": "Individual blame alone leaves the recurring hazard.",
+            "B": "A near miss can reveal a vulnerability.",
+            "D": "Memorization alone leaves the confusing design.",
+            "E": "Suppressing reports hides opportunities for prevention."
+          },
+          "sectionIds": [
+            "systems"
+          ],
+          "sourceIds": [
+            "ahrq-systems-investigation"
+          ],
+          "domain": "foundations",
+          "learningObjective": "Identify a systems response to a recurring fictional safety hazard.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "foundations-social-needs",
+      "name": "Social needs, equity and resource connections",
+      "aliases": [
+        "social needs",
+        "social determinants of health",
+        "health equity"
+      ],
+      "specialty": "Foundations of care",
+      "domain": "foundations",
+      "recordType": "foundation",
+      "keywords": [
+        "transportation",
+        "food insecurity",
+        "privacy",
+        "community resources"
+      ],
+      "overview": "Study social context and respectful support in fictional board vignettes. No real person’s social or health records are needed.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "ahrq-social-context",
+          "title": "About SDOH in Healthcare",
+          "organization": "Agency for Healthcare Research and Quality",
+          "url": "https://www.ahrq.gov/sdoh/about.html",
+          "kind": "official-clinical-reference",
+          "edition": "Page last reviewed February 2020",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "SDOH in Communities; Social Needs",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "ahrq-social-needs-tool",
+          "title": "Attend to Social Needs: Tool 18",
+          "organization": "Agency for Healthcare Research and Quality",
+          "url": "https://www.ahrq.gov/health-literacy/improve/precautions/tool18.html",
+          "kind": "official-recommendation",
+          "edition": "Third edition; page last reviewed April 2024",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Assess social needs and support systems; connect with resources; follow up",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "context",
+          "title": "Community context and individual needs",
+          "text": "Community conditions include transportation, food availability and access to services. People in the same community can have different individual social needs, such as food insecurity or financial strain.",
+          "sourceIds": [
+            "ahrq-social-context"
+          ]
+        },
+        {
+          "id": "respect",
+          "title": "Ask respectfully",
+          "text": "Explain why social questions are being asked and how information will be used. Discuss needs privately, ask what help is wanted and obtain permission before sharing with support contacts.",
+          "sourceIds": [
+            "ahrq-social-needs-tool"
+          ]
+        },
+        {
+          "id": "connections",
+          "title": "Close the referral loop",
+          "text": "Support connections to appropriate community resources, help with access barriers and follow up to determine whether a requested referral was completed. Keep resource information current.",
+          "sourceIds": [
+            "ahrq-social-needs-tool"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "foundations-social-needs-q1",
+          "stem": "In a fictional exam scenario, two people live in the same neighborhood. One cannot afford food while the other has stable food access. Which statement best distinguishes social determinants from individual social needs?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Neighborhood residence makes their individual needs identical"
+            },
+            {
+              "id": "B",
+              "text": "Shared community conditions can coexist with different individual social needs"
+            },
+            {
+              "id": "C",
+              "text": "Food insecurity is unrelated to social context"
+            },
+            {
+              "id": "D",
+              "text": "A person’s social needs are determined solely by diagnosis"
+            },
+            {
+              "id": "E",
+              "text": "Community information replaces asking about individual circumstances"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "AHRQ distinguishes community-level conditions from individuals’ differing social needs within that community.",
+          "distractorExplanations": {
+            "A": "Shared location does not make needs identical.",
+            "C": "Food insecurity is a listed social need.",
+            "D": "Diagnosis alone does not describe social needs.",
+            "E": "Individual circumstances still matter."
+          },
+          "sectionIds": [
+            "context"
+          ],
+          "sourceIds": [
+            "ahrq-social-context"
+          ],
+          "domain": "foundations",
+          "learningObjective": "Distinguish shared community conditions from differing individual social needs.",
+          "difficulty": "application"
+        },
+        {
+          "id": "foundations-social-needs-q2",
+          "stem": "In a fictional exam encounter, a person requests transportation help and agrees to a resource referral. Which next action best completes the support process?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Give an old number and assume access succeeded"
+            },
+            {
+              "id": "B",
+              "text": "Contact every relative without permission"
+            },
+            {
+              "id": "C",
+              "text": "Record the referral and never check its result"
+            },
+            {
+              "id": "D",
+              "text": "Confirm the resource connection and address barriers if it was not completed"
+            },
+            {
+              "id": "E",
+              "text": "Treat a positive social-needs screen as refusal of all care"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "AHRQ recommends following up to learn whether a referral was completed and documenting its outcome.",
+          "distractorExplanations": {
+            "A": "An unverified connection may leave the need unmet.",
+            "B": "Sharing requires the person’s permission.",
+            "C": "Referral placement alone does not establish completion.",
+            "E": "A social need is not a refusal of care."
+          },
+          "sectionIds": [
+            "respect",
+            "connections"
+          ],
+          "sourceIds": [
+            "ahrq-social-needs-tool"
+          ],
+          "domain": "foundations",
+          "learningObjective": "Recognize follow-through after a requested fictional resource referral.",
+          "difficulty": "application"
+        }
+      ]
+    }
+  ]
+}

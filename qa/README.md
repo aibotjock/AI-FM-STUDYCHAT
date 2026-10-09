@@ -28,11 +28,16 @@ not overwrite the cumulative combined report. That report combines focused
 runs without recounting passed scenarios as newly executed. Two failed groups
 were repeated after their fixes; two additional pending-setup scenarios were
 checked separately. Microphone, WebRTC, speaker autoplay and transcript route
-responses are browser fakes. Backend caption durability is covered separately
-by `tests/voice-routes.test.js`; actual phone audio remains an owner check.
+responses are browser fakes. Historical Realtime caption checks are retired. `tests/voice-routes.test.js` now verifies those unchecked routes remain disabled; actual phone audio remains an owner check.
 # Source-linked curriculum checks
 
 The curriculum addition has its own recorded scopes: `curriculum-browser-results.json` (16 fixture-based mobile groups), `curriculum-safety-results.json` (8 independent retrieval/dispatch safety groups), and `curriculum-production-data-results.json` (7 new real-100-condition mobile groups). These use real local app routes, synthetic provider responses where needed and zero paid calls. They do not establish medical accuracy. The production-data report preserves the exact file hashes tested; subsequent text-only source-budget condensation is documented in the validation ledger.
 
 Use `qa/curriculum-browser-qa.mjs` with `QA_SCOPES` to select only newly affected or failed groups. `qa/curriculum-production-data-qa.mjs` checks actual corpus dimensions and extreme content sizes. `node scripts/validate-study-curriculum.js` checks full dataset integrity, canonical grading/card bounds, source dates and concise per-source factual budgets. Keep passed unrelated login, model, voice, dictation and zoom suites unchanged unless a relevant defect/change justifies repeating them.
 
+
+## Board practice and sourced voice
+
+New scopes: `tests/board-practice.test.js` (14 engine groups), `tests/board-routes.test.js` (8 API groups), `tests/conversational-quiz.test.js`, `tests/curriculum-maintenance.test.js` (7 maintenance fixture groups), and `tests/sourced-voice.test.js` (3 helper groups). `qa/board-practice-browser-qa.mjs` checks only the newly added board/chat/voice UI. `qa/sourced-voice-qa.mjs` records 13 new mock-browser lifecycle checks; it supports `QA_ONLY` for affected failures/new scopes. Historical Realtime controller results describe the former implementation, which is no longer active. Four replacement HTTP checks prove unchecked Realtime routes are disabled; no real audio/model call is involved.
+
+Keep combined reports; intermediate scope-only reports are scratch output and should not be published as independent full-suite passes.

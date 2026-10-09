@@ -1,0 +1,95 @@
+{
+  "runAt": "2026-10-09T10:47:24.487Z",
+  "scope": "Only new sourced-voice app wiring, logout integration and historical readout gating. Speech browser APIs are mocks; real local canonical quiz routes. Controller lifecycle groups already passed separately and were not repeated. No physical phone speech result claimed.",
+  "results": [
+    {
+      "name": "new sourced voice calls canonical chat, displays citations and reads exact text without any Realtime/audio request",
+      "pass": true
+    },
+    {
+      "name": "locking the study workspace stops sourced recognition and hides private chat",
+      "pass": true
+    },
+    {
+      "name": "historical free AI, expired, imported and Realtime messages have no factual readout shortcut",
+      "pass": true
+    }
+  ],
+  "pageErrors": [],
+  "apiCalls": [
+    {
+      "path": "/api/status",
+      "method": "GET"
+    },
+    {
+      "path": "/api/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/curriculum",
+      "method": "GET"
+    },
+    {
+      "path": "/api/curriculum/asthma",
+      "method": "GET"
+    },
+    {
+      "path": "/api/conversations",
+      "method": "POST"
+    },
+    {
+      "path": "/api/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST"
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST"
+    },
+    {
+      "path": "/api/status",
+      "method": "GET"
+    },
+    {
+      "path": "/api/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/curriculum",
+      "method": "GET"
+    },
+    {
+      "path": "/api/curriculum/asthma",
+      "method": "GET"
+    },
+    {
+      "path": "/api/conversations",
+      "method": "POST"
+    },
+    {
+      "path": "/api/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST"
+    },
+    {
+      "path": "/api/logout",
+      "method": "POST"
+    },
+    {
+      "path": "/api/status",
+      "method": "GET"
+    },
+    {
+      "path": "/api/state",
+      "method": "GET"
+    }
+  ],
+  "providerDispatches": 0,
+  "paidProviderCalls": 0
+}

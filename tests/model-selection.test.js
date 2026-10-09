@@ -6,14 +6,19 @@ import { join } from 'node:path';
 import { once } from 'node:events';
 import { DatabaseSync } from 'node:sqlite';
 import { createApp } from '../server/index.js';
+import { createStudyCurriculum } from '../server/study-curriculum.js';
+import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
 
 const ACCESS_TOKEN = 'owner-model-test-token-at-least-24-characters';
 const API_KEY = 'mock-provider-key-must-never-be-exported';
 const MODEL_IDS = ['gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-5.5-pro'];
+const STUDY_SELECTOR = JSON.stringify({ chunkIds: ['asthma:management'], questionId: null, unsupported: false });
 
 async function fixture(t, { dataDir, keepData = false, env = {}, fetchImpl, authenticateRequest, generateReply } = {}) {
   const directory = dataDir || mkdtempSync(join(tmpdir(), 'studychat-model-selection-'));
-  const server = createApp({ dataDir: directory, env: { STUDY_ACCESS_TOKEN: ACCESS_TOKEN, OPENAI_API_KEY: API_KEY, AI_PROVIDER: 'openai', ...env }, fetchImpl, authenticateRequest, generateReply });
+  const curriculum = createStudyCurriculum({ records: [studyCondition()], now: () => STUDY_NOW });
+  const foundations = createStudyCurriculum({ records: [], now: () => STUDY_NOW });
+  const server = createApp({ dataDir: directory, curriculum, foundations, env: { STUDY_ACCESS_TOKEN: ACCESS_TOKEN, OPENAI_API_KEY: API_KEY, AI_PROVIDER: 'openai', ...env }, fetchImpl, authenticateRequest, generateReply });
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
   const baseUrl = `http://127.0.0.1:${server.address().port}`;
@@ -140,19 +145,22 @@ test('model changes during active chat are rejected and chat provenance includes
   const mock = providerMock({ inference: async ({ body }) => {
     markStarted();
     await pending;
-    return Response.json({ model: `${body.model}-2025-04-14`, choices: [{ message: { content: 'What should you recall first?' }, finish_reason: 'stop' }], usage: { prompt_tokens: 1000, completion_tokens: 100 } });
+    assert.ok(body.messages.some(message => message.content.includes('STUDY_REFERENCE_DATA')));
+    return Response.json({ model: `${body.model}-2025-04-14`, choices: [{ message: { content: STUDY_SELECTOR }, finish_reason: 'stop' }], usage: { prompt_tokens: 1000, completion_tokens: 100 } });
   } });
   const app = await fixture(t, mock);
   t.after(() => release());
   await app.login();
   const conversation = (await app.request('/api/conversations', 'POST', { mode: 'coach' })).body;
-  const active = app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Help me study.', requestId: 'metadata-chat' });
+  const active = app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Explain asthma management for board study.', requestId: 'metadata-chat' });
   await started;
   assert.equal((await app.request('/api/model', 'PUT', { model: 'gpt-4.1-nano' })).status, 409);
   assert.equal(mock.modelCalls().length, 0);
   release();
   const completed = await active;
   assert.equal(completed.status, 200);
+  assert.match(completed.body.message.content, /Mock management fact: review inhaler technique/);
+  assert.equal(completed.body.message.sourceVerified, true);
   const metadata = completed.body.message.ai;
   assert.equal(metadata.provider, 'openai');
   assert.equal(metadata.endpoint, 'chat');
@@ -232,11 +240,11 @@ test('backup imports preserve untrusted provenance and evidence flags, while uns
 });
 
 test('forbidden returned model IDs block answers without switching or retrying another model', async t => {
-  const mock = providerMock({ returnedModel: 'gpt-astra-prohibited' });
+  const mock = providerMock({ returnedModel: 'gpt-astra-prohibited', reply: STUDY_SELECTOR });
   const app = await fixture(t, mock);
   await app.login();
   const conversation = (await app.request('/api/conversations', 'POST', { mode: 'coach' })).body;
-  const result = await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Mock prohibition validation.', requestId: 'forbidden-return' });
+  const result = await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Explain asthma management for board study.', requestId: 'forbidden-return' });
   assert.equal(result.status, 502);
   assert.match(result.body.error, /prohibited/);
   assert.equal((await app.request('/api/state')).body.conversations[0].messages.length, 1);
@@ -285,9 +293,13 @@ test('expired saved owner models keep sign-in and study data available until the
   assert.equal(catalog.body.models.some(model => model.id === 'gpt-4-0314'), false);
   assert.equal((await second.request('/api/model-test', 'POST', { requestId: 'expired-model-check' })).status, 503);
   const conversation = (await second.request('/api/conversations', 'POST', { mode: 'coach' })).body;
-  const offline = await second.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Recall practice while choosing another model.' });
+  const offline = await second.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Explain asthma inhaler technique for board study.' });
   assert.equal(offline.status, 200);
-  assert.equal(offline.body.offline, true);
+  assert.equal(offline.body.message.sourceVerified, true);
+  assert.equal(offline.body.message.grounded, true);
+  assert.equal(offline.body.message.current, true);
+  assert.match(offline.body.message.content, /Mock management fact: review inhaler technique/);
+  assert.equal(offline.body.message.ai, undefined, 'Local canonical study references need no available AI model.');
   assert.equal(mock.inferenceCalls().length, 0);
   assert.equal((await second.request('/api/model', 'PUT', { model: 'gpt-4.1-nano' })).status, 200);
   assert.equal((await second.request('/api/status')).body.aiConfigured, true);

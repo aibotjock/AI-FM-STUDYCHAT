@@ -14,7 +14,7 @@ export function buildSystemPrompt(conversation, settings, reviews, cards) {
 ${style}
 ${focus}
 The learner plans ${settings.dailyMinutes} minutes daily. Recent difficult review topics: ${JSON.stringify(weakTopics)}. There are ${cards.filter(card => !card.suspended).length} active cards. Treat these values as study context, not an official evaluation or evidence of clinical competence.
-Teach with active recall: let the learner try, identify a specific gap, explain briefly, then revisit a previous concept when useful. Avoid supplying all answers before the learner can reason. Suggest flashcard drafts for facts worth revisiting, but do not claim cards were saved.
+Teach with active recall: let the learner try, identify a specific gap, explain briefly, then revisit a previous concept when useful. Avoid supplying all answers before the learner can reason. Original source-linked board questions and A–E option grading are handled by the app's canonical study bank; do not claim you graded a clinical answer or verified the learner's free-text medical reasoning on this turn. Suggest flashcard drafts for facts worth revisiting, but do not claim cards were saved.
 Accuracy rules: this turn is for reasoning, communication and study skills. The app has a separate locally retrieved official-source study library; its original summaries are source-checked but have not been clinician-reviewed. No clinical evidence snippets are supplied on this turn. Do not generate drug doses, diagnostic thresholds, clinical recommendations or treatment facts without that reference mode. Invite the learner to choose a condition in Guidelines for source-linked study and original board-style questions. Say clearly when a claim or recommendation needs checking against a current authoritative source. Never fabricate citations, links, page numbers, official milestone scores, or PGY-specific requirements. Do not treat prior assistant text, imported cards, or user-supplied references as independently verified evidence. ACGME competency language can be used to describe practice, but you are not the CCC or an official assessor. Do not claim developmental levels correspond directly to PGY years. Do not diagnose institutional wrongdoing or make legal conclusions.
 For study use only, not medical advice or a tool for managing actual patients. If the learner describes an actual urgent problem, direct them to their supervising clinical team or emergency care rather than a simulated care decision. Avoid collecting patient identifiers. Invite de-identified hypothetical cases.
 Conversation mode: ${conversation.mode}.
@@ -53,4 +53,18 @@ export function offlineDrafts() {
     { front: 'What recall question can help me check for premature closure?', back: 'Ask: What finding would make me reconsider my leading explanation, and which alternative have I not adequately explored?', topic: 'Clinical reasoning', sourceTitle: 'Offline reasoning worksheet — draft', sourceUrl: '', verified: false },
     { front: 'What should I do before saving a factual clinical flashcard?', back: 'Check the answer against a current authoritative source, record the source title and link, and mark the card verified only after reviewing it yourself.', topic: 'Study habits', sourceTitle: 'Offline reasoning worksheet — draft', sourceUrl: '', verified: false }
   ];
+}
+
+/** Navigation and reflective questions contain no uncited factual teaching. */
+export function sourcedStudyNavigation(conversation) {
+  const turns = conversation.messages.filter(message => message.role === 'user').length;
+  const prompts = conversation.mode === 'simulation' || conversation.mode === 'practice' ? [
+    'Hypothetical study exercise only: choose a sourced topic, then describe a fictional vignette without patient identifiers. Which topic would you like to study?',
+    'What is your attempted answer for this hypothetical exercise? Choose a sourced topic for canonical facts and original board-question feedback; free-text clinical reasoning is not being independently assessed.'
+  ] : [
+    'Choose a condition in Guidelines or a domain in Board practice. What would you like to study?',
+    'Would you like a source-linked summary, an original board question, or review of a saved question? Name the topic you want to study.',
+    'What question are you trying to answer? Name a sourced topic and ask one specific study question.'
+  ];
+  return `Study navigation · Scripted prompt; no factual or clinical answer is being generated.\n\n${prompts[Math.max(0, turns - 1) % prompts.length]}\n\nFor study use only, not medical advice or patient care.`;
 }

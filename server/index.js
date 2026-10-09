@@ -6,12 +6,13 @@ import { resolve, dirname, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createCard, scheduleReview } from '../shared/scheduler.js';
 import { STARTER_CARDS, SCENARIOS } from '../shared/content.js';
-import { buildSystemPrompt, offlineReply, offlineDrafts } from './prompts.js';
+import { buildSystemPrompt, offlineReply, offlineDrafts, sourcedStudyNavigation } from './prompts.js';
 import { createAiProvider, AiProviderError } from './ai-provider.js';
 import { assertAllowedModel, createOpenAIModelCatalog, OpenAIModelError } from './openai-models.js';
 import { createIngeniumTelemetry, projectIngeniumMetadata } from './ingenium-telemetry.js';
 import { createVoiceService, sanitizeVoiceEvents, VoiceError } from './voice.js';
-import { loadStudyCurriculum, needsStudyEvidence, isStudyFollowup, STUDY_DISCLAIMER, STUDY_NO_EVIDENCE } from './study-curriculum.js';
+import { loadStudyCurriculum, loadStudyFoundations, combineStudyCurricula, needsStudyEvidence, isStudyFollowup, isStudyQuizRequest, isActualCareRequest, studyChoice, STUDY_DISCLAIMER, STUDY_NO_EVIDENCE, STUDY_REAL_CARE_REDIRECT } from './study-curriculum.js';
+import { createBoardPractice, BoardPracticeError } from './board-practice.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, timeZone: 'America/New_York', voiceEnabled: true, competencyRatings: {} });
@@ -124,7 +125,20 @@ function restoreCard(input) {
 }
 
 function restoreMessageMetadata(message) {
-  const restored = {};
+  const restored = { sourceVerified: false };
+  if (message.sourceVerified !== undefined && typeof message.sourceVerified !== 'boolean') fail(400, 'Invalid imported source verification flag.');
+  if (message.canonicalStudyProcess !== undefined && typeof message.canonicalStudyProcess !== 'boolean') fail(400, 'Invalid imported study-process flag.');
+  for (const key of ['studyQuestion', 'studyAnswer']) {
+    if (message[key] === undefined) continue;
+    const value = message[key];
+    if (!isObject(value) || typeof value.key !== 'string' || value.key.length > 201 || !/^[A-Za-z0-9][A-Za-z0-9._-]*:[A-Za-z0-9][A-Za-z0-9._-]*$/.test(value.key) || typeof value.fingerprint !== 'string' || !/^[a-f0-9]{64}$/.test(value.fingerprint)) fail(400, 'Invalid imported practice-question identity.');
+    restored[key] = { key: value.key, fingerprint: value.fingerprint, imported: true };
+    if (key === 'studyAnswer') {
+      if (!/^[A-E]$/.test(value.choiceId || '') || !/^[A-E]$/.test(value.correctChoiceId || '') || typeof value.correct !== 'boolean') fail(400, 'Invalid imported practice-answer metadata.');
+      Object.assign(restored[key], { choiceId: value.choiceId, correctChoiceId: value.correctChoiceId, correct: value.correct });
+    }
+    restored.importedEvidence = true;
+  }
   if (message.unsupported !== undefined) {
     if (typeof message.unsupported !== 'boolean') fail(400, 'Invalid answer evidence flag.');
     restored.unsupported = message.unsupported;
@@ -233,7 +247,7 @@ function secureHeaders(res) {
 }
 
 /** A single-user, durable study app. Each deployment should have its own data directory. */
-export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = process.env, fetchImpl = globalThis.fetch, authenticateRequest, isActive = () => true, generateReply, generateDrafts, curriculum: suppliedCurriculum, curriculumDir = resolve(ROOT, 'content', 'conditions') } = {}) {
+export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = process.env, fetchImpl = globalThis.fetch, authenticateRequest, isActive = () => true, generateReply, generateDrafts, curriculum: suppliedCurriculum, curriculumDir = resolve(ROOT, 'content', 'conditions'), foundations: suppliedFoundations, foundationsPath = resolve(ROOT, 'content', 'board-foundations.json'), boardPractice: suppliedBoardPractice } = {}) {
   const accessToken = (env.STUDY_ACCESS_TOKEN || '').trim();
   if (accessToken && accessToken.length < 24) throw new Error('STUDY_ACCESS_TOKEN must contain at least 24 characters.');
   const bindHost = env.HOST || '127.0.0.1';
@@ -241,6 +255,9 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
   // These unreviewed educational summaries never replace the approved commercial corpus.
   const curriculumEnabled = !authenticateRequest && !generateReply;
   const curriculum = curriculumEnabled ? suppliedCurriculum || loadStudyCurriculum({ contentDir: curriculumDir }) : null;
+  const foundations = curriculumEnabled ? suppliedFoundations || loadStudyFoundations({ contentPath: foundationsPath }) : null;
+  const studyReferences = curriculumEnabled ? combineStudyCurricula([curriculum, foundations]) : null;
+  const boardPractice = curriculumEnabled ? suppliedBoardPractice || createBoardPractice({ curricula: [curriculum, foundations] }) : null;
   const telemetry = createIngeniumTelemetry({ env, fetchImpl });
   let telemetryDrain = null;
   async function onCompletion(metadata) {
@@ -302,6 +319,11 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
     try { saveStatement.run(serialized); persistedJson = serialized; }
     catch (error) { rollback(); throw error; }
   };
+  function boardOperation(operation) {
+    const previous = JSON.stringify(state.boardPractice);
+    try { return operation(); }
+    finally { if (JSON.stringify(state.boardPractice) !== previous) save(); }
+  }
   if (!saved) save();
   const sessions = new Map();
   const rateBuckets = new Map();
@@ -309,7 +331,9 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
   let voiceWorkspaceEpoch = 0;
   let voiceStopping = false;
   const voiceEpochs = new Map();
-  const voiceEnabled = !authenticateRequest && ai.providerId === 'openai' && Boolean((env.OPENAI_API_KEY || '').trim());
+  // Spoken study reads canonical /api/chat text; model-generated Realtime speech
+  // cannot be validated against these sources and remains disabled.
+  const voiceEnabled = false;
   const voice = voiceEnabled ? createVoiceService({ env, fetchImpl, onSessionClosed: ({ sessionId, conversationId }) => {
     chatLocks.delete(conversationId);
     const timer = setTimeout(() => voiceEpochs.delete(sessionId), 5000);
@@ -394,7 +418,8 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
         if (req.method === 'GET' && path === '/api/status') {
           const studyList = curriculum?.list();
           const curriculumSummary = studyList ? { conditions: studyList.total, questions: studyList.questionCount, currentConditions: studyList.currentCount, formalGuidelineConditions: studyList.conditions.filter(condition => condition.formalGuideline).length } : null;
-          return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: modelSelectionEnabled || ai.configured ? ai.model : null, modelWarning: ai.unavailableReason || null, modelSelectionEnabled, voiceEnabled, voiceModel: voice?.model || null, prohibitedModels: ['Astra'], curriculum: curriculumSummary });
+          const boardCatalog = boardPractice?.catalog();
+          return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: modelSelectionEnabled || ai.configured ? ai.model : null, modelWarning: ai.unavailableReason || null, modelSelectionEnabled, voiceEnabled, voiceModel: null, sourcedVoiceEnabled: curriculumEnabled, voiceMode: curriculumEnabled ? 'canonical-browser' : null, prohibitedModels: ['Astra'], curriculum: curriculumSummary, boardPractice: boardCatalog ? { questions: boardCatalog.questionCount, availableMixedSizes: boardCatalog.availableSizes } : null });
         }
         if (req.method === 'POST' && path === '/api/login') {
           rateLimit(req, 'login', 8, 15 * 60000);
@@ -412,6 +437,42 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           return json(res, 200, { authenticated: true }, { 'Set-Cookie': `studychat_session=${id}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${SESSION_MS / 1000}${secure ? '; Secure' : ''}` });
         }
         if (!session(req)) fail(401, 'Sign in to use your study workspace.');
+        if (['/api/voice/session', '/api/voice/transcript', '/api/voice/stop'].includes(path)) fail(403, 'Unvalidated model-generated speech is disabled. Use sourced voice to hear the canonical study text returned by Coach; this app is for study only.');
+        if (path === '/api/board-practice' || path.startsWith('/api/board-practice/')) {
+          if (!boardPractice) fail(403, 'Original board practice is available in the personal study pilot. Commercial clinical review remains separate.');
+          if (req.method === 'GET' && path === '/api/board-practice') {
+            let active = null;
+            let activeError;
+            try { active = boardOperation(() => boardPractice.view(state)); }
+            catch (error) {
+              if (!(error instanceof BoardPracticeError) || !['CONTENT_CHANGED', 'INVALID_STATE'].includes(error.code)) throw error;
+              activeError = { code: error.code, error: error.message, sessionId: state.boardPractice?.active?.id || null };
+            }
+            return json(res, 200, { catalog: boardPractice.catalog(), active, history: boardOperation(() => boardPractice.history(state)), ...(activeError ? { activeError } : {}) });
+          }
+          if (req.method === 'GET' && path === '/api/board-practice/export') return json(res, 200, boardOperation(() => boardPractice.exportHistory(state)), { 'Content-Disposition': 'attachment; filename="family-medicine-board-practice.json"' });
+          if (req.method === 'POST' && ['/api/board-practice/start', '/api/board-practice/restart', '/api/board-practice/import'].includes(path)) {
+            rateLimit(req, 'board-practice', 120, 60000);
+            const input = await readJson(req, 128 * 1024);
+            if (!isObject(input)) fail(400, 'Use valid original board-practice options.');
+            const result = boardOperation(() => path.endsWith('/import') ? boardPractice.importHistory(state, input) : path.endsWith('/restart') ? boardPractice.restart(state, input) : boardPractice.start(state, input));
+            return json(res, 200, result);
+          }
+          const match = /^\/api\/board-practice\/([A-Za-z0-9][A-Za-z0-9._-]{0,99})(?:\/(answer|finish))?$/.exec(path);
+          if (match && req.method === 'GET' && !match[2]) {
+            const indexValue = url.searchParams.get('index');
+            const index = indexValue === null ? undefined : /^\d{1,3}$/.test(indexValue) ? Number(indexValue) : NaN;
+            return json(res, 200, boardOperation(() => boardPractice.view(state, { sessionId: match[1], ...(index !== undefined ? { index } : {}) })));
+          }
+          if (match && req.method === 'POST' && match[2]) {
+            rateLimit(req, 'board-practice', 120, 60000);
+            const input = await readJson(req);
+            if (!isObject(input)) fail(400, 'Use a valid original board-practice request.');
+            const result = boardOperation(() => match[2] === 'answer' ? boardPractice.answer(state, { sessionId: match[1], questionKey: input.questionKey, choiceId: input.choiceId }) : boardPractice.finish(state, { sessionId: match[1] }));
+            return json(res, 200, result);
+          }
+          fail(404, 'Board-practice route not found.');
+        }
         if (path === '/api/curriculum' || path.startsWith('/api/curriculum/')) {
           if (!curriculum) fail(403, 'This source-linked study library is available in the personal educational pilot. Commercial clinical review remains separate.');
           if (req.method === 'GET' && path === '/api/curriculum') {
@@ -420,7 +481,8 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             return json(res, 200, curriculum.list({ q, domain }));
           }
           const match = /^\/api\/curriculum\/([A-Za-z0-9][A-Za-z0-9._-]*)(?:\/(answer|card))?$/.exec(path);
-          const condition = match && curriculum.get(match[1]);
+          const selectedCurriculum = match && (curriculum.get(match[1]) ? curriculum : foundations?.get(match[1]) ? foundations : null);
+          const condition = selectedCurriculum?.get(match[1]);
           if (!condition) fail(404, 'Study condition not found.');
           if (req.method === 'GET' && !match[2]) return json(res, 200, { condition, disclaimer: STUDY_DISCLAIMER });
           if (req.method === 'POST' && ['answer', 'card'].includes(match[2])) {
@@ -430,11 +492,11 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             const questionId = cleanText(input.questionId, 'question id', 100);
             if (match[2] === 'answer') {
               const choiceId = cleanText(input.choiceId, 'choice id', 100);
-              const result = curriculum.answer(match[1], questionId, choiceId);
+              const result = selectedCurriculum.answer(match[1], questionId, choiceId);
               if (!result) fail(400, 'Choose an available question and answer choice.');
               return json(res, 200, result);
             }
-            const draft = curriculum.card(match[1], questionId);
+            const draft = selectedCurriculum.card(match[1], questionId);
             if (!draft) fail(400, 'Choose an available study question.');
             const prior = state.cards.find(card => card.id === draft.id);
             if (prior) {
@@ -607,7 +669,9 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
         }
         if (req.method === 'POST' && path === '/api/import') {
           if (chatLocks.size) fail(409, 'Wait for coaching replies to finish before restoring a backup.');
-          const next = validateBackup(await readJson(req, MAX_BACKUP_BYTES));
+          const input = await readJson(req, MAX_BACKUP_BYTES);
+          const next = validateBackup(input);
+          if (boardPractice) boardPractice.sanitizeImport(next, input.boardPractice);
           if (chatLocks.size) fail(409, 'Wait for coaching replies to finish before restoring a backup.');
           state = next; save(); voiceWorkspaceEpoch++;
           return json(res, 200, { restored: true, cards: state.cards.length, conversations: state.conversations.length });
@@ -620,7 +684,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           if (input.scenarioId && !scenario) fail(400, 'Choose a valid scenario.');
           if (input.conditionId !== undefined && input.curriculumConditionId !== undefined && input.conditionId !== input.curriculumConditionId) fail(400, 'Use one consistent study condition.');
           const conditionId = input.conditionId ?? input.curriculumConditionId;
-          if (conditionId !== undefined && (!curriculum || typeof conditionId !== 'string' || !curriculum.get(conditionId))) fail(400, 'Choose an available study condition.');
+          if (conditionId !== undefined && (!studyReferences || typeof conditionId !== 'string' || !studyReferences.get(conditionId))) fail(400, 'Choose an available study topic.');
           const conversation = { id: randomUUID(), title: cleanText(input.title || scenario?.title || 'New coaching session', 'title', 160), mode: input.mode || 'coach', messages: [], createdAt: Date.now(), ...(scenario ? { scenarioId: scenario.id } : {}) };
           if (conditionId !== undefined) conversation.curriculumConditionId = conditionId;
           state.conversations.push(conversation); save();
@@ -639,7 +703,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           if (!isObject(input)) fail(400, 'Chat request must be an object.');
           const conversation = conversationFor(input.conversationId);
           const content = cleanText(input.content, 'message', 12000);
-          if (input.conditionIds !== undefined && (!Array.isArray(input.conditionIds) || input.conditionIds.length > 3 || new Set(input.conditionIds).size !== input.conditionIds.length || input.conditionIds.some(conditionId => typeof conditionId !== 'string' || !curriculum?.get(conditionId)))) fail(400, 'Choose at most three available study conditions.');
+          if (input.conditionIds !== undefined && (!Array.isArray(input.conditionIds) || input.conditionIds.length > 3 || new Set(input.conditionIds).size !== input.conditionIds.length || input.conditionIds.some(conditionId => typeof conditionId !== 'string' || !studyReferences?.get(conditionId)))) fail(400, 'Choose at most three available study topics.');
           let conditionIds = input.conditionIds?.length ? input.conditionIds : conversation.curriculumConditionId ? [conversation.curriculumConditionId] : [];
           const requestId = input.requestId === undefined ? null : cleanText(input.requestId, 'request id', 100);
           if (requestId) {
@@ -659,27 +723,38 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             if (user !== last) { conversation.messages.push(user); save(); }
             let generated = generateReply ? await generateReply({ conversation, settings: state.settings, reviews: state.reviews, cards: state.cards, requestId: requestId || user.id }) : null;
             let completion = null;
+            if (!generated && studyReferences && isActualCareRequest(content)) generated = { content: STUDY_REAL_CARE_REDIRECT, scripted: true, unsupported: true, citations: [] };
             const previousQueries = conversation.messages.filter(message => message.role === 'user' && message.id !== user.id).slice(-3).map(message => message.content);
             const priorAssistant = conversation.messages.findLast(message => message.role === 'assistant');
-            const blockedFollowup = curriculum && isStudyFollowup(content) && priorAssistant?.unsupported === true;
+            const choiceId = studyChoice(content);
+            const pending = priorAssistant?.studyQuestion;
+            const pendingConditionId = pending?.key?.split(':')[0];
+            const switchedCondition = conditionIds.length && !conditionIds.includes(pendingConditionId);
+            // Only a server-issued current canonical quiz can grade a deliberate option.
+            // Imported assistant text and metadata never become verified study evidence.
+            if (!generated && studyReferences && choiceId && pending && priorAssistant.curriculum === true && priorAssistant.sourceVerified === true && !priorAssistant.importedEvidence && !pending.imported && !switchedCondition) generated = studyReferences.gradeQuestion(pending, choiceId);
+            const blockedFollowup = studyReferences && isStudyFollowup(content) && priorAssistant?.unsupported === true;
             if (!generated && blockedFollowup) generated = { content: STUDY_NO_EVIDENCE, citations: [], unsupported: true };
-            const evidence = !generated && curriculum ? curriculum.retrieve(content, { conditionIds, previousQueries }) : [];
+            const evidence = !generated && studyReferences ? studyReferences.retrieve(content, { conditionIds, previousQueries }) : [];
+            if (!generated && evidence.length && isStudyQuizRequest(content)) generated = studyReferences.quiz(evidence, { previousQuestionKeys: conversation.messages.filter(message => message.role === 'assistant' && message.studyQuestion && !message.importedEvidence && !message.studyQuestion.imported).map(message => message.studyQuestion.key) });
             if (!generated && evidence.length) {
               if (ai.configured) {
-                completion = await complete([{ role: 'system', content: curriculum.prompt(evidence) }, { role: 'user', content }], { jsonMode: true });
-                try { generated = curriculum.render(JSON.parse(completion.content), evidence); }
+                completion = await complete([{ role: 'system', content: studyReferences.prompt(evidence) }, { role: 'user', content }], { jsonMode: true });
+                try { generated = studyReferences.render(JSON.parse(completion.content), evidence); }
                 catch { generated = { content: STUDY_NO_EVIDENCE, citations: [], unsupported: true }; }
-              } else generated = curriculum.render({ chunkIds: evidence.slice(0, 2).map(item => item.key), questionId: null, unsupported: false }, evidence);
-            } else if (!generated && curriculum && (conditionIds.length || needsStudyEvidence(content))) {
+              } else generated = studyReferences.render({ chunkIds: evidence.slice(0, 2).map(item => item.key), questionId: null, unsupported: false }, evidence);
+            } else if (!generated && studyReferences && (conditionIds.length || needsStudyEvidence(content))) {
               generated = { content: STUDY_NO_EVIDENCE, citations: [], unsupported: true };
             }
+            if (!generated && studyReferences) generated = { content: sourcedStudyNavigation(conversation), scripted: true };
             if (!generated && ai.configured) completion = await complete([{ role: 'system', content: buildSystemPrompt(conversation, state.settings, state.reviews, state.cards) }, ...conversation.messages.slice(-24).map(message => ({ role: message.role, content: message.content }))]);
             const answer = generated ? generated.content : completion ? completion.content : offlineReply(conversation);
             if (typeof answer !== 'string' || !answer.trim() || answer.length > 20000) fail(502, 'The coach returned an unusable answer.');
-            const connected = Boolean(generateReply || ai.configured || generated?.grounded || generated?.unsupported);
-            const studyMetadata = generated?.curriculum ? { grounded: true, curriculum: true, sourceVerified: true, humanReview: false, current: true, conditionIds: generated.conditionIds } : {};
+            const connected = Boolean(generateReply || completion || generated?.grounded || generated?.unsupported || generated?.scripted);
+            const processMetadata = studyReferences && (generated?.unsupported || generated?.scripted) ? { sourceVerified: true, canonicalStudyProcess: true } : {};
+            const studyMetadata = generated?.curriculum ? { grounded: true, curriculum: true, sourceVerified: true, humanReview: false, current: true, conditionIds: generated.conditionIds, ...(generated.studyQuestion ? { studyQuestion: generated.studyQuestion } : {}), ...(generated.studyAnswer ? { studyAnswer: generated.studyAnswer } : {}), ...(generated.studySelection ? { studySelection: generated.studySelection } : {}) } : {};
             if (generated?.curriculum && generated.conditionIds?.length === 1) conversation.curriculumConditionId = generated.conditionIds[0];
-            const message = { id: randomUUID(), role: 'assistant', content: answer, createdAt: Date.now(), responseTo: user.id, ...(completion?.metadata ? { ai: completion.metadata } : {}), ...(generated?.citations ? { citations: generated.citations } : {}), ...(generated?.unsupported ? { unsupported: true } : {}), ...studyMetadata, ...(connected ? {} : { offline: true }) };
+            const message = { id: randomUUID(), role: 'assistant', content: answer, createdAt: Date.now(), responseTo: user.id, ...(completion?.metadata ? { ai: completion.metadata } : {}), ...(generated?.citations ? { citations: generated.citations } : {}), ...(generated?.unsupported ? { unsupported: true } : {}), ...(generated?.scripted ? { scripted: true } : {}), ...processMetadata, ...studyMetadata, ...(connected ? {} : { offline: true }) };
             conversation.messages.push(message); save();
             return json(res, 200, { message, conversation, offline: !connected });
           } finally { chatLocks.delete(conversation.id); }
@@ -700,15 +775,16 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
               return json(res, 200, { cards: generated.cards.map(item => ({ ...cardFields({ ...item, verified: false }), verified: false })), offline: false });
             } finally { chatLocks.delete(conversation.id); }
           }
-          if (curriculum) {
+          if (studyReferences) {
             const lastAssistant = conversation.messages.findLast(message => message.role === 'assistant' && message.curriculum && !message.importedEvidence);
             const conditionIds = conversation.curriculumConditionId ? [conversation.curriculumConditionId] : lastAssistant?.conditionIds || [];
-            const currentConditions = conditionIds.slice(0, 3).map(conditionId => curriculum.get(conditionId)).filter(condition => condition?.current);
+            const currentConditions = conditionIds.slice(0, 3).map(conditionId => studyReferences.get(conditionId)).filter(condition => condition?.current);
             if (currentConditions.length) {
-              const cards = currentConditions.flatMap(condition => condition.questions.map(question => curriculum.card(condition.id, question.id))).slice(0, 5).map(({ id, current, checkedAt, expiresAt, ...draft }) => ({ ...draft, sourceCheckedAt: checkedAt, sourceExpiresAt: expiresAt }));
+              const cards = currentConditions.flatMap(condition => condition.questions.map(question => studyReferences.card(condition.id, question.id))).slice(0, 5).map(({ id, current, checkedAt, expiresAt, ...draft }) => ({ ...draft, sourceCheckedAt: checkedAt, sourceExpiresAt: expiresAt }));
               return json(res, 200, { cards, offline: false, sourceLinked: true, disclaimer: STUDY_DISCLAIMER });
             }
             if (conditionIds.length) return json(res, 200, { cards: [], offline: false, notice: 'This condition needs a current official-source check before creating cards.' });
+            return json(res, 200, { cards: [], offline: false, sourceLinked: false, notice: 'Choose a current source-linked topic before drafting review cards. Uncited conversation drafts are disabled.', disclaimer: STUDY_DISCLAIMER });
           }
           if (!ai.configured) return json(res, 200, { cards: offlineDrafts(), offline: true });
           chatLocks.add(conversation.id);
@@ -730,7 +806,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
       let requested;
       try { requested = decodeURIComponent(path); } catch { fail(400, 'Invalid path.'); }
       let file;
-      if (requested === '/shared/scheduler.js' || requested === '/shared/content.js') file = resolve(ROOT, `.${requested}`);
+      if (['/shared/scheduler.js', '/shared/content.js', '/shared/blueprint.js'].includes(requested)) file = resolve(ROOT, `.${requested}`);
       else {
         const publicDir = resolve(ROOT, 'public');
         file = resolve(publicDir, `.${requested === '/' ? '/index.html' : requested}`);
@@ -742,8 +818,8 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
       res.end(req.method === 'HEAD' ? undefined : body);
     } catch (error) {
       if (res.headersSent) { res.end(); return; }
-      const expected = error instanceof HttpError || error instanceof AiProviderError || error instanceof OpenAIModelError || error instanceof VoiceError;
-      json(res, expected ? error.status : 500, { error: expected ? error.message : 'The server could not complete this request.' });
+      const expected = error instanceof HttpError || error instanceof AiProviderError || error instanceof OpenAIModelError || error instanceof VoiceError || error instanceof BoardPracticeError;
+      json(res, expected ? error.status : 500, { error: expected ? error.message : 'The server could not complete this request.', ...(error instanceof BoardPracticeError ? { code: error.code, details: error.details } : {}) });
       // Never log submitted messages, authentication tokens, or provider response bodies.
       if (!expected) console.error('StudyChat request failed:', error.name);
     }

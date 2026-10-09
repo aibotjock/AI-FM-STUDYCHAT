@@ -1,35 +1,41 @@
 {
   "schemaVersion": 1,
   "checkedAt": "2026-10-09",
-  "purpose": "Personal educational pilot; source checks are not clinician approval, rights clearance or a medical accuracy certification.",
-  "scope": "At least 100 curated common or high-yield family medicine conditions, not a prevalence ranking or complete exam syllabus.",
+  "purpose": "Educational board-study tool only; not medical advice or for clinical use. Source checks are not clinician approval, rights clearance or a medical accuracy certification.",
+  "scope": "Disease-reference curriculum: at least 100 curated common or high-yield family medicine conditions, not a prevalence ranking or the complete exam syllabus.",
   "conditions": 105,
+  "acceptedConditions": 105,
   "currentConditions": 105,
+  "quarantinedConditions": 0,
   "questions": 210,
+  "currentQuestions": 210,
+  "quarantinedQuestions": 0,
   "sections": 323,
   "formalGuidelineConditions": 100,
+  "currentFormalGuidelineConditions": 100,
   "officialReferenceOnlyConditions": [
-    {
-      "id": "benign-positional-vertigo",
-      "name": "Benign paroxysmal positional vertigo"
-    },
     {
       "id": "benign-prostatic-hyperplasia",
       "name": "Benign prostatic hyperplasia"
     },
     {
-      "id": "endometriosis",
-      "name": "Endometriosis"
+      "id": "benign-positional-vertigo",
+      "name": "Benign paroxysmal positional vertigo"
     },
     {
       "id": "generalized-anxiety-disorder",
       "name": "Generalized anxiety disorder"
     },
     {
+      "id": "endometriosis",
+      "name": "Endometriosis"
+    },
+    {
       "id": "vitamin-b12-deficiency",
       "name": "Vitamin B12 deficiency"
     }
   ],
+  "quarantine": [],
   "distinctSourceUrls": 136,
   "maximumAttributedFactualWordsPerUrl": 190,
   "questionDomains": {
@@ -46,6 +52,8 @@
     "D": 43,
     "E": 42
   },
+  "validationMode": "strict-current-readiness",
+  "fullyCurrent": true,
   "clinicalApproval": false,
   "humanReviewed": false,
   "commercialApprovedRecords": 0,

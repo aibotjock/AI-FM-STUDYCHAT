@@ -1,12 +1,12 @@
-# Family Medicine Study Coach — release preparation
+# Family Medicine Board Study — release preparation
 
 **Store submission is on hold until the owner explicitly approves it.** No Play app, subscription or production release was created. The personal phone pilot is live at https://family-medicine-phone-test-private-test.up.railway.app. The first milestone is the owner's physical phone test, including a live provider conversation after a server API key is configured.
 
 ## Product definition
 
-Working title: **Family Medicine Study Coach** (27 characters). Proposed package: `com.aibotjock.familymedicinestudycoach`. Proposed subscription ID: `family_medicine_monthly`, monthly base plan, US$4.99, eligible-new-subscriber three-day free-trial offer configured in Play Console. These identifiers must be confirmed before creation; Play product IDs cannot subsequently be reused or renamed.
+Working title: **Family Medicine Board Study**. Proposed package: `com.aibotjock.familymedicinestudycoach`. Proposed subscription ID: `family_medicine_monthly`, monthly base plan, US$4.99, eligible-new-subscriber three-day free-trial offer configured in Play Console. These identifiers must be confirmed before creation; Play product IDs cannot subsequently be reused or renamed.
 
-The initial audience is family medicine residents and physicians studying clinical reasoning. The app is an independent educational product. It is not ABFM-endorsed, an official exam bank, accredited CME, a clinical decision device, or a substitute for professional judgment. Do not use ABFM branding or claim board-exam success or guaranteed accuracy.
+The audience is family medicine residents and physicians preparing for the family medicine board examination. The app is for study only, not medical advice or for clinical use. The app is an independent educational product. It is not ABFM-endorsed, an official exam bank, accredited CME, a clinical decision device, or a substitute for professional judgment. Do not use ABFM branding or claim board-exam success or guaranteed accuracy.
 
 The curriculum map follows the ABFM's public blueprint: acute care and diagnosis 35%, chronic care management 25%, emergent and urgent care 20%, preventive care 15%, and foundations of care 5%. This defines topic coverage; guideline recommendations require their own current, authorized sources and clinical review. See [CLINICAL_CONTENT.md](CLINICAL_CONTENT.md).
 
@@ -14,7 +14,7 @@ The curriculum map follows the ABFM's public blueprint: acute care and diagnosis
 
 Keep the personal workspace available for the owner's first study session. It supports chat with a server-configured API key, or explicitly labeled worksheets without a key, plus editable cards and spaced reviews. It has no reviewed clinical guideline corpus. Do not infer clinical validation from a working chat.
 
-The HTTPS host has persistent storage and a private access token. Retrieve the access token from the host dashboard, then open the real app URL on the phone. The bounded ownership-and-privilege-drop initialization described in [HOSTING.md](HOSTING.md) was verified in a successful hosted deployment. The requested provider is Claude Haiku 5.5; OpenAI remains an option. No live provider key has been provided. Configure it in host secrets, never in chat or the repository.
+The HTTPS host has persistent storage and a private access token. Retrieve the access token from the host dashboard, then open the real app URL on the phone. The bounded ownership-and-privilege-drop initialization described in [HOSTING.md](HOSTING.md) was verified in a successful hosted deployment. The active provider is OpenAI only; Claude is on hold. The owner has configured the OpenAI key privately in Railway. Configure keys in host secrets, never in chat or the repository. Astra is prohibited without exceptions.
 
 Use [PHONE_TEST.md](PHONE_TEST.md) to run chat, keyboard dictation, answer-to-card editing, review ratings, reload persistence, and home-screen installation. The Android source is preparation for a later native trial, not a substitute for the first browser test.
 

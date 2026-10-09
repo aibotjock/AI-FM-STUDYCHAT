@@ -2,95 +2,180 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
-import { loadStudyCurriculum } from '../server/study-curriculum.js';
+import { createStudyCurriculum, validateStudyCondition } from '../server/study-curriculum.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const names = ['cardiometabolic.json', 'respiratory_infectious.json', 'neuro_msk_derm.json', 'women_children_prevention.json', 'common_additions.json'];
-const problems = [];
-const files = names.map(name => {
-  const body = readFileSync(resolve(root, 'content/conditions', name), 'utf8');
-  const parsed = JSON.parse(body);
-  if (name !== 'common_additions.json' && parsed.conditions.length !== 25) problems.push(`${name}: expected 25 conditions.`);
-  if (name === 'common_additions.json' && parsed.conditions.length < 5) problems.push(`${name}: expected at least five additional conditions.`);
-  return { name, parsed, sha256: createHash('sha256').update(body).digest('hex') };
-});
-const records = files.flatMap(file => file.parsed.conditions);
-const curriculum = loadStudyCurriculum({ contentDir: resolve(root, 'content/conditions') });
-const catalog = curriculum.list();
-if (curriculum.rejected.length) problems.push(...curriculum.rejected.map(item => `${item.id}: ${item.problems.join(' ')}`));
-if (catalog.total < 100 || catalog.currentCount !== catalog.total) problems.push('Expected at least 100 accepted conditions, all currently eligible.');
-if (catalog.questionCount < 2 * catalog.total) problems.push('Expected at least two original questions for every condition.');
-const questionKeys = new Set();
-const stems = new Set();
-const positions = Object.fromEntries('ABCDE'.split('').map(letter => [letter, 0]));
-const domains = Object.fromEntries(['acute', 'chronic', 'emergent', 'preventive', 'foundations'].map(domain => [domain, 0]));
-let sections = 0;
-for (const record of records) {
-  sections += record.sections.length;
-  if (record.review.checkedAt !== files.find(file => file.parsed.conditions.includes(record)).parsed.checkedAt) problems.push(`${record.id}: envelope check date mismatch.`);
-  for (const question of record.questions) {
-    const key = `${record.id}:${question.id}`;
-    if (questionKeys.has(key)) problems.push(`${key}: duplicate key.`);
-    questionKeys.add(key);
-    const stem = question.stem.toLowerCase().replace(/\s+/g, ' ').trim();
-    if (stems.has(stem)) problems.push(`${key}: identical question stem.`);
-    stems.add(stem);
-    if (question.choices.map(choice => choice.id).join('') !== 'ABCDE') problems.push(`${key}: choices must be labeled A through E.`);
-    const expectedDistractors = question.choices.filter(choice => choice.id !== question.correctChoiceId).map(choice => choice.id).sort().join('');
-    if (Object.keys(question.distractorExplanations).sort().join('') !== expectedDistractors) problems.push(`${key}: distractor rationale map mismatch.`);
-    positions[question.correctChoiceId]++;
-    domains[question.domain]++;
-    const result = curriculum.answer(record.id, question.id, question.correctChoiceId);
-    const card = curriculum.card(record.id, question.id);
-    if (!result?.correct || !result.current || result.humanReview !== false || !result.sources.length || !card?.current || !card.sourceVerified || card.verified !== false || card.front.length > 2000 || card.back.length > 4000) problems.push(`${key}: canonical answer/card integrity failed.`);
-    const detail = curriculum.get(record.id);
-    if (!detail) problems.push(`${key}: condition was rejected.`);
-    else if (detail.questions.some(item => 'correctChoiceId' in item || 'rationale' in item || item.choices.some(choice => 'explanation' in choice))) problems.push(`${key}: answer leaked before grading.`);
+const ineligibleStatuses = new Set(['withdrawn', 'unresolved-conflict', 'blocked', 'superseded']);
+
+function date(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return NaN;
+  const timestamp = Date.parse(`${value}T00:00:00Z`);
+  return Number.isFinite(timestamp) && new Date(timestamp).toISOString().slice(0, 10) === value ? timestamp : NaN;
+}
+
+function statusReasons(record) {
+  const reasons = [];
+  for (const [location, item] of [['condition', record], ['review', record?.review], ...(Array.isArray(record?.sources) ? record.sources.map(source => [`source ${source?.id || '(unknown)'}`, source]) : [])]) {
+    if (ineligibleStatuses.has(item?.status)) reasons.push(`${location}: ${item.status}`);
   }
+  return reasons;
 }
-if (Object.values(positions).some(count => count < catalog.questionCount * 0.1)) problems.push('Correct-answer positions have a severe distribution bias.');
-const referenceOnly = catalog.conditions.filter(condition => !condition.formalGuideline).map(condition => ({ id: condition.id, name: condition.title }));
-if (catalog.total - referenceOnly.length < 100) problems.push('Expected at least 100 conditions with formal guideline or official recommendation evidence; reference-only gaps must remain explicit.');
-const sources = new Map();
-const sourceWords = new Map();
-for (const record of records) for (const source of record.sources) {
-  const entry = sources.get(source.url) || { url: source.url, organization: source.organization, kind: source.kind, conditions: [] };
-  entry.conditions.push(record.id);
-  sources.set(source.url, entry);
+
+// Strip only known eligibility flags from a private validation copy. No dates,
+// source permissions, URLs, content or persisted records are changed.
+function structuralCopy(record) {
+  const copy = structuredClone(record);
+  for (const item of [copy, copy?.review, ...(Array.isArray(copy?.sources) ? copy.sources : [])]) {
+    if (item && ineligibleStatuses.has(item.status)) delete item.status;
+  }
+  return copy;
 }
-for (const record of records) {
-  const urls = new Map(record.sources.map(source => [source.id, source.url]));
-  const count = (text, ids) => {
-    for (const sourceId of ids) {
-      const url = urls.get(sourceId);
-      sourceWords.set(url, (sourceWords.get(url) || 0) + text.trim().split(/\s+/).length);
+
+/** A quarantine pass is maintenance integrity, never a fully current readiness claim. */
+export function validateMaintenanceCorpus({ records, files = [], now = Date.now(), allowQuarantine = false, minimumConditions = 100, minimumFormalConditions = 100, minimumCorrectPositionShare = 0.1 } = {}) {
+  if (!Array.isArray(records) || records.length > 500 || !Number.isFinite(now)) throw new TypeError('Use bounded study records and a valid validation time.');
+  const problems = [];
+  const structuralRecords = [];
+  for (const record of records) {
+    const errors = validateStudyCondition(structuralCopy(record), { now });
+    const statusObjects = [record, record?.review, ...(Array.isArray(record?.sources) ? record.sources : [])];
+    if (statusObjects.some(item => item?.status !== undefined && !ineligibleStatuses.has(item.status))) errors.push('Unknown content/source status; do not infer eligibility.');
+    if (errors.length) problems.push(...errors.map(error => `${record?.id || '(unknown)'}: ${error}`));
+    else structuralRecords.push(record);
+  }
+  const runtime = createStudyCurriculum({ records, now });
+  const structural = createStudyCurriculum({ records: structuralRecords.map(structuralCopy), now });
+  if (structural.rejected.length) problems.push(...structural.rejected.map(item => `${item.id}: ${item.problems.join(' ')}`));
+  if (!allowQuarantine && runtime.rejected.length) problems.push(...runtime.rejected.map(item => `${item.id}: ${item.problems.join(' ')}`));
+  const catalog = runtime.list();
+  const detailById = new Map(structuralRecords.map(record => [record.id, runtime.get(record.id)]));
+  const quarantine = structuralRecords.map(record => {
+    const reasons = statusReasons(record);
+    const detail = detailById.get(record.id);
+    if (detail && !detail.current) reasons.push(`source check expired ${detail.expiresAt} (UTC)`);
+    return reasons.length ? { id: record.id, name: record.name, questionCount: record.questions.length, reasons } : null;
+  }).filter(Boolean);
+  const quarantinedIds = new Set(quarantine.map(item => item.id));
+  const currentRecords = structuralRecords.filter(record => detailById.get(record.id)?.current && !quarantinedIds.has(record.id));
+  const formal = record => record.sources.some(source => ['clinical-guideline', 'official-recommendation'].includes(source.kind));
+  const formalCount = structuralRecords.filter(formal).length;
+  const currentFormalCount = currentRecords.filter(formal).length;
+  if (records.length < minimumConditions) problems.push(`Expected at least ${minimumConditions} conditions in the inventory.`);
+  if (!allowQuarantine && (catalog.total < minimumConditions || catalog.currentCount !== records.length)) problems.push('Expected all inventory conditions to be accepted and currently eligible.');
+  if (formalCount < minimumFormalConditions || (!allowQuarantine && currentFormalCount < minimumFormalConditions)) problems.push(`Expected at least ${minimumFormalConditions} conditions with formal guideline or official recommendation evidence; reference-only gaps must remain explicit.`);
+
+  const questionKeys = new Set();
+  const stems = new Set();
+  const positions = Object.fromEntries('ABCDE'.split('').map(letter => [letter, 0]));
+  const domains = Object.fromEntries(['acute', 'chronic', 'emergent', 'preventive', 'foundations'].map(domain => [domain, 0]));
+  let sections = 0;
+  let questionCount = 0;
+  for (const record of structuralRecords) {
+    sections += record.sections.length;
+    const envelope = files.find(file => file.parsed.conditions.includes(record));
+    if (envelope && record.review.checkedAt !== envelope.parsed.checkedAt) problems.push(`${record.id}: envelope check date mismatch.`);
+    const detail = structural.get(record.id);
+    if (detail?.questions.some(item => 'correctChoiceId' in item || 'rationale' in item || item.choices.some(choice => 'explanation' in choice))) problems.push(`${record.id}: answer leaked before grading.`);
+    for (const question of record.questions) {
+      questionCount++;
+      const key = `${record.id}:${question.id}`;
+      if (questionKeys.has(key)) problems.push(`${key}: duplicate key.`);
+      questionKeys.add(key);
+      const stem = question.stem.toLowerCase().replace(/\s+/g, ' ').trim();
+      if (stems.has(stem)) problems.push(`${key}: identical question stem.`);
+      stems.add(stem);
+      if (question.choices.map(choice => choice.id).join('') !== 'ABCDE') problems.push(`${key}: choices must be labeled A through E.`);
+      const expectedDistractors = question.choices.filter(choice => choice.id !== question.correctChoiceId).map(choice => choice.id).sort().join('');
+      if (Object.keys(question.distractorExplanations).sort().join('') !== expectedDistractors) problems.push(`${key}: distractor rationale map mismatch.`);
+      positions[question.correctChoiceId]++;
+      domains[question.domain]++;
+      const result = runtime.answer(record.id, question.id, question.correctChoiceId);
+      const card = runtime.card(record.id, question.id);
+      if (quarantinedIds.has(record.id)) {
+        if (result?.current || card?.current) problems.push(`${key}: quarantined question/card is incorrectly current.`);
+      } else if (!result?.correct || !result.current || result.humanReview !== false || !result.sources.length || !card?.current || !card.sourceVerified || card.verified !== false || card.front.length > 2000 || card.back.length > 4000) problems.push(`${key}: canonical answer/card integrity failed.`);
     }
-  };
-  for (const section of record.sections) count(section.text, section.sourceIds);
-  for (const question of record.questions) count([question.explanation, ...Object.values(question.distractorExplanations), question.choices.find(choice => choice.id === question.correctChoiceId).text].join(' '), question.sourceIds);
-}
-for (const [url, words] of sourceWords) if (words > 200) problems.push(`${url}: combined attributed factual teaching/rationale text exceeds the 200-word concise-source budget (${words}).`);
-const manifest = {
-  schemaVersion: 1, checkedAt: records.map(record => record.review.checkedAt).sort()[0],
-  purpose: 'Personal educational pilot; source checks are not clinician approval, rights clearance or a medical accuracy certification.',
-  scope: 'At least 100 curated common or high-yield family medicine conditions, not a prevalence ranking or complete exam syllabus.',
-  conditions: catalog.total, currentConditions: catalog.currentCount, questions: catalog.questionCount, sections,
-  formalGuidelineConditions: catalog.total - referenceOnly.length, officialReferenceOnlyConditions: referenceOnly,
-  distinctSourceUrls: sources.size, maximumAttributedFactualWordsPerUrl: Math.max(...sourceWords.values()), questionDomains: domains, correctAnswerPositions: positions,
-  clinicalApproval: false, humanReviewed: false, commercialApprovedRecords: 0,
-  files: files.map(({ name, sha256 }) => ({ path: `content/conditions/${name}`, sha256 })),
-  sources: [...sources.values()].sort((a, b) => a.url.localeCompare(b.url)),
-};
-if (problems.length) {
-  console.error(JSON.stringify({ ok: false, problems }, null, 2));
-  process.exitCode = 1;
-} else {
-  if (process.argv.includes('--write-manifest')) {
-    writeFileSync(resolve(root, 'content/curriculum-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
-    const lines = ['# Condition coverage', '', `Source checks: ${manifest.checkedAt}. ${manifest.conditions} conditions, ${manifest.questions} original questions and ${sections} original teaching sections.`, '', `Formal guideline or official recommendation evidence: ${manifest.formalGuidelineConditions} conditions. Official clinical reference only: ${referenceOnly.length}. These labels do not establish independent clinician review or commercial rights.`, '', 'This is a curated high-yield selection, not an epidemiological ranking of the top 100 or a proportionally balanced ABFM mock examination. Source links are free at their originating sites; the app is independent and does not imply endorsement.', '', '| Condition | Primary domain | Questions | Source coverage |', '| --- | --- | ---: | --- |'];
-    for (const condition of catalog.conditions) lines.push(`| ${condition.title.replaceAll('|', '/')} | ${condition.domain} | ${condition.questionCount} | ${condition.formalGuideline ? 'Guideline / official recommendation' : '**Official reference only — guideline gap**'} |`);
-    lines.push('', 'Detailed editions, populations, locators, jurisdictions and limitations are stored in each condition record and displayed in the app. See the four source-audit reports for blocked and excluded sources.');
-    writeFileSync(resolve(root, 'docs/CONDITION_COVERAGE.md'), `${lines.join('\n')}\n`);
+    if (quarantinedIds.has(record.id) && runtime.retrieve(record.name, { conditionIds: [record.id] }).some(chunk => chunk.conditionId === record.id)) problems.push(`${record.id}: quarantined content supplied current retrieval evidence.`);
   }
-  console.log(JSON.stringify({ ok: true, conditions: manifest.conditions, currentConditions: manifest.currentConditions, questions: manifest.questions, sections, formalGuidelineConditions: manifest.formalGuidelineConditions, referenceOnly, distinctSourceUrls: sources.size, questionDomains: domains, correctAnswerPositions: positions, paidCalls: 0 }, null, 2));
+  if (questionCount < 2 * records.length) problems.push('Expected at least two original questions for every condition.');
+  if (Object.values(positions).some(count => count < questionCount * minimumCorrectPositionShare)) problems.push('Correct-answer positions have a severe distribution bias.');
+  const referenceOnly = structuralRecords.filter(record => !formal(record)).map(record => ({ id: record.id, name: record.name }));
+  const sources = new Map();
+  const sourceWords = new Map();
+  for (const record of structuralRecords) for (const source of record.sources) {
+    const entry = sources.get(source.url) || { url: source.url, organization: source.organization, kind: source.kind, conditions: [] };
+    entry.conditions.push(record.id);
+    sources.set(source.url, entry);
+  }
+  for (const record of structuralRecords) {
+    const urls = new Map(record.sources.map(source => [source.id, source.url]));
+    const count = (text, ids) => {
+      for (const sourceId of ids) {
+        const url = urls.get(sourceId);
+        sourceWords.set(url, (sourceWords.get(url) || 0) + text.trim().split(/\s+/).length);
+      }
+    };
+    for (const section of record.sections) count(section.text, section.sourceIds);
+    for (const question of record.questions) count([question.explanation, ...Object.values(question.distractorExplanations), question.choices.find(choice => choice.id === question.correctChoiceId).text].join(' '), question.sourceIds);
+  }
+  for (const [url, words] of sourceWords) if (words > 200) problems.push(`${url}: combined attributed factual teaching/rationale text exceeds the 200-word concise-source budget (${words}).`);
+  const manifest = {
+    schemaVersion: 1, checkedAt: structuralRecords.map(record => record.review.checkedAt).sort()[0] || null,
+    purpose: 'Educational board-study tool only; not medical advice or for clinical use. Source checks are not clinician approval, rights clearance or a medical accuracy certification.',
+    scope: 'Disease-reference curriculum: at least 100 curated common or high-yield family medicine conditions, not a prevalence ranking or the complete exam syllabus.',
+    conditions: records.length, acceptedConditions: catalog.total, currentConditions: currentRecords.length, quarantinedConditions: quarantine.length,
+    questions: questionCount, currentQuestions: currentRecords.reduce((sum, record) => sum + record.questions.length, 0), quarantinedQuestions: quarantine.reduce((sum, record) => sum + record.questionCount, 0), sections,
+    formalGuidelineConditions: formalCount, currentFormalGuidelineConditions: currentFormalCount, officialReferenceOnlyConditions: referenceOnly, quarantine,
+    distinctSourceUrls: sources.size, maximumAttributedFactualWordsPerUrl: Math.max(0, ...sourceWords.values()), questionDomains: domains, correctAnswerPositions: positions,
+    validationMode: allowQuarantine ? 'maintenance-allow-quarantine' : 'strict-current-readiness', fullyCurrent: currentRecords.length === records.length && !problems.length,
+    clinicalApproval: false, humanReviewed: false, commercialApprovedRecords: 0,
+    files: files.map(({ name, sha256 }) => ({ path: `content/conditions/${name}`, sha256 })),
+    sources: [...sources.values()].sort((a, b) => a.url.localeCompare(b.url)),
+  };
+  return { ok: !problems.length, problems: [...new Set(problems)], manifest };
 }
+
+function readCorpus(rootDir, now) {
+  let bytes = 0;
+  return names.map(name => {
+    const body = readFileSync(resolve(rootDir, 'content/conditions', name), 'utf8');
+    bytes += Buffer.byteLength(body);
+    if (Buffer.byteLength(body) > 2 * 1024 * 1024 || bytes > 8 * 1024 * 1024) throw new Error('Study corpus exceeds its bounded file limits.');
+    const parsed = JSON.parse(body);
+    if (!parsed || parsed.schemaVersion !== 1 || !Number.isFinite(date(parsed.checkedAt)) || date(parsed.checkedAt) > now || !Array.isArray(parsed.conditions) || parsed.conditions.length > 125) throw new Error(`${name}: invalid study corpus envelope.`);
+    if (name !== 'common_additions.json' && parsed.conditions.length !== 25) throw new Error(`${name}: expected 25 conditions.`);
+    if (name === 'common_additions.json' && parsed.conditions.length < 5) throw new Error(`${name}: expected at least five additional conditions.`);
+    return { name, parsed, sha256: createHash('sha256').update(body).digest('hex') };
+  });
+}
+
+function writeReports(rootDir, manifest, validatedRecords) {
+  writeFileSync(resolve(rootDir, 'content/curriculum-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+  const lines = ['# Condition coverage', '', `Source checks begin: ${manifest.checkedAt}. Inventory: ${manifest.conditions} conditions, ${manifest.questions} original questions and ${manifest.sections} original teaching sections.`, '', `Currently eligible: ${manifest.currentConditions} conditions and ${manifest.currentQuestions} questions. Quarantined: ${manifest.quarantinedConditions} conditions and ${manifest.quarantinedQuestions} questions. Validation mode: ${manifest.validationMode}; fully current: ${manifest.fullyCurrent}.`, '', `Formal guideline or official recommendation evidence: ${manifest.formalGuidelineConditions} inventory conditions (${manifest.currentFormalGuidelineConditions} current). Official clinical reference only: ${manifest.officialReferenceOnlyConditions.length}. These labels do not establish independent clinician review or commercial rights.`, '', 'Study tool only; not medical advice or for clinical use. This is a curated high-yield selection, not an epidemiological ranking or a proportionally balanced ABFM mock examination. Source links are free at their originating sites; the app is independent and does not imply endorsement.', '', '| Condition | Primary domain | Questions | Source coverage | Eligibility |', '| --- | --- | ---: | --- | --- |'];
+  const records = [...validatedRecords].sort((a, b) => a.name.localeCompare(b.name));
+  const referenceIds = new Set(manifest.officialReferenceOnlyConditions.map(record => record.id));
+  const quarantine = new Map(manifest.quarantine.map(record => [record.id, record.reasons]));
+  for (const condition of records) lines.push(`| ${condition.name.replaceAll('|', '/')} | ${condition.domain} | ${condition.questions.length} | ${referenceIds.has(condition.id) ? '**Official reference only — guideline gap**' : 'Guideline / official recommendation'} | ${quarantine.has(condition.id) ? `**Quarantined:** ${quarantine.get(condition.id).join('; ').replaceAll('|', '/')}` : 'Current source check; clinician review pending'} |`);
+  lines.push('', 'Detailed editions, populations, locators, jurisdictions and limitations are stored in each condition record and displayed in the app. See the source-audit reports for blocked and excluded sources. Quarantined records remain in the inventory but cannot supply current RAG evidence or current canonical grading/cards.');
+  writeFileSync(resolve(rootDir, 'docs/CONDITION_COVERAGE.md'), `${lines.join('\n')}\n`);
+}
+
+export function runMaintenanceCli(args = process.argv.slice(2), { rootDir = root, now = Date.now(), output = console.log, error = console.error } = {}) {
+  try {
+    if (args.some(argument => !['--write-manifest', '--allow-quarantine'].includes(argument))) throw new Error('Use only --write-manifest and/or --allow-quarantine.');
+    const files = readCorpus(rootDir, now);
+    const records = files.flatMap(file => file.parsed.conditions);
+    const result = validateMaintenanceCorpus({ records, files, now, allowQuarantine: args.includes('--allow-quarantine') });
+    if (!result.ok) { error(JSON.stringify({ ok: false, problems: result.problems }, null, 2)); return 1; }
+    if (args.includes('--write-manifest')) writeReports(rootDir, result.manifest, records);
+    const { sources, files: fileHashes, ...summary } = result.manifest;
+    output(JSON.stringify({ ok: true, ...summary, paidCalls: 0 }, null, 2));
+    return 0;
+  } catch (exception) {
+    error(JSON.stringify({ ok: false, problems: [exception.message] }, null, 2));
+    return 1;
+  }
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exitCode = runMaintenanceCli();

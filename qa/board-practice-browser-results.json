@@ -1,0 +1,73 @@
+{
+  "runAt": "2026-10-09T10:46:13.164Z",
+  "scope": "New board-practice and canonical chat-quiz mobile flows only, 360x800. Nonclinical injected fixture corpus with real authenticated local API routes. Prior login, voice, mic, zoom, model selection and provider suites not repeated.",
+  "viewport": {
+    "width": 360,
+    "height": 800
+  },
+  "results": [
+    {
+      "name": "board screen loads real catalog and all five blueprint domains with study-only disclosure",
+      "pass": true
+    },
+    {
+      "name": "mixed practice submits canonical answer, displays explanations and saves sourced recall card",
+      "pass": true
+    },
+    {
+      "name": "leaving a session preserves answers and resumes at its next unanswered question",
+      "pass": true
+    },
+    {
+      "name": "finished results separate answered accuracy and skipped questions, expose source-linked missed review",
+      "pass": true
+    },
+    {
+      "name": "weak-domain action prefills targeted session and missed-question mode remains available",
+      "pass": true
+    },
+    {
+      "name": "end-of-session feedback stays hidden until finish",
+      "pass": true
+    },
+    {
+      "name": "practice timer continues across reload and locks answer buttons when elapsed",
+      "pass": true
+    },
+    {
+      "name": "original chat quiz A\u2013E grading avoids provider inference and saves canonical review cards",
+      "pass": true
+    },
+    {
+      "name": "Today and Library have working board practice entry points and study reflection language",
+      "pass": true
+    }
+  ],
+  "pageErrors": [],
+  "overflows": [],
+  "providerDispatches": 0,
+  "paidProviderCalls": 0,
+  "verificationMethod": "Retained passed catalog/grading/card groups; reran only failed setup-dependent scopes after fixing same-URL navigation in the QA harness; final chat-quiz scope rerun after making the condition Coach action explicitly ask Quiz me.",
+  "defects": [
+    {
+      "id": "BOARD-UI-01",
+      "finding": "Browser module import /shared/blueprint.js was not served, blocking initial app boot.",
+      "fix": "Added module to server static shared-module allowlist."
+    },
+    {
+      "id": "BOARD-QA-01",
+      "finding": "QA assumed same-URL page.goto reloaded app state; later scopes found prior active session UI.",
+      "fix": "Use distinct query URL to load fresh page globals for each independent new scope."
+    },
+    {
+      "id": "BOARD-UI-02",
+      "finding": "Study with Coach prompt began Study rather than an explicit quiz instruction, so the backend returned summaries rather than a canonical quiz.",
+      "fix": "Start canonical prompt with Quiz me on the chosen condition."
+    }
+  ],
+  "attemptReports": [
+    "board-practice-browser-initial-results.json",
+    "board-practice-browser-results-scopes-2-3-4-5-6-7-8.json",
+    "board-practice-browser-results-scopes-7.json"
+  ]
+}
