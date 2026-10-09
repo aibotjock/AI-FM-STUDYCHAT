@@ -8,10 +8,10 @@ live provider access or clinical accuracy.
 
 ## Version and scope
 
-- Current hosted release: `1853f6e0dbd2aa0105f5c9240dfa98947919b992`,
-  tree `cbcd230fe24575e616072e60f59541b974367489`.
+- Current hosted source-linked curriculum release: `c42e8f6b923b2aaa7225931cb0cda95eea1ac550`,
+  tree `c965d315bebc16bf6e37953e11a078f1b67308d6`.
 - Voice, dictation, pan and telemetry implementation: `45077ce7d2a0f400e8548322cbfcd2a52c8c0982`,
-  tree `390ecb02fd9fdd34ed71c4f53c7daf88440ebae8`. The later release adds privacy disclosures and live evidence; functional source is unchanged.
+  tree `390ecb02fd9fdd34ed71c4f53c7daf88440ebae8`. The prior disclosure release added privacy/live evidence; the current release adds educational source retrieval, original board questions and study-only notices.
 - Previous published baseline: `4cbf673ca36d3254a336a7f11527e96afb02e43c`.
 - Earlier secure sign-in, review/restore fixes and owner OpenAI model controls
   are deployed. Newly checked changes add continuous personal voice, dictation
@@ -147,3 +147,12 @@ The new retrieval uses local BM25 and constrained OpenAI ID selection. Canonical
 Final expanded-corpus result: **PASS**, 105 accepted/current conditions, 210 questions, 323 sections and 136 distinct source URLs. Exactly 100 conditions have formal guideline or official recommendation evidence; five have visible official-reference-only gaps (BPPV, BPH, endometriosis, GAD and B12 deficiency). Correct-key counts are A41/B42/C42/D43/E42. The added five conditions/ten questions passed their own new-source integrity check; one new fixed-loader case passed. The final whole-corpus integrity/manifest run was justified by the new file, aggregate source budgets and changed coverage counts. Canonical answers/cards are bounded, answer keys hidden before grading, check dates current and all human-review flags false. No paid provider call or unchanged functional suite was repeated.
 
 The monthly task uses wildcard condition/audit paths and thus includes all five files. Official recommendation coverage is selected teaching-point coverage, not five full guidelines or complete pharmacologic protocols. Source-based facts still require independent clinical review before a paid accuracy claim. Current publication/deployment evidence will be appended after the private pilot rollout succeeds.
+
+
+| ID | New publication/live scope | Verified result |
+| --- | --- | --- |
+| PUB-RAG-01 | GitHub commit `c42e8f6b923b2aaa7225931cb0cda95eea1ac550`, tree `c965d315bebc16bf6e37953e11a078f1b67308d6`, release-branch lease from `92b4a8a89d7e69432d88f6a9c94c6e68f33e4456` | All 124 published tracked blob hashes/modes match staged source. Only 44 changed text files uploaded; unchanged assets retained. `[skip ci]` avoids redundant full CI after scoped checks. |
+| LIVE-RAG-01 | Pinned Railway deployment `8e417145-ad99-4443-8935-2554160522fc` | Terminal SUCCESS at `2026-10-09T09:53:57.176Z`; normal app startup and UID/GID 1000, no repeated bootstrap. |
+| LIVE-RAG-02 | New release public status/protected curriculum/changed shell assets | `/api/status` 200 confirms 105 conditions/210 questions/105 current/100 formal or recommendation topics, OpenAI configured/access required. `/api/curriculum` 401 without sign-in. `/app.js` 200 SHA256 `3c6c857eaec7271636886bc7aef42f0867451cef5c52cf13162b19d4434f2c61`, `/sw.js` 200 SHA256 `d6c9987fae1dc4757fb5c58f415f98eb738ee8973b4a76d42d14c45b3d23699a`, both byte-identical to published source; shell v5. No inference or private content fetched. |
+
+New source-linked educational library is ready for the owner's phone study test. Refreshed mobile page loads the new catalog; an in-memory session can expire on this server restart. All previously verified sign-in/READY/Ingenium evidence remains historical and was not retested. Real provider semantic selection for clinical queries, human medical adjudication and comprehensive ABFM preparation quality are not certified by these checks. Voice continues to require checking generated clinical details against cited text. No app store was published.
