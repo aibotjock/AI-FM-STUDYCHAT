@@ -47,22 +47,24 @@ test('deliberate option parsing accepts reasoning without turning a clinical sen
   for (const text of ['See my patient', 'be', 'see the source', 'bee sting treatment']) assert.equal(studyChoice(text), null, text);
 });
 
-test('personal study navigation and hypothetical simulation never generate uncited AI facts or conversation cards', async t => {
-  const app = await fixture(t);
+test('personal study coaching uses conversational acts without generating uncited facts or conversation cards', async t => {
+  const app = await fixture(t, { selection: { chunkIds: [], questionId: null, unsupported: false, dialogue: { intent: 'reflect', acknowledgment: 'effort', followup: 'name-gap' } } });
   for (const mode of ['coach', 'simulation', 'practice']) {
     const conversation = (await app.request('/api/conversations', 'POST', { mode })).body;
     const reply = await app.chat(conversation.id, 'I want to practice synthesis.', `scripted-${mode}`);
     assert.equal(reply.body.message.scripted, true);
     assert.equal(reply.body.message.canonicalStudyProcess, true);
     assert.equal(reply.body.message.sourceVerified, true);
-    assert.equal(reply.body.message.ai, undefined);
-    assert.match(reply.body.message.content, /no factual or clinical answer is being generated/);
-    if (mode !== 'coach') assert.match(reply.body.message.content, /Hypothetical study exercise only/);
+    assert.equal(reply.body.message.ai.provider, 'openai');
+    assert.equal(reply.body.message.studyDialogue.intent, 'reflect');
+    assert.match(reply.body.message.content, /Which part feels unclear/);
+    assert.match(reply.body.message.content, /not assigning a competence score or verifying a free-text medical answer/);
+    assert.deepEqual(reply.body.message.citations, []);
     const drafts = await app.request('/api/chat/cards', 'POST', { conversationId: conversation.id });
     assert.deepEqual(drafts.body.cards, []);
     assert.match(drafts.body.notice, /Uncited conversation drafts are disabled/);
   }
-  assert.equal(app.calls(), 0);
+  assert.equal(app.calls(), 3, 'Each new coaching turn uses one model request; drafting unsourced cards uses none.');
 });
 
 test('unsupported responses are safe canonical process text and imported source markers can never authorize speech', async t => {

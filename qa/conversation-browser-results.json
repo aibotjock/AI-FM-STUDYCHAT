@@ -1,0 +1,53 @@
+{
+  "runAt": "2026-10-09T15:49:35.026Z",
+  "scope": "Only new conversational mobile UI, real local authenticated chat/state APIs with mocked OpenAI selections, pending quiz after followup, and safe spokenText wiring. Browser recognition/readout are mocks; no physical phone audio, general board, auth, provider or voice lifecycle retest.",
+  "viewport": {
+    "width": 360,
+    "height": 800
+  },
+  "results": [
+    {
+      "scope": 0,
+      "name": "mobile greeting and study planning use multi-turn context and survive page reload with source citations",
+      "pass": true,
+      "verificationFile": "conversation-browser-results-scopes-0-1-3.json"
+    },
+    {
+      "scope": 1,
+      "name": "three conversational quick actions post to the existing chat and an unresolved quiz remains answerable after reflection",
+      "pass": true,
+      "verificationFile": "conversation-browser-results-scopes-0-1-3.json"
+    },
+    {
+      "scope": 2,
+      "name": "visible learner words stay unverified while manual readout uses only server-issued safe spoken text",
+      "pass": true,
+      "verificationFile": "conversation-browser-results-scopes-0-1-2-3.json"
+    },
+    {
+      "scope": 3,
+      "name": "spoken follow-up uses the same conversational chat reply and excludes unverified learner quotes",
+      "pass": true,
+      "verificationFile": "conversation-browser-results-scopes-0-1-3.json"
+    },
+    {
+      "scope": 4,
+      "name": "new spokenText fields cannot enable readout for imported or unmarked historical message bodies",
+      "pass": true,
+      "verificationFile": "conversation-browser-initial-results.json"
+    }
+  ],
+  "pageErrors": [],
+  "paidProviderCalls": 0,
+  "verificationFiles": [
+    "conversation-browser-initial-results.json",
+    "conversation-browser-results-scopes-0-1-2-3.json",
+    "conversation-browser-results-scopes-0-1-3.json"
+  ],
+  "failuresResolved": [
+    "Mock system-prompt selection corrected to find the tutor context after the JSON instruction.",
+    "Actual-care classifier corrected to allow numerical study availability while retaining actual-care clauses.",
+    "Quick-action request text aligned with contextual followup and original-quiz intents."
+  ],
+  "rerunPolicy": "Only failed scopes were repeated. Scope 4 passed in the initial run; scope 2 passed in the first targeted rerun and neither was rerun afterward. No prior general board, auth, provider or voice controller suites were repeated."
+}

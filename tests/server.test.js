@@ -264,7 +264,7 @@ test('slow uploads cannot overwrite a deleted card or restore over an active coa
   assert.equal((await app.request('/api/state')).result.conversations.find(item => item.id === conversation.id).messages.length, 2);
 });
 
-test('uncited AI flashcard generation cannot dispatch a provider or fabricate source provenance', async t => {
+test('uncited conversation card drafting cannot dispatch another provider or fabricate source provenance', async t => {
   let calls = 0;
   const app = await fixture(t, { env: { OPENAI_API_KEY: 'test' }, fetchImpl: async (url, request) => {
     calls++;
@@ -273,9 +273,10 @@ test('uncited AI flashcard generation cannot dispatch a provider or fabricate so
   } });
   const conversation = (await app.request('/api/conversations', 'POST', { mode: 'coach' })).result;
   await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Teach recall.' });
+  assert.equal(calls, 1, 'The conversational coaching turn uses one bounded provider request.');
   const drafts = (await app.request('/api/chat/cards', 'POST', { conversationId: conversation.id })).result.cards;
   assert.deepEqual(drafts, []);
-  assert.equal(calls, 0);
+  assert.equal(calls, 1, 'Drafting cannot request a model-generated uncited card.');
 });
 
 test('oversized growth rolls back without detaching other active chats, and every export can restore', async t => {

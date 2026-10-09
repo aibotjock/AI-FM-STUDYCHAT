@@ -55,7 +55,7 @@ export function offlineDrafts() {
   ];
 }
 
-/** Navigation and reflective questions contain no uncited factual teaching. */
+/** Offline navigation fallback; connected source-linked dialogue uses study-conversation.js. */
 export function sourcedStudyNavigation(conversation) {
   const turns = conversation.messages.filter(message => message.role === 'user').length;
   const prompts = conversation.mode === 'simulation' || conversation.mode === 'practice' ? [
@@ -66,5 +66,5 @@ export function sourcedStudyNavigation(conversation) {
     'Would you like a source-linked summary, an original board question, or review of a saved question? Name the topic you want to study.',
     'What question are you trying to answer? Name a sourced topic and ask one specific study question.'
   ];
-  return `Study navigation · Scripted prompt; no factual or clinical answer is being generated.\n\n${prompts[Math.max(0, turns - 1) % prompts.length]}\n\nFor study use only, not medical advice or patient care.`;
+  return `Offline study navigation · Scripted prompt; no factual or clinical answer is being generated.\n\n${prompts[Math.max(0, turns - 1) % prompts.length]}\n\nFor study use only, not medical advice or patient care.`;
 }

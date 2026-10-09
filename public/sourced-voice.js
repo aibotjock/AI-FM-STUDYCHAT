@@ -1,4 +1,5 @@
-// Study voice uses the same canonical, cited text reply as the visible chat.
+// Study voice reads server-rendered coaching and cited learning points.
+// The chat callback supplies safe spoken text without unverified learner quotes.
 // Recognition and speech synthesis are optional browser services, not an audio AI model.
 export function sourcedVoiceSupported(windowImpl = window) {
   return Boolean(windowImpl.isSecureContext && (windowImpl.SpeechRecognition || windowImpl.webkitSpeechRecognition) && windowImpl.speechSynthesis && windowImpl.SpeechSynthesisUtterance);
@@ -38,7 +39,7 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
   let durationTimer = null, recognitionTimer = null, speechTimer = null;
   let conversationId = null, destroyed = false, speech = null;
   let spokenText = '', chunks = [], chunkIndex = 0;
-  let snapshot = { phase: 'idle', message: 'Start sourced voice to study the cited question bank.', muted: false, audioBlocked: false, userCaption: '', assistantCaption: '', warning: '', model: null, setupPending: false };
+  let snapshot = { phase: 'idle', message: 'Talk with Coach about a study goal, learning point or question.', muted: false, audioBlocked: false, userCaption: '', assistantCaption: '', warning: '', model: null, setupPending: false };
   const active = () => ['starting', 'listening', 'thinking', 'speaking', 'paused'].includes(snapshot.phase);
   const current = (attempt, turn) => !destroyed && attempt === generation && turn === turnVersion && active() && !documentImpl.hidden;
   function update(change) { snapshot = { ...snapshot, ...change }; onState({ ...snapshot, active: active() }); }
@@ -66,7 +67,7 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
   }
   function pauseForAudio(message) {
     cancelSpeech();
-    update({ phase: 'paused', audioBlocked: true, message, warning: 'The canonical reply and its sources remain visible in chat. Tap Read reply to retry browser speech, or Stop voice to type.' });
+    update({ phase: 'paused', audioBlocked: true, message, warning: 'The coaching reply and its sources remain visible in chat. Tap Read reply to retry browser speech, or Stop voice to type.' });
   }
   function listen(attempt = generation, turn = turnVersion) {
     if (!current(attempt, turn)) return;
@@ -82,7 +83,7 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
     instance.onstart = () => {
       if (!valid()) return;
       clearTimer(recognitionTimer); recognitionTimer = null;
-      update({ phase: 'listening', message: 'Listening… finish your question or say an answer choice.', setupPending: false });
+      update({ phase: 'listening', message: 'Listening… share a study goal, ask a follow-up or say an answer choice.', setupPending: false });
     };
     instance.onresult = event => {
       if (!valid() || ended || submitted || !event?.results) return;
@@ -122,7 +123,7 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
   }
   async function submit(content, attempt, turn) {
     if (!current(attempt, turn)) return;
-    update({ phase: 'thinking', message: 'Finding the canonical study reply…', setupPending: false, userCaption: content });
+    update({ phase: 'thinking', message: 'Preparing your study coaching reply…', setupPending: false, userCaption: content });
     const Controller = windowImpl.AbortController || AbortController;
     const controller = new Controller(); requestController = controller;
     try {
@@ -130,7 +131,7 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
       const reply = await sendTurn({ content, conversationId, requestId: id, signal: controller.signal });
       if (!current(attempt, turn) || controller.signal.aborted) return;
       if (!canonicalSpokenReply(reply)) {
-        stop('That reply was not marked as canonical sourced study text. Voice did not read it. Use the cited question bank or review the visible message.', true);
+        stop('That reply was not marked as verified study coaching or current cited learning material. Voice did not read it. Review the visible message or open a current study topic.', true);
         return;
       }
       spokenText = reply.content; chunks = speechChunks(spokenText); chunkIndex = 0;
@@ -155,7 +156,7 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
     utterance.onstart = () => {
       if (!valid()) return;
       clearTimer(speechTimer); speechTimer = null;
-      update({ phase: 'speaking', message: 'Reading the exact cited study reply. Tap Interrupt to speak next.', audioBlocked: false });
+      update({ phase: 'speaking', message: 'Reading your study coaching reply. Tap Interrupt to speak next.', audioBlocked: false });
     };
     utterance.onend = () => {
       if (!valid()) return;
@@ -164,7 +165,7 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
       speakChunk(attempt, turn);
     };
     utterance.onerror = () => { if (valid()) pauseForAudio('Browser speech did not finish. The cited reply is visible in chat.'); };
-    update({ phase: 'speaking', message: 'Reading the exact cited study reply. Microphone is off while the reply is read.', audioBlocked: false });
+    update({ phase: 'speaking', message: 'Reading your study coaching reply. Microphone is off while the reply is read.', audioBlocked: false });
     speechTimer = setTimer(() => { if (valid()) pauseForAudio('Browser speech did not start. Tap Read reply, or use the visible cited text.'); }, 10000);
     try { synthesis.speak(utterance); } catch { pauseForAudio('Browser read-aloud is unavailable. Use the cited text in chat.'); }
   }
@@ -174,7 +175,7 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
     if (documentImpl.hidden) throw new Error('Keep the study app visible while starting sourced voice.');
     generation++; turnVersion++;
     conversationId = options.conversationId || null;
-    update({ phase: 'starting', message: 'Starting sourced study voice…', muted: false, audioBlocked: false, userCaption: '', assistantCaption: '', warning: '', setupPending: true });
+    update({ phase: 'starting', message: 'Starting your spoken study conversation…', muted: false, audioBlocked: false, userCaption: '', assistantCaption: '', warning: '', setupPending: true });
     durationTimer = setTimer(() => stop('Your ten-minute sourced voice session ended. Start another when ready.'), Math.max(1, Math.min(600000, Number(maxDurationMs) || 600000)));
     listen(generation, turnVersion);
   }

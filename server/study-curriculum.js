@@ -97,7 +97,10 @@ export function isStudyQuizRequest(query) {
 }
 export function isActualCareRequest(query) {
   if (typeof query !== 'string') return true;
-  const actual = /\b(?:my|our)\s+(?:(?:actual|real)\s+)?(?:patient|child|baby|son|daughter|spouse|wife|husband|mother|father|mom|dad|parent|relative)\b|\bmy\s+(?:symptoms?|medications?|blood pressure|diagnosis|treatment)\b|\bi\s+(?:am having|am experiencing|am suffering|was diagnosed with)\b|\bi\s+have\s+(?:an?\s+)?(?!(?:question|exam|study|board|practice|session|flashcard|card|note|time|minute|hour|fictional|hypothetical)\b)\w+|\b(?:should|can|could)\s+i\s+(?:take|stop|start)\b|\bwhat\s+should\s+i\s+(?:take|do)\b|\b(?:dose|dosing|treatment|medicine|medication)\s+for\s+me\b/i.test(query);
+  // Time available for studying is a coaching request. Replace only that clause;
+  // a separate actual-care clause and symptom durations still reach the care gate.
+  const careQuery = query.replace(/\bi\s+have\s+(?:(?:only|about|roughly)\s+)?(?:\d{1,3}(?:\.\d)?|one|two|three|four|five|six|seven|eight|nine|ten|fifteen|twenty|thirty|forty|forty[- ]five|sixty|ninety|a few|some)\s*[- ]?\s*(?:minutes?|mins?|hours?|hrs?)(?:\s+(?:today|tonight|this morning|this evening|each day))?(?=\s*(?:$|[.!?,;]|and\b|(?:to|for)\s+(?:study|studying|learn|learning|review|practice|board|exam|chat)\b))/gi, 'I have study time');
+  const actual = /\b(?:my|our)\s+(?:(?:actual|real)\s+)?(?:patient|child|baby|son|daughter|spouse|wife|husband|mother|father|mom|dad|parent|relative)\b|\bmy\s+(?:symptoms?|medications?|blood pressure|diagnosis|treatment)\b|\bi\s+(?:am having|am experiencing|am suffering|was diagnosed with)\b|\bi\s+have\s+(?:an?\s+)?(?!(?:question|exam|study|board|practice|session|flashcard|card|note|time|minute|hour|fictional|hypothetical)\b)\w+|\b(?:should|can|could)\s+i\s+(?:take|stop|start)\b|\bwhat\s+should\s+i\s+(?:take|do)\b|\b(?:dose|dosing|treatment|medicine|medication)\s+for\s+me\b/i.test(careQuery);
   if (!actual) return false;
   const hypothetical = /\b(?:hypothetical|fictional|simulated|board[- ]style|board exam|practice vignette)\b/i.test(query);
   const expresslyReal = /\b(?:my|our)\s+(?:actual|real)\b|\b(?:actual|real)\s+(?:patient|child|person)\b|\bright now\b/i.test(query);

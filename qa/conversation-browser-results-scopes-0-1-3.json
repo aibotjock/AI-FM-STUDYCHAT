@@ -1,0 +1,435 @@
+{
+  "runAt": "2026-10-09T15:49:35.026Z",
+  "scope": "Only new conversational mobile UI, real local authenticated chat/state APIs with mocked OpenAI selections, pending quiz after followup, and safe spokenText wiring. Browser recognition/readout are mocks; no physical phone audio, general board, auth, provider or voice lifecycle retest.",
+  "viewport": {
+    "width": 360,
+    "height": 800
+  },
+  "results": [
+    {
+      "scope": 0,
+      "name": "mobile greeting and study planning use multi-turn context and survive page reload with source citations",
+      "pass": true
+    },
+    {
+      "scope": 1,
+      "name": "three conversational quick actions post to the existing chat and an unresolved quiz remains answerable after reflection",
+      "pass": true
+    },
+    {
+      "scope": 3,
+      "name": "spoken follow-up uses the same conversational chat reply and excludes unverified learner quotes",
+      "pass": true
+    }
+  ],
+  "pageErrors": [],
+  "requests": [
+    {
+      "path": "/api/status",
+      "method": "GET"
+    },
+    {
+      "path": "/api/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "body": {
+        "conversationId": "30de9695-89c7-43fd-8348-c64d9c867932",
+        "content": "Hello",
+        "requestId": "9acc5e57-c35a-4023-aad7-7d7c1dd3b8fb"
+      }
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "body": {
+        "conversationId": "30de9695-89c7-43fd-8348-c64d9c867932",
+        "content": "I have 20 minutes today. Help me plan a study session.",
+        "requestId": "1ed2eaed-208c-4480-8d0a-bb6b4a19226a"
+      }
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "body": {
+        "conversationId": "30de9695-89c7-43fd-8348-c64d9c867932",
+        "content": "Asthma",
+        "requestId": "dda22fa1-2172-4d26-abee-8ada34c00015"
+      }
+    },
+    {
+      "path": "/api/status",
+      "method": "GET"
+    },
+    {
+      "path": "/api/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/status",
+      "method": "GET"
+    },
+    {
+      "path": "/api/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "body": {
+        "conversationId": "2bd11d5b-d7b1-4a01-9901-71d10f9aae43",
+        "content": "Show me the asthma management study point.",
+        "requestId": "aeeb0c38-be18-4f2f-a58f-3fa87b1a1d78",
+        "conditionIds": [
+          "asthma"
+        ]
+      }
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "body": {
+        "conversationId": "2bd11d5b-d7b1-4a01-9901-71d10f9aae43",
+        "content": "Explain this.",
+        "requestId": "a30c435a-6ed2-4ccb-8547-81ed2570040f",
+        "conditionIds": [
+          "asthma"
+        ]
+      }
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "body": {
+        "conversationId": "2bd11d5b-d7b1-4a01-9901-71d10f9aae43",
+        "content": "Ask me an original board-style question.",
+        "requestId": "98818b76-5b02-43f3-a85c-942504c690ca",
+        "conditionIds": [
+          "asthma"
+        ]
+      }
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "body": {
+        "conversationId": "2bd11d5b-d7b1-4a01-9901-71d10f9aae43",
+        "content": "I don't understand",
+        "requestId": "77a2a131-7721-416f-a10d-2e208de4a3ee",
+        "conditionIds": [
+          "asthma"
+        ]
+      }
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "body": {
+        "conversationId": "2bd11d5b-d7b1-4a01-9901-71d10f9aae43",
+        "content": "B",
+        "requestId": "f3bfec18-6277-4232-bfb0-5db3ca32b85d",
+        "conditionIds": [
+          "asthma"
+        ]
+      }
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "body": {
+        "conversationId": "2bd11d5b-d7b1-4a01-9901-71d10f9aae43",
+        "content": "Help me plan a study session based on my goals and available time. Ask me one question at a time.",
+        "requestId": "68a921a5-1a6f-4558-b41a-01264675183e",
+        "conditionIds": [
+          "asthma"
+        ]
+      }
+    },
+    {
+      "path": "/api/status",
+      "method": "GET"
+    },
+    {
+      "path": "/api/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "body": {
+        "conversationId": "3ef15a90-32c0-4f9f-961c-7349c4f8816d",
+        "content": "I have 20 minutes and want to focus on one topic.",
+        "requestId": "f7a62337-2d05-40f3-8ee4-5aef8eb5bdb4"
+      }
+    }
+  ],
+  "providerRequests": [
+    {
+      "latest": "Hello",
+      "history": [
+        {
+          "role": "user",
+          "content": "Hello",
+          "trust": "learner-statement-unverified"
+        }
+      ],
+      "pendingQuestion": null,
+      "model": "gpt-4.1-mini"
+    },
+    {
+      "latest": "I have 20 minutes today. Help me plan a study session.",
+      "history": [
+        {
+          "role": "user",
+          "content": "Hello",
+          "trust": "learner-statement-unverified"
+        },
+        {
+          "role": "assistant",
+          "content": "We can work through this together, one question at a time.\n\nWhich family medicine topic would you like to work on?",
+          "trust": "server-rendered-study",
+          "dialogue": {
+            "intent": "greeting",
+            "followup": "choose-topic",
+            "minutes": null
+          }
+        },
+        {
+          "role": "user",
+          "content": "I have 20 minutes today. Help me plan a study session.",
+          "trust": "learner-statement-unverified"
+        }
+      ],
+      "pendingQuestion": null,
+      "model": "gpt-4.1-mini"
+    },
+    {
+      "latest": "Asthma",
+      "history": [
+        {
+          "role": "user",
+          "content": "Hello",
+          "trust": "learner-statement-unverified"
+        },
+        {
+          "role": "assistant",
+          "content": "We can work through this together, one question at a time.\n\nWhich family medicine topic would you like to work on?",
+          "trust": "server-rendered-study",
+          "dialogue": {
+            "intent": "greeting",
+            "followup": "choose-topic",
+            "minutes": null
+          }
+        },
+        {
+          "role": "user",
+          "content": "I have 20 minutes today. Help me plan a study session.",
+          "trust": "learner-statement-unverified"
+        },
+        {
+          "role": "assistant",
+          "content": "Let’s work within the time you have.\n\nFor this 20-minute session, we can choose one topic, work through one cited point or practice question, then choose what you want to revisit. I’ll ask for your attempt before showing a new explanation.\n\nWhich family medicine topic would you like to work on?",
+          "trust": "server-rendered-study",
+          "dialogue": {
+            "intent": "planning",
+            "followup": "choose-topic",
+            "minutes": 20
+          }
+        },
+        {
+          "role": "user",
+          "content": "Asthma",
+          "trust": "learner-statement-unverified"
+        }
+      ],
+      "pendingQuestion": null,
+      "model": "gpt-4.1-mini"
+    },
+    {
+      "latest": "Show me the asthma management study point.",
+      "history": [
+        {
+          "role": "user",
+          "content": "Show me the asthma management study point.",
+          "trust": "learner-statement-unverified"
+        }
+      ],
+      "pendingQuestion": null,
+      "model": "gpt-4.1-mini"
+    },
+    {
+      "latest": "Explain this.",
+      "history": [
+        {
+          "role": "user",
+          "content": "Show me the asthma management study point.",
+          "trust": "learner-statement-unverified"
+        },
+        {
+          "role": "assistant",
+          "content": "Let’s slow down and work on the part you want to understand.\n\nHere is the cited study point we can discuss.\n\nWhich part feels unclear to you?\n\nAsthma — Management\nMock management fact: review inhaler technique.\n\nStudy reference only; source checks are not clinician approval or patient-care advice.",
+          "trust": "server-rendered-study",
+          "dialogue": {
+            "intent": "explain",
+            "followup": "name-gap",
+            "minutes": null
+          }
+        },
+        {
+          "role": "user",
+          "content": "Explain this.",
+          "trust": "learner-statement-unverified"
+        }
+      ],
+      "pendingQuestion": null,
+      "model": "gpt-4.1-mini"
+    },
+    {
+      "latest": "I don't understand",
+      "history": [
+        {
+          "role": "user",
+          "content": "Show me the asthma management study point.",
+          "trust": "learner-statement-unverified"
+        },
+        {
+          "role": "assistant",
+          "content": "Let’s slow down and work on the part you want to understand.\n\nHere is the cited study point we can discuss.\n\nWhich part feels unclear to you?\n\nAsthma — Management\nMock management fact: review inhaler technique.\n\nStudy reference only; source checks are not clinician approval or patient-care advice.",
+          "trust": "server-rendered-study",
+          "dialogue": {
+            "intent": "explain",
+            "followup": "name-gap",
+            "minutes": null
+          }
+        },
+        {
+          "role": "user",
+          "content": "Explain this.",
+          "trust": "learner-statement-unverified"
+        },
+        {
+          "role": "assistant",
+          "content": "Let’s slow down and work on the part you want to understand.\n\nHere is the cited study point we can discuss.\n\nWhich part feels unclear to you?\n\nAsthma — Management\nMock management fact: review inhaler technique.\n\nStudy reference only; source checks are not clinician approval or patient-care advice.",
+          "trust": "server-rendered-study",
+          "dialogue": {
+            "intent": "explain",
+            "followup": "name-gap",
+            "minutes": null
+          }
+        },
+        {
+          "role": "user",
+          "content": "Ask me an original board-style question.",
+          "trust": "learner-statement-unverified"
+        },
+        {
+          "role": "assistant",
+          "content": "Asthma · Original board-style practice\n\nFictional study vignette 1: which learning step is supported by the mock reference?\n\nA. Mock alternative A.\nB. Review inhaler technique.\nC. Mock alternative C.\nD. Mock alternative D.\nE. Mock alternative E.\n\nReply with A, B, C, D or E to check your choice against the canonical answer and rationale. You may add “because” and your reasoning; only the selected option is graded.\n\nStudy reference only; source checks are not clinician approval or patient-care advice.",
+          "trust": "server-rendered-study"
+        },
+        {
+          "role": "user",
+          "content": "I don't understand",
+          "trust": "learner-statement-unverified"
+        }
+      ],
+      "pendingQuestion": {
+        "key": "asthma:asthma-q1",
+        "fingerprint": "a0c754fc0cf7a9d8d236e3457b4b259f058a6174a96a4825c0763a5f46b74193"
+      },
+      "model": "gpt-4.1-mini"
+    },
+    {
+      "latest": "Help me plan a study session based on my goals and available time. Ask me one question at a time.",
+      "history": [
+        {
+          "role": "user",
+          "content": "Show me the asthma management study point.",
+          "trust": "learner-statement-unverified"
+        },
+        {
+          "role": "assistant",
+          "content": "Let’s slow down and work on the part you want to understand.\n\nHere is the cited study point we can discuss.\n\nWhich part feels unclear to you?\n\nAsthma — Management\nMock management fact: review inhaler technique.\n\nStudy reference only; source checks are not clinician approval or patient-care advice.",
+          "trust": "server-rendered-study",
+          "dialogue": {
+            "intent": "explain",
+            "followup": "name-gap",
+            "minutes": null
+          }
+        },
+        {
+          "role": "user",
+          "content": "Explain this.",
+          "trust": "learner-statement-unverified"
+        },
+        {
+          "role": "assistant",
+          "content": "Let’s slow down and work on the part you want to understand.\n\nHere is the cited study point we can discuss.\n\nWhich part feels unclear to you?\n\nAsthma — Management\nMock management fact: review inhaler technique.\n\nStudy reference only; source checks are not clinician approval or patient-care advice.",
+          "trust": "server-rendered-study",
+          "dialogue": {
+            "intent": "explain",
+            "followup": "name-gap",
+            "minutes": null
+          }
+        },
+        {
+          "role": "user",
+          "content": "Ask me an original board-style question.",
+          "trust": "learner-statement-unverified"
+        },
+        {
+          "role": "assistant",
+          "content": "Asthma · Original board-style practice\n\nFictional study vignette 1: which learning step is supported by the mock reference?\n\nA. Mock alternative A.\nB. Review inhaler technique.\nC. Mock alternative C.\nD. Mock alternative D.\nE. Mock alternative E.\n\nReply with A, B, C, D or E to check your choice against the canonical answer and rationale. You may add “because” and your reasoning; only the selected option is graded.\n\nStudy reference only; source checks are not clinician approval or patient-care advice.",
+          "trust": "server-rendered-study"
+        },
+        {
+          "role": "user",
+          "content": "I don't understand",
+          "trust": "learner-statement-unverified"
+        },
+        {
+          "role": "assistant",
+          "content": "You can tell me where your reasoning gets stuck; you do not have to guess first.\n\nKeep the practice question in view. Your option has not been graded yet, and I will not reveal its answer in a hint.\n\nWhich option are you leaning toward, and what wording in the fictional vignette led you there?",
+          "trust": "server-rendered-study",
+          "dialogue": {
+            "intent": "socratic",
+            "followup": "explain-reasoning",
+            "minutes": null
+          }
+        },
+        {
+          "role": "user",
+          "content": "B",
+          "trust": "learner-statement-unverified"
+        },
+        {
+          "role": "assistant",
+          "content": "Asthma · Original board-practice feedback\n\nCorrect. You chose B. The canonical answer for this hypothetical vignette is B: Review inhaler technique.\n\nRationale\nThe supplied mock reference explicitly supports reviewing inhaler technique.\n\nWhy the other options differ\nA. This is not supported by the mock reference.\nC. This is not supported by the mock reference.\nD. This is not supported by the mock reference.\nE. This is not supported by the mock reference.\n\nSource checked 2026-10-09; check expires 2026-11-09. This grades the selected option only; your written reasoning has not been evaluated.\n\nStudy reference only; source checks are not clinician approval or patient-care advice.",
+          "trust": "server-rendered-study"
+        },
+        {
+          "role": "user",
+          "content": "Help me plan a study session based on my goals and available time. Ask me one question at a time.",
+          "trust": "learner-statement-unverified"
+        }
+      ],
+      "pendingQuestion": null,
+      "model": "gpt-4.1-mini"
+    },
+    {
+      "latest": "I have 20 minutes and want to focus on one topic.",
+      "history": [
+        {
+          "role": "user",
+          "content": "I have 20 minutes and want to focus on one topic.",
+          "trust": "learner-statement-unverified"
+        }
+      ],
+      "pendingQuestion": null,
+      "model": "gpt-4.1-mini"
+    }
+  ],
+  "paidProviderCalls": 0
+}

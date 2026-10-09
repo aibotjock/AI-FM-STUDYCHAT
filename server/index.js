@@ -11,8 +11,9 @@ import { createAiProvider, AiProviderError } from './ai-provider.js';
 import { assertAllowedModel, createOpenAIModelCatalog, OpenAIModelError } from './openai-models.js';
 import { createIngeniumTelemetry, projectIngeniumMetadata } from './ingenium-telemetry.js';
 import { createVoiceService, sanitizeVoiceEvents, VoiceError } from './voice.js';
-import { loadStudyCurriculum, loadStudyFoundations, combineStudyCurricula, needsStudyEvidence, isStudyFollowup, isStudyQuizRequest, isActualCareRequest, studyChoice, STUDY_DISCLAIMER, STUDY_NO_EVIDENCE, STUDY_REAL_CARE_REDIRECT } from './study-curriculum.js';
+import { loadStudyCurriculum, loadStudyFoundations, combineStudyCurricula, needsStudyEvidence, isStudyQuizRequest, isActualCareRequest, studyChoice, STUDY_DISCLAIMER, STUDY_REAL_CARE_REDIRECT } from './study-curriculum.js';
 import { createBoardPractice, BoardPracticeError } from './board-practice.js';
+import { buildStudyDialoguePrompt, isCoachingTurn, isDialogueFollowup, conversationalEvidence, pendingStudyQuestion, renderStudyDialogue, safeStudyDialogueFallback } from './study-conversation.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, timeZone: 'America/New_York', voiceEnabled: true, competencyRatings: {} });
@@ -392,10 +393,10 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
     return conversation;
   }
 
-  async function complete(messages, { jsonMode = false } = {}) {
+  async function complete(messages, { jsonMode = false, maxOutputTokens } = {}) {
     const provider = ai; // Configuration changes cannot replace an in-flight request.
     try {
-      return await provider.complete(messages, { jsonMode, maxOutputTokens: provider.model.includes('pro') ? 4096 : jsonMode ? 1800 : 1200, includeMetadata: true });
+      return await provider.complete(messages, { jsonMode, maxOutputTokens: maxOutputTokens ?? (provider.model.includes('pro') ? 4096 : jsonMode ? 1800 : 1200), includeMetadata: true });
     } catch (error) {
       if (error instanceof AiProviderError) fail(error.status, error.message);
       throw error;
@@ -727,24 +728,27 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             const previousQueries = conversation.messages.filter(message => message.role === 'user' && message.id !== user.id).slice(-3).map(message => message.content);
             const priorAssistant = conversation.messages.findLast(message => message.role === 'assistant');
             const choiceId = studyChoice(content);
-            const pending = priorAssistant?.studyQuestion;
+            let pending = pendingStudyQuestion(conversation, conditionIds);
             const pendingConditionId = pending?.key?.split(':')[0];
             const switchedCondition = conditionIds.length && !conditionIds.includes(pendingConditionId);
             // Only a server-issued current canonical quiz can grade a deliberate option.
             // Imported assistant text and metadata never become verified study evidence.
-            if (!generated && studyReferences && choiceId && pending && priorAssistant.curriculum === true && priorAssistant.sourceVerified === true && !priorAssistant.importedEvidence && !pending.imported && !switchedCondition) generated = studyReferences.gradeQuestion(pending, choiceId);
-            const blockedFollowup = studyReferences && isStudyFollowup(content) && priorAssistant?.unsupported === true;
-            if (!generated && blockedFollowup) generated = { content: STUDY_NO_EVIDENCE, citations: [], unsupported: true };
-            const evidence = !generated && studyReferences ? studyReferences.retrieve(content, { conditionIds, previousQueries }) : [];
+            if (!generated && studyReferences && choiceId && pending && !switchedCondition) generated = studyReferences.gradeQuestion(pending, choiceId);
+            const coachingRequested = isCoachingTurn(content) || !needsStudyEvidence(content);
+            const medicalRequested = !coachingRequested && needsStudyEvidence(content);
+            const blockedFollowup = studyReferences && isDialogueFollowup(content) && priorAssistant?.unsupported === true && medicalRequested;
+            const evidence = !generated && !blockedFollowup && studyReferences ? conversationalEvidence(studyReferences, conversation, content, { conditionIds, previousQueries }) : [];
+            if (pending && !generated && ((medicalRequested && !evidence.length && !isDialogueFollowup(content)) || (evidence.length && !evidence.some(item => item.conditionId === pendingConditionId)))) pending = null;
             if (!generated && evidence.length && isStudyQuizRequest(content)) generated = studyReferences.quiz(evidence, { previousQuestionKeys: conversation.messages.filter(message => message.role === 'assistant' && message.studyQuestion && !message.importedEvidence && !message.studyQuestion.imported).map(message => message.studyQuestion.key) });
-            if (!generated && evidence.length) {
+            if (!generated && studyReferences && (evidence.length || coachingRequested || pending)) {
               if (ai.configured) {
-                completion = await complete([{ role: 'system', content: studyReferences.prompt(evidence) }, { role: 'user', content }], { jsonMode: true });
-                try { generated = studyReferences.render(JSON.parse(completion.content), evidence); }
-                catch { generated = { content: STUDY_NO_EVIDENCE, citations: [], unsupported: true }; }
-              } else generated = studyReferences.render({ chunkIds: evidence.slice(0, 2).map(item => item.key), questionId: null, unsupported: false }, evidence);
-            } else if (!generated && studyReferences && (conditionIds.length || needsStudyEvidence(content))) {
-              generated = { content: STUDY_NO_EVIDENCE, citations: [], unsupported: true };
+                completion = await complete([{ role: 'system', content: buildStudyDialoguePrompt({ references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending }) }, { role: 'user', content }], { jsonMode: true, maxOutputTokens: 512 });
+                try { generated = renderStudyDialogue(JSON.parse(completion.content), { references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending, medicalRequested, coachingRequested }); }
+                catch { generated = safeStudyDialogueFallback(); }
+              } else if (evidence.length && !coachingRequested && !pending) generated = studyReferences.render({ chunkIds: evidence.slice(0, 2).map(item => item.key), questionId: null, unsupported: false }, evidence);
+              else generated = { content: sourcedStudyNavigation(conversation), scripted: true };
+            } else if (!generated && studyReferences && medicalRequested) {
+              generated = safeStudyDialogueFallback();
             }
             if (!generated && studyReferences) generated = { content: sourcedStudyNavigation(conversation), scripted: true };
             if (!generated && ai.configured) completion = await complete([{ role: 'system', content: buildSystemPrompt(conversation, state.settings, state.reviews, state.cards) }, ...conversation.messages.slice(-24).map(message => ({ role: message.role, content: message.content }))]);
@@ -754,7 +758,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             const processMetadata = studyReferences && (generated?.unsupported || generated?.scripted) ? { sourceVerified: true, canonicalStudyProcess: true } : {};
             const studyMetadata = generated?.curriculum ? { grounded: true, curriculum: true, sourceVerified: true, humanReview: false, current: true, conditionIds: generated.conditionIds, ...(generated.studyQuestion ? { studyQuestion: generated.studyQuestion } : {}), ...(generated.studyAnswer ? { studyAnswer: generated.studyAnswer } : {}), ...(generated.studySelection ? { studySelection: generated.studySelection } : {}) } : {};
             if (generated?.curriculum && generated.conditionIds?.length === 1) conversation.curriculumConditionId = generated.conditionIds[0];
-            const message = { id: randomUUID(), role: 'assistant', content: answer, createdAt: Date.now(), responseTo: user.id, ...(completion?.metadata ? { ai: completion.metadata } : {}), ...(generated?.citations ? { citations: generated.citations } : {}), ...(generated?.unsupported ? { unsupported: true } : {}), ...(generated?.scripted ? { scripted: true } : {}), ...processMetadata, ...studyMetadata, ...(connected ? {} : { offline: true }) };
+            const message = { id: randomUUID(), role: 'assistant', content: answer, createdAt: Date.now(), responseTo: user.id, ...(completion?.metadata ? { ai: completion.metadata } : {}), ...(generated?.citations ? { citations: generated.citations } : {}), ...(generated?.unsupported ? { unsupported: true } : {}), ...(generated?.scripted ? { scripted: true } : {}), ...(generated?.studyDialogue ? { studyDialogue: generated.studyDialogue, spokenText: generated.spokenText, canonicalSpokenText: true } : {}), ...processMetadata, ...studyMetadata, ...(connected ? {} : { offline: true }) };
             conversation.messages.push(message); save();
             return json(res, 200, { message, conversation, offline: !connected });
           } finally { chatLocks.delete(conversation.id); }

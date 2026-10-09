@@ -30,7 +30,9 @@ The engine records the selected option and grades it against the current canonic
 
 Save an original question to Review for spaced repetition. Recall ratings describe the learner's own perceived recall; they are not exam scores. User-written or edited cards are personal notes and require their own source checks. A user's “verified” flag is not independent clinician review. Existing personal notes should be preserved when starter exercises are revised.
 
-The original chat-quiz path supplies a canonical bank question and grades a deliberate A–E response. It shows the stored explanation, distractor explanations and references. Adding “because” and written reasoning does **not** make that reasoning independently evaluated. Canonical grading and local board-session assembly do not require a paid model inference. Source selection for other study questions may use the configured OpenAI model; the server renders only known source-linked text rather than accepting a generated clinical answer body.
+Coach can plan a study session, follow a learner's stated difficulty, revisit a cited point and ask one question at a time. The selected OpenAI model uses bounded recent history and saved learning preferences to choose a validated conversational plan. The server supplies the rendered coaching wording and exact source-linked teaching; it does not accept an arbitrary model-written medical answer. Quoted learner statements are labeled unverified and excluded from trusted spoken playback.
+
+The chat-quiz path supplies a canonical bank question and grades a deliberate A–E response. A hint preserves that pending question. Grading shows the stored explanation, distractor explanations and references. Adding “because” and written reasoning does **not** make that reasoning independently evaluated. Canonical grading and local board-session assembly do not require a paid model inference. Conversational planning or evidence selection may use the configured OpenAI model. Unsupported factual details remain a source gap, even in a continuing conversation.
 
 ## Accuracy and educational boundaries
 
