@@ -8,14 +8,20 @@ live provider access or clinical accuracy.
 
 ## Version and scope
 
-- Previous published baseline: release branch `b673565a74d326d8e456bf393e0bd152f9a7e799`.
-- Current change: clearer secure access-code sign-in, review/restore fixes,
-  owner OpenAI model controls, model-aware protocols, provenance and test cache.
+- Current published baseline: release branch `4cbf673ca36d3254a336a7f11527e96afb02e43c`.
+- Earlier secure sign-in, review/restore fixes and owner OpenAI model controls
+  are deployed. Newly checked changes add continuous personal voice, dictation
+  reconciliation, mobile zoom/pan and a durable metadata-only Ingenium feed.
+- Voice uses the fixed `gpt-realtime-2.1-mini` model, is personal-only, starts
+  only through an explicit action and has a ten-minute session limit. Text model
+  selection does not change the voice model.
 - Active provider: OpenAI. Claude support is retained but inactive. Astra is
   rejected during configuration, catalog filtering, selection, restored
   provenance and returned-model validation. No Astra inference was performed.
-- Store submission remains on hold. Ingenium integration testing/data work is
-  in progress separately; the app still calls OpenAI directly.
+- Store submission remains on hold. Ingenium has a verified project-admin
+  application organization and hashed key; its authenticated receiver is active,
+  while app feed deployment and genuine event receipt remain pending.
+  The app still calls OpenAI directly.
 
 ## Completed checks
 
@@ -35,10 +41,20 @@ live provider access or clinical accuracy.
 | API-02 | Last 3 cases in `tests/model-selection.test.js`: retired saved model recovery, catalog-await selection race, failed READY retry with same-ID idempotency | 3 passed | New review findings; earlier 9 cases not repeated |
 | UI-04 | `qa/model-dialog-lifecycle-results.json`: dismissed/replaced dialogs during late success/error, closed model test, unsaved text preservation, retired-model warning | 6 passed; 0 JS errors | New lifecycle findings; previous 27 passing groups not repeated |
 | CAT-02 | Only fallback and stale-catalog cases from CAT-01 | 2 passed | Selection now requires a confirmed non-stale account list; documented fallback is read-only |
+| ING-01 | `tests/ingenium-telemetry.test.js`: metadata whitelist, fixed HTTPS receiver, server-only key, unknown usage, prohibited IDs, sanitized failures | 7 passed with mocks | New observer; no content or credentials transmitted |
+| ING-02 | `tests/ingenium-hook.test.js`: adapter hooks, app wiring, selected-model provenance, receiver failure, restart/idempotent outbox delivery, 500-event cap | 9 unique cases passed with mocks | New integration; receiver delivery retries do not repeat inference |
+| ING-03 | `tests/ingenium-check.test.js`: inactive/other-model skip, loopback-only credential use, durable READY request, safe summary/logout, failure without retry | 4 passed with mocks | New operator-enabled one-time bootstrap path; genuine live run remains pending |
+| VOICE-01 | `tests/voice.test.js`: fixed-model signaling, owner scope, SDP/URL bounds, creation failures, stop/grace/expiry, untrusted transcripts | 8 passed with mocks | New helper; no paid call or real microphone |
+| VOICE-02 | `tests/voice-routes.test.js`: auth, locks, atomic/idempotent captions, imports, workspace ownership, disabled modes, prohibited model, limits, failure, logout/setup race, shutdown/setup race | 11 unique cases passed with mocks | New HTTP integration; logout race failed first, fixed and only that failing case repeated |
+| UI-05 | `qa/voice-browser-combined-results.json`: 10 controller, 7 UI and 7 dictation groups at 360×800 | 24 unique groups passed; 0 JS errors; 0 paid calls | New continuous voice/dictation checks; only two failing groups repeated after fixes, with two new pending-setup groups added |
+| ZOOM-01 | `qa/phone-zoom-results.json`: accessible viewport, gesture containment, scroll chaining, native twofold horizontal/vertical pan, reachable composer/navigation after reset | 5 passed; 0 JS errors; 0 paid calls | New mobile zoom cases; boundary probe corrected to wait for smooth scrolling before assessing containment |
+| MAT-01 | New one-off inventory/HTTPS/status consistency checks for `content/source-checks.json`: 12 cases, 12 cards, 6 competencies, 0 approved teaching records; audit documented in `docs/STUDY_MATERIAL.md` and `docs/CLINICAL_CONTENT.md` | 13 groups passed, reported by the source-audit agent; no checked-in runner | New dated source manifest; existing content tests were not repeated; this does not establish clinical approval |
 
-All current provider/catalog integration checks used synthetic local responses,
-with zero paid calls. The existing suite now contains 94 test cases; they were
-not all rerun as one redundant batch. The container privilege-capability check
+
+All provider/catalog, Ingenium and voice checks listed above used synthetic
+local responses, with zero paid calls. The earlier 94-case provider baseline
+was not rerun as a redundant batch; new cases above are recorded separately.
+The container privilege-capability check
 was skipped in the original scratch kernel; prior Railway logs independently
 confirmed the deployed application UID/GID is 1000.
 
@@ -46,7 +62,7 @@ confirmed the deployed application UID/GID is 1000.
 
 | ID | Finding | Fix and verification |
 | --- | --- | --- |
-| AUTH-01 | Incorrect token reported by owner; API key and study code confused; whitespace paste could fail | Separate labels/help, Show/Hide control, server/client trim; API-01/UI-03. Existing Railway token was neither exposed nor rotated. Correct live credential still required. |
+| AUTH-01 | Incorrect token reported by owner; API key and study code confused; whitespace paste could fail | Separate labels/help, Show/Hide control, server/client trim; API-01/UI-03. Existing Railway token was neither exposed nor rotated. Owner subsequently confirmed successful live phone sign-in. |
 | FRONT-01 | Suspended/deleted head remained in active review queue with stale revealed answer | Prune/recalculate active queue and hide next answer; UI-02 |
 | FRONT-02 | Frontend rejected valid exported backups above 10 MiB while backend allowed 16 MiB | Align upload bounds; UI-02 |
 | MODEL-01 | Saved selection reused original model price overrides after restart | Clear overrides on restore; focused failed pricing case rerun once, passed |
@@ -56,19 +72,29 @@ confirmed the deployed application UID/GID is 1000.
 | MODEL-05 | Late responses reopened dismissed dialogs or overwrote other unsaved forms | Dialog revision and connected-node checks; UI-04 |
 | MODEL-06 | Failed READY instruction prevented a fresh explicit test | Cache successful READY checks across new IDs; retain same-ID idempotency for every completed request; API-02 |
 | MODEL-07 | Unconfirmed documented fallback could be selected as if account-verified | Require account source and non-stale confirmation; CAT-02 |
+| DICT-01 | Cumulative/revised speech-recognition results appended the same words repeatedly | Replace each result-index entry, preserve typed prefix/manual suffix, ignore callbacks from old sessions; UI-05 |
+| DICT-02 | A removed trailing interim recognition segment remained visible | Prune result indices outside the current result list; reran only the failed removal group, passed under UI-05 |
+| VOICE-03 | Rapid Start taps during conversation creation opened two conversations | Lock conversation creation and setup together; reran only the failed rapid-Start group, passed under UI-05 |
+| VOICE-04 | A cancelled pending setup could overlap a new Start | Guard pending setup and show disabled Finishing voice setup state until the late call closes; two new focused UI-05 groups passed |
+| VOICE-05 | Logout during awaited call creation could expose a connection offer after session invalidation | Recheck owner/session after upstream creation, close the late call and return no offer; only failed VOICE-02 case rerun, passed |
+| ZOOM-02 | Mobile chat contained gestures and trapped scrolling at its boundary | Restore native touch/pan and page scroll chaining, remove the ancestor scroll trap; ZOOM-01 |
+
 
 ## Live and outstanding checks
 
 | Item | Status and next concrete check |
 | --- | --- |
-| Existing Railway HTTPS pilot | HTTP 200; access required; OpenAI configured. Existing version predates the current fixes. |
-| Updated deployment | Pending publication and terminal Railway SUCCESS; verify updated shell/API status afterward. |
-| Correct live sign-in and inference | Not verified. Owner copies `STUDY_ACCESS_TOKEN` value from service Variables; no live secret is available in this test workspace. `OPENAI_API_KEY` is separate. |
+| Railway HTTPS pilot | Updated release `4cbf673ca36d3254a336a7f11527e96afb02e43c` is live; HTTP 200, private access required, OpenAI configured, model selection enabled. |
+| Updated deployment | Railway deployment `9ab85b2e-7e85-4b32-ac87-2f50526c6d56` observed terminal SUCCESS on 2026-10-09 05:13:47 UTC; `/sw.js` serves `fm-coach-shell-v3`, `/api/status` exposes the new owner controls. |
+| Correct live sign-in and inference | Owner confirmed successful live phone sign-in on October 9, 2026 at approximately 01:20 America/New_York. Live inference remains to verify. `OPENAI_API_KEY` is separate. |
 | Actual account model catalog and every eligible model | Not yet exercised live. Owner controls select only supported, account-confirmed text models. Connection checks are paid, capped and cached; they do not grade medicine. Media/embedding/fine-tuned models and unverified aliases are outside the study-chat contract. |
-| Physical phone microphone/audio/install | Browser wiring and failure paths tested with mocks; actual device permissions, voice and install remain to test. |
+| Continuous voice deployment | New personal-only continuous voice code and mock/browser checks are complete. Publishing and Railway terminal SUCCESS still pending; current live release does not yet include these changes. |
+| Physical phone microphone/audio/install | Repeated dictation and continuous voice fixes passed local checks. Actual phone microphone permission, audible conversation, echo cancellation, interruption, background behavior and install remain to test after deployment. |
 | Android build, device and Play purchases/trial | Unverified native build/device/license-test flow. Store submission remains on hold. |
-| Clinical guideline accuracy | No validated benchmark or populated approved commercial corpus. Personal AI/starter examples remain unverified education. No total-accuracy claim is supported. |
-| Ingenium registration/data/routing | Separate isolated integration validation work underway; direct StudyChat production routing is unchanged until verified integration is ready. |
+| Clinical guideline accuracy | No validated benchmark or populated approved commercial corpus. Personal AI/starter examples remain unverified education. Official-source audit dated October 9 is recorded in `content/source-checks.json` and `docs/STUDY_MATERIAL.md`; unavailable/conflicting sources are flagged. No total-accuracy claim is supported. |
+| Monthly source maintenance | Enabled task `6ac87ed8329c81918c3701660444bf86` begins November 1 and repeats on the first day monthly in the morning, America/New_York. It checks official sources and prepares GitHub review-branch corrections; clinician/rights approval precedes clinical activation. |
+| Ingenium registration/data/routing | Supabase application organization `21bca727-553f-4df8-a2c6-e702f45e4ca2` named AI-FM-STUDYCHAT and one active hash-only key verified by readback. Authenticated Supabase Edge receiver is deployed ACTIVE; an unauthenticated request was rejected with 401. App feed activation and genuine provider-event readback remain pending. Mock events establish neither live receipt nor clinical quality. This is operator application registration, not portal user/MFA registration; direct OpenAI routing remains active. Ingenium has no app-store release planned. |
+| Phone pinch zoom and pan | Focused Chromium native-touch checks passed, including horizontal and vertical movement at twofold zoom. Updated deployment and physical phone gesture confirmation remain pending. |
 
 ## How to continue efficiently
 

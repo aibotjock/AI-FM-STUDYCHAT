@@ -20,4 +20,15 @@ button.pill{min-height:44px;padding:8px 12px}.message-actions button,.segmented 
 
 @media(max-width:600px){.chat-intro .intro-symbol{display:none}.chat-intro{padding:0}.chat-intro h1{font-size:22px;line-height:1.25;margin-bottom:10px}.chat-intro p{font-size:12px;line-height:1.5;margin-bottom:12px}}
 .legal-page{max-width:800px;margin:0 auto;padding:45px 30px 70px}.legal-brand{font-size:16px;font-weight:600;display:inline-flex;align-items:center;min-height:44px;margin-bottom:35px;text-decoration:none}.legal-page h1{font-size:46px}.legal-page>.subtitle{font-size:15px;margin-bottom:25px}.legal-page section{margin:33px 0}.legal-page section h2{font-size:21px}.legal-page section p,.legal-page li{font-size:14px;line-height:1.85;color:#53646f}.legal-page li{margin-bottom:13px}.legal-page .notice{font-size:12px}.legal-page .button{margin-top:10px}.legal-page .legal-links{border-top:1px solid var(--border);padding-top:12px}
+/* Leave zoom and panning to the browser. The chat must not contain page gestures. */
+html,body{touch-action:auto}
+@media(max-width:600px){.chat-window{overflow:clip}.chat-messages{overscroll-behavior:auto;touch-action:auto;-webkit-overflow-scrolling:touch}.app-shell,.workspace,#main{min-width:0}}
 @media(max-width:600px){.legal-page{padding:26px 22px 50px}.legal-page h1{font-size:36px}.legal-page section p,.legal-page li{font-size:15px}.legal-page .notice{font-size:12px}.legal-brand{font-size:15px;margin-bottom:24px}.legal-page>.subtitle{font-size:14px}.legal-page .button{font-size:13px}}
+/* Spoken coaching controls stay within the mobile viewport and remain pannable. */
+.voice-controls { border-top: 1px solid var(--border, #dbe1e5); padding-top: 12px; margin-bottom: 12px; min-width: 0; }
+.voice-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.voice-actions .button { min-height: 42px; padding: 9px 12px; font-size: 12px; }
+.voice-session-status { margin: 8px 0; font-size: 12px; line-height: 1.5; }
+.voice-caption { display: grid; grid-template-columns: 45px minmax(0, 1fr); gap: 8px; font-size: 12px; line-height: 1.5; margin: 5px 0; }
+.voice-caption span { overflow-wrap: anywhere; max-height: 5em; overflow-y: auto; touch-action: auto; }
+.voice-note { margin: 8px 0 0; font-size: 10px; line-height: 1.5; color: var(--muted, #647580); overflow-wrap: anywhere; }

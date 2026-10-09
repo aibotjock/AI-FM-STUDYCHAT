@@ -9,6 +9,8 @@ import { STARTER_CARDS, SCENARIOS } from '../shared/content.js';
 import { buildSystemPrompt, offlineReply, offlineDrafts } from './prompts.js';
 import { createAiProvider, AiProviderError } from './ai-provider.js';
 import { assertAllowedModel, createOpenAIModelCatalog, OpenAIModelError } from './openai-models.js';
+import { createIngeniumTelemetry, projectIngeniumMetadata } from './ingenium-telemetry.js';
+import { createVoiceService, sanitizeVoiceEvents, VoiceError } from './voice.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, timeZone: 'America/New_York', voiceEnabled: true, competencyRatings: {} });
@@ -125,14 +127,14 @@ function restoreMessageMetadata(message) {
   }
   if (message.ai !== undefined) {
     const metadata = message.ai;
-    if (!isObject(metadata) || !['openai', 'anthropic'].includes(metadata.provider) || !['chat', 'responses', 'messages'].includes(metadata.endpoint)) fail(400, 'Invalid model metadata.');
+    if (!isObject(metadata) || !['openai', 'anthropic'].includes(metadata.provider) || !['chat', 'responses', 'messages', 'realtime'].includes(metadata.endpoint)) fail(400, 'Invalid model metadata.');
     const requestedModel = assertAllowedModel(cleanText(metadata.requestedModel, 'requested model', 150));
     const returnedModel = metadata.returnedModel ? assertAllowedModel(cleanText(metadata.returnedModel, 'returned model', 150)) : null;
     const usage = metadata.usage;
     if (usage !== null && (!isObject(usage) || !Number.isSafeInteger(usage.prompt_tokens) || usage.prompt_tokens < 0 || usage.prompt_tokens > 10000000 || !Number.isSafeInteger(usage.completion_tokens) || usage.completion_tokens < 0 || usage.completion_tokens > 10000000)) fail(400, 'Invalid model usage metadata.');
     if (metadata.estimatedCostUsd !== null && (!Number.isFinite(metadata.estimatedCostUsd) || metadata.estimatedCostUsd < 0 || metadata.estimatedCostUsd > 1000)) fail(400, 'Invalid model cost metadata.');
     if (!Number.isFinite(metadata.latencyMs) || metadata.latencyMs < 0 || metadata.latencyMs > 86400000 || !Number.isFinite(metadata.recordedAt) || metadata.recordedAt < 0 || metadata.recordedAt > 8640000000000000) fail(400, 'Invalid model timing metadata.');
-    restored.ai = { provider: metadata.provider, requestedModel, returnedModel, endpoint: metadata.endpoint, usage: usage === null ? null : { prompt_tokens: usage.prompt_tokens, completion_tokens: usage.completion_tokens }, estimatedCostUsd: metadata.estimatedCostUsd, latencyMs: metadata.latencyMs, recordedAt: metadata.recordedAt, pricingBasis: cleanText(metadata.pricingBasis, 'pricing basis', 300, true), imported: true };
+    restored.ai = { provider: metadata.provider, requestedModel, returnedModel, endpoint: metadata.endpoint, usage: usage === null ? null : { prompt_tokens: usage.prompt_tokens, completion_tokens: usage.completion_tokens }, estimatedCostUsd: metadata.estimatedCostUsd, latencyMs: metadata.latencyMs, recordedAt: metadata.recordedAt, pricingBasis: cleanText(metadata.pricingBasis, 'pricing basis', 300, true), ...(metadata.endpoint === 'realtime' ? { clientReported: true } : {}), imported: true };
   }
   return restored;
 }
@@ -162,7 +164,7 @@ function validateBackup(input) {
     }
     conversation.messages = item.messages.map(message => {
       if (!isObject(message) || !['user', 'assistant'].includes(message.role) || !Number.isFinite(message.createdAt) || message.createdAt < 0 || message.createdAt > 8640000000000000) fail(400, 'Invalid conversation message in backup.');
-      return { id: cleanText(message.id, 'message id', 100), role: message.role, content: cleanText(message.content, 'message content', 20000), createdAt: message.createdAt, ...(message.role === 'assistant' ? restoreMessageMetadata(message) : {}), ...(message.offline === true ? { offline: true } : {}), ...(message.requestId !== undefined ? { requestId: cleanText(message.requestId, 'request id', 100) } : {}), ...(message.responseTo !== undefined ? { responseTo: cleanText(message.responseTo, 'response id', 100) } : {}) };
+      return { id: cleanText(message.id, 'message id', 100), role: message.role, content: cleanText(message.content, 'message content', 20000), createdAt: message.createdAt, ...(message.role === 'assistant' ? restoreMessageMetadata(message) : {}), ...(message.voiceTranscript === true ? { voiceTranscript: true } : {}), ...(message.offline === true ? { offline: true } : {}), ...(message.requestId !== undefined ? { requestId: cleanText(message.requestId, 'request id', 100) } : {}), ...(message.responseTo !== undefined ? { responseTo: cleanText(message.responseTo, 'response id', 100) } : {}) };
     });
     if (new Set(conversation.messages.map(message => message.id)).size !== conversation.messages.length) fail(400, 'Duplicate message IDs in backup.');
     const requestIds = conversation.messages.filter(message => message.requestId !== undefined).map(message => message.requestId);
@@ -197,7 +199,7 @@ function secureHeaders(res) {
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'no-referrer');
   res.setHeader('Permissions-Policy', 'camera=(), geolocation=(), microphone=(self)');
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'");
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data:; media-src 'self' blob: mediastream:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'");
 }
 
 /** A single-user, durable study app. Each deployment should have its own data directory. */
@@ -206,14 +208,39 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
   if (accessToken && accessToken.length < 24) throw new Error('STUDY_ACCESS_TOKEN must contain at least 24 characters.');
   const bindHost = env.HOST || '127.0.0.1';
   if (!isLoopback(bindHost) && !accessToken && !authenticateRequest) throw new Error('Set a strong STUDY_ACCESS_TOKEN before using a non-loopback HOST.');
-  let ai = createAiProvider({ env, fetchImpl });
+  const telemetry = createIngeniumTelemetry({ env, fetchImpl });
+  let telemetryDrain = null;
+  async function onCompletion(metadata) {
+    if (!telemetry.status().configured || !isActive()) return;
+    const requestId = randomUUID();
+    if (!projectIngeniumMetadata(metadata, { requestId })) return;
+    if (db.prepare("SELECT COUNT(*) AS total FROM owner_telemetry_outbox WHERE status='pending'").get().total >= 500) return;
+    db.prepare('INSERT INTO owner_telemetry_outbox(request_id,metadata,status,created_at) VALUES(?,?,?,?)').run(requestId, JSON.stringify(metadata), 'pending', Date.now());
+    void drainTelemetry();
+  }
+  function drainTelemetry() {
+    if (telemetryDrain || closed || !telemetry.status().configured || !isActive()) return telemetryDrain;
+    telemetryDrain = (async () => {
+      const rows = db.prepare("SELECT request_id,metadata FROM owner_telemetry_outbox WHERE status='pending' ORDER BY created_at LIMIT 10").all();
+      for (const row of rows) {
+        if (closed || !isActive()) break;
+        const result = await telemetry.observe(JSON.parse(row.metadata), { requestId: row.request_id });
+        if (closed || !isActive()) break;
+        if (!result.accepted) break;
+        db.prepare("UPDATE owner_telemetry_outbox SET status='delivered' WHERE request_id=?").run(row.request_id);
+      }
+      if (!closed && isActive()) db.prepare("DELETE FROM owner_telemetry_outbox WHERE status='delivered' AND request_id NOT IN (SELECT request_id FROM owner_telemetry_outbox WHERE status='delivered' ORDER BY created_at DESC LIMIT 500)").run();
+    })().catch(() => {}).finally(() => { telemetryDrain = null; });
+    return telemetryDrain;
+  }
+  let ai = createAiProvider({ env, fetchImpl, onCompletion });
   mkdirSync(dataDir, { recursive: true, mode: 0o700 });
   const db = new DatabaseSync(resolve(dataDir, 'studychat.sqlite'));
-  db.exec('PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS app_state (id INTEGER PRIMARY KEY CHECK (id = 1), data TEXT NOT NULL); CREATE TABLE IF NOT EXISTS owner_ai_config (id INTEGER PRIMARY KEY CHECK (id = 1), model TEXT NOT NULL); CREATE TABLE IF NOT EXISTS owner_model_tests (request_id TEXT PRIMARY KEY, fingerprint TEXT NOT NULL, status TEXT NOT NULL, result TEXT, created_at INTEGER NOT NULL);');
+  db.exec('PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS app_state (id INTEGER PRIMARY KEY CHECK (id = 1), data TEXT NOT NULL); CREATE TABLE IF NOT EXISTS owner_ai_config (id INTEGER PRIMARY KEY CHECK (id = 1), model TEXT NOT NULL); CREATE TABLE IF NOT EXISTS owner_model_tests (request_id TEXT PRIMARY KEY, fingerprint TEXT NOT NULL, status TEXT NOT NULL, result TEXT, created_at INTEGER NOT NULL); CREATE TABLE IF NOT EXISTS owner_telemetry_outbox (request_id TEXT PRIMARY KEY, metadata TEXT NOT NULL, status TEXT NOT NULL, created_at INTEGER NOT NULL);');
   const modelSelectionEnabled = !authenticateRequest && ai.providerId === 'openai';
   const modelCatalog = modelSelectionEnabled ? createOpenAIModelCatalog({ env, fetchImpl }) : null;
   const savedModel = modelSelectionEnabled && db.prepare('SELECT model FROM owner_ai_config WHERE id=1').get()?.model;
-  if (savedModel) ai = createAiProvider({ env: { ...env, OPENAI_MODEL: savedModel, AI_INPUT_USD_PER_MILLION: '', AI_OUTPUT_USD_PER_MILLION: '' }, fetchImpl });
+  if (savedModel) ai = createAiProvider({ env: { ...env, OPENAI_MODEL: savedModel, AI_INPUT_USD_PER_MILLION: '', AI_OUTPUT_USD_PER_MILLION: '' }, fetchImpl, onCompletion });
   const saved = db.prepare('SELECT data FROM app_state WHERE id = 1').get();
   let state = saved ? JSON.parse(saved.data) : { cards: STARTER_CARDS.map(card => createCard(card)), reviews: [], conversations: [], settings: { ...DEFAULT_SETTINGS } };
   const saveStatement = db.prepare('INSERT INTO app_state (id, data) VALUES (1, ?) ON CONFLICT(id) DO UPDATE SET data=excluded.data');
@@ -246,8 +273,23 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
   const sessions = new Map();
   const rateBuckets = new Map();
   const chatLocks = new Set();
+  let voiceWorkspaceEpoch = 0;
+  let voiceStopping = false;
+  const voiceEpochs = new Map();
+  const voiceEnabled = !authenticateRequest && ai.providerId === 'openai' && Boolean((env.OPENAI_API_KEY || '').trim());
+  const voice = voiceEnabled ? createVoiceService({ env, fetchImpl, onSessionClosed: ({ sessionId, conversationId }) => {
+    chatLocks.delete(conversationId);
+    const timer = setTimeout(() => voiceEpochs.delete(sessionId), 5000);
+    timer.unref();
+  } }) : null;
   const modelTestLocks = new Set();
   let closed = false;
+  const telemetryTimer = telemetry.status().configured ? setInterval(() => { void drainTelemetry(); }, 30000) : null;
+  telemetryTimer?.unref();
+  if (telemetry.status().configured) setImmediate(() => { void drainTelemetry(); });
+  function telemetryStatus() {
+    return { ...telemetry.status(), pending: db.prepare("SELECT COUNT(*) AS total FROM owner_telemetry_outbox WHERE status='pending'").get().total, delivered: db.prepare("SELECT COUNT(*) AS total FROM owner_telemetry_outbox WHERE status='delivered'").get().total };
+  }
 
   function rateLimit(req, kind, limit, windowMs) {
     const now = Date.now();
@@ -316,7 +358,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
         rateLimit(req, 'api', 240, 60000);
         guardOrigin(req);
         if (req.method === 'GET' && path === '/api/public-info') return json(res, 200, { mode: 'personal', privatePilot: true, publicRelease: false, operatorName: typeof env.PUBLIC_OPERATOR_NAME === 'string' ? env.PUBLIC_OPERATOR_NAME.trim().slice(0, 200) || null : null, operatorContact: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(env.PUBLIC_SUPPORT_EMAIL || '') ? env.PUBLIC_SUPPORT_EMAIL : null });
-        if (req.method === 'GET' && path === '/api/status') return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: modelSelectionEnabled || ai.configured ? ai.model : null, modelWarning: ai.unavailableReason || null, modelSelectionEnabled, prohibitedModels: ['Astra'] });
+        if (req.method === 'GET' && path === '/api/status') return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: modelSelectionEnabled || ai.configured ? ai.model : null, modelWarning: ai.unavailableReason || null, modelSelectionEnabled, voiceEnabled, voiceModel: voice?.model || null, prohibitedModels: ['Astra'] });
         if (req.method === 'POST' && path === '/api/login') {
           rateLimit(req, 'login', 8, 15 * 60000);
           const input = await readJson(req);
@@ -333,6 +375,54 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           return json(res, 200, { authenticated: true }, { 'Set-Cookie': `studychat_session=${id}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${SESSION_MS / 1000}${secure ? '; Secure' : ''}` });
         }
         if (!session(req)) fail(401, 'Sign in to use your study workspace.');
+        if (req.method === 'POST' && path === '/api/voice/session') {
+          if (!voice) fail(403, 'Voice is available only in the owner\'s OpenAI personal pilot.');
+          if (voiceStopping || closed) fail(503, 'The study server is restarting. Try voice again afterward.');
+          rateLimit(req, 'voice-start', 6, 10 * 60000);
+          const input = await readJson(req, 100000);
+          if (!isObject(input)) fail(400, 'Use a valid voice connection offer.');
+          const conversation = conversationFor(input.conversationId);
+          if (conversation.messages.length >= 950) fail(400, 'Start a new study conversation before voice coaching.');
+          if (chatLocks.has(conversation.id)) fail(409, 'Finish the current reply or voice call before starting another.');
+          chatLocks.add(conversation.id);
+          try {
+            const result = await voice.createSession({ sdp: input.sdp, conversation, settings: state.settings, reviews: state.reviews, cards: state.cards });
+            if (!session(req) || voiceStopping || closed) {
+              await voice.closeSession(result.sessionId).catch(() => {});
+              fail(!session(req) ? 401 : 503, !session(req) ? 'Sign in again before starting voice.' : 'The study server is restarting. Try voice again afterward.');
+            }
+            voiceEpochs.set(result.sessionId, voiceWorkspaceEpoch);
+            return json(res, 201, result);
+          } catch (error) { chatLocks.delete(conversation.id); throw error; }
+        }
+        if (req.method === 'POST' && path === '/api/voice/transcript') {
+          if (!voice) fail(403, 'Voice is available only in the owner\'s OpenAI personal pilot.');
+          rateLimit(req, 'voice-transcript', 120, 60000);
+          const input = await readJson(req, 80000);
+          if (!isObject(input)) fail(400, 'Use a valid voice transcript request.');
+          const info = voice.validateSession(input.sessionId, 'personal', { allowClosed: true });
+          if (voiceEpochs.get(info.sessionId) !== voiceWorkspaceEpoch) fail(409, 'This voice session belongs to an earlier workspace state.');
+          const conversation = conversationFor(info.conversationId);
+          const events = sanitizeVoiceEvents(input.events);
+          const additions = [];
+          for (const event of events) {
+            const id = 'voice_' + hash(`${info.sessionId}:${event.id}`);
+            const prior = conversation.messages.find(message => message.id === id);
+            if (prior) { if (prior.role !== event.role || prior.content !== event.content) fail(409, 'A voice event ID cannot be reused for different text.'); continue; }
+            additions.push({ id, role: event.role, content: event.content, createdAt: Date.now(), voiceTranscript: true, ...(event.role === 'assistant' ? { ai: { provider: 'openai', requestedModel: info.model, returnedModel: info.model, endpoint: 'realtime', usage: null, estimatedCostUsd: null, latencyMs: 0, recordedAt: Date.now(), pricingBasis: 'Client-reported voice transcript; usage and cost unverified', clientReported: true } } : {}) });
+          }
+          if (conversation.messages.length + additions.length > 1000) fail(400, 'The conversation is full. End voice and start a new conversation.');
+          if (info.closedAt && chatLocks.has(conversation.id)) fail(409, 'Finish the current typed reply before saving late voice captions.');
+          if (additions.length) { conversation.messages.push(...additions); conversation.updatedAt = Date.now(); save(); }
+          return json(res, 200, { saved: additions.length, conversation });
+        }
+        if (req.method === 'POST' && path === '/api/voice/stop') {
+          if (!voice) fail(403, 'Voice is available only in the owner\'s OpenAI personal pilot.');
+          const input = await readJson(req);
+          if (!isObject(input)) fail(400, 'Use a valid voice stop request.');
+          return json(res, 200, await voice.closeSession(input.sessionId));
+        }
+        if (req.method === 'GET' && path === '/api/ingenium-status') return json(res, 200, telemetryStatus());
         if (req.method === 'GET' && path === '/api/models') {
           if (!modelSelectionEnabled) fail(403, 'Model selection is available only in the owner\'s personal workspace.');
           return json(res, 200, await modelCatalog.list({ selectedModel: ai.model }));
@@ -350,7 +440,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           if (chatLocks.size || modelTestLocks.size) fail(409, 'Wait for current AI requests before switching models.');
           const profile = await modelCatalog.assertSelectable(input.model);
           if (chatLocks.size || modelTestLocks.size) fail(409, 'Wait for current AI requests before switching models.');
-          const selected = createAiProvider({ env: { ...env, OPENAI_MODEL: profile.id, AI_INPUT_USD_PER_MILLION: '', AI_OUTPUT_USD_PER_MILLION: '' }, fetchImpl });
+          const selected = createAiProvider({ env: { ...env, OPENAI_MODEL: profile.id, AI_INPUT_USD_PER_MILLION: '', AI_OUTPUT_USD_PER_MILLION: '' }, fetchImpl, onCompletion });
           db.prepare('INSERT INTO owner_ai_config(id,model) VALUES(1,?) ON CONFLICT(id) DO UPDATE SET model=excluded.model').run(profile.id);
           ai = selected;
           return json(res, 200, { model: ai.model, provider: ai.label, rates: ai.rates });
@@ -389,6 +479,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
         }
         if (req.method === 'POST' && path === '/api/logout') {
           await readJson(req);
+          if (voice) await voice.closeAll();
           const match = /(?:^|;\s*)studychat_session=([^;]*)/.exec(req.headers.cookie || '');
           if (match) sessions.delete(hash(match[1]));
           return json(res, 200, { authenticated: !accessToken }, { 'Set-Cookie': 'studychat_session=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0' });
@@ -443,7 +534,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           if (chatLocks.size) fail(409, 'Wait for coaching replies to finish before restoring a backup.');
           const next = validateBackup(await readJson(req, MAX_BACKUP_BYTES));
           if (chatLocks.size) fail(409, 'Wait for coaching replies to finish before restoring a backup.');
-          state = next; save();
+          state = next; save(); voiceWorkspaceEpoch++;
           return json(res, 200, { restored: true, cards: state.cards.length, conversations: state.conversations.length });
         }
         if (req.method === 'POST' && path === '/api/conversations') {
@@ -541,7 +632,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
       res.end(req.method === 'HEAD' ? undefined : body);
     } catch (error) {
       if (res.headersSent) { res.end(); return; }
-      const expected = error instanceof HttpError || error instanceof AiProviderError || error instanceof OpenAIModelError;
+      const expected = error instanceof HttpError || error instanceof AiProviderError || error instanceof OpenAIModelError || error instanceof VoiceError;
       json(res, expected ? error.status : 500, { error: expected ? error.message : 'The server could not complete this request.' });
       // Never log submitted messages, authentication tokens, or provider response bodies.
       if (!expected) console.error('StudyChat request failed:', error.name);
@@ -549,8 +640,10 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
   });
   server.requestTimeout = 60000;
   server.headersTimeout = 10000;
-  server.on('close', () => { if (!closed) { closed = true; db.close(); } });
-  server.closeStore = () => { if (!closed) { closed = true; db.close(); } };
+  server.on('close', () => { if (!closed) { closed = true; if (telemetryTimer) clearInterval(telemetryTimer); db.close(); } });
+  server.closeStore = () => { if (!closed) { closed = true; if (telemetryTimer) clearInterval(telemetryTimer); db.close(); } };
+  server.flushIngeniumTelemetry = () => drainTelemetry();
+  server.closeVoiceSessions = async () => { voiceStopping = true; await voice?.closeAll(); };
   server.hasActiveRequests = () => chatLocks.size > 0;
   // Constructor-injected gateway access only; never an HTTP route.
   server.readOnlySnapshot = () => structuredClone(state);

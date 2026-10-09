@@ -16,7 +16,7 @@ ABFM's blueprint structures examination topics; it does not supply a complete cl
 | preventive | Preventive Care | 15% | 30 |
 | foundations | Foundations of Care | 5% | 10 |
 
-`shared/blueprint.js` contains independent factual weights and a stable largest-remainder allocation. Mixed examinations follow the weights; daily adaptive recall can concentrate on weak or due items. These weights do not predict passing scores, and 200 cases are a proposed initial validation set, not an ABFM requirement. Add age, organ system, pregnancy, care setting, and clinical complexity as separate editorial tags.
+`shared/blueprint.js` contains independent factual weights and a stable largest-remainder allocation for future mixed-practice and benchmark planning. The current twelve-case phone pilot is not a complete or proportionally balanced examination bank. These weights do not predict passing scores, and 200 cases are a proposed initial validation set, not an ABFM requirement. Add age, organ system, pregnancy, care setting, and clinical complexity as separate editorial tags. See [the incorporated material inventory](STUDY_MATERIAL.md) for exact current coverage.
 
 Official references, checked October 9, 2026:
 
@@ -86,7 +86,9 @@ Store organization, edition, effective date, review date, and source/version has
 - <https://www.aafp.org/clinical-insights/immunizations-and-vaccines/immunizations-schedules-resources/childhood-vaccine-schedules>
 - <https://www.aafp.org/clinical-insights/immunizations-and-vaccines/respiratory-virus-vaccines>
 
-Proposed operating cadence: weekly permitted source-change checks, monthly editorial triage, and urgent review of material safety updates. These are app operating choices, not organization-mandated intervals. Quarantine affected facts/cards while a clinically significant update is unresolved. Keep learner review history when revising a card, and make the revision/withdrawal visible.
+The owner's required operating cadence is a permitted official-source check and editorial update cycle **once each calendar month**, with urgent review of material safety updates when identified. These are app operating choices, not organization-mandated intervals. Automated source research can identify changes and prepare original draft corrections; it must not certify accuracy, grant rights, or automatically approve clinical publication. A qualified clinician must adjudicate affected recommendations and conflicts before release. Quarantine affected published facts while a clinically significant update is unresolved. Keep learner review history when revising a card, and make the revision/withdrawal visible; do not silently overwrite personal cards.
+
+The dated observations are recorded in `content/source-checks.json`, with the practical monthly workflow in [STUDY_MATERIAL.md](STUDY_MATERIAL.md). A failed source fetch or a page rendering an incomplete list is a blocked check, not evidence of currency. At the October 9, 2026 check, USPSTF's recommendation-topics landing page rendered an internal error; the official search endpoint was available, but no complete topic-by-topic clinical review was performed. CDC's STI landing page retained the 2021 guideline label while also displaying a September 21, 2026 drug-supply/shelf-life notice. Check current official addenda and safety notices as well as nominal edition years. No recommendations from these sources have been imported into the empty approved corpus.
 
 ## Launch evidence required
 

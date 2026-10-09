@@ -30,7 +30,7 @@ function normalizeUsage(payload, providerId) {
   return { prompt_tokens: usage.input_tokens + 2 * writes + reads, completion_tokens: usage.output_tokens };
 }
 
-export function createAiProvider({ env = process.env, fetchImpl = globalThis.fetch, commercial = false } = {}) {
+export function createAiProvider({ env = process.env, fetchImpl = globalThis.fetch, commercial = false, onCompletion } = {}) {
   const providerId = (env.AI_PROVIDER || 'openai').trim().toLowerCase();
   if (!['openai', 'anthropic'].includes(providerId)) throw new Error('AI_PROVIDER must be openai or anthropic.');
   const label = providerId === 'anthropic' ? 'Claude' : 'OpenAI';
@@ -123,7 +123,11 @@ export function createAiProvider({ env = process.env, fetchImpl = globalThis.fet
       const usage = normalizeUsage(payload, providerId);
       const billedRates = providerId === 'openai' && payload.model && payload.model !== model ? getOpenAIModelProfile(payload.model)?.rates : rates;
       const estimatedCostUsd = usage && billedRates && billedRates.inputUsdPerMillion !== null && billedRates.outputUsdPerMillion !== null ? (usage.prompt_tokens * billedRates.inputUsdPerMillion + usage.completion_tokens * billedRates.outputUsdPerMillion) / 1e6 : null;
-      return { content: content.trim(), usage, ...(includeMetadata ? { metadata: { provider: providerId, requestedModel: model, returnedModel: payload.model || null, endpoint: profile?.api || 'messages', usage, estimatedCostUsd, latencyMs: Math.max(0, Date.now() - startedAt), pricingBasis: estimatedCostUsd === null ? 'unknown' : 'Configured standard rates; cache discounts excluded', recordedAt: Date.now() } } : {}) };
+      const metadata = { provider: providerId, requestedModel: model, returnedModel: payload.model || null, endpoint: profile?.api || 'messages', usage, estimatedCostUsd, latencyMs: Math.max(0, Date.now() - startedAt), pricingBasis: estimatedCostUsd === null ? 'unknown' : 'Configured standard rates; cache discounts excluded', recordedAt: Date.now() };
+      if (typeof onCompletion === 'function') {
+        try { await onCompletion(metadata); } catch { /* Telemetry cannot discard an answer or repeat paid inference. */ }
+      }
+      return { content: content.trim(), usage, ...(includeMetadata ? { metadata } : {}) };
     } catch (failure) {
       if (failure instanceof AiProviderError) throw failure;
       if (requestSignal.aborted || failure?.name === 'AbortError') fail(504, 'The AI provider took too long or the request was interrupted. Retry your message.');

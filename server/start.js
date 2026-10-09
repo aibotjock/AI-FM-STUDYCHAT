@@ -11,8 +11,15 @@ try {
     if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT must be from 1 to 65535.');
     const host = process.env.HOST || '127.0.0.1';
     const server = createApp();
-    server.listen(port, host, () => console.log(`Family Medicine Study Coach ready on ${host}:${port}. Check Study preferences for the active AI model.`));
-    const shutdown = () => server.close(() => process.exit(0));
+    server.listen(port, host, async () => {
+      console.log(`Family Medicine Study Coach ready on ${host}:${port}. Check Study preferences for the active AI model.`);
+      if (process.env.INGENIUM_INITIAL_CONNECTION_CHECK === 'ready-v1') {
+        const { runIngeniumConnectionCheck } = await import('./ingenium-check.js');
+        const result = await runIngeniumConnectionCheck({ baseUrl: `http://127.0.0.1:${port}/`, flushTelemetry: () => server.flushIngeniumTelemetry() });
+        console.log('Ingenium registration check:', JSON.stringify(result));
+      }
+    });
+    const shutdown = async () => { await server.closeVoiceSessions(); server.close(() => process.exit(0)); };
     process.on('SIGTERM', shutdown);
     process.on('SIGINT', shutdown);
   }

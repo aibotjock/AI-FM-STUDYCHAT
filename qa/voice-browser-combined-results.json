@@ -1,0 +1,144 @@
+{
+  "scope": "New continuous voice controller, voice UI, and dictation reconciliation; cumulative results from targeted runs",
+  "checkedAt": "2026-10-09T05:37:23.942680+00:00",
+  "summary": {
+    "groupsPassed": 24,
+    "groupsFailedUnresolved": 0,
+    "controllerGroups": 10,
+    "uiGroups": 7,
+    "dictationGroups": 7,
+    "paidApiRequests": 0,
+    "pageErrors": 0
+  },
+  "results": [
+    {
+      "name": "Voice starts only explicitly, guards simultaneous Start, and sends one greeting",
+      "pass": true
+    },
+    {
+      "name": "Mute, Unmute, Interrupt and Stop control microphone, output and call teardown",
+      "pass": true
+    },
+    {
+      "name": "Voice captions remain separate per item and repeated final events save each turn once",
+      "pass": true
+    },
+    {
+      "name": "Microphone permission failure surfaces clearly without starting a paid call",
+      "pass": true
+    },
+    {
+      "name": "Stop during pending microphone setup closes late tracks and creates no call",
+      "pass": true
+    },
+    {
+      "name": "Stop during pending server setup tears down locally and closes the late created call",
+      "pass": true
+    },
+    {
+      "name": "Cancelled setup blocks immediate restart until late session closes, then permits a fresh call",
+      "pass": true
+    },
+    {
+      "name": "Background transition stops microphone and call without restarting",
+      "pass": true
+    },
+    {
+      "name": "Server voice failure tears down tracks and peer with no automatic paid retry",
+      "pass": true
+    },
+    {
+      "name": "Autoplay blocking shows a recovery action and manual audio enable recovers",
+      "pass": true
+    },
+    {
+      "name": "UI: voice controls connect explicit Start, Mute, Interrupt and Stop actions",
+      "pass": true
+    },
+    {
+      "name": "UI: rapid Start taps during conversation setup keep one active study conversation",
+      "pass": true
+    },
+    {
+      "name": "UI: cancelled setup displays disabled Finishing voice setup and reenables Start after shutdown",
+      "pass": true
+    },
+    {
+      "name": "UI: finalized voice captions POST unique turns once and update conversation bubbles",
+      "pass": true
+    },
+    {
+      "name": "UI: autoplay failure exposes Enable speaker audio and the button restores playback",
+      "pass": true
+    },
+    {
+      "name": "UI: permission and server failures show actionable status and restore typing without retry",
+      "pass": true
+    },
+    {
+      "name": "UI: voice actions and captions fit a 360 by 800 phone without page overflow",
+      "pass": true
+    },
+    {
+      "name": "Dictation: interim revisions and repeated final events replace the same index",
+      "pass": true
+    },
+    {
+      "name": "Dictation: cumulative resultIndex updates append each segment once",
+      "pass": true
+    },
+    {
+      "name": "Dictation: manual prefix and suffix edits survive revised speech, and corrected words stop dictation",
+      "pass": true
+    },
+    {
+      "name": "Dictation: a new recording session appends its words once without replaying the previous session",
+      "pass": true
+    },
+    {
+      "name": "Dictation: older stopped recognition callbacks cannot change a new session",
+      "pass": true
+    },
+    {
+      "name": "Dictation: deliberate repeated words at distinct result indices are preserved",
+      "pass": true
+    },
+    {
+      "name": "Dictation: browser removal of a trailing interim segment removes the stale text",
+      "pass": true
+    }
+  ],
+  "resolvedDefects": [
+    {
+      "name": "Removed trailing interim dictation segment remained visible",
+      "reproduction": "Result list length 2 with final + interim, then list shrinks to final only",
+      "fix": "Delete result-index map entries outside the current results list",
+      "validation": "Reran only previously failed removal group; passed"
+    },
+    {
+      "name": "Rapid Start taps created two conversations",
+      "reproduction": "Delay conversation creation 100 ms, click Start twice in the same task",
+      "fix": "App-level lock covers conversation creation and voice setup",
+      "validation": "Reran only previously failed rapid Start group; one conversation and one session"
+    }
+  ],
+  "additionalReviewedFix": {
+    "name": "Cancelled pending voice setup could overlap a new Start",
+    "fix": "setupPending guard and disabled Finishing voice setup state",
+    "validation": "Two new targeted groups confirmed immediate restart blocked, late call closed, then fresh Start allowed"
+  },
+  "rerunPolicy": "Previously passed groups were not repeated; only two failed groups were rerun after their fixes. New behavior received new focused checks.",
+  "limitations": [
+    "Microphone, WebRTC, datachannel and speaker autoplay are browser fakes; no actual OpenAI calls.",
+    "Voice transcript POST responses are mocked in UI tests; server-side durability is a separate backend integration scope.",
+    "Physical phone microphone, audible quality, echo cancellation and real mobile background behavior require owner testing."
+  ],
+  "artifacts": {
+    "script": "/workspace/scratch/6a873f63b964/qa/voice-browser-qa.mjs"
+  },
+  "finalSourceSha256": {
+    "public/voice-chat.js": "b1cc882f83e5799b9e966b82e547fb96fddeeaa7beb49ba35e9f7b93eb592262",
+    "public/app.js": "c0a913844349ac0b04962e4c5aa8dafc0841098cdcebac14c2f98127dfcb2fe0",
+    "public/styles.css": "8b84db2c9bb0831315e68592d506748b4db2b80df4255251e965e5f10fb289ad"
+  }
+}
