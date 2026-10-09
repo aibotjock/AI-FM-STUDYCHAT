@@ -127,9 +127,21 @@ export function createStudyCurriculum({ records = [], now = Date.now } = {}) {
   const docFrequency = new Map();
   for (const doc of documents) for (const word of new Set(doc.words)) docFrequency.set(word, (docFrequency.get(word) || 0) + 1);
   const averageLength = documents.reduce((sum, doc) => sum + doc.words.length, 0) / (documents.length || 1);
-  function phraseMatches(query, condition) {
+  function phraseMatches(query, condition, contextIds = []) {
     const line = ` ${normalized(query)} `;
-    return [condition.title, ...condition.aliases].filter(phrase => normalized(phrase).length >= 2 && line.includes(` ${normalized(phrase)} `) && !line.includes(` ${normalized(phrase)} like `));
+    const af = byId.get('atrial-fibrillation');
+    const afContext = contextIds.includes('atrial-fibrillation') || (af && [af.title, ...af.aliases].some(phrase => line.includes(` ${normalized(phrase)} `)));
+    return [condition.title, ...condition.aliases].filter(phrase => {
+      const name = normalized(phrase);
+      let matchLine = line;
+      // Stroke-risk/prevention discussions name a risk concept, not an acute
+      // stroke diagnosis. Preserve direct or explicitly qualified stroke asks.
+      if (afContext && condition.id === 'ischemic-stroke' && name === 'stroke' && !/\b(?:acute|ischemic|new|possible|suspected|actual)\s+stroke\b/.test(line)) {
+        matchLine = line.replace(/\bstroke\s+(?:risk(?:\s+(?:assessment|stratification|reduction))?|prevention|prophylaxis)\b/g, ' ')
+          .replace(/\b(?:risk(?:\s+(?:assessment|stratification|reduction))?\s+(?:of|for)|prevent|preventing|prevention(?:\s+of)?|prophylaxis(?:\s+of)?)\s+(?:an?\s+)?stroke\b/g, ' ');
+      }
+      return name.length >= 2 && matchLine.includes(` ${name} `) && !matchLine.includes(` ${name} like `);
+    });
   }
   function bm25(words, wanted) {
     let score = 0;
@@ -144,14 +156,14 @@ export function createStudyCurriculum({ records = [], now = Date.now } = {}) {
   function retrieve(query, { conditionIds = [], previousQueries = [], maxChunks = 5 } = {}) {
     if (typeof query !== 'string' || query.length > 12000 || !Array.isArray(conditionIds) || conditionIds.length > 3 || conditionIds.some(item => typeof item !== 'string') || !Number.isInteger(maxChunks) || maxChunks < 1 || maxChunks > 6) throw new TypeError('Use a bounded study query and at most three condition IDs.');
     if (!needsStudyEvidence(query) && !isStudyFollowup(query)) return [];
-    let matched = accepted.filter(condition => phraseMatches(query, condition).length);
+    let matched = accepted.filter(condition => phraseMatches(query, condition, conditionIds).length);
     // Prefer a named subtype to a broad alias contained wholly inside that subtype.
-    matched = matched.filter(condition => !phraseMatches(query, condition).every(phrase => matched.some(other => other.id !== condition.id && phraseMatches(query, other).some(longer => normalized(longer).length > normalized(phrase).length && ` ${normalized(longer)} `.includes(` ${normalized(phrase)} `)))));
+    matched = matched.filter(condition => !phraseMatches(query, condition, conditionIds).every(phrase => matched.some(other => other.id !== condition.id && phraseMatches(query, other, conditionIds).some(longer => normalized(longer).length > normalized(phrase).length && ` ${normalized(longer)} `.includes(` ${normalized(phrase)} `)))));
     let effectiveQuery = query;
     if (!matched.length && isStudyFollowup(query)) {
       const previous = previousQueries.at(-1);
       if (typeof previous === 'string' && previous.length <= 12000 && !isStudyFollowup(previous)) {
-        matched = accepted.filter(condition => phraseMatches(previous, condition).length);
+        matched = accepted.filter(condition => phraseMatches(previous, condition, conditionIds).length);
         effectiveQuery = `${query} ${previous}`.slice(0, 12000);
         if (!matched.length && (!needsStudyEvidence(previous) || !documents.some(document => conditionIds.includes(document.condition.id) && bm25(document.words, tokens(previous)) > 0))) return [];
       }
@@ -162,7 +174,7 @@ export function createStudyCurriculum({ records = [], now = Date.now } = {}) {
     const wanted = tokens(effectiveQuery);
     const dosingRequest = /\b(?:dose|dosage|dosing|how many|how much|puffs?|tablet strength|capsule strength|mg|mcg|infusion rate)\b/i.test(query);
     const genericFollowup = isStudyFollowup(query);
-    return documents.filter(doc => ids.has(doc.condition.id) && currency(doc.condition, now).current && (!dosingRequest || /\b\d+(?:\.\d+)?\s*(?:mg|mcg|micrograms?|milligrams?|units?|mL)\b/i.test(doc.chunk.text))).map(doc => ({ ...doc, score: bm25(doc.words, wanted) + (phraseMatches(query, doc.condition).length ? 2 : 0) })).filter(doc => matched.length || genericFollowup || !wanted.length || doc.score > 0).sort((a, b) => b.score - a.score || a.key.localeCompare(b.key)).slice(0, maxChunks).map(doc => ({ ...canonicalEvidence(doc), score: doc.score }));
+    return documents.filter(doc => ids.has(doc.condition.id) && currency(doc.condition, now).current && (!dosingRequest || /\b\d+(?:\.\d+)?\s*(?:mg|mcg|micrograms?|milligrams?|units?|mL)\b/i.test(doc.chunk.text))).map(doc => ({ ...doc, score: bm25(doc.words, wanted) + (phraseMatches(query, doc.condition, conditionIds).length ? 2 : 0) })).filter(doc => matched.length || genericFollowup || !wanted.length || doc.score > 0).sort((a, b) => b.score - a.score || a.key.localeCompare(b.key)).slice(0, maxChunks).map(doc => ({ ...canonicalEvidence(doc), score: doc.score }));
   }
   function get(conditionId) {
     const condition = byId.get(conditionId);

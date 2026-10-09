@@ -7,7 +7,7 @@ Environment: `private-test`, ID `05fb154d-1946-4db0-bf4e-786727e505df`.
 Service: `family-medicine-phone-test`, ID `78d73fb2-96fa-45bc-97e4-6aa108724dc5`.
 Volume: `private-study-data`, 500 MB, mounted at `/app/data`.
 
-Dashboard: https://railway.com/project/3d314e6c-8def-4947-949a-eef7ce930e63/service/78d73fb2-96fa-45bc-97e4-6aa108724dc5?environmentId=05fb154d-1946-4db0-bf4e-786727e505df
+Dashboard: https://railway.com/project/3 d 314 e 6 c-8 def-4947-949 a-eef 7 ce 930 e 63/service/78 d 73 fb 2-96 fa-45 bc-97 e 4-6 aa 108724 dc 5?environmentId=05 fb 154 d-1946-4 db 0-bf 4 e-786727 e 505 df
 
 Phone app: https://family-medicine-phone-test-private-test.up.railway.app
 
@@ -24,8 +24,14 @@ Phone app: https://family-medicine-phone-test-private-test.up.railway.app
 For a later commercial pilot, use a separate data directory/environment, `APP_MODE=commercial`, `PRIVATE_PILOT=true`, `PUBLIC_RELEASE=false`, an exact HTTPS `APP_ORIGIN`, and a long invitation token. Configure separate staging billing/provider secrets if testing real billing. Do not copy the owner's personal workspace into subscriber accounts.
 
 
-## Current source-linked curriculum deployment
+## Previous source-linked curriculum deployment
 
 Hosted code commit: `c42e8f6b923b2aaa7225931cb0cda95eea1ac550` on `release/google-play-preparation`, tree `c965d315bebc16bf6e37953e11a078f1b67308d6`. Railway deployment `8e417145-ad99-4443-8935-2554160522fc` reached terminal **SUCCESS** at `2026-10-09T09:53:57.176Z`. Startup logs confirm UID/GID 1000 and normal app initialization, with no repeated READY bootstrap.
 
-Live readback: `/api/status` 200, OpenAI configured (`gpt-4.1-mini`), access required, 105 conditions/210 questions/105 current/100 guideline or recommendation conditions. `/api/curriculum` 401 without sign-in. Served `/app.js` and `/sw.js` bytes match published local sources; shell v5 is active. These were new deployment checks, not repeated model inference or previous functional suites. Refresh an already-open phone page to load the new library; server restart can require the existing study code again. App-store publication is still on hold.
+Live readback: `/api/status` 200, OpenAI configured (`gpt-4.1-mini`), access required, 105 conditions/210 questions/105 current/100 guideline or recommendation conditions. `/api/curriculum` 401 without sign-in. Served `/app.js` and `/sw.js` bytes match published local sources; shell v 5 is active. These were new deployment checks, not repeated model inference or previous functional suites. Refresh an already-open phone page to load the new library; server restart can require the existing study code again. App-store publication is still on hold.
+
+## Board-study deployment
+
+Code commit`15055caa02160373f72228dc0eb9896e88412c4c`is published on`release/google-play-preparation`, tree`086899530f80bfff7c17009f4818f33c395d5138`. Railway deployment`12671bfc-0405-47a0-96d4-2dfde784cee9`reachedSUCCESS at`2026-10-09T10:58:39.672Z`, running UID/GID 1000. Public status shows 105 current conditions/210 condition questions and 222 combinedpractice questions, with 10/20/40/80/100 mixed sizes available. Browser sourcedvoice is enabled; uncheckedRealtime is disabled. Changed app/voice/shell/disclosure/install/content assets were read back and matched published bytes.
+
+The first new source-selector preflight stopped before a paid call on a topic-alias collision; the validation ledger records this new defect and its targeted correction. A successful deployment is not a successful source-selection or accuracy test. Refresh an existing phone page for shellv 6. Physical microphone/playback and independent clinical review remain outstanding; no store submission is authorized.

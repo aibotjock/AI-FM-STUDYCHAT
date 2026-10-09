@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createStudyCurriculum, needsStudyEvidence } from '../server/study-curriculum.js';
+import { createStudyCurriculum, loadStudyCurriculum, needsStudyEvidence } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
 
 // New independent safety cases; no existing passing curriculum groups repeated.
@@ -79,4 +79,36 @@ test('a generic follow-up after an unsupported answer cannot reactivate an old t
   const unsupported=await post('/api/chat',{conversationId:conversation.id,content:'Tell me about medication adherence in lupus',requestId:'qa-unsupported-topic',conditionIds:['asthma']});assert.equal(unsupported.message.unsupported,true);assert.equal(providerCalls,1);
   const followup=await post('/api/chat',{conversationId:conversation.id,content:'Why?',requestId:'qa-after-abstention',conditionIds:['asthma']});
   assert.equal(followup.message.unsupported,true);assert.deepEqual(followup.message.citations,[]);assert.equal(providerCalls,1);
+});
+
+test('actual AF stroke-risk and prevention requests cannot collide with the generic acute-stroke alias',()=>{
+  const curriculum=loadStudyCurriculum({contentDir:new URL('../content/conditions/',import.meta.url).pathname,now:()=>STUDY_NOW});
+  const selected={conditionIds:['atrial-fibrillation']};
+  const queries=[
+    'For board study only, what does the current atrial fibrillation study library say about stroke-risk assessment and anticoagulation?',
+    'For board study, explain stroke prevention in atrial fibrillation.',
+    'For board study, discuss the risk of stroke in AF.',
+    'How does AF change risk assessment for stroke?',
+    'For board study, preventing a stroke in atrial fibrillation.'
+  ];
+  for(const query of queries){
+    const evidence=curriculum.retrieve(query,selected);
+    assert.equal(evidence.length,3,query);
+    assert.deepEqual([...new Set(evidence.map(item=>item.conditionId))],['atrial-fibrillation'],query);
+    assert.ok(evidence.every(item=>item.key.startsWith('atrial-fibrillation:')),query);
+  }
+  const followup=curriculum.retrieve('Why?',{...selected,previousQueries:[queries[0]]});
+  assert.deepEqual([...new Set(followup.map(item=>item.conditionId))],['atrial-fibrillation']);
+  assert.deepEqual([...new Set(curriculum.retrieve('For board study, stroke-risk assessment and anticoagulation.',selected).map(item=>item.conditionId))],['atrial-fibrillation']);
+  assert.deepEqual([...new Set(curriculum.retrieve('Study stroke prevention').map(item=>item.conditionId))],['ischemic-stroke']);
+});
+
+test('explicit ischemic-stroke comparisons and a newly named stroke syndrome remain eligible in AF context',()=>{
+  const curriculum=loadStudyCurriculum({contentDir:new URL('../content/conditions/',import.meta.url).pathname,now:()=>STUDY_NOW});
+  for(const query of ['For board study, compare atrial fibrillation with acute ischemic stroke.','For board study, a new stroke syndrome after atrial fibrillation.']){
+    const ids=new Set(curriculum.retrieve(query,{conditionIds:['atrial-fibrillation'],maxChunks:6}).map(item=>item.conditionId));
+    assert.equal(ids.has('atrial-fibrillation'),true,query);
+    assert.equal(ids.has('ischemic-stroke'),true,query);
+  }
+  assert.deepEqual([...new Set(curriculum.retrieve('Study acute ischemic stroke',{conditionIds:['atrial-fibrillation']}).map(item=>item.conditionId))],['ischemic-stroke']);
 });
