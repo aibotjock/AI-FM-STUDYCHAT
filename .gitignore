@@ -10,3 +10,9 @@ coverage/
 test-results/
 playwright-report/
 .DS_Store
+android/.gradle/
+android/**/build/
+android/local.properties
+*.jks
+*.keystore
+qa-artifacts/

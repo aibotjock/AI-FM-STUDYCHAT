@@ -1,0 +1,70 @@
+{
+  "version": "2026-10-09",
+  "purpose": "Source metadata and rights triage only. No clinical recommendations, licensed excerpts, or exam questions are included.",
+  "sources": [
+    {
+      "id": "abfm-blueprint",
+      "organization": "American Board of Family Medicine",
+      "title": "Family Medicine Exam Blueprint",
+      "url": "https://www.theabfm.org/family-medicine-exam-blueprint/",
+      "role": "Curriculum domain weights; not a clinical guideline corpus",
+      "rightsStatus": "permission-required-for-commercial-content-reuse",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.theabfm.org/terms-of-use/",
+      "notes": "Use original questions. Do not scrape protected site content, reproduce exam questions, use logos, or imply ABFM endorsement. Public availability does not provide commercial reuse rights."
+    },
+    {
+      "id": "aafp-guidelines",
+      "organization": "American Academy of Family Physicians",
+      "title": "Clinical guidelines and recommendations overview",
+      "url": "https://www.aafp.org/clinical-insights/preventive-care-and-whole-health/community-public-health/clinical-guidelines-and-recommendations-overview",
+      "role": "Family medicine guidelines, endorsement status, and disagreements",
+      "rightsStatus": "commercial-permission-or-long-term-license-required",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.aafp.org/about-site/using-aafp-content/permissions",
+      "notes": "Endorsed, affirmation of value, and not endorsed are distinct statuses. Check permissions separately for journals, figures, tables, algorithms, guidelines, and AI processing."
+    },
+    {
+      "id": "uspstf-recommendations",
+      "organization": "U.S. Preventive Services Task Force / AHRQ",
+      "title": "Recommendation topics",
+      "url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation-topics",
+      "role": "Preventive screening, counseling, and medications",
+      "rightsStatus": "express-written-ahrq-permission-required-for-profit-making-use",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation-topics/copyright-notice",
+      "notes": "USPSTF work is not automatically licensed for a paid app. The Prevention TaskForce API requires prior approval, attribution, and verbatim display; API approval must not be assumed to grant all commercial or AI-processing rights."
+    },
+    {
+      "id": "cdc-clinical-sources",
+      "organization": "Centers for Disease Control and Prevention",
+      "title": "STI treatment, outpatient antibiotic care, and immunization sources",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/default.htm",
+      "additionalUrls": [
+        "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/adult-outpatient.html",
+        "https://www.cdc.gov/vaccines/hcp/imz-schedules/index.html"
+      ],
+      "role": "Selected infectious disease and vaccination content after source-specific review",
+      "rightsStatus": "conditional-source-by-source-public-domain-review",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "notes": "Most CDC text is public domain, but contractors, third parties, images, logos, and international use can differ. Reuse policy requires attribution, nonendorsement, unchanged substantive reproduced content, notice that content is free on CDC.gov, and update checks. Do not grant blanket corpus approval."
+    },
+    {
+      "id": "acgme-milestones",
+      "organization": "Accreditation Council for Graduate Medical Education",
+      "title": "Family Medicine Milestones",
+      "url": "https://www.acgme.org/specialties/family-medicine/milestones/",
+      "role": "Educational skill framework; not an official app assessment",
+      "rightsStatus": "commercial-license-required-for-reproduction-or-adaptation",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.acgme.org/about/legal/publication-document-usage/",
+      "notes": "Use original skills exercises. Do not copy protected milestone rubrics or claim official ratings, certification, or direct PGY-to-developmental-level equivalence."
+    }
+  ]
+}

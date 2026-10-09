@@ -15,7 +15,7 @@ const MAX_BACKUP_BYTES = 16 * 1024 * 1024;
 const MAX_STATE_BYTES = MAX_BACKUP_BYTES - 4096; // Reserve room for the backup envelope.
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.webmanifest': 'application/manifest+json; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon' };
 
-class HttpError extends Error {
+export class HttpError extends Error {
   constructor(status, message) { super(message); this.status = status; }
 }
 const fail = (status, message) => { throw new HttpError(status, message); };
@@ -166,11 +166,11 @@ function secureHeaders(res) {
 }
 
 /** A single-user, durable study app. Each deployment should have its own data directory. */
-export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = process.env, fetchImpl = globalThis.fetch } = {}) {
+export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = process.env, fetchImpl = globalThis.fetch, authenticateRequest, isActive = () => true, generateReply, generateDrafts } = {}) {
   const accessToken = (env.STUDY_ACCESS_TOKEN || '').trim();
   if (accessToken && accessToken.length < 24) throw new Error('STUDY_ACCESS_TOKEN must contain at least 24 characters.');
   const bindHost = env.HOST || '127.0.0.1';
-  if (!isLoopback(bindHost) && !accessToken) throw new Error('Set a strong STUDY_ACCESS_TOKEN before using a non-loopback HOST.');
+  if (!isLoopback(bindHost) && !accessToken && !authenticateRequest) throw new Error('Set a strong STUDY_ACCESS_TOKEN before using a non-loopback HOST.');
   const apiKey = (env.OPENAI_API_KEY || '').trim();
   const model = (env.OPENAI_MODEL || 'gpt-4.1-mini').trim();
   mkdirSync(dataDir, { recursive: true, mode: 0o700 });
@@ -195,6 +195,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
     state = previous;
   }
   const save = () => {
+    if (!isActive()) fail(410, 'This account has been deleted.');
     const serialized = JSON.stringify(state);
     if (Buffer.byteLength(serialized) > MAX_STATE_BYTES) {
       rollback();
@@ -222,6 +223,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
   }
 
   function session(req) {
+    if (authenticateRequest) return Boolean(authenticateRequest(req));
     if (!accessToken) return true;
     const match = /(?:^|;\s*)studychat_session=([^;]*)/.exec(req.headers.cookie || '');
     if (!match) return false;
@@ -259,7 +261,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
       const response = await fetchImpl('https://api.openai.com/v1/chat/completions', {
         method: 'POST', signal: controller.signal,
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-        body: JSON.stringify({ model, messages, max_completion_tokens: jsonMode ? 1800 : 1200, ...(jsonMode ? { response_format: { type: 'json_object' } } : {}) })
+        body: JSON.stringify({ model, messages, store: false, max_completion_tokens: jsonMode ? 1800 : 1200, ...(jsonMode ? { response_format: { type: 'json_object' } } : {}) })
       });
       if (!response.ok) {
         if (response.status === 401 || response.status === 403) fail(502, 'The AI provider rejected the server API key. Check the server configuration.');
@@ -284,11 +286,12 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
       if (!host || host.length > 300) fail(400, 'Invalid host.');
       let url;
       try { url = new URL(req.url, `http://${host}`); } catch { fail(400, 'Invalid URL.'); }
-      if (!accessToken && !isLoopback(url.hostname)) fail(403, 'Local mode only accepts a localhost address. Configure an access token for remote access.');
+      if (!authenticateRequest && !accessToken && !isLoopback(url.hostname)) fail(403, 'Local mode only accepts a localhost address. Configure an access token for remote access.');
       const path = url.pathname;
       if (path.startsWith('/api/')) {
         rateLimit(req, 'api', 240, 60000);
         guardOrigin(req);
+        if (req.method === 'GET' && path === '/api/public-info') return json(res, 200, { mode: 'personal', privatePilot: true, publicRelease: false, operatorName: typeof env.PUBLIC_OPERATOR_NAME === 'string' ? env.PUBLIC_OPERATOR_NAME.trim().slice(0, 200) || null : null, operatorContact: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(env.PUBLIC_SUPPORT_EMAIL || '') ? env.PUBLIC_SUPPORT_EMAIL : null });
         if (req.method === 'GET' && path === '/api/status') return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: Boolean(apiKey), provider: apiKey ? 'OpenAI' : 'offline', model: apiKey ? model : null });
         if (req.method === 'POST' && path === '/api/login') {
           rateLimit(req, 'login', 8, 15 * 60000);
@@ -402,10 +405,13 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             const user = last?.role === 'user' && last.content === content && (!requestId || last.requestId === requestId) ? last : { id: randomUUID(), role: 'user', content, createdAt: Date.now(), ...(requestId ? { requestId } : {}) };
             if (conversation.messages.length + (user === last ? 1 : 2) > 1000) fail(400, 'Start a new conversation to continue studying.');
             if (user !== last) { conversation.messages.push(user); save(); }
-            const answer = apiKey ? await complete([{ role: 'system', content: buildSystemPrompt(conversation, state.settings, state.reviews, state.cards) }, ...conversation.messages.slice(-24).map(message => ({ role: message.role, content: message.content }))]) : offlineReply(conversation);
-            const message = { id: randomUUID(), role: 'assistant', content: answer, createdAt: Date.now(), responseTo: user.id, ...(apiKey ? {} : { offline: true }) };
+            const generated = generateReply ? await generateReply({ conversation, settings: state.settings, reviews: state.reviews, cards: state.cards, requestId: requestId || user.id }) : null;
+            const answer = generated ? generated.content : apiKey ? await complete([{ role: 'system', content: buildSystemPrompt(conversation, state.settings, state.reviews, state.cards) }, ...conversation.messages.slice(-24).map(message => ({ role: message.role, content: message.content }))]) : offlineReply(conversation);
+            if (typeof answer !== 'string' || !answer.trim() || answer.length > 20000) fail(502, 'The coach returned an unusable answer.');
+            const connected = Boolean(generateReply || apiKey);
+            const message = { id: randomUUID(), role: 'assistant', content: answer, createdAt: Date.now(), responseTo: user.id, ...(generated?.citations ? { citations: generated.citations } : {}), ...(generated?.unsupported ? { unsupported: true } : {}), ...(connected ? {} : { offline: true }) };
             conversation.messages.push(message); save();
-            return json(res, 200, { message, conversation, offline: !apiKey });
+            return json(res, 200, { message, conversation, offline: !connected });
           } finally { chatLocks.delete(conversation.id); }
         }
         if (req.method === 'POST' && path === '/api/chat/cards') {
@@ -415,6 +421,15 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           const conversation = conversationFor(input.conversationId);
           if (chatLocks.has(conversation.id)) fail(409, 'Wait for the current reply before drafting cards.');
           if (!conversation.messages.length) fail(400, 'Chat with your coach before drafting cards.');
+          if (generateDrafts) {
+            chatLocks.add(conversation.id);
+            try {
+              const generated = await generateDrafts({ conversation, requestId: cleanText(input.requestId || randomUUID(), 'request id', 100) });
+              if (!isActive()) fail(410, 'This account has been deleted.');
+              if (!Array.isArray(generated.cards) || generated.cards.length > 5) fail(502, 'The coach returned unusable card drafts.');
+              return json(res, 200, { cards: generated.cards.map(item => ({ ...cardFields({ ...item, verified: false }), verified: false })), offline: false });
+            } finally { chatLocks.delete(conversation.id); }
+          }
           if (!apiKey) return json(res, 200, { cards: offlineDrafts(), offline: true });
           chatLocks.add(conversation.id);
           try {
@@ -456,6 +471,9 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
   server.headersTimeout = 10000;
   server.on('close', () => { if (!closed) { closed = true; db.close(); } });
   server.closeStore = () => { if (!closed) { closed = true; db.close(); } };
+  server.hasActiveRequests = () => chatLocks.size > 0;
+  // Constructor-injected gateway access only; never an HTTP route.
+  server.readOnlySnapshot = () => structuredClone(state);
   return server;
 }
 

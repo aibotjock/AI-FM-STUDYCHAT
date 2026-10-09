@@ -37,6 +37,13 @@ let chatBusy = false;
 let chatDraft = '';
 let chatError = '';
 let pendingChatRequest = null;
+let accountFormMode = 'login';
+let billingProducts = [];
+let billingLoading = false;
+let billingMessage = '';
+let billingDialogOpen = false;
+const verifyingPurchases = new Set();
+let pendingDeletionPrompt = new URLSearchParams(location.search).get('account') === 'delete';
 let reviewSession = null;
 let answerVisible = false;
 let reviewBusy = false;
@@ -95,7 +102,7 @@ function renderNav() {
   $('#desktop-nav').innerHTML = html;
   $('#bottom-nav').innerHTML = html;
   const badge = $('#connection-badge');
-  badge.textContent = !navigator.onLine ? 'Offline' : status.aiConfigured ? 'AI configured' : 'Guided practice';
+  badge.textContent = !navigator.onLine ? 'Offline' : status.privatePilot ? 'Private phone pilot' : status.aiConfigured ? 'AI configured' : 'Guided practice';
   badge.classList.toggle('live', status.aiConfigured && navigator.onLine);
   $('#network-notice').hidden = navigator.onLine;
 }
@@ -130,7 +137,7 @@ function renderToday() {
   const s = stats();
   const due = dueCards().length;
   const weak = s.weakTopics.slice(0, 4);
-  return `${pageHead(todayLabel(), 'Small steps. Lasting knowledge.', 'A focused daily rhythm for clearer clinical reasoning.')}
+  return `${pilotNotice()}${pageHead(todayLabel(), 'Small steps. Lasting knowledge.', 'A focused daily rhythm for clearer clinical reasoning.')}
     <section class="hero"><div><span class="eyebrow">YOUR NEXT ${esc(state.settings.dailyMinutes)} MINUTES, MADE INTENTIONAL</span><h2 class="hero-title">Turn what you know into<br>what you can recall.</h2><p>${due ? `${due} cards are ready. Start with recall, then work through one clinical question with your coach.` : 'Your reviews are complete. Strengthen your reasoning with one thoughtful conversation.'}</p><button class="button gold" data-action="${due ? 'start-review' : 'navigate'}" data-screen="coach">${due ? 'Start today’s reviews' : 'Talk with your coach'} ${icon('arrow')}</button></div><div class="hero-number">${due}<span>CARDS READY</span></div></section>
     <div class="metrics">${metric('Your daily rhythm', s.streak, s.streak ? 'Keep the habit growing' : 'Your first review starts it', 'streak', s.streak === 1 ? 'day' : 'days')}${metric('Reviewed today', s.reviewedToday, `Up to ${state.settings.newCardsPerDay} new cards each day`, 'review')}${metric('Recall success', s.recallRate === null ? '—' : `${s.recallRate}%`, s.totalReviews ? 'Self-rated Good or Easy' : 'Appears after your first review', 'target')}</div>
     <div class="today-grid"><section class="card"><div class="section-head"><h2>Your daily study plan</h2><span class="pill gold">${esc(state.settings.dailyMinutes)} min</span></div>
@@ -147,23 +154,24 @@ function renderCoach() {
   const messages = current?.messages || [];
   const lastAssistant = messages.filter(item => item.role === 'assistant').at(-1);
   return `<div class="chat-page"><div class="chat-header"><div><span class="eyebrow">A SPACE TO THINK OUT LOUD</span><h1>Your study coach</h1><p class="subtitle">${esc(focusLabel())} · ${esc(state.settings.dailyMinutes)} minutes at your pace</p></div><div class="chat-title-tools"><button class="icon-button" data-action="history" aria-label="Open conversation history" title="Conversation history">${icon('history')}</button><button class="icon-button" data-action="new-chat" aria-label="Start a new conversation" title="New conversation">${icon('plus')}</button></div></div>
-    ${!status.aiConfigured ? '<div class="notice info" style="margin-bottom:13px">Guided practice is active. Your app owner can connect an AI provider on the server for personalized conversational coaching.</div>' : ''}
-    <section class="chat-window" aria-label="Coach conversation"><div class="chat-toolbar"><div class="coach-id"><span class="coach-avatar">✦</span><div><strong>${esc(current?.title || 'FM Study Coach')}</strong><small>${status.aiConfigured ? 'Personalized coaching' : 'Guided practice · scripted coaching'}</small></div></div><span class="chat-mode">${esc(current?.mode === 'simulation' ? 'Clinical case' : current?.mode === 'practice' ? 'Active recall' : styleLabel())}</span></div>
+    ${pilotNotice(true)}${status.mode === 'commercial' && !status.entitlement?.active ? '<div class="notice info" style="margin-bottom:13px">Your study cards are ready. Enable coaching with a verified Google Play subscription.<button class="text-button" data-action="billing">View subscription ↗</button></div>' : ''}
+    ${!status.aiConfigured && !status.privatePilot ? '<div class="notice info coach-setup-notice" style="margin-bottom:13px">Guided practice is ready. AI coaching is not configured yet.</div>' : ''}
+    <section class="chat-window" aria-label="Coach conversation"><div class="chat-toolbar"><div class="coach-id"><span class="coach-avatar">✦</span><div><strong>${esc(current?.title || 'Study coach')}</strong><small>${status.aiConfigured ? 'Personalized coaching' : 'Guided practice · scripted coaching'}</small></div></div><span class="chat-mode">${esc(current?.mode === 'simulation' ? 'Clinical case' : current?.mode === 'practice' ? 'Active recall' : styleLabel())}</span></div>
     <div id="chat-messages" class="chat-messages" role="log" aria-label="Conversation messages" aria-live="polite" aria-relevant="additions">
-    ${messages.length ? messages.map(renderMessage).join('') : `<div class="chat-intro"><span class="intro-symbol" aria-hidden="true">✦</span><h1>Let’s make the next<br>clinical decision clearer.</h1><p>Bring a topic, a fictional case, or a question you find difficult. I’ll help you reason it through and remember what matters.</p><div class="prompt-grid">${[
+    ${messages.length ? messages.map(renderMessage).join('') : `<div class="chat-intro"><span class="intro-symbol" aria-hidden="true">✦</span><h1>Let’s make the next<br>clinical decision clearer.</h1><p>Choose a starting point, or bring a topic, a fictional case, or a question.</p><div class="prompt-grid">${[
       ['Help me synthesize a complex patient', 'Coach me through synthesizing a complex family medicine patient. Use a fictional case and ask me one question at a time.'],
       ['Quiz me on my weak topics', 'Quiz me on the topics I need to strengthen. Ask one active recall question at a time, wait for my answer, and give specific feedback.'],
       ['Walk through a differential', 'Give me a fictional clinical presentation and coach me through a prioritized differential diagnosis, one question at a time.'],
       ['Teach, then test my understanding', 'Help me learn a family medicine topic. Ask which topic I want first, teach it clearly, and then test my understanding.'],
     ].map(([label,prompt]) => `<button class="prompt-chip" data-action="starter" data-prompt="${esc(prompt)}">${esc(label)}<span>↗</span></button>`).join('')}</div></div>`}
     ${chatBusy ? '<div class="message assistant"><div class="avatar">✦</div><div class="message-body"><div class="message-label">Coach is thinking</div><div class="typing" role="status" aria-label="Coach is thinking"><i></i><i></i><i></i></div></div></div>' : ''}
-    </div><div class="chat-compose">${chatError ? `<div class="notice error" style="margin-bottom:10px">${esc(chatError)} <button class="text-button" data-action="dismiss-chat-error">Dismiss</button></div>` : ''}<form id="chat-form"><div class="compose-row"><label class="screen-reader" for="chat-input">Message your study coach</label><textarea id="chat-input" name="content" rows="1" placeholder="Ask, think out loud, or try an answer…" ${chatBusy ? 'disabled' : ''} maxlength="12000">${esc(chatDraft)}</textarea>${SpeechRecognition ? `<button type="button" class="icon-button mic-button ${recording ? 'recording' : ''}" data-action="dictate" aria-label="${recording ? 'Stop dictation' : 'Dictate a message'}" title="${recording ? 'Stop dictation' : 'Dictate a message'}" ${chatBusy ? 'disabled' : ''}>${icon('mic')}</button>` : ''}<button type="submit" class="icon-button send-button" aria-label="Send message" ${chatBusy ? 'disabled' : ''}>${icon('send')}</button></div><div class="composer-note"><span id="voice-status">${recording ? 'Listening… tap the microphone to stop.' : SpeechRecognition ? 'Type or tap the mic to speak. Review your words before sending.' : 'Type here or use the microphone on your phone’s keyboard.'}</span><span>Enter to send · Shift + Enter for a new line</span></div></form></div></section>
-    <div class="chat-under"><small>Use fictional or de-identified cases. Verify clinical advice before applying it.</small><button class="text-button" data-action="draft-cards" ${!lastAssistant || chatBusy ? 'disabled' : ''}>Create recall cards ↗</button></div></div>`;
+    </div><div class="chat-compose">${chatError ? `<div class="notice error" style="margin-bottom:10px">${esc(chatError)} <button class="text-button" data-action="dismiss-chat-error">Dismiss</button></div>` : ''}<form id="chat-form"><div class="compose-row"><label class="screen-reader" for="chat-input">Message your study coach</label><textarea id="chat-input" name="content" rows="1" placeholder="Ask your coach…" ${chatBusy || !canChat() ? 'disabled' : ''} maxlength="12000">${esc(chatDraft)}</textarea>${voiceDictationSupported() ? `<button type="button" class="icon-button mic-button ${recording ? 'recording' : ''}" data-action="dictate" aria-label="${recording ? 'Stop dictation' : 'Dictate a message'}" title="${recording ? 'Stop dictation' : 'Dictate a message'}" ${chatBusy || !canChat() ? 'disabled' : ''}>${icon('mic')}</button>` : ''}<button type="submit" class="icon-button send-button" aria-label="Send message" ${chatBusy || !canChat() ? 'disabled' : ''}>${icon('send')}</button></div><div class="composer-note"><span id="voice-status">${recording ? 'Listening… tap the microphone to stop.' : voiceDictationSupported() ? 'Type or tap mic. Review before sending.' : 'Type or use your phone keyboard’s microphone.'}</span><span>Enter to send · Shift + Enter for a new line</span></div></form></div></section>
+    <div class="chat-under"><small>Use fictional or de-identified cases. Verify clinical advice before applying it.</small><button class="text-button" data-action="draft-cards" ${!lastAssistant || chatBusy || !canChat() ? 'disabled' : ''}>Create recall cards ↗</button></div></div>`;
 }
 
 function renderMessage(message) {
   const role = message.role === 'user' ? 'user' : 'assistant';
-  return `<div class="message ${role}" data-message-id="${esc(message.id)}"><div class="avatar">${role === 'user' ? 'YOU' : '✦'}</div><div class="message-body"><div class="message-label">${role === 'user' ? 'You' : 'Study coach'}</div><div class="message-text">${esc(message.content)}</div>${role === 'assistant' ? `<div class="message-actions">${'speechSynthesis' in window ? `<button data-action="read-message" data-id="${esc(message.id)}">Read aloud</button>` : ''}<button data-action="card-from-message" data-id="${esc(message.id)}">Save as a card</button><button data-action="copy-message" data-id="${esc(message.id)}">Copy</button></div>` : ''}</div></div>`;
+  return `<div class="message ${role}" data-message-id="${esc(message.id)}"><div class="avatar">${role === 'user' ? 'YOU' : '✦'}</div><div class="message-body"><div class="message-label">${role === 'user' ? 'You' : 'Study coach'}</div><div class="message-text">${esc(message.content)}</div>${role === 'assistant' ? renderAnswerEvidence(message) : ''}${role === 'assistant' ? `<div class="message-actions">${'speechSynthesis' in window ? `<button data-action="read-message" data-id="${esc(message.id)}">Read aloud</button>` : ''}<button data-action="card-from-message" data-id="${esc(message.id)}">Save as a card</button><button data-action="copy-message" data-id="${esc(message.id)}">Copy</button>${status.mode === 'commercial' ? `<button data-action="report-message" data-id="${esc(message.id)}">Report answer</button>` : ''}</div>` : ''}</div></div>`;
 }
 
 function beginReview() {
@@ -229,7 +237,7 @@ function closeDialog() { if (formBusy) return; $('#app-dialog').close(); }
 
 function settingsDialog() {
   const s = state.settings;
-  dialog('A study rhythm that fits.', 'Adjust your coach and your daily learning load.', `<form id="settings-form"><div class="form-field"><label for="study-focus">Study focus</label><select id="study-focus" name="focus">${[['clinical-reasoning','Clinical reasoning & synthesis'],['exam','Exam preparation'],['balanced','Balanced learning']].map(([value,label]) => `<option value="${value}" ${s.focus === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-field"><label for="coach-style">Coaching style</label><select id="coach-style" name="coachStyle">${[['socratic','Socratic: one question at a time'],['teach-quiz','Explain first, then quiz me'],['direct','Give clear, direct explanations']].map(([value,label]) => `<option value="${value}" ${s.coachStyle === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-row"><div class="form-field"><label for="daily-minutes">Minutes per day</label><input id="daily-minutes" name="dailyMinutes" type="number" min="5" max="120" required value="${s.dailyMinutes}"></div><div class="form-field"><label for="new-limit">New cards per day</label><input id="new-limit" name="newCardsPerDay" type="number" min="0" max="50" required value="${s.newCardsPerDay}"></div></div><div class="form-field"><label for="study-timezone">Study timezone</label><input id="study-timezone" name="timeZone" value="${esc(s.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone)}" required><small>Used for daily limits and streaks. Example: America/New_York.</small></div><div class="notice info">${status.aiConfigured ? `AI coaching is configured${status.model ? ` using ${esc(status.model)}` : ''}. Your API key stays on the server.` : 'Guided practice is available now. To enable conversational AI, configure the server with OPENAI_API_KEY. Keys are never entered in this browser.'}</div><div id="settings-error" class="form-error" role="alert"></div></form><div class="form-section"><h3>Take your learning with you</h3><div class="inline-actions"><button class="button secondary" data-action="export">Export backup</button><button class="button secondary" data-action="import-backup">Restore backup</button></div><p class="footer-note" style="margin-bottom:0">Backups include your cards, review history, conversations, and preferences. Keep the file private.</p></div><div class="form-section"><h3>Use it from your phone</h3><p class="subtitle" style="font-size:12px">Open your hosted app’s HTTPS address. On Android, choose “Install app” or “Add to Home screen” in your browser menu. On iPhone, open Safari, tap Share, then “Add to Home Screen”.</p><p class="footer-note" style="margin:0">${SpeechRecognition ? 'The microphone button uses your browser’s speech recognition service. Review dictated text before sending.' : 'Use your phone keyboard’s microphone to dictate. Read-aloud is available where your browser supports it.'} Chat and saved progress require a connection.</p></div>${status.authRequired ? '<div class="form-section"><button class="button secondary" data-action="logout">Lock study space</button></div>' : ''}`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button type="submit" form="settings-form" class="button">Save preferences</button>');
+  dialog('A study rhythm that fits.', 'Adjust your coach and your daily learning load.', `<form id="settings-form"><div class="form-field"><label for="study-focus">Study focus</label><select id="study-focus" name="focus">${[['clinical-reasoning','Clinical reasoning & synthesis'],['exam','Exam preparation'],['balanced','Balanced learning']].map(([value,label]) => `<option value="${value}" ${s.focus === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-field"><label for="coach-style">Coaching style</label><select id="coach-style" name="coachStyle">${[['socratic','Socratic: one question at a time'],['teach-quiz','Explain first, then quiz me'],['direct','Give clear, direct explanations']].map(([value,label]) => `<option value="${value}" ${s.coachStyle === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-row"><div class="form-field"><label for="daily-minutes">Minutes per day</label><input id="daily-minutes" name="dailyMinutes" type="number" min="5" max="120" required value="${s.dailyMinutes}"></div><div class="form-field"><label for="new-limit">New cards per day</label><input id="new-limit" name="newCardsPerDay" type="number" min="0" max="50" required value="${s.newCardsPerDay}"></div></div><div class="form-field"><label for="study-timezone">Study timezone</label><input id="study-timezone" name="timeZone" value="${esc(s.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone)}" required><small>Used for daily limits and streaks. Example: America/New_York.</small></div><div class="notice info">${status.aiConfigured ? `AI coaching is configured${status.mode !== 'commercial' && status.model ? ` using ${esc(status.model)}` : ''}. ${status.mode === 'commercial' ? 'Answer sources and review dates appear when available.' : 'Your API key stays on the server.'}` : status.mode === 'commercial' ? 'AI coaching is being prepared. Guided practice supports learning habits while the app is tested.' : 'Guided practice is available now. To enable conversational AI, configure the server with OPENAI_API_KEY. Keys are never entered in this browser.'}</div><div id="settings-error" class="form-error" role="alert"></div></form><div class="form-section"><h3>Take your learning with you</h3><div class="inline-actions"><button class="button secondary" data-action="export">Export backup</button><button class="button secondary" data-action="import-backup">Restore backup</button></div><p class="footer-note" style="margin-bottom:0">Backups include your cards, review history, conversations, and preferences. Keep the file private.</p></div><div class="form-section"><h3>Use it from your phone</h3><p class="subtitle" style="font-size:12px">Open your hosted app’s HTTPS address. On Android, choose “Install app” or “Add to Home screen” in your browser menu. On iPhone, open Safari, tap Share, then “Add to Home Screen”.</p><p class="footer-note" style="margin:0">${voiceDictationSupported() ? 'The microphone button uses your browser’s speech recognition service. Review dictated text before sending.' : 'Use your phone keyboard’s microphone to dictate. Read-aloud is available where your browser supports it.'} Chat and saved progress require a connection.</p></div>${status.mode === 'commercial' ? commercialSettings() : ''}${status.authRequired ? '<div class="form-section"><button class="button secondary" data-action="logout">Lock study space</button></div>' : ''}`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button type="submit" form="settings-form" class="button">Save preferences</button>');
 }
 
 function cardDialog(card = null, preset = {}) {
@@ -258,6 +266,7 @@ async function createConversation(options = {}) {
 
 async function sendMessage(content) {
   if (!content.trim() || chatBusy) return;
+  if (!canChat()) return status.entitlement?.active && !status.aiConfigured ? notify('AI coaching is not configured for this pilot. Your cards and reviews are ready.') : subscriptionDialog();
   if (!navigator.onLine) { notify('Reconnect to send a message. Your draft is still here.'); return; }
   stopDictation();
   const submitted = content.trim();
@@ -279,6 +288,7 @@ async function sendMessage(content) {
       if (index >= 0) state.conversations[index] = result.conversation;
     } else await refreshState();
     pendingChatRequest = null;
+    if (status.mode === 'commercial') status = await api('/api/status').catch(() => status);
   } catch (error) {
     chatError = error.message;
     chatDraft = submitted;
@@ -290,11 +300,11 @@ async function sendMessage(content) {
   }
 }
 
-function scrollChat() { const log = $('#chat-messages'); if (log) log.scrollTop = log.scrollHeight; }
+function scrollChat() { const log = $('#chat-messages'); if (log) log.scrollTop = conversation()?.messages?.length ? log.scrollHeight : 0; }
 function resizeComposer() { const input = $('#chat-input'); if (!input) return; input.style.height = 'auto'; input.style.height = `${Math.min(140, Math.max(38,input.scrollHeight))}px`; }
 
 function startDictation() {
-  if (!SpeechRecognition) { notify('Use the microphone on your phone’s keyboard to dictate.'); return; }
+  if (!voiceDictationSupported()) { notify('Use the microphone on your phone’s keyboard to dictate.'); return; }
   if (!window.isSecureContext) { notify('Dictation needs HTTPS. You can also use your phone keyboard’s microphone.'); return; }
   if (recording) return stopDictation();
   recognition = new SpeechRecognition();
@@ -316,7 +326,7 @@ function stopDictation() { if (recognition && recording) recognition.stop(); rec
 function updateDictationUI() {
   const button = $('.mic-button');
   if (button) { button.classList.toggle('recording', recording); button.setAttribute('aria-label', recording ? 'Stop dictation' : 'Dictate a message'); }
-  if ($('#voice-status')) $('#voice-status').textContent = recording ? 'Listening… tap the microphone to stop.' : SpeechRecognition ? 'Type or tap the mic to speak. Review your words before sending.' : 'Type here or use the microphone on your phone’s keyboard.';
+  if ($('#voice-status')) $('#voice-status').textContent = recording ? 'Listening… tap the microphone to stop.' : voiceDictationSupported() ? 'Type or tap mic. Review before sending.' : 'Type or use your phone keyboard’s microphone.';
 }
 function readMessage(id) {
   const message = conversation()?.messages?.find(item => item.id === id);
@@ -381,11 +391,140 @@ function importBackupDialog() {
 
 function renderLogin() {
   renderNav();
+  if (status.mode === 'commercial') return renderAccountLogin();
   $('#main').innerHTML = `<section class="card auth-card"><span class="eyebrow">YOUR PRIVATE STUDY SPACE</span><h1>Welcome back.</h1><p class="subtitle">Unlock your coach, recall cards, and learning history.</p><form id="login-form"><div class="form-field"><label for="access-token">App access token</label><input id="access-token" name="token" type="password" autocomplete="current-password" required placeholder="Enter your access token"></div><div id="login-error" class="form-error" role="alert"></div><button class="button full" type="submit">Open study space ${icon('arrow')}</button></form><p class="signin-note">Use the access token configured by your app’s owner. Your browser keeps a secure session after you unlock.</p></section>`;
+}
+
+function canChat() { return status.mode !== 'commercial' || (status.authenticated && status.entitlement?.active === true && status.aiConfigured === true); }
+function voiceDictationSupported() { return Boolean(SpeechRecognition) && !billingBridge(); }
+function pilotNotice(compact=false) { return status.privatePilot ? compact ? `<div class="notice pilot-notice compact-pilot"><strong>Free private phone pilot</strong><span>${status.aiConfigured ? 'Practice and test your coach.' : 'Cards and reviews are ready. AI coaching is not configured yet.'} No subscription trial has started.</span></div>` : '<div class="notice pilot-notice"><strong>Private phone pilot</strong><span>Practice, chat, and review while we test the app. This free pilot is separate from a paid subscription or subscription trial.</span></div>' : ''; }
+
+function renderAnswerEvidence(message) {
+  const sources = Array.isArray(message.citations) ? message.citations : [];
+  const sourceList = sources.map(source => {
+    const url=safeUrl(source.url);
+    const title=url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(source.title || 'Reviewed source')} ↗</a>` : esc(source.title || 'Reviewed source');
+    const reviewed=source.reviewedAt ? new Date(source.reviewedAt).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}) : '';
+    return `<li>${title}<small>${source.edition ? `Edition: ${esc(source.edition)}` : ''}${source.edition && reviewed ? ' · ' : ''}${reviewed ? `Reviewed ${esc(reviewed)}` : ''}</small></li>`;
+  }).join('');
+  return `${message.unsupported === true ? '<div class="answer-abstention">Verification needed: reviewed teaching evidence did not support an answer to this question.</div>' : ''}${sourceList ? `<details class="answer-sources"><summary>${sources.length === 1 ? 'Reviewed teaching source' : `${sources.length} reviewed teaching sources`}</summary><ul>${sourceList}</ul><p>Reviewed excerpts support this teaching response; they are not a complete guideline or patient-specific advice.</p></details>` : ''}`;
+}
+
+function renderAccountLogin() {
+  const signup=accountFormMode==='register';
+  $('#main').innerHTML=`<section class="card auth-card commercial-auth"><span class="eyebrow">${status.privatePilot ? 'YOUR PRIVATE PHONE PILOT' : 'FAMILY MEDICINE STUDY COACH'}</span><h1>${signup ? 'Make room for learning.' : 'Welcome back.'}</h1><p class="subtitle">${status.privatePilot ? 'Create a private test account to keep your cards, conversations, and progress together.' : 'Your coach, recall cards, and study history in one place.'}</p><div class="segmented"><button data-action="account-mode" data-mode="login" class="${!signup ? 'active' : ''}" aria-pressed="${!signup}">Sign in</button><button data-action="account-mode" data-mode="register" class="${signup ? 'active' : ''}" aria-pressed="${signup}">Create account</button></div><form id="account-form"><div class="form-field"><label for="account-email">Email</label><input id="account-email" name="email" type="email" autocomplete="username" maxlength="254" required placeholder="you@example.com"></div>${signup && status.registrationRestricted ? '<div class="form-field"><label for="pilot-invite">Private pilot invite</label><input id="pilot-invite" name="inviteToken" type="password" autocomplete="off" required placeholder="Invite provided by the app owner"><small>Your test invite is separate from your personal password.</small></div>' : ''}<div class="form-field"><label for="account-password">Password</label><input id="account-password" name="password" type="password" autocomplete="${signup ? 'new-password' : 'current-password'}" minlength="12" maxlength="128" required placeholder="At least 12 characters">${signup ? '<small>Use a unique password with at least 12 characters.</small>' : ''}</div><div id="account-error" class="form-error" role="alert"></div><button class="button full" type="submit">${signup ? 'Create study account' : 'Open study space'} ${icon('arrow')}</button></form><p class="signin-note">${status.privatePilot ? 'This is a free private test. Creating an account does not start a paid subscription or a three-day subscription trial.' : 'Subscription pricing and any eligible trial are shown by Google Play before purchase.'}</p><div class="legal-links"><a href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy</a><a href="/account-deletion.html" target="_blank" rel="noopener noreferrer">Account deletion</a></div></section>`;
+}
+
+function usageHtml() {
+  if(status.mode!=='commercial' || !status.usage) return '';
+  const usage=status.usage;
+  const limited=status.entitlement?.isTrial === true;
+  const trial=limited && status.entitlement?.trialPhaseKnown === true;
+  const budget=usage.monthlyBudgetUsd;
+  const used=Number(usage.usedUsd) || 0;
+  const percentage=Number(budget)>0 ? Math.min(100,used/Number(budget)*100) : 0;
+  return `<div class="usage-summary"><div class="section-head"><strong>Included coaching allowance</strong><span>${esc(usage.turns || 0)} study turns this month</span></div><div class="progress-track"><div class="progress-fill" style="width:${percentage}%"></div></div><p>Estimated AI use: $${used.toFixed(2)} of $${Number(budget || 0).toFixed(2)} monthly allowance.</p><small>Up to ${esc(usage.dailyTurnLimit || 20)} turns per UTC day and ${esc(usage.monthlyTurnLimit || 200)} per usage period, within the AI budget. Saved cards and reviews remain available when coaching limits are reached.${limited ? ` ${trial ? 'Verified trial access' : 'An unconfirmed offer phase'} also has a $${Number(usage.trialBudgetUsd || 0).toFixed(2)} lifetime initial allowance.` : ''}</small></div>`;
+}
+
+function commercialSettings() {
+  const entitled=status.entitlement?.active===true;
+  return `<div class="form-section"><h3>Your study account</h3><p class="account-email">${esc(status.account?.email || '')}</p>${status.privatePilot ? '<div class="notice info">Private phone pilot: free testing access. This is not a paid subscription or Google Play trial.</div>' : `<p class="subtitle" style="font-size:12px">${entitled ? `Subscription access is active${status.entitlement.isTrial && status.entitlement.trialPhaseKnown ? ' during your verified trial' : ''}.` : 'A verified subscription is needed for coaching.'}</p>`}${usageHtml()}<div class="inline-actions"><button class="button secondary" data-action="billing">${status.privatePilot ? 'Subscription details' : 'View subscription'}</button><button class="button secondary" data-action="manage-subscription">Manage on Google Play</button></div></div><div class="form-section"><h3>Privacy & account controls</h3><div class="legal-links"><a href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy policy</a><a href="/account-deletion.html" target="_blank" rel="noopener noreferrer">Deletion information</a></div><button class="text-button delete-account-link" data-action="delete-account">Delete my account</button></div>`;
+}
+
+function billingBridge() { return window.FMNativeBilling && typeof window.FMNativeBilling.getProductDetails==='function' ? window.FMNativeBilling : null; }
+function billingPeriod(value) {
+  const match=/^P(\d+)(D|W|M|Y)$/.exec(String(value || ''));
+  if(!match) return String(value || 'billing period');
+  const unit={D:'day',W:'week',M:'month',Y:'year'}[match[2]];
+  return `${match[1]} ${unit}${match[1]==='1' ? '' : 's'}`;
+}
+function phaseDescription(phase) {
+  const price=phase.formattedPrice || `${phase.priceCurrencyCode || ''} price unavailable`;
+  const period=billingPeriod(phase.billingPeriod);
+  if(Number(phase.recurrenceMode)===1) return `${price} every ${period}`;
+  const cycles=Number(phase.billingCycleCount);
+  return `${price} for ${period}${cycles>1 ? `, repeated ${cycles} times` : ''}`;
+}
+
+function subscriptionDialog(load=true) {
+  billingDialogOpen=true;
+  const bridge=billingBridge();
+  const offers=billingProducts.flatMap((product,productIndex)=>(product.offers || []).map((offer,offerIndex)=>({product,offer,productIndex,offerIndex}))).filter(({product,offer})=>product.productId==='family_medicine_monthly' && offer.offerToken && offer.pricingPhases?.length);
+  const body=`${status.privatePilot ? '<div class="notice info" style="margin-bottom:18px">Your free private phone pilot is active. A subscription purchase is separate and is not required to test this pilot.</div>' : status.entitlement?.active ? `<div class="notice info" style="margin-bottom:18px">${status.entitlement.isTrial && status.entitlement.trialPhaseKnown ? 'Verified trial access' : 'Verified subscription access'} is active${status.entitlement.expiresAt ? ` through ${esc(new Date(status.entitlement.expiresAt).toLocaleDateString())}` : ''}.</div>` : '<p class="subtitle" style="font-size:13px">Coaching access requires a verified Google Play subscription. You can continue using your saved cards and reviews.</p>'}${usageHtml()}${offers.length ? `<div class="billing-offers">${offers.map(({product,offer,productIndex,offerIndex})=>`<section class="billing-offer"><h3>${esc(product.title || 'Family Medicine coaching')}</h3><p>${offer.pricingPhases.map(phaseDescription).map(esc).join(' → ')}</p><small>Google Play shows your eligible offer, renewal terms, and final confirmation before charging.</small><button class="button full" data-action="native-purchase" data-product="${productIndex}" data-offer="${offerIndex}">Continue with Google Play</button></section>`).join('')}</div>` : bridge ? `<div class="loading-line">${billingLoading ? '<span class="spinner"></span>Loading current Google Play pricing…' : 'Current Google Play pricing has not loaded.'}</div>` : '<div class="notice">Subscription purchase and eligible pricing are available inside the installed Android app. No payment is started from this browser.</div>'}${billingMessage ? `<div class="notice info" style="margin-top:14px">${esc(billingMessage)}</div>` : ''}<div class="legal-links"><a href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy</a><a href="/account-deletion.html" target="_blank" rel="noopener noreferrer">Account deletion</a></div>`;
+  dialog('Your coaching access.', 'Pricing comes directly from Google Play.',body,`<button class="button secondary" data-action="native-restore" ${!bridge ? 'disabled' : ''}>Restore purchases</button><button class="button secondary" data-action="manage-subscription">Manage subscription</button><button class="button" data-action="close-dialog">Done</button>`);
+  if(load && bridge && !billingLoading) { billingLoading=true;bridge.getProductDetails();subscriptionDialog(false); }
+}
+
+function purchaseOffer(productIndex,offerIndex) {
+  const product=billingProducts[productIndex];
+  const offer=product?.offers?.[offerIndex];
+  const bridge=billingBridge();
+  if(!bridge || !product || !offer?.offerToken) return notify('Load current pricing inside the Android app first.');
+  if(!status.authenticated || !status.account?.obfuscatedAccountId) return notify('Sign in to your study account before purchasing.');
+  bridge.purchase(JSON.stringify({productId:product.productId,offerToken:offer.offerToken,accountId:status.account.obfuscatedAccountId}));
+}
+function restorePurchases() { const bridge=billingBridge();if(!bridge) return notify('Restore purchases inside the installed Android app.');billingMessage='Checking Google Play purchases…';bridge.restore();subscriptionDialog(false); }
+function manageSubscriptions() { const bridge=billingBridge();if(bridge && typeof bridge.manageSubscriptions==='function') bridge.manageSubscriptions();else window.open('https://play.google.com/store/account/subscriptions','_blank','noopener,noreferrer'); }
+
+async function handleBillingEvent(event) {
+  let detail=event.detail;
+  if(typeof detail==='string') {try{detail=JSON.parse(detail);}catch{return;}}
+  if(!detail || typeof detail!=='object') return;
+  switch(detail.type) {
+    case 'native-ready': nativeReady();break;
+    case 'billing-ready': if(billingDialogOpen && $('#app-dialog').open) subscriptionDialog();break;
+    case 'product-details': billingLoading=false;billingProducts=Array.isArray(detail.products)?detail.products:[];billingMessage=billingProducts.length ? '' : 'Google Play has no eligible subscription offer available right now.';if(billingDialogOpen && $('#app-dialog').open) subscriptionDialog(false);break;
+    case 'purchase':
+      if(detail.purchaseState!=='PURCHASED') {billingMessage='Your purchase is pending in Google Play. Coaching unlocks after payment and server verification.';if(billingDialogOpen && $('#app-dialog').open) subscriptionDialog(false);return;}
+      if(!detail.purchaseToken || !status.authenticated || verifyingPurchases.has(detail.purchaseToken)) return;
+      verifyingPurchases.add(detail.purchaseToken);
+      billingMessage='Verifying your purchase securely…';if(billingDialogOpen && $('#app-dialog').open) subscriptionDialog(false);
+      try {await mutate('/api/billing/verify','POST',{purchaseToken:detail.purchaseToken});status=await api('/api/status');billingMessage=status.entitlement?.active ? 'Your coaching access has been verified.' : 'Verification completed; coaching access is not active yet.';render();if(billingDialogOpen && $('#app-dialog').open) subscriptionDialog(false);notify(billingMessage);}
+      catch(error){billingMessage=error.message;if(billingDialogOpen && $('#app-dialog').open) subscriptionDialog(false);notify('Purchase verification needs attention. Restore purchases to try again.');}
+      finally { verifyingPurchases.delete(detail.purchaseToken); }break;
+    case 'purchase-canceled': billingMessage='Purchase canceled.';break;
+    case 'restore-complete': if(!status.entitlement?.active) billingMessage='Restore check completed. Active coaching access requires server verification.';break;
+    case 'billing-error': case 'billing-unavailable': billingLoading=false;billingMessage=detail.message || 'Google Play billing is unavailable right now.';break;
+  }
+  if(billingDialogOpen && $('#app-dialog').open && !['purchase','native-ready','billing-ready','product-details'].includes(detail.type)) subscriptionDialog(false);
+}
+window.addEventListener('fm-native-billing',event=>{handleBillingEvent(event).catch(error=>notify(error.message));});
+window.addEventListener('fm-native-ready',nativeReady);
+function nativeReady() {
+  if ($('#chat-input')) chatDraft = $('#chat-input').value;
+  if (recording) stopDictation();
+  if (isLoaded) render();
+  const bridge = billingBridge();
+  if (bridge) { bridge.getProductDetails(); if (status.authenticated && status.mode === 'commercial') bridge.restore(); }
+  if (billingDialogOpen && $('#app-dialog').open) subscriptionDialog(false);
+}
+function maybePromptAccountDeletion() {
+  if (pendingDeletionPrompt && isLoaded && status.mode === 'commercial' && status.authenticated) {
+    pendingDeletionPrompt = false;
+    const url = new URL(location.href); url.searchParams.delete('account'); history.replaceState(null, '', url);
+    accountDeletionDialog();
+  }
+}
+$('#app-dialog').addEventListener('close',()=>{billingDialogOpen=false;});
+
+function reportDialog(messageId) {
+  const current=conversation();
+  if(!current?.messages?.some(message=>message.id===messageId)) return;
+  dialog('Help improve this answer.', 'Reports are saved for app-owner review; they are not an emergency channel.', `<form id="report-form" data-conversation="${esc(current.id)}" data-message="${esc(messageId)}"><div class="form-field"><label for="report-reason">What should we review?</label><textarea id="report-reason" name="reason" maxlength="2000" required placeholder="Describe the incorrect statement, source issue, or coaching concern."></textarea><small>Keep your report free of identifying patient information.</small></div><div id="report-error" class="form-error" role="alert"></div></form>`,'<button class="button secondary" data-action="close-dialog">Cancel</button><button class="button" type="submit" form="report-form">Save report</button>');
+}
+function accountDeletionDialog() {
+  dialog('Delete your study account?', 'This permanently removes your account and stored study content.', `<div class="notice" style="margin-bottom:18px">Deleting your account does not cancel a Google Play subscription. Manage or cancel it in Google Play first if needed.</div><button class="button secondary" data-action="manage-subscription">Manage Google Play subscription</button><p class="subtitle" style="font-size:12px;margin-top:18px">Export a backup before deleting if you want to keep your cards, conversations, and review history.</p><form id="delete-account-form"><div class="form-field"><label for="delete-confirmation">Type DELETE to confirm</label><input id="delete-confirmation" name="confirmation" autocomplete="off" required pattern="DELETE" placeholder="DELETE"></div><div id="delete-account-error" class="form-error" role="alert"></div></form>`,'<button class="button secondary" data-action="close-dialog">Keep my account</button><button class="button danger" type="submit" form="delete-account-form">Permanently delete account</button>');
 }
 
 async function handleAction(button) {
   const {action,id,rating,prompt,topic,tab} = button.dataset;
+  if (action === 'billing') return subscriptionDialog();
+  if (action === 'native-purchase') return purchaseOffer(Number(button.dataset.product), Number(button.dataset.offer));
+  if (action === 'native-restore') return restorePurchases();
+  if (action === 'manage-subscription') return manageSubscriptions();
+  if (action === 'account-mode') { accountFormMode = button.dataset.mode; return renderLogin(); }
+  if (action === 'report-message') return reportDialog(id);
+  if (action === 'delete-account') return accountDeletionDialog();
   if (chatBusy && ['new-chat','history','select-conversation','start-case','practice-prompt','starter','topic-coach'].includes(action)) return notify('Wait for your coach’s reply before starting another conversation.');
   switch(action) {
     case 'navigate': return navigate(button.dataset.screen);
@@ -441,7 +580,22 @@ document.addEventListener('submit', async event => {
   if(submit) submit.disabled=true;
   let errorId;
   try {
-    if(form.id==='login-form') {
+    if (form.id === 'account-form') {
+      errorId = 'account-error';
+      await mutate(accountFormMode === 'register' ? '/api/register' : '/api/login', 'POST', { email: data.get('email').trim().toLowerCase(), password: data.get('password'), ...(accountFormMode === 'register' ? { inviteToken: data.get('inviteToken') || '' } : {}) });
+      status = await api('/api/status'); currentConversationId = null; reviewSession = null;
+      await refreshState(); render(); maybePromptAccountDeletion(); if (billingBridge()) billingBridge().restore(); notify(status.privatePilot ? 'Your private phone pilot is ready.' : 'Your study account is open.');
+    } else if (form.id === 'report-form') {
+      errorId = 'report-error';
+      await mutate('/api/reports', 'POST', { conversationId: form.dataset.conversation, messageId: form.dataset.message, reason: data.get('reason').trim() });
+      $('#app-dialog').close(); notify('Your report was saved for review.');
+    } else if (form.id === 'delete-account-form') {
+      errorId = 'delete-account-error';
+      if (data.get('confirmation') !== 'DELETE') throw new Error('Type DELETE exactly to confirm account deletion.');
+      await mutate('/api/account/delete', 'POST', { confirmation: 'DELETE' });
+      $('#app-dialog').close(); state.cards=[];state.reviews=[];state.conversations=[];state.settings={};isLoaded=false;currentConversationId=null;
+      status=await api('/api/status'); accountFormMode='login';renderLogin();notify('Your account and saved study content were deleted.');
+    } else if(form.id==='login-form') {
       errorId='login-error';
       await mutate('/api/login','POST',{token:data.get('token')});
       status=await api('/api/status');
@@ -519,6 +673,8 @@ async function initialize() {
     await refreshState();
     if(!state.settings.timeZone) { await mutate('/api/settings','PUT',{timeZone:Intl.DateTimeFormat().resolvedOptions().timeZone});await refreshState(); }
     render();
+    maybePromptAccountDeletion();
+    if (billingBridge() && status.mode === 'commercial' && status.authenticated) { billingBridge().getProductDetails(); billingBridge().restore(); }
   } catch(error) {
     $('#main').innerHTML=`<div class="empty-state"><h1>Your study space is waiting.</h1><p>${esc(error.message)} Reconnect and reload to open your saved cards and conversations.</p><button class="button" id="retry-load">Try again</button></div>`;
     $('#retry-load').addEventListener('click',initialize);

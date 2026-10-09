@@ -1,4 +1,20 @@
-# FM Study Coach
+# Family Medicine Study Coach
+
+**Release preparation, with store submission on hold.** The personal prototype is on `main`; `release/google-play-preparation` adds commercial safeguards and Android source for review. The first milestone is a private phone test. The paid medical product is not ready for public distribution: the rights-cleared clinical corpus is empty, email verification/recovery and operator workflows need implementation, and real billing/native/clinical validation remain outstanding.
+
+The planned price is **US$4.99/month after a three-day trial for eligible new subscribers**. Google Play owns trial eligibility and billing; this app never starts a local trial timer or unlocks access from a client assertion. Clients use our server's AI integration without supplying their own API keys.
+
+See [release plan](docs/RELEASE_PLAN.md), [security status](docs/SECURITY.md), [clinical content requirements](docs/CLINICAL_CONTENT.md), [subscription economics](docs/ECONOMICS.md), [phone trial](docs/PHONE_TEST.md), and [Android preparation](docs/ANDROID_RELEASE.md).
+
+## Commercial private-pilot preparation
+
+Select `APP_MODE=commercial` to use separate account workspaces, verified Play entitlements, cost reservations, reports, and account deletion. `PRIVATE_PILOT=true` can allow private testing without a purchase only when `PUBLIC_RELEASE=false`. It is not a free trial or a customer subscription. `PUBLIC_RELEASE=true` is deliberately refused by this scaffold.
+
+Internet-accessible commercial pilots require an exact HTTPS `APP_ORIGIN` and a long `PILOT_INVITE_TOKEN` for registration. Store those in host settings. Real billing also requires `GOOGLE_SERVICE_ACCOUNT_JSON` and a separate base64-encoded 32-byte `BILLING_TOKEN_ENCRYPTION_KEY`. Set `COMMERCIAL_OPENAI_MODEL` independently of the personal prototype model; changing it requires matching cost rates and repeat validation.
+
+Commercial clinical answers use only eligible, current, reviewed teaching evidence and server-supplied citations. With the checked-in empty corpus they abstain rather than fall back to ungrounded medical answers. Supported outputs reproduce reviewed teaching text, with optional fixed recall prompts. These controls do not prove correctness or relevance; independent clinical evaluation remains required.
+
+The shared-token personal mode described below stays available for the owner's first phone trial. Its AI answers and user cards are unverified. Never share that workspace among paying clients.
 
 A phone-first family medicine study app rebuilt from **Residency-Coach-AI**. Chat with a Socratic coach, practice complex cases, turn lessons into editable retrieval cards, and review them on a spaced schedule. The interface works on phones and desktops and supports home-screen installation over HTTPS.
 
@@ -39,7 +55,7 @@ Keep the value in `.env` or host secrets and use it on the app's sign-in screen.
 4. Generate an HTTPS service domain, wait for a healthy deployment, and open that URL on your phone.
 5. Sign in and add the app to the home screen.
 
-Review your host's current charges before enabling hosting. No hosting service was provisioned as part of the source rebuild.
+A private Railway test project, service and 500 MB volume have been prepared. The public repository is accessible; the initial deployment exposed a volume ownership issue. A bounded container initializer fixes only the data mount, drops all root identities/capabilities, and starts the app as UID/GID 1000. Persistent root execution was rejected by automatic review and was not enabled. See [hosting status](docs/HOSTING.md) for live verification status.
 
 ## Study workflow
 
@@ -93,7 +109,7 @@ npm test
 
 Tests cover review timing and daily limits, timezone boundaries and DST streaks, auth and request guards, durable data, atomic backups, chat retries and concurrency, and mocked AI-provider success/failure. Live provider access requires a configured API key and is a separate verification step.
 
-The source rebuild passes 22 tests and JavaScript/asset checks. Interactive browser testing could not run because the browser runtime was unavailable and could not be downloaded. Test the phone layout, microphone permissions, and home-screen installation on the deployed URL before relying on those flows.
+JavaScript/asset, guideline-schema, billing-bridge and automated integration checks are included. Fresh mobile browser checks at 360 × 800 passed the personal study workflow and commercial account, pilot, subscription-details and deletion flows. Those checks use local test servers and synthetic data. A physical phone, live OpenAI connection, actual Play purchase, Kotlin compilation and signed AAB remain unverified. Test microphone permissions and home-screen installation on the real HTTPS URL.
 
 ## Files
 
