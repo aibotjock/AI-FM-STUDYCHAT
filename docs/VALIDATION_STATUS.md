@@ -12,7 +12,7 @@ The personal tutor generates natural paragraphs from bounded recent context and 
 
 Only affected or new test scopes are being executed; passed unrelated source/corpus, authentication, billing, scheduler, dictation and zoom checks are not repeated. Source content and its dates are unchanged. The monthly source-refresh prompt was updated on October 9 at 17:46 UTC to preserve the natural tutor and its separate review; its existing monthly schedule was unchanged.
 
-The owner subsequently reported intermittently inaudible voice and slow replies. The source-span patch is still pending and has not run its new hosted check. Audio-state and first-segment latency fixes are being added to the same private update; the live findings and their limits are recorded at the end of this ledger.
+The owner subsequently reported intermittently inaudible voice and slow replies. Source-span and audio corrections are now combined in published code `5fb7d8d726731195c9f7d1306aba27e06e8d2140` and the same private staged patch, with14 additional unique new/affected audio checks passed. Railway now records five nondestructive field entries: the code pin/check flag plus identical branch/repository values and an empty image removal. Dashboard application, the new hosted study check and a physical-phone audio/timing trial remain pending. Exact staging evidence and live findings are recorded at the end of this ledger.
 
 ## Archived bounded-plan release disposition
 
@@ -443,3 +443,21 @@ Official implementation references reviewed: [OpenAI text-to-speech](https://dev
 | New360×800 mobile scopes6–7 | 2 | Honest startup/paused states, playback-event timing, picker-focus preservation on timing ticks and zero-request buffer resume; distinct reply/audio wait and every next part keep the microphone off. Both passed their first scoped run in `qa/premium-speech-browser-results-scopes-6-7.json`; no old browser groups or archived reports repeated. |
 
 These are14 unique new/affected passing checks (12new,2affected), separate from the earlier56 source-span and58 premium-voice checks. No paid inference, preview, source fetch or acoustic test was executed. New/changed scripts passed syntax and changed-file whitespace checks. Independent read-only review found no remaining blocking trust/race issue: stale play attempts cannot overwrite newer operations, real progress drives watchdog deadlines, already-ended buffers complete instead of replaying, completion callbacks are bounded and microphone listening waits for final completion. A shorter first segment may add one paid uncached TTS request and a later gap; no prefetch was added. Actual phone hearing and new hosted response timing remain pending.
+
+### Combined source/audio release staged by Luna6
+
+Code `5fb7d8d726731195c9f7d1306aba27e06e8d2140`, tree `e7a4bbc5ccfabe42566c6881b4b946b8c37e52b9`, was pushed with an expected-head lease from docs-only parent `af928114a2f86808b9861148dda6397c8739c1f8`; it inherits the reviewed source-span correction. All197 remote blob hashes/modes match the frozen index snapshot;18 files changed. Changed-file whitespace passed and no unrelated scratch scope report was staged. CI was skipped to preserve scoped checks without redundant full-suite runs.
+
+The requested `gpt-6-luna` deployment worker replaced only the GitHub source in existing private patch `ad2a7ade-625e-40a2-acdc-d4da700b23e3`, then inspected it. STAGED, destructive=false, one existing phone-test service updated, no other resources/shared variables/private-network toggle. Railway reports five nondestructive field entries:
+
+| Field | Live display | Staged display |
+| --- | --- | --- |
+| source.branch | release/google-play-preparation | release/google-play-preparation |
+| source.commitSha | 3cad54dcf259ee5cbb13e3f5cc2b1a458d761db3 | 5fb7d8d726731195c9f7d1306aba27e06e8d2140 |
+| source.image (removed) | empty | empty |
+| source.repo | aibotjock/AI-FM-STUDYCHAT | aibotjock/AI-FM-STUDYCHAT |
+| STUDY_INITIAL_CONVERSATION_CHECK (added) | empty | redacted; stagednatural-v3 |
+
+The branch/repository values are identical and the image displays empty on both sides; no additional source target is shown. This is five recorded entries, not the earlier reported two-entry patch. No cleanup mutation, live connect, redeploy or second stalled accept-deploy attempt occurred. Premium-v1 remains inactive. App chat and speech models were not substituted; no Astra/Claude call or app-store/commercial publication occurred.
+
+The owner can apply this concrete private patch in Railway's dashboard; the prior connector deployment confirmation stalled. After actual SUCCESS/build verification, observe only the new natural-v3 receipt (cached greeting/name; one new study turn, at most two text calls), blank its flag with deploys skipped and query only the new Ingenium text-event window. Do not repeat the paid Marin preview. For the audio fix, refresh the app, keep it visible, check media volume/output, ask one short conversational question, and use prepared-buffer **Play audio** if paused. Record the displayed reply/audio wait and whether playback is audible. Local checks and source fingerprints do not guarantee speed, acoustic quality or clinical accuracy.
