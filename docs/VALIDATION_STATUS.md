@@ -8,7 +8,9 @@ live provider access or clinical accuracy.
 
 ## Version and scope
 
-- Current published baseline: release branch `4cbf673ca36d3254a336a7f11527e96afb02e43c`.
+- Current deployed implementation: release commit `45077ce7d2a0f400e8548322cbfcd2a52c8c0982`,
+  tree `390ecb02fd9fdd34ed71c4f53c7daf88440ebae8`.
+- Previous published baseline: `4cbf673ca36d3254a336a7f11527e96afb02e43c`.
 - Earlier secure sign-in, review/restore fixes and owner OpenAI model controls
   are deployed. Newly checked changes add continuous personal voice, dictation
   reconciliation, mobile zoom/pan and a durable metadata-only Ingenium feed.
@@ -20,8 +22,9 @@ live provider access or clinical accuracy.
   provenance and returned-model validation. No Astra inference was performed.
 - Store submission remains on hold. Ingenium has a verified project-admin
   application organization and hashed key; its authenticated receiver is active,
-  while app feed deployment and genuine event receipt remain pending.
-  The app still calls OpenAI directly.
+  and a genuine OpenAI request event was delivered and verified in Supabase.
+  The app still calls OpenAI directly; Ingenium observes metadata without
+  selecting or routing models automatically.
 
 ## Completed checks
 
@@ -43,16 +46,20 @@ live provider access or clinical accuracy.
 | CAT-02 | Only fallback and stale-catalog cases from CAT-01 | 2 passed | Selection now requires a confirmed non-stale account list; documented fallback is read-only |
 | ING-01 | `tests/ingenium-telemetry.test.js`: metadata whitelist, fixed HTTPS receiver, server-only key, unknown usage, prohibited IDs, sanitized failures | 7 passed with mocks | New observer; no content or credentials transmitted |
 | ING-02 | `tests/ingenium-hook.test.js`: adapter hooks, app wiring, selected-model provenance, receiver failure, restart/idempotent outbox delivery, 500-event cap | 9 unique cases passed with mocks | New integration; receiver delivery retries do not repeat inference |
-| ING-03 | `tests/ingenium-check.test.js`: inactive/other-model skip, loopback-only credential use, durable READY request, safe summary/logout, failure without retry | 4 passed with mocks | New operator-enabled one-time bootstrap path; genuine live run remains pending |
+| ING-03 | `tests/ingenium-check.test.js`: inactive/other-model skip, loopback-only credential use, durable READY request, safe summary/logout, failure without retry | 4 passed with mocks | New operator-enabled one-time bootstrap path; subsequent genuine run is recorded separately under LIVE-02 |
 | VOICE-01 | `tests/voice.test.js`: fixed-model signaling, owner scope, SDP/URL bounds, creation failures, stop/grace/expiry, untrusted transcripts | 8 passed with mocks | New helper; no paid call or real microphone |
 | VOICE-02 | `tests/voice-routes.test.js`: auth, locks, atomic/idempotent captions, imports, workspace ownership, disabled modes, prohibited model, limits, failure, logout/setup race, shutdown/setup race | 11 unique cases passed with mocks | New HTTP integration; logout race failed first, fixed and only that failing case repeated |
 | UI-05 | `qa/voice-browser-combined-results.json`: 10 controller, 7 UI and 7 dictation groups at 360×800 | 24 unique groups passed; 0 JS errors; 0 paid calls | New continuous voice/dictation checks; only two failing groups repeated after fixes, with two new pending-setup groups added |
 | ZOOM-01 | `qa/phone-zoom-results.json`: accessible viewport, gesture containment, scroll chaining, native twofold horizontal/vertical pan, reachable composer/navigation after reset | 5 passed; 0 JS errors; 0 paid calls | New mobile zoom cases; boundary probe corrected to wait for smooth scrolling before assessing containment |
 | MAT-01 | New one-off inventory/HTTPS/status consistency checks for `content/source-checks.json`: 12 cases, 12 cards, 6 competencies, 0 approved teaching records; audit documented in `docs/STUDY_MATERIAL.md` and `docs/CLINICAL_CONTENT.md` | 13 groups passed, reported by the source-audit agent; no checked-in runner | New dated source manifest; existing content tests were not repeated; this does not establish clinical approval |
+| LIVE-01 | Railway deployment `ecf8246b-a6f2-432d-ae07-02ee8f28e172`, deployed status and voice assets | Terminal SUCCESS at `2026-10-09T05:46:08.403Z`; `/api/status` 200; shell v4; voice module 200 with SHA-256 bytes matching local source | Changed implementation required deployment verification; no inference or phone audio in this check |
+| LIVE-02 | Operator-enabled local bootstrap: authenticate, send durable bounded READY check, flush registered metadata feed, read back the genuine Supabase event | Authentication and READY instruction passed; uncached `gpt-4.1-mini-2025-04-14` response; 20 input/1 output tokens; delivered 1, pending 0 | First genuine OpenAI request and Ingenium receipt; estimated cost `$0.0000096`, not an invoice measurement or medical accuracy test |
 
 
-All provider/catalog, Ingenium and voice checks listed above used synthetic
-local responses, with zero paid calls. The earlier 94-case provider baseline
+
+The local provider/catalog, Ingenium and voice checks used synthetic responses
+and made zero paid calls. LIVE-02 separately records one genuine, uncached
+OpenAI READY request; no real voice call has been tested. The earlier 94-case provider baseline
 was not rerun as a redundant batch; new cases above are recorded separately.
 The container privilege-capability check
 was skipped in the original scratch kernel; prior Railway logs independently
@@ -84,17 +91,24 @@ confirmed the deployed application UID/GID is 1000.
 
 | Item | Status and next concrete check |
 | --- | --- |
-| Railway HTTPS pilot | Updated release `4cbf673ca36d3254a336a7f11527e96afb02e43c` is live; HTTP 200, private access required, OpenAI configured, model selection enabled. |
-| Updated deployment | Railway deployment `9ab85b2e-7e85-4b32-ac87-2f50526c6d56` observed terminal SUCCESS on 2026-10-09 05:13:47 UTC; `/sw.js` serves `fm-coach-shell-v3`, `/api/status` exposes the new owner controls. |
-| Correct live sign-in and inference | Owner confirmed successful live phone sign-in on October 9, 2026 at approximately 01:20 America/New_York. Live inference remains to verify. `OPENAI_API_KEY` is separate. |
-| Actual account model catalog and every eligible model | Not yet exercised live. Owner controls select only supported, account-confirmed text models. Connection checks are paid, capped and cached; they do not grade medicine. Media/embedding/fine-tuned models and unverified aliases are outside the study-chat contract. |
-| Continuous voice deployment | New personal-only continuous voice code and mock/browser checks are complete. Publishing and Railway terminal SUCCESS still pending; current live release does not yet include these changes. |
-| Physical phone microphone/audio/install | Repeated dictation and continuous voice fixes passed local checks. Actual phone microphone permission, audible conversation, echo cancellation, interruption, background behavior and install remain to test after deployment. |
+| Railway HTTPS pilot | Implementation `45077ce7d2a0f400e8548322cbfcd2a52c8c0982` is live; `/api/status` 200, private access required, OpenAI configured with text model `gpt-4.1-mini`, model selection enabled, `voiceEnabled: true`, voice model `gpt-realtime-2.1-mini`. |
+| Updated deployment | Railway deployment `ecf8246b-a6f2-432d-ae07-02ee8f28e172` observed terminal SUCCESS at `2026-10-09T05:46:08.403Z`. `/sw.js` serves `fm-coach-shell-v4`; `/voice-chat.js` returned 200 and SHA-256 bytes matched the local implementation. |
+| Correct live sign-in and inference | Owner confirmed successful phone sign-in at approximately 01:20 America/New_York on October 9. The operator bootstrap subsequently authenticated and passed one live READY instruction with `gpt-4.1-mini-2025-04-14`, uncached. This verifies backend provider connectivity, not clinical answer quality. `OPENAI_API_KEY` remains separate. |
+| Actual account model catalog and every eligible model | Only the selected `gpt-4.1-mini` READY request is verified live. Account catalog coverage and every other eligible model remain untested. Owner controls select only supported, account-confirmed text models. Connection checks are paid, capped and cached; they do not grade medicine. Media/embedding/fine-tuned models and unverified aliases are outside the study-chat contract. |
+| Continuous voice deployment | Personal-only continuous voice code is deployed and enabled; mock/browser checks passed. No real OpenAI voice session or audible phone conversation has been verified. |
+| Physical phone microphone/audio/install | Repeated dictation and continuous voice fixes passed local checks. Actual phone microphone permission, audible conversation, echo cancellation, interruption, background behavior and install remain owner checks on the now-deployed update. |
 | Android build, device and Play purchases/trial | Unverified native build/device/license-test flow. Store submission remains on hold. |
 | Clinical guideline accuracy | No validated benchmark or populated approved commercial corpus. Personal AI/starter examples remain unverified education. Official-source audit dated October 9 is recorded in `content/source-checks.json` and `docs/STUDY_MATERIAL.md`; unavailable/conflicting sources are flagged. No total-accuracy claim is supported. |
 | Monthly source maintenance | Enabled task `6ac87ed8329c81918c3701660444bf86` begins November 1 and repeats on the first day monthly in the morning, America/New_York. It checks official sources and prepares GitHub review-branch corrections; clinician/rights approval precedes clinical activation. |
-| Ingenium registration/data/routing | Supabase application organization `21bca727-553f-4df8-a2c6-e702f45e4ca2` named AI-FM-STUDYCHAT and one active hash-only key verified by readback. Authenticated Supabase Edge receiver is deployed ACTIVE; an unauthenticated request was rejected with 401. App feed activation and genuine provider-event readback remain pending. Mock events establish neither live receipt nor clinical quality. This is operator application registration, not portal user/MFA registration; direct OpenAI routing remains active. Ingenium has no app-store release planned. |
-| Phone pinch zoom and pan | Focused Chromium native-touch checks passed, including horizontal and vertical movement at twofold zoom. Updated deployment and physical phone gesture confirmation remain pending. |
+| Ingenium registration/data/routing | Supabase application organization `21bca727-553f-4df8-a2c6-e702f45e4ca2` named AI-FM-STUDYCHAT and one active hash-only key verified by readback. Authenticated Supabase Edge receiver is deployed ACTIVE; an unauthenticated request was rejected with 401. The app feed is active and one genuine event was read back: request `6c22b235-b38d-4285-8869-43beee64f0ce`, returned model `gpt-4.1-mini-2025-04-14`, route `/v1/chat/completions`, status 200, latency 1962 ms, input 20/output 1, occurred `2026-10-09T05:46:07.665Z`, estimated cost `$0.0000096`, pricing source `app_observed:configured_rate_estimate_cache_discounts_excluded`. This verifies receipt, not cost savings or clinical quality. This is operator application registration, not portal user/MFA registration; direct OpenAI routing remains active. Ingenium has no app-store release planned. |
+| Phone pinch zoom and pan | Focused Chromium native-touch checks passed, including horizontal and vertical movement at twofold zoom. The layout fix is deployed; physical phone gesture confirmation remains pending. |
+
+The one-time `INGENIUM_INITIAL_CONNECTION_CHECK` flag was blanked with
+`skipDeploys: true` after successful receipt, so the next startup configuration
+does not request another bootstrap. The durable READY request ID and successful
+result cache also protect a restart of the currently running deployment from
+repeating the paid inference. Metadata delivery retries use the same event UUID
+and do not rerun OpenAI.
 
 ## How to continue efficiently
 

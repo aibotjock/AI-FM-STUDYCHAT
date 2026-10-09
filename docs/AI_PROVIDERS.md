@@ -1,6 +1,6 @@
 # Server-side AI and owner model checks
 
-Updated October 9, 2026. The private phone pilot uses **OpenAI only**. Claude support remains inactive. The owner has configured `OPENAI_API_KEY` in Railway, and live `/api/status` confirms that configuration. Successful live sign-in and inference remain unverified; see [VALIDATION_STATUS.md](VALIDATION_STATUS.md).
+Updated October 9, 2026. The private phone pilot uses **OpenAI only**. Claude support remains inactive. The owner has configured `OPENAI_API_KEY` in Railway and confirmed phone sign-in. One genuine nonclinical connection/instruction check passed with returned model `gpt-4.1-mini-2025-04-14`; its usage event was read back from Ingenium. This is separate from conversational or clinical quality; see [VALIDATION_STATUS.md](VALIDATION_STATUS.md).
 
 ## Railway credentials
 
@@ -33,7 +33,15 @@ The adapter uses fixed HTTPS OpenAI endpoints, Chat Completions or Responses acc
 
 Commercial source checks, cost reservations, and durable request deduplication remain separate from the personal model selector. The reviewed clinical corpus is empty, so commercial clinical answers abstain. Personal AI answers and user-created cards are unverified educational assistance. A successful connection check establishes neither guideline accuracy nor a cheapest clinically viable model.
 
-Ingenium Applicatum is **not connected**. Exported results can inform a later integration, which must preserve source validation, cost controls, request identity, and the absolute Astra prohibition.
+Ingenium Applicatum's registered metadata feed is **connected and verified** for successful text completions. OpenAI transport remains direct; there is no hosted Ingenium model-routing gateway or automatic cheapest-model substitution. Exported results and observed metadata support later comparison, subject to source validation, cost controls, request identity and the absolute Astra prohibition. See [INGENIUM_INTEGRATION.md](INGENIUM_INTEGRATION.md).
+
+## Continuous voice pilot
+
+In Coach, choose **Start voice**, allow microphone access, and speak naturally. Mute, Interrupt, Stop and an autoplay-recovery speaker action are available. The separate dictation microphone fills the composer; it does not send a message automatically.
+
+Voice always starts with `gpt-realtime-2.1-mini`, independently of the owner's text-model selection. Signaling and call shutdown use the app server's OpenAI key; the phone receives no API credential. Microphone audio travels to OpenAI over WebRTC. Recent study context is included, and finalized captions are saved as client-reported, unverified conversation text. The app does not record audio files. Sessions have a ten-minute limit and stop when the page goes into the background.
+
+Voice is enabled only in the personal pilot. It has no approved-guideline retrieval and no clinician-verified accuracy rating. Browser/client-reported usage is not trusted for billing and is not sent to the Ingenium text-event receiver. Server-verified voice metering and customer cost controls are required before paid voice deployment. Fixed initial configuration and normal-client controls are not a tamper-proof commercial spending ceiling. Local voice checks passed; actual phone permission, speaker, interruption and upstream model access remain to verify through the owner's first voice test.
 
 Official references:
 
