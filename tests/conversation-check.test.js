@@ -24,8 +24,8 @@ function harness({ state = { settings: SETTINGS, conversations: [] }, status = S
       return Response.json({}, { headers: { 'Set-Cookie': 'studychat_session=mock-cookie; HttpOnly' } });
     }
     assert.equal(options.headers.Cookie, 'studychat_session=mock-cookie');
-    if (url.pathname === '/api/state') return Response.json(state);
-    if (url.pathname === '/api/conversations') {
+    if (url.pathname === '/api/operator/state') return Response.json(state);
+    if (url.pathname === '/api/operator/conversations') {
       assert.deepEqual(body, { title: CONVERSATION_CHECK_TITLE, mode: 'coach' });
       const conversation = { id: 'synthetic-conversation', title: CONVERSATION_CHECK_TITLE, mode: 'coach', messages: [] };
       state.conversations.push(conversation);
@@ -126,7 +126,7 @@ test('conflicting durable identities cannot create a fresh paid conversation', a
   const receipt = await invoke(mock);
   assert.equal(receipt.stage, 'saved_request_conflict');
   assert.equal(receipt.uncertain, true);
-  assert.equal(mock.requests.some(item => item.path === '/api/chat' || item.path === '/api/conversations'), false);
+  assert.equal(mock.requests.some(item => item.path === '/api/chat' || item.path === '/api/operator/conversations'), false);
 });
 
 test('failed saved-reply diagnostics contain only allowlisted metadata and never unverified model or learner wording', async () => {

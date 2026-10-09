@@ -1,3 +1,6 @@
+// Archived protocol-specific QA for the former enum-based chat contract.
+// Current Coach scenarios are covered by natural-conversation-browser-qa.mjs.
+// Retain prior results as historical evidence; do not rerun passed archived checks.
 import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { studyCondition } from '../tests/fixtures/study-condition.js';

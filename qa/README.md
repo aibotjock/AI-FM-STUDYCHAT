@@ -41,3 +41,10 @@ Use `qa/curriculum-browser-qa.mjs` with `QA_SCOPES` to select only newly affecte
 New scopes: `tests/board-practice.test.js` (14 engine groups), `tests/board-routes.test.js` (8 API groups), `tests/conversational-quiz.test.js`, `tests/curriculum-maintenance.test.js` (7 maintenance fixture groups), and `tests/sourced-voice.test.js` (3 helper groups). `qa/board-practice-browser-qa.mjs` checks only the newly added board/chat/voice UI. `qa/sourced-voice-qa.mjs` records 13 new mock-browser lifecycle checks; it supports `QA_ONLY` for affected failures/new scopes. Historical Realtime controller results describe the former implementation, which is no longer active. Four replacement HTTP checks prove unchecked Realtime routes are disabled; no real audio/model call is involved.
 
 Keep combined reports; intermediate scope-only reports are scratch output and should not be published as independent full-suite passes.
+
+
+## Natural conversation correction
+
+`natural-conversation-browser-qa.mjs` covers five new mobile scopes with actual local authenticated routes and synthetic author/reviewer responses. `natural-conversation-browser-results.json` combines the four initially passed scopes with the corrected pending-quiz scope; the initial failure is retained. Only that failed scope was repeated. Generated readout uses its own automated-review marker and current citations for factual claims; it does not become canonical source text. No paid model calls or physical-phone audio checks occurred.
+
+`conversation-browser-qa.mjs` and the Coach portions of `curriculum-browser-qa.mjs` target the archived fixed dialogue/selector protocols. Use the natural conversation script for the current Coach. Historical reports, older generic frontend mocks and the original100condition corpus snapshots retain their original scope and counts; they are not current natural-chat verification.

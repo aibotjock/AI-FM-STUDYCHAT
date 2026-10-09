@@ -1,5 +1,5 @@
-// Study voice reads server-rendered coaching and cited learning points.
-// The chat callback supplies safe spoken text without unverified learner quotes.
+// Study voice reads checked AI conversations or canonical study material.
+// The chat callback applies the separate grounding-review and source trust guards.
 // Recognition and speech synthesis are optional browser services, not an audio AI model.
 export function sourcedVoiceSupported(windowImpl = window) {
   return Boolean(windowImpl.isSecureContext && (windowImpl.SpeechRecognition || windowImpl.webkitSpeechRecognition) && windowImpl.speechSynthesis && windowImpl.SpeechSynthesisUtterance);
@@ -27,6 +27,9 @@ export function speechChunks(text, limit = 700) {
 
 export function canonicalSpokenReply(reply) {
   return Boolean(reply && reply.sourceVerified === true && typeof reply.content === 'string' && reply.content.trim() && reply.content.length <= 24000);
+}
+export function reviewedSpokenReply(reply) {
+  return Boolean(reply && reply.readoutAllowed === true && typeof reply.content === 'string' && reply.content.trim() && reply.content.length <= 24000);
 }
 
 export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowImpl = window, documentImpl = document, navigatorImpl = navigator, maxDurationMs = 600000 } = {}) {
@@ -130,8 +133,8 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
       const id = windowImpl.crypto?.randomUUID?.() || `voice-${Date.now()}-${Math.random().toString(36).slice(2)}`;
       const reply = await sendTurn({ content, conversationId, requestId: id, signal: controller.signal });
       if (!current(attempt, turn) || controller.signal.aborted) return;
-      if (!canonicalSpokenReply(reply)) {
-        stop('That reply was not marked as verified study coaching or current cited learning material. Voice did not read it. Review the visible message or open a current study topic.', true);
+      if (!reviewedSpokenReply(reply) && !canonicalSpokenReply(reply)) {
+        stop('That reply did not pass the conversation or source checks for readout. Voice did not read it. Review the visible message or open a current study topic.', true);
         return;
       }
       spokenText = reply.content; chunks = speechChunks(spokenText); chunkIndex = 0;

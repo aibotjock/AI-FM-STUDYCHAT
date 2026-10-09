@@ -80,7 +80,12 @@ async function appFixture(t, completion) {
     calls++; const body = JSON.parse(request.body);
     assert.equal(body.response_format.type, 'json_schema');
     assert.equal(body.response_format.json_schema.strict, true);
-    assert.equal(body.max_completion_tokens, 512);
+    assert.ok(body.max_completion_tokens > 0 && body.max_completion_tokens <= 1800);
+    if (body.response_format.json_schema.name === 'family_medicine_natural_review') {
+      const data = JSON.parse(body.messages.find(message => message.content.includes('NATURAL_REVIEW_DATA=')).content.split('NATURAL_REVIEW_DATA=')[1]);
+      return reply(JSON.stringify({ approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: segment.sourceChunkIds.length ? 1 : 0, flags: [], claims: segment.sourceChunkIds.length ? [{ quote: segment.text, type: 'medical', sourceChunkIds: segment.sourceChunkIds, supports: segment.sourceChunkIds.map(chunkId => ({ chunkId, excerpt: data.sources.find(source => source.key === chunkId).text })) }] : [] })) }));
+    }
+    assert.equal(body.response_format.json_schema.name, 'family_medicine_natural_tutor');
     return reply(completion);
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
@@ -91,31 +96,32 @@ async function appFixture(t, completion) {
   return { api, calls: () => calls, chat: requestId => api('/api/chat', { conversationId: conversation.id, content: 'Explain asthma management for board study.', requestId }) };
 }
 
-test('HTTP strict-plan response retains canonical citations and replay avoids a second completion', async t => {
-  const app = await appFixture(t, JSON.stringify({ chunkIds: ['asthma:management'], questionId: null, unsupported: false, dialogue: { intent: 'explain', acknowledgment: 'none', followup: 'attempt-recall', focusChunkId: 'asthma:management', learnerQuote: null, minutes: null } }));
+test('HTTP strict natural response retains canonical citations and replay avoids repeating either completion', async t => {
+  const app = await appFixture(t, JSON.stringify({ segments: [{ id: 's1', text: 'Mock management fact: review inhaler technique.', sourceChunkIds: ['asthma:management'] }] }));
   const result = await app.chat('strict-valid');
-  assert.equal(result.message.studyDialogue.intent, 'explain');
+  assert.equal(result.message.reviewedDialogue, true);
+  assert.equal(result.message.groundingReview.status, 'passed');
   assert.equal(result.message.grounded, true);
-  assert.equal(result.message.sourceVerified, true);
+  assert.equal(result.message.sourceVerified, false);
   assert.equal(result.message.studyRejection, undefined);
   assert.match(result.message.content, /Mock management fact: review inhaler technique/);
   assert.equal(result.message.citations[0].url, 'https://www.nhlbi.nih.gov/health/asthma');
   assert.equal((await app.chat('strict-valid')).message.id, result.message.id);
-  assert.equal(app.calls(), 1);
+  assert.equal(app.calls(), 2);
 });
 
-test('malformed JSON or invented dialogue fields produce safe rejection codes without retaining raw model output or retrying', async t => {
-  for (const [content, code] of [['{LEAK_RAW_RESPONSE_SECRET', 'invalid_json'], [JSON.stringify({ chunkIds: ['asthma:invented-key'], questionId: null, unsupported: false, dialogue: { intent: 'invented-act', acknowledgment: 'none', followup: 'none', coachText: 'LEAK_RAW_RESPONSE_SECRET' } }), 'invalid_dialogue_plan']]) {
+test('malformed JSON or invented natural fields produce safe rejection codes without retaining raw model output or retrying', async t => {
+  for (const [content, reasonId] of [['{LEAK_RAW_RESPONSE_SECRET', 400], [JSON.stringify({ segments: [{ id: 's1', text: 'LEAK_RAW_RESPONSE_SECRET', sourceChunkIds: ['asthma:invented-key'] }], coachText: 'LEAK_RAW_RESPONSE_SECRET' }), 201]]) {
     const app = await appFixture(t, content);
-    const result = await app.chat(`bad-${code}`);
-    assert.equal(result.message.studyRejection.code, code);
-    assert.equal(Number.isInteger(result.message.studyRejection.reasonId), true);
+    const result = await app.chat(`bad-${reasonId}`);
+    assert.equal(result.message.studyRejection.code, 'natural_tutor_validation');
+    assert.equal(result.message.studyRejection.reasonId, reasonId);
     assert.equal(result.message.unsupported, true);
-    assert.equal(result.message.content, 'I could not validate that tutoring response. No medical answer from it has been used. Would you like a cited study section or an original practice question?');
-    assert.equal(result.message.studyDialogue, undefined);
+    assert.match(result.message.content, /have not used it/);
+    assert.equal(result.message.reviewedDialogue, undefined);
     assert.deepEqual(result.message.citations, []);
     assert.doesNotMatch(JSON.stringify(await app.api('/api/state')), /LEAK_RAW_RESPONSE_SECRET|invented-key|invented-act/);
-    assert.equal((await app.chat(`bad-${code}`)).message.id, result.message.id);
+    assert.equal((await app.chat(`bad-${reasonId}`)).message.id, result.message.id);
     assert.equal(app.calls(), 1);
   }
 });

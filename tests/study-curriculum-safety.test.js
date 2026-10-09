@@ -25,14 +25,18 @@ test('ambiguous clinical acronyms in a study-habit request do not confer conditi
   for(const query of ['Make a SMART study schedule','How can I cap my study costs?']) assert.equal(curriculum.retrieve(query).length,0,query);
 });
 
-test('unlinked unknown-topic chat abstains without dispatching a provider request',async t=>{
+test('unlinked unknown-topic chat can clarify naturally without releasing unsourced facts',async t=>{
   const [{createApp},{mkdtempSync,rmSync},{tmpdir},{join},{once}]=await Promise.all([import('../server/index.js'),import('node:fs'),import('node:os'),import('node:path'),import('node:events')]);
   const dir=mkdtempSync(join(tmpdir(),'fm-retrieval-safety-'));
   let providerCalls=0;
   const curriculum=createStudyCurriculum({records:[studyCondition()],now:()=>STUDY_NOW});
-  const server=createApp({dataDir:dir,curriculum,env:{STUDY_ACCESS_TOKEN:'qa-safety-token-never-production-123456789',OPENAI_API_KEY:'qa-mock-key-only',OPENAI_MODEL:'gpt-4.1-mini'},fetchImpl:async()=>{
+  const server=createApp({dataDir:dir,curriculum,env:{STUDY_ACCESS_TOKEN:'qa-safety-token-never-production-123456789',OPENAI_API_KEY:'qa-mock-key-only',OPENAI_MODEL:'gpt-4.1-mini'},fetchImpl:async(_url,request)=>{
     providerCalls++;
-    return new Response(JSON.stringify({model:'gpt-4.1-mini',choices:[{finish_reason:'stop',message:{content:'Unretrieved mock provider answer; the safety test must prevent this dispatch.'}}],usage:{prompt_tokens:10,completion_tokens:12}}),{status:200,headers:{'Content-Type':'application/json'}});
+    const body=JSON.parse(request.body);
+    const output=body.response_format.json_schema.name==='family_medicine_natural_review'
+      ? {approved:true,segments:[{id:'s1',approved:true,externalFactCount:0,claims:[],flags:[]}]}
+      : {segments:[{id:'s1',text:'I cannot verify a factual answer from the current study sources. Which part would you like to narrow?',sourceChunkIds:[]}]};
+    return new Response(JSON.stringify({model:'gpt-4.1-mini',choices:[{finish_reason:'stop',message:{content:JSON.stringify(output)}}],usage:{prompt_tokens:10,completion_tokens:12}}),{status:200,headers:{'Content-Type':'application/json'}});
   }});
   server.listen(0,'127.0.0.1');await once(server,'listening');
   const base=`http://127.0.0.1:${server.address().port}`;
@@ -44,10 +48,11 @@ test('unlinked unknown-topic chat abstains without dispatching a provider reques
   const conversation=await post('/api/conversations',{title:'New safety test'});
   for(const [index,content] of ['Tell me about lupus','Explain myoclonus','What is sarcoidosis?'].entries()){
     const response=await post('/api/chat',{conversationId:conversation.id,content,requestId:`qa-new-safety-${index}`});
-    assert.equal(response.message.unsupported,true,content);
+    assert.equal(response.message.reviewedDialogue,true,content);
+    assert.equal(response.message.groundingReview.externalClaimCount,0,content);
     assert.deepEqual(response.message.citations,[],content);
   }
-  assert.equal(providerCalls,0);
+  assert.equal(providerCalls,6);
 });
 
 test('generic follow-up follows the latest named topic rather than the original linked-condition anchor',()=>{
@@ -68,17 +73,22 @@ test('a generic follow-up after an unsupported answer cannot reactivate an old t
   const dir=mkdtempSync(join(tmpdir(),'fm-abstention-followup-'));let providerCalls=0;
   const curriculum=createStudyCurriculum({records:[studyCondition()],now:()=>STUDY_NOW});
   const server=createApp({dataDir:dir,curriculum,env:{STUDY_ACCESS_TOKEN:'qa-followup-token-not-production-123456789',OPENAI_API_KEY:'qa-mock-key-only',OPENAI_MODEL:'gpt-4.1-mini'},fetchImpl:async()=>{
-    providerCalls++;const selection=providerCalls===1?{chunkIds:[],questionId:null,unsupported:true}:{chunkIds:['asthma:follow-up'],questionId:null,unsupported:false};
-    return new Response(JSON.stringify({model:'gpt-4.1-mini',choices:[{finish_reason:'stop',message:{content:JSON.stringify(selection)}}],usage:{prompt_tokens:10,completion_tokens:12}}),{status:200,headers:{'Content-Type':'application/json'}});
+    providerCalls++;
+    const unrelated='Mock follow-up fact: reassess control and adherence.';
+    const output=providerCalls===1?{segments:[{id:'s1',text:'I cannot establish a lupus-specific answer from these sources. Which part would you like to narrow?',sourceChunkIds:[]}]}:
+      providerCalls===2?{approved:true,segments:[{id:'s1',approved:true,externalFactCount:0,claims:[],flags:[]}]}:
+      providerCalls===3?{segments:[{id:'s1',text:unrelated,sourceChunkIds:['asthma:follow-up']}]}:
+      {approved:false,segments:[{id:'s1',approved:false,externalFactCount:1,claims:[{quote:unrelated,type:'medical',sourceChunkIds:['asthma:follow-up'],supports:[{chunkId:'asthma:follow-up',excerpt:unrelated}]}],flags:['unsupported_fact']}]};
+    return new Response(JSON.stringify({model:'gpt-4.1-mini',choices:[{finish_reason:'stop',message:{content:JSON.stringify(output)}}],usage:{prompt_tokens:10,completion_tokens:12}}),{status:200,headers:{'Content-Type':'application/json'}});
   }});
   server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${server.address().port}`;
   t.after(async()=>{await server.closeVoiceSessions();await new Promise(resolve=>server.close(resolve));rmSync(dir,{recursive:true,force:true});});
   const login=await fetch(base+'/api/login',{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:JSON.stringify({token:'qa-followup-token-not-production-123456789'})});assert.equal(login.status,200);const cookie=login.headers.get('set-cookie').split(';')[0];
   const post=async(path,body)=>{const response=await fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json',Origin:base,Cookie:cookie},body:JSON.stringify(body)});assert.equal(response.status,path==='/api/conversations'?201:200);return response.json();};
   const conversation=await post('/api/conversations',{title:'Unsupported follow-up',conditionId:'asthma'});
-  const unsupported=await post('/api/chat',{conversationId:conversation.id,content:'Tell me about medication adherence in lupus',requestId:'qa-unsupported-topic',conditionIds:['asthma']});assert.equal(unsupported.message.unsupported,true);assert.equal(providerCalls,1);
+  const unsupported=await post('/api/chat',{conversationId:conversation.id,content:'Tell me about medication adherence in lupus',requestId:'qa-unsupported-topic',conditionIds:['asthma']});assert.equal(unsupported.message.reviewedDialogue,true);assert.equal(unsupported.message.groundingReview.externalClaimCount,0);assert.equal(providerCalls,2);
   const followup=await post('/api/chat',{conversationId:conversation.id,content:'Why?',requestId:'qa-after-abstention',conditionIds:['asthma']});
-  assert.equal(followup.message.unsupported,true);assert.deepEqual(followup.message.citations,[]);assert.equal(providerCalls,1);
+  assert.equal(followup.message.unsupported,true);assert.deepEqual(followup.message.citations,[]);assert.equal(followup.message.content.includes('Mock follow-up fact'),false);assert.equal(providerCalls,4);
 });
 
 test('actual AF stroke-risk and prevention requests cannot collide with the generic acute-stroke alias',()=>{

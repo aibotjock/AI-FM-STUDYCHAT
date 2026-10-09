@@ -1,3 +1,6 @@
+// Archived protocol-specific QA for the former selector-only Coach contract.
+// Current Coach scenarios are covered by natural-conversation-browser-qa.mjs.
+// Historical non-chat library evidence remains retained; do not rerun passed archived checks.
 import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';

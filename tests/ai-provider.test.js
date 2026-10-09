@@ -89,15 +89,19 @@ test('OpenAI remains available through the same adapter without request storage'
   assert.deepEqual(await provider.complete(messages, { jsonMode: true }), { content: '{"cards":[]}', usage: { prompt_tokens: 20, completion_tokens: 5 } });
 });
 
-test('personal inactive Claude adapter selects study references and preserves the browser API', async t => {
+test('personal inactive Claude adapter preserves reviewed natural replies through the mocked browser API', async t => {
   const dataDir = mkdtempSync(join(tmpdir(), 'personal-claude-test-'));
   let calls = 0;
   const curriculum = createStudyCurriculum({ records: [studyCondition()], now: () => STUDY_NOW });
   const foundations = createStudyCurriculum({ records: [], now: () => STUDY_NOW });
   const server = createApp({ dataDir, env, curriculum, foundations, fetchImpl: async (_url, request) => {
     calls++; const body = JSON.parse(request.body);
-    assert.match(body.system, /STUDY_REFERENCE_DATA/);
-    return Response.json(result({ content: [{ type: 'thinking', thinking: 'private thinking' }, { type: 'text', text: JSON.stringify({ chunkIds: ['asthma:management'], questionId: null, unsupported: false }) }] }));
+    const factualText = 'Mock management fact: review inhaler technique.';
+    assert.match(body.system, /NATURAL_(?:TUTOR_CONTEXT|REVIEW_DATA)=/);
+    const primary = body.system.includes('NATURAL_TUTOR_CONTEXT=');
+    const payload = primary ? { segments: [{ id: 's1', text: factualText, sourceChunkIds: ['asthma:management'] }] }
+      : { approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: factualText, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [{ chunkId: 'asthma:management', excerpt: factualText }] }], flags: [] }] };
+    return Response.json(result({ content: [{ type: 'thinking', thinking: 'private thinking' }, { type: 'text', text: JSON.stringify(payload) }] }));
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   t.after(async () => { await new Promise(resolve => server.close(resolve)); rmSync(dataDir, { recursive: true, force: true }); });
@@ -110,7 +114,11 @@ test('personal inactive Claude adapter selects study references and preserves th
   const reply = await api('/api/chat', { conversationId: conversation.id, content: 'Explain asthma management for board study.', requestId: 'claude-chat' });
   assert.equal(reply.offline, false); assert.equal(reply.conversation.messages.length, 2);
   assert.match(reply.message.content, /Mock management fact: review inhaler technique/);
-  assert.equal(reply.message.sourceVerified, true);
+  assert.equal(reply.message.reviewedDialogue, true);
+  assert.equal(reply.message.sourceVerified, false);
+  assert.equal(reply.message.canonicalSpokenText, false);
+  assert.equal(reply.message.groundingReview.status, 'passed');
+  assert.equal(reply.message.aiTotal.calls, 2);
   assert.equal(reply.message.ai.provider, 'anthropic');
   const drafts = await api('/api/chat/cards', { conversationId: conversation.id });
   assert.equal(drafts.cards[0].verified, false);
@@ -119,5 +127,5 @@ test('personal inactive Claude adapter selects study references and preserves th
   assert.equal(drafts.cards[0].humanReview, false);
   assert.equal(drafts.sourceLinked, true);
   assert.equal(JSON.stringify(await api('/api/state')).includes('private thinking'), false);
-  assert.equal(calls, 1, 'Canonical card drafts must not trigger a second provider request.');
+  assert.equal(calls, 2, 'Only mocked author and reviewer calls run; canonical card drafts make no further provider request.');
 });

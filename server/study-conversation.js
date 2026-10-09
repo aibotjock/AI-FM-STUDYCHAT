@@ -66,11 +66,16 @@ export function isCoachingTurn(content) {
 }
 
 export function isDialogueFollowup(content) {
+  const clauses = content.split(/[.!?]+/).map(clause => clause.trim()).filter(Boolean);
+  if (clauses.length > 1 && clauses.length <= 3 && clauses.every(clause => isDialogueFollowup(clause))) return true;
   return isStudyFollowup(content) || /\b(?:last|previous|same)\s+(?:(?:source[- ]linked|cited|study|learning)\s+)*(?:point|section|explanation|topic|answer)\b/i.test(content) || /^(?:(?:please\s+)?(?:can you\s+)?(?:explain|clarify)\s+(?:this|that|it)(?:\s+(?:again|more|further|simply))?|(?:i\s+)?(?:do not|don't|don’t|still don't|still don’t)\s+(?:understand|get)(?:\s+(?:this|that|it))?|(?:i(?:'m| am)\s+)?(?:not sure|unsure|confused|stuck)|(?:why|how)\s+(?:is|does)\s+(?:this|that)(?:\s+(?:work|matter))?|what\s+does\s+(?:this|that|it)\s+mean|help me understand(?:\s+(?:this|that|it))?|(?:give me|can i have)\s+(?:a\s+)?hint|break (?:this|that|it) down(?: for me)?)[\s?.!]*$/i.test(content.trim());
 }
 
 function trusted(message) {
   return message?.role === 'assistant' && message.sourceVerified === true && !message.importedEvidence && !message.voiceTranscript;
+}
+function reviewed(message) {
+  return message?.role === 'assistant' && message.reviewedDialogue === true && message.sourceVerified === false && message.groundingReview?.version === 1 && message.groundingReview.status === 'passed' && !message.importedEvidence && !message.voiceTranscript;
 }
 
 /** A quiz remains pending across reflective turns, but never across grading or evidence/topic boundaries. */
@@ -79,12 +84,16 @@ export function pendingStudyQuestion(conversation, conditionIds = []) {
     if (message.role === 'user' && message.studyRequestedConditionIds?.length && conditionIds.length && message.studyRequestedConditionIds.some(id => !conditionIds.includes(id))) return null;
     if (message.role !== 'assistant') continue;
     if (message.unsupported || message.studyAnswer) return null;
+    if (reviewed(message) && Object.hasOwn(message, 'pendingStudyQuestion')) {
+      const pending = message.pendingStudyQuestion;
+      return pending && (!conditionIds.length || conditionIds.includes(pending.key.split(':')[0])) ? { ...pending } : null;
+    }
     if (message.studyQuestion && trusted(message) && message.curriculum === true && !message.studyQuestion.imported) {
       const conditionId = message.studyQuestion.key.split(':')[0];
       if (conditionIds.length && !conditionIds.includes(conditionId)) return null;
       return { ...message.studyQuestion };
     }
-    if (message.curriculum && conditionIds.length && message.conditionIds?.some(id => !conditionIds.includes(id))) return null;
+    if ((message.curriculum || reviewed(message)) && conditionIds.length && message.conditionIds?.some(id => !conditionIds.includes(id))) return null;
   }
   return null;
 }
@@ -105,8 +114,10 @@ export function conversationalEvidence(references, conversation, content, option
   for (const message of [...conversation.messages].reverse()) {
     if (message.role !== 'assistant') continue;
     if (message.unsupported) break;
-    if (!trusted(message) || message.curriculum !== true || !message.studySelection?.chunkIds) continue;
-    const prior = message.studySelection.chunkIds.map(key => currentChunk(references, key)).filter(item => item && (!allowed.length || allowed.includes(item.conditionId)));
+    const keys = reviewed(message) ? message.groundingReview.sourceChunkIds : trusted(message) && message.curriculum === true ? message.studySelection?.chunkIds : null;
+    if (!Array.isArray(keys)) continue;
+    if (!keys.length && reviewed(message)) return retrieved;
+    const prior = keys.map(key => currentChunk(references, key)).filter(item => item && (!allowed.length || allowed.includes(item.conditionId)));
     if (!prior.length) break;
     return [...new Map([...prior, ...retrieved].map(item => [item.key, item])).values()].slice(0, 6);
   }

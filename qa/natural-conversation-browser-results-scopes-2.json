@@ -1,0 +1,207 @@
+{
+  "runAt": "2026-10-09T17:44:40.937Z",
+  "scope": "Only changed natural generated conversation/readout, source transitions, reviewed hint quiz continuity, operator default/history/export isolation and aggregate AI usage display. Real authenticated local APIs with mocked primary/reviewer completions; browser speech mocks. No physical phone audio or full prior QA rerun.",
+  "viewport": {
+    "width": 360,
+    "height": 800
+  },
+  "results": [
+    {
+      "scope": 2,
+      "name": "pending original quiz choices remain usable after a natural generated hint and still grade through the canonical answer key",
+      "pass": true
+    }
+  ],
+  "pageErrors": [],
+  "requests": [
+    {
+      "path": "/api/status",
+      "method": "GET"
+    },
+    {
+      "path": "/api/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "body": {
+        "conversationId": "32f8069f-dee9-4d1b-abf9-52f88636c1de",
+        "content": "Quiz me on asthma.",
+        "requestId": "3c2069e4-1dc5-4259-b78a-b44e72a299bd",
+        "conditionIds": [
+          "asthma"
+        ]
+      }
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "body": {
+        "conversationId": "32f8069f-dee9-4d1b-abf9-52f88636c1de",
+        "content": "I don't understand. Can I have a hint?",
+        "requestId": "fc0f9113-17df-4418-a109-b8f3c4dc4693",
+        "conditionIds": [
+          "asthma"
+        ]
+      }
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "body": {
+        "conversationId": "32f8069f-dee9-4d1b-abf9-52f88636c1de",
+        "content": "B",
+        "requestId": "5a15aa67-cd8a-4f00-bdb8-f613d4325f16",
+        "conditionIds": [
+          "asthma"
+        ]
+      }
+    }
+  ],
+  "providerRequests": [
+    {
+      "kind": "primary",
+      "latest": "I don't understand. Can I have a hint?",
+      "context": {
+        "mode": "coach",
+        "preferences": {
+          "coachStyle": "socratic",
+          "dailyMinutes": 20,
+          "focus": "exam"
+        },
+        "history": [
+          {
+            "role": "user",
+            "content": "Quiz me on asthma.",
+            "trust": "learner-statement-unverified"
+          },
+          {
+            "role": "assistant",
+            "content": "Asthma · Original board-style practice\n\nFictional study vignette 1: which learning step is supported by the mock reference?\n\nA. Mock alternative A.\nB. Review inhaler technique.\nC. Mock alternative C.\nD. Mock alternative D.\nE. Mock alternative E.\n\nReply with A, B, C, D or E to check your choice against the canonical answer and rationale. You may add “because” and your reasoning; only the selected option is graded.\n\nStudy reference only; source checks are not clinician approval or patient-care advice.",
+            "trust": "server-rendered-study"
+          },
+          {
+            "role": "user",
+            "content": "I don't understand. Can I have a hint?",
+            "trust": "learner-statement-unverified"
+          }
+        ],
+        "pendingQuestion": {
+          "key": "asthma:asthma-q1",
+          "fingerprint": "a0c754fc0cf7a9d8d236e3457b4b259f058a6174a96a4825c0763a5f46b74193",
+          "conditionId": "asthma",
+          "conditionTitle": "Asthma",
+          "questionId": "asthma-q1",
+          "domain": "chronic",
+          "stem": "Fictional study vignette 1: which learning step is supported by the mock reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Mock alternative A."
+            },
+            {
+              "id": "B",
+              "text": "Review inhaler technique."
+            },
+            {
+              "id": "C",
+              "text": "Mock alternative C."
+            },
+            {
+              "id": "D",
+              "text": "Mock alternative D."
+            },
+            {
+              "id": "E",
+              "text": "Mock alternative E."
+            }
+          ],
+          "sourceIds": [
+            "nih-asthma"
+          ],
+          "checkedAt": "2026-10-09",
+          "expiresAt": "2026-11-09",
+          "current": true
+        },
+        "revealRequested": false,
+        "sources": []
+      }
+    },
+    {
+      "kind": "review",
+      "context": {
+        "learnerRequest": "I don't understand. Can I have a hint?",
+        "preferences": {
+          "coachStyle": "socratic",
+          "dailyMinutes": 20,
+          "focus": "exam"
+        },
+        "history": [
+          {
+            "role": "user",
+            "content": "Quiz me on asthma.",
+            "trust": "learner-statement-unverified"
+          },
+          {
+            "role": "assistant",
+            "content": "Asthma · Original board-style practice\n\nFictional study vignette 1: which learning step is supported by the mock reference?\n\nA. Mock alternative A.\nB. Review inhaler technique.\nC. Mock alternative C.\nD. Mock alternative D.\nE. Mock alternative E.\n\nReply with A, B, C, D or E to check your choice against the canonical answer and rationale. You may add “because” and your reasoning; only the selected option is graded.\n\nStudy reference only; source checks are not clinician approval or patient-care advice.",
+            "trust": "server-rendered-study"
+          },
+          {
+            "role": "user",
+            "content": "I don't understand. Can I have a hint?",
+            "trust": "learner-statement-unverified"
+          }
+        ],
+        "candidate": [
+          {
+            "id": "s1",
+            "text": "We can look at the wording together without revealing the key. Which option are you leaning toward?",
+            "sourceChunkIds": []
+          }
+        ],
+        "sources": [],
+        "pendingQuestion": {
+          "key": "asthma:asthma-q1",
+          "fingerprint": "a0c754fc0cf7a9d8d236e3457b4b259f058a6174a96a4825c0763a5f46b74193",
+          "conditionId": "asthma",
+          "conditionTitle": "Asthma",
+          "questionId": "asthma-q1",
+          "domain": "chronic",
+          "stem": "Fictional study vignette 1: which learning step is supported by the mock reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Mock alternative A."
+            },
+            {
+              "id": "B",
+              "text": "Review inhaler technique."
+            },
+            {
+              "id": "C",
+              "text": "Mock alternative C."
+            },
+            {
+              "id": "D",
+              "text": "Mock alternative D."
+            },
+            {
+              "id": "E",
+              "text": "Mock alternative E."
+            }
+          ],
+          "sourceIds": [
+            "nih-asthma"
+          ],
+          "checkedAt": "2026-10-09",
+          "expiresAt": "2026-11-09",
+          "current": true
+        },
+        "revealRequested": false
+      }
+    }
+  ],
+  "paidProviderCalls": 0
+}

@@ -13,6 +13,17 @@ const ACCESS_TOKEN = 'owner-model-test-token-at-least-24-characters';
 const API_KEY = 'mock-provider-key-must-never-be-exported';
 const MODEL_IDS = ['gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-5.5-pro'];
 const STUDY_SELECTOR = JSON.stringify({ chunkIds: ['asthma:management'], questionId: null, unsupported: false });
+const MANAGEMENT_FACT = studyCondition().sections.find(section => section.id === 'management').text;
+
+function naturalContent(body) {
+  const schema = body.response_format?.json_schema?.name;
+  assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review'].includes(schema), `Unexpected generated contract ${schema}`);
+  assert.ok(body.messages.some(message => message.content.includes(schema === 'family_medicine_natural_review' ? 'NATURAL_REVIEW_DATA' : 'NATURAL_TUTOR_CONTEXT')));
+  const reply = schema === 'family_medicine_natural_review'
+    ? { approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: MANAGEMENT_FACT, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [{ chunkId: 'asthma:management', excerpt: MANAGEMENT_FACT }] }], flags: [] }] }
+    : { segments: [{ id: 's1', text: MANAGEMENT_FACT, sourceChunkIds: ['asthma:management'] }] };
+  return JSON.stringify(reply);
+}
 
 async function fixture(t, { dataDir, keepData = false, env = {}, fetchImpl, authenticateRequest, generateReply } = {}) {
   const directory = dataDir || mkdtempSync(join(tmpdir(), 'studychat-model-selection-'));
@@ -145,8 +156,7 @@ test('model changes during active chat are rejected and chat provenance includes
   const mock = providerMock({ inference: async ({ body }) => {
     markStarted();
     await pending;
-    assert.ok(body.messages.some(message => message.content.includes('STUDY_REFERENCE_DATA')));
-    return Response.json({ model: `${body.model}-2025-04-14`, choices: [{ message: { content: STUDY_SELECTOR }, finish_reason: 'stop' }], usage: { prompt_tokens: 1000, completion_tokens: 100 } });
+    return Response.json({ model: `${body.model}-2025-04-14`, choices: [{ message: { content: naturalContent(body) }, finish_reason: 'stop' }], usage: { prompt_tokens: 1000, completion_tokens: 100 } });
   } });
   const app = await fixture(t, mock);
   t.after(() => release());
@@ -160,7 +170,9 @@ test('model changes during active chat are rejected and chat provenance includes
   const completed = await active;
   assert.equal(completed.status, 200);
   assert.match(completed.body.message.content, /Mock management fact: review inhaler technique/);
-  assert.equal(completed.body.message.sourceVerified, true);
+  assert.equal(completed.body.message.sourceVerified, false);
+  assert.equal(completed.body.message.reviewedDialogue, true);
+  assert.equal(completed.body.message.groundingReview.status, 'passed');
   const metadata = completed.body.message.ai;
   assert.equal(metadata.provider, 'openai');
   assert.equal(metadata.endpoint, 'chat');
@@ -170,8 +182,13 @@ test('model changes during active chat are rejected and chat provenance includes
   assert.equal(metadata.estimatedCostUsd, .00056);
   assert.ok(Number.isFinite(metadata.latencyMs) && metadata.latencyMs >= 0);
   assert.ok(Number.isFinite(metadata.recordedAt));
+  assert.equal(completed.body.message.aiReview.requestedModel, metadata.requestedModel);
+  assert.equal(completed.body.message.aiReview.returnedModel, metadata.returnedModel);
+  assert.deepEqual(completed.body.message.aiTotal.usage, { prompt_tokens: 2000, completion_tokens: 200 });
+  assert.equal(completed.body.message.aiTotal.estimatedCostUsd, .00112);
+  assert.equal(completed.body.message.aiTotal.calls, 2);
   assert.equal((await app.request('/api/state')).body.conversations[0].messages[1].ai.requestedModel, 'gpt-4.1-mini');
-  assert.equal(mock.inferenceCalls().length, 1);
+  assert.equal(mock.inferenceCalls().length, 2);
 });
 
 test('persisted model selection keeps documented model prices after restart rather than original server overrides', async t => {
@@ -216,6 +233,9 @@ test('backup imports preserve untrusted provenance and evidence flags, while uns
   assert.equal((await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Synthetic source check.' })).status, 200);
   const backup = (await app.request('/api/export')).body;
   backup.conversations[0].messages[1].ai = { provider: 'openai', requestedModel: 'gpt-4.1-mini', returnedModel: 'gpt-4.1-mini-2025-04-14', endpoint: 'chat', usage: { prompt_tokens: 1000, completion_tokens: 100 }, estimatedCostUsd: .00056, latencyMs: 12, recordedAt: Date.now(), pricingBasis: 'Synthetic rates' };
+  backup.conversations[0].messages[1].reviewedDialogue = true;
+  backup.conversations[0].messages[1].canonicalSpokenText = true;
+  backup.conversations[0].messages[1].groundingReview = { version: 1, status: 'passed', externalClaimCount: 0 };
   assert.equal((await app.request('/api/import', 'POST', backup)).status, 200);
   const imported = (await app.request('/api/state')).body;
   const message = imported.conversations[0].messages[1];
@@ -224,6 +244,10 @@ test('backup imports preserve untrusted provenance and evidence flags, while uns
   assert.equal(message.importedEvidence, true);
   assert.equal(message.ai.imported, true);
   assert.equal(message.ai.requestedModel, 'gpt-4.1-mini');
+  assert.equal(message.sourceVerified, false);
+  assert.notEqual(message.reviewedDialogue, true);
+  assert.notEqual(message.canonicalSpokenText, true);
+  assert.equal(message.groundingReview, undefined);
   for (const change of [
     value => { value.conversations[0].messages[1].citations[0].url = 'javascript:alert(1)'; },
     value => { value.conversations[0].messages[1].citations[0].url = 'https://user:password@example.org/reference'; },
@@ -244,13 +268,22 @@ test('forbidden returned model IDs block answers without switching or retrying a
   const app = await fixture(t, mock);
   await app.login();
   const conversation = (await app.request('/api/conversations', 'POST', { mode: 'coach' })).body;
-  const result = await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Explain asthma management for board study.', requestId: 'forbidden-return' });
-  assert.equal(result.status, 502);
-  assert.match(result.body.error, /prohibited/);
-  assert.equal((await app.request('/api/state')).body.conversations[0].messages.length, 1);
+  const request = { conversationId: conversation.id, content: 'Explain asthma management for board study.', requestId: 'forbidden-return' };
+  const result = await app.request('/api/chat', 'POST', request);
+  assert.equal(result.status, 200);
+  assert.equal(result.body.message.unsupported, true);
+  assert.equal(result.body.message.reviewedDialogue, undefined);
+  assert.equal(result.body.message.ai, undefined);
+  assert.equal(result.body.message.aiReview, undefined);
+  assert.equal(result.body.message.aiTotal.calls, 1);
+  assert.deepEqual(result.body.message.citations, []);
+  assert.match(result.body.message.content, /could not complete the source check/);
+  assert.equal((await app.request('/api/state')).body.conversations[0].messages.length, 2);
   assert.equal((await app.request('/api/status')).body.model, 'gpt-4.1-mini');
   assert.equal(mock.inferenceCalls().length, 1);
   assert.equal(JSON.stringify(result.body).includes(API_KEY), false);
+  assert.equal((await app.request('/api/chat', 'POST', request)).body.message.id, result.body.message.id);
+  assert.equal(mock.inferenceCalls().length, 1, 'A prohibited returned identity never triggers a second review, fallback model or replay inference.');
 });
 
 test('owner sign-in trims copied whitespace and issues a secure HTTPS proxy cookie while rejecting incorrect API-key tokens', async t => {

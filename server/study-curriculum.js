@@ -100,11 +100,28 @@ export function isActualCareRequest(query) {
   // Time available for studying is a coaching request. Replace only that clause;
   // a separate actual-care clause and symptom durations still reach the care gate.
   const careQuery = query.replace(/\bi\s+have\s+(?:(?:only|about|roughly)\s+)?(?:\d{1,3}(?:\.\d)?|one|two|three|four|five|six|seven|eight|nine|ten|fifteen|twenty|thirty|forty|forty[- ]five|sixty|ninety|a few|some)\s*[- ]?\s*(?:minutes?|mins?|hours?|hrs?)(?:\s+(?:today|tonight|this morning|this evening|each day))?(?=\s*(?:$|[.!?,;]|and\b|(?:to|for)\s+(?:study|studying|learn|learning|review|practice|board|exam|chat)\b))/gi, 'I have study time');
-  const actual = /\b(?:my|our)\s+(?:(?:actual|real)\s+)?(?:patient|child|baby|son|daughter|spouse|wife|husband|mother|father|mom|dad|parent|relative)\b|\bmy\s+(?:symptoms?|medications?|blood pressure|diagnosis|treatment)\b|\bi\s+(?:am having|am experiencing|am suffering|was diagnosed with)\b|\bi\s+have\s+(?:an?\s+)?(?!(?:question|exam|study|board|practice|session|flashcard|card|note|time|minute|hour|fictional|hypothetical)\b)\w+|\b(?:should|can|could)\s+i\s+(?:take|stop|start)\b|\bwhat\s+should\s+i\s+(?:take|do)\b|\b(?:dose|dosing|treatment|medicine|medication)\s+for\s+me\b/i.test(careQuery);
-  if (!actual) return false;
-  const hypothetical = /\b(?:hypothetical|fictional|simulated|board[- ]style|board exam|practice vignette)\b/i.test(query);
-  const expresslyReal = /\b(?:my|our)\s+(?:actual|real)\b|\b(?:actual|real)\s+(?:patient|child|person)\b|\bright now\b/i.test(query);
-  return !hypothetical || expresslyReal;
+  // A family relationship or "I have" is not itself a care request. Look for
+  // personal medical states/actions in the same clause, keeping ordinary life
+  // context available to the conversational coach. This lexical gate is only
+  // an early redirect; it is not a complete classifier or a triage system.
+  const medical = /\b(?:symptoms?|medications?|medicines?|pills?|tablets?|prescriptions?|dose|dosing|dosage|treatment|diagnos(?:is|ed)|blood pressure|blood sugar|heart rate|oxygen saturation|pain|cough|fever|rash|bleed(?:ing)?|nausea|vomit(?:ing)?|diarrhea|wheez(?:e|ing)|palpitations?|shortness of breath|trouble breathing|chest tightness|dizz(?:y|iness)|faint(?:ed|ing)?|numbness|weakness|seizures?|suicidal|overdose|asthma|COPD|CKD|diabetes|hypertension|hypotension|cancer|infection|pneumonia|stroke|atrial fibrillation|heart failure|depression|anxiety|lupus|migraine|arthritis|eczema|epilepsy|osteoporosis|pregnan(?:t|cy)|allerg(?:y|ies)|insulin|metformin|lisinopril|aspirin|warfarin|apixaban|ibuprofen|acetaminophen|antibiotics?|anticoagula\w*|inhalers?)\b/i;
+  const person = /\b(?:my|our)\s+(?:(?:actual|real)\s+)?(?:patient|child|baby|son|daughter|spouse|wife|husband|mother|father|mom|dad|parent|relative)\b/i;
+  const hypothetical = /\b(?:hypothetical|fictional|simulated|board[- ]style|board exam|practice vignette)\b/i;
+  const expresslyReal = /\b(?:my|our)\s+(?:actual|real)\s+(?:patient|child|baby|son|daughter|spouse|wife|husband|mother|father|mom|dad|parent|relative)\b|\b(?:actual|real)\s+(?:patient|child|person)\b|\bright now\b|\bin real life\b/i;
+  const nonmedicalObject = /^(?:(?:an?|some|my|our|the)\s+)?(?:(?:busy|study)\s+)?(?:dog|cat|pet|guitar|book|notes?|questions?|exams?|tests?|study|boards?|practice|sessions?|flashcards?|cards?|time|hard time|week|schedule|job|plans?|projects?|courses?)\b/i;
+  const parts = careQuery.split(/[.!?;]+|\b(?:but|however|separately|in real life)\b/i);
+  for (const part of parts) {
+    let actual = /\b(?:my|our)\s+(?:(?:actual|real)\s+)?patient\b|\bmy\s+(?:symptoms?|medications?|blood pressure|blood sugar|diagnosis|treatment)\b|\bi\s+(?:was|have been)\s+diagnosed\b|\b(?:dose|dosing|dosage|treatment|medicine|medication)\s+for\s+me\b/i.test(part);
+    // Bound state phrases at conjunctions so an unrelated later study topic
+    // does not turn "I have a guitar and want to study asthma" into care.
+    const states = part.matchAll(/\b(?:i\s+(?:have|feel|felt|am having|am experiencing|am suffering(?: from)?|am taking|take)|i['’]m\s+(?:having|experiencing|suffering(?: from)?|taking)|(?:my|our)\s+(?:(?:actual|real)\s+)?(?:child|baby|son|daughter|spouse|wife|husband|mother|father|mom|dad|parent|relative)\s+(?:has|had|is having|is experiencing|is suffering(?: from)?|was diagnosed with|is taking|takes))\s+([^,]{1,180}?)(?=\band\b|,|$)/gi);
+    for (const state of states) if (!nonmedicalObject.test(state[1].trim()) && medical.test(state[1])) actual = true;
+    const medicalQuestion = medical.test(part) && /\b(?:should|can|could|may)\s+i\s+(?:take|stop|start|use|change|increase|decrease)\b|\bwhat\s+should\s+i\s+(?:take|do)\b|\b(?:my|our)\s+(?:dose|dosage|prescription|medication|medicine)\b/i.test(part);
+    const familyCare = person.test(part) && /\b(?:should|can|could|how|what|which|please|help)\b[^.!?;]{0,100}\b(?:treat|diagnose|prescribe|give|dose|dosing|dosage|medicate|manage|care for)\b[^.!?;]{0,70}\b(?:my|our)\s+(?:(?:actual|real)\s+)?(?:patient|child|baby|son|daughter|spouse|wife|husband|mother|father|mom|dad|parent|relative)\b/i.test(part);
+    actual ||= medicalQuestion || familyCare;
+    if (actual && (!hypothetical.test(part) || expresslyReal.test(part))) return true;
+  }
+  return false;
 }
 
 /** Original study summaries are distinct from the commercial clinician-approved corpus. */

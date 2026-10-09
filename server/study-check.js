@@ -54,7 +54,7 @@ export async function runStudySourceCheck({ baseUrl, env = process.env, fetchImp
     cookie = (login.headers.get('set-cookie') || '').split(';')[0];
     if (!/^studychat_session=[A-Za-z0-9._-]+$/.test(cookie)) return receipt = { failed: true, stage: 'sign_in' };
     authenticated = true;
-    const stateResponse = await request('/api/state');
+    const stateResponse = await request('/api/operator/state');
     if (!stateResponse.ok) return receipt = { failed: true, authenticated: true, stage: 'saved_state' };
     const state = await stateResponse.json();
     if (!object(state) || !Array.isArray(state.conversations) || state.conversations.length > 500 || state.conversations.some(conversation => !object(conversation) || !Array.isArray(conversation.messages) || conversation.messages.length > 1000)) return receipt = { failed: true, authenticated: true, stage: 'saved_state' };
@@ -74,7 +74,7 @@ export async function runStudySourceCheck({ baseUrl, env = process.env, fetchImp
       if (candidates.length > 1 || candidates.length === 1 && (candidates[0].messages.length !== 0 || candidates[0].mode !== 'coach' || candidates[0].curriculumConditionId !== STUDY_SOURCE_CHECK_CONDITION)) return receipt = { failed: true, authenticated: true, uncertain: true, stage: 'saved_conversation_conflict' };
       conversation = candidates[0];
       if (!conversation) {
-        const created = await request('/api/conversations', { title: STUDY_SOURCE_CHECK_TITLE, mode: 'coach', conditionId: STUDY_SOURCE_CHECK_CONDITION });
+        const created = await request('/api/operator/conversations', { title: STUDY_SOURCE_CHECK_TITLE, mode: 'coach', conditionId: STUDY_SOURCE_CHECK_CONDITION });
         if (!created.ok) return receipt = { failed: true, authenticated: true, stage: 'source_conversation' };
         conversation = await created.json();
       }

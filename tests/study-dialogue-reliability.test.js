@@ -74,27 +74,41 @@ test('failed plan projection contains only known IDs, fixed enums, counts and bo
   assert.deepEqual(studyDialogueRejection(new Error(secret)), { code: 'invalid_dialogue_plan', reasonId: 399 });
 });
 
-test('HTTP combined factual and quiz reply remains gradeable, speakable and idempotent after canonical merging', async t => {
+test('HTTP natural explanation is reviewed and idempotent before a canonical quiz and grade without further AI calls', async t => {
   const context = fixture();
   const dataDir = mkdtempSync(join(tmpdir(), 'fm-dual-dialogue-'));
   let calls = 0;
-  const server = createApp({ dataDir, curriculum: context.references, foundations: createStudyCurriculum({ records: [], now: () => STUDY_NOW }), env: { OPENAI_API_KEY: 'mock-only', OPENAI_MODEL: 'gpt-4.1-mini' }, fetchImpl: async () => {
+  const factualText = 'Mock management fact: review inhaler technique.';
+  const server = createApp({ dataDir, curriculum: context.references, foundations: createStudyCurriculum({ records: [], now: () => STUDY_NOW }), env: { OPENAI_API_KEY: 'mock-only', OPENAI_MODEL: 'gpt-4.1-mini' }, fetchImpl: async (_url, request) => {
     calls++;
-    return Response.json({ model: 'gpt-4.1-mini', choices: [{ message: { content: JSON.stringify(plan({ questionId: 'asthma:asthma-q1' })) } }], usage: { prompt_tokens: 10, completion_tokens: 10 } });
+    const body = JSON.parse(request.body);
+    const primary = body.messages.some(message => message.content.includes('NATURAL_TUTOR_CONTEXT='));
+    const payload = primary ? { segments: [{ id: 's1', text: factualText, sourceChunkIds: ['asthma:management'] }] }
+      : { approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: factualText, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [{ chunkId: 'asthma:management', excerpt: factualText }] }], flags: [] }] };
+    return Response.json({ model: 'gpt-4.1-mini', choices: [{ message: { content: JSON.stringify(payload) } }], usage: { prompt_tokens: 10, completion_tokens: 10 } });
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   const base = `http://127.0.0.1:${server.address().port}`;
   t.after(async () => { await new Promise(resolve => server.close(resolve)); rmSync(dataDir, { recursive: true, force: true }); });
   const api = async (path, body) => { const response = await fetch(base + path, { method: 'POST', headers: { Origin: base, 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); assert.equal(response.ok, true); return response.json(); };
   const conversation = await api('/api/conversations', { mode: 'coach', conditionId: 'asthma' });
-  const request = { conversationId: conversation.id, content: context.conversation.messages[0].content, requestId: 'dual-original' };
-  const combined = await api('/api/chat', request);
-  assert.equal(combined.message.studyRejection, undefined);
-  assert.equal(combined.message.canonicalSpokenText, true);
-  assert.equal(combined.message.studyQuestion.key, 'asthma:asthma-q1');
-  assert.deepEqual(combined.message.studySelection.chunkIds, ['asthma:management']);
-  assert.equal((await api('/api/chat', request)).message.id, combined.message.id);
+  const request = { conversationId: conversation.id, content: 'Explain asthma management for board study.', requestId: 'natural-explanation' };
+  const explanation = await api('/api/chat', request);
+  assert.equal(explanation.message.studyRejection, undefined);
+  assert.equal(explanation.message.reviewedDialogue, true);
+  assert.equal(explanation.message.canonicalSpokenText, false);
+  assert.equal(explanation.message.spokenText, factualText);
+  assert.deepEqual(explanation.message.groundingReview.sourceChunkIds, ['asthma:management']);
+  assert.equal((await api('/api/chat', request)).message.id, explanation.message.id);
+  assert.equal(calls, 2, 'Reusing the natural reply does not repeat author or reviewer calls.');
+  const quiz = await api('/api/chat', { conversationId: conversation.id, content: 'Quiz me on asthma.', requestId: 'canonical-original' });
+  assert.equal(quiz.message.studyQuestion.key, 'asthma:asthma-q1');
+  assert.equal(quiz.message.sourceVerified, true);
+  assert.equal(quiz.message.curriculum, true);
+  assert.equal(quiz.message.current, true);
+  assert.ok(quiz.message.citations.length);
+  assert.equal(quiz.message.reviewedDialogue, undefined);
   const graded = await api('/api/chat', { conversationId: conversation.id, content: 'B', requestId: 'dual-grade' });
   assert.equal(graded.message.studyAnswer.correct, true);
-  assert.equal(calls, 1);
+  assert.equal(calls, 2, 'Original quiz selection and answer-key grading make no AI call.');
 });

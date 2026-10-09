@@ -45,8 +45,8 @@ function harness({ state = { conversations: [] }, status = STATUS, response, cha
       return Response.json({ authenticated: true }, { headers: { 'Set-Cookie': `${cookie}; HttpOnly; SameSite=Strict` } });
     }
     assert.equal(options.headers.Cookie, cookie);
-    if (url.pathname === '/api/state') return Response.json(state);
-    if (url.pathname === '/api/conversations') {
+    if (url.pathname === '/api/operator/state') return Response.json(state);
+    if (url.pathname === '/api/operator/conversations') {
       assert.deepEqual(body, { title: STUDY_SOURCE_CHECK_TITLE, mode: 'coach', conditionId: STUDY_SOURCE_CHECK_CONDITION });
       return Response.json({ id: 'probe-conversation' }, { status: 201 });
     }
@@ -96,7 +96,7 @@ test('fresh check sends one fixed synthetic source request, validates canonical 
   const mock = harness();
   const result = await invoke(mock);
   assert.deepEqual(result, { authenticated: true, sourcePassed: true, canonicalPassed: true, citationPassed: true, currentSourcePassed: true, selectorMarkerPassed: true, relevantSourcePassed: true, cached: false, uncertain: false, provider: 'openai', requestedModel: 'gpt-4.1-mini', returnedModel: 'gpt-4.1-mini-2025-04-14', inputTokens: 1200, outputTokens: 55, estimatedCostUsd: .000568, telemetryFlushed: true, delivered: 2, pending: 0, logoutAttempted: true });
-  assert.deepEqual(mock.requests.map(request => request.path), ['/api/status', '/api/login', '/api/state', '/api/conversations', '/api/chat', '/api/ingenium-status', '/api/logout']);
+  assert.deepEqual(mock.requests.map(request => request.path), ['/api/status', '/api/login', '/api/operator/state', '/api/operator/conversations', '/api/chat', '/api/ingenium-status', '/api/logout']);
   assert.equal(mock.requests.filter(request => request.path === '/api/chat').length, 1);
   assert.equal(mock.flushCount(), 1);
   for (const secret of [TOKEN, OPENAI_KEY, COOKIE, ENV.INGENIUM_TELEMETRY_KEY, STUDY_SOURCE_CHECK_QUERY, mock.message.content]) assert.equal(JSON.stringify(result).includes(secret), false);
@@ -109,7 +109,7 @@ test('an existing complete request validates from durable history without anothe
   assert.equal(result.cached, true);
   assert.equal(result.sourcePassed, true);
   assert.equal(result.relevantSourcePassed, true);
-  assert.deepEqual(mock.requests.map(request => request.path), ['/api/status', '/api/login', '/api/state', '/api/ingenium-status', '/api/logout']);
+  assert.deepEqual(mock.requests.map(request => request.path), ['/api/status', '/api/login', '/api/operator/state', '/api/ingenium-status', '/api/logout']);
 });
 
 test('a valid canonical response selecting the wrong or incomplete sections fails the narrow study-source relevance check', async () => {
@@ -148,7 +148,7 @@ test('uncertain pending, duplicated, conflicting or reused requests are never re
     const result = await invoke(mock);
     assert.equal(result.failed, true);
     assert.equal(result.uncertain, true);
-    assert.ok(mock.requests.every(request => !['/api/chat', '/api/conversations'].includes(request.path)));
+    assert.ok(mock.requests.every(request => !['/api/chat', '/api/operator/conversations'].includes(request.path)));
     assert.equal(mock.requests.at(-1).path, '/api/logout');
   }
 });

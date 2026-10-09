@@ -16,9 +16,15 @@ async function fixture(t, options = {}) {
   const curriculum = createStudyCurriculum({ records, now: () => currentTime });
   const foundations = options.foundations || createStudyCurriculum({ records: [], now: () => currentTime });
   const env = { OPENAI_API_KEY: 'quiz-mock-only-not-a-real-api-key', OPENAI_MODEL: 'gpt-4.1-mini', ...options.env };
-  const fetchImpl = async () => {
+  const text = options.naturalText || 'Which part would you like to work through together?';
+  const draft = { segments: [{ id: 's1', text, sourceChunkIds: [] }] };
+  const review = { approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 0, claims: [], flags: [] }] };
+  const fetchImpl = async (url, request) => {
     providerCalls++;
-    return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 7, completion_tokens: 3 }, choices: [{ message: { content: JSON.stringify(options.selection || { chunkIds: [], questionId: 'asthma:asthma-q1', unsupported: false }) } }] });
+    const payload = JSON.parse(request.body);
+    const schema = payload.response_format?.json_schema?.name;
+    assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review'].includes(schema), `Unexpected generated contract ${schema}`);
+    return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 7, completion_tokens: 3 }, choices: [{ message: { content: JSON.stringify(schema === 'family_medicine_natural_review' ? review : draft) } }] });
   };
   let server;
   let base;
@@ -47,40 +53,51 @@ test('deliberate option parsing accepts reasoning without turning a clinical sen
   for (const text of ['See my patient', 'be', 'see the source', 'bee sting treatment']) assert.equal(studyChoice(text), null, text);
 });
 
-test('personal study coaching uses conversational acts without generating uncited facts or conversation cards', async t => {
-  const app = await fixture(t, { selection: { chunkIds: [], questionId: null, unsupported: false, dialogue: { intent: 'reflect', acknowledgment: 'effort', followup: 'name-gap' } } });
+test('personal study coaching returns model-written reviewed dialogue without uncited facts or conversation cards', async t => {
+  const naturalText = 'We can work from your attempt. Which part of the synthesis exercise would you like to unpack?';
+  const app = await fixture(t, { naturalText });
   for (const mode of ['coach', 'simulation', 'practice']) {
     const conversation = (await app.request('/api/conversations', 'POST', { mode })).body;
     const reply = await app.chat(conversation.id, 'I want to practice synthesis.', `scripted-${mode}`);
-    assert.equal(reply.body.message.scripted, true);
-    assert.equal(reply.body.message.canonicalStudyProcess, true);
-    assert.equal(reply.body.message.sourceVerified, true);
+    assert.equal(reply.body.message.scripted, undefined);
+    assert.equal(reply.body.message.canonicalStudyProcess, undefined);
+    assert.equal(reply.body.message.sourceVerified, false);
     assert.equal(reply.body.message.ai.provider, 'openai');
-    assert.equal(reply.body.message.studyDialogue.intent, 'reflect');
-    assert.match(reply.body.message.content, /Which part feels unclear/);
-    assert.match(reply.body.message.content, /not assigning a competence score or verifying a free-text medical answer/);
+    assert.equal(reply.body.message.aiReview.provider, 'openai');
+    assert.equal(reply.body.message.aiTotal.calls, 2);
+    assert.equal(reply.body.message.reviewedDialogue, true);
+    assert.equal(reply.body.message.canonicalSpokenText, false);
+    assert.equal(reply.body.message.groundingReview.status, 'passed');
+    assert.equal(reply.body.message.content, naturalText);
     assert.deepEqual(reply.body.message.citations, []);
     const drafts = await app.request('/api/chat/cards', 'POST', { conversationId: conversation.id });
     assert.deepEqual(drafts.body.cards, []);
     assert.match(drafts.body.notice, /Uncited conversation drafts are disabled/);
   }
-  assert.equal(app.calls(), 3, 'Each new coaching turn uses one model request; drafting unsourced cards uses none.');
+  assert.equal(app.calls(), 6, 'Each generated coaching turn uses a draft and grounding review; card drafting uses neither.');
 });
 
-test('unsupported responses are safe canonical process text and imported source markers can never authorize speech', async t => {
-  const app = await fixture(t);
+test('reviewed source-gap dialogue does not create facts and imported review markers cannot authorize speech', async t => {
+  const app = await fixture(t, { naturalText: 'I do not have a matching current study source for that question. Which part would you like to narrow?' });
   const conversation = await app.conversation();
   const unknown = await app.chat(conversation.id, 'Tell me about lupus', 'safe-abstention');
-  assert.equal(unknown.body.message.unsupported, true);
-  assert.equal(unknown.body.message.canonicalStudyProcess, true);
-  assert.equal(unknown.body.message.sourceVerified, true);
+  assert.equal(unknown.body.message.canonicalStudyProcess, undefined);
+  assert.equal(unknown.body.message.sourceVerified, false);
+  assert.equal(unknown.body.message.reviewedDialogue, true);
+  assert.equal(unknown.body.message.groundingReview.status, 'passed');
+  assert.equal(unknown.body.message.groundingReview.externalClaimCount, 0);
+  assert.equal(unknown.body.message.pendingStudyQuestion, null);
   assert.deepEqual(unknown.body.message.citations, []);
   const backup = (await app.request('/api/export')).body;
   assert.equal((await app.request('/api/import', 'POST', backup)).status, 200);
   const restored = (await app.request('/api/state')).body.conversations[0].messages[1];
   assert.equal(restored.sourceVerified, false);
   assert.equal(restored.canonicalStudyProcess, undefined);
-  assert.equal(app.calls(), 0);
+  assert.notEqual(restored.reviewedDialogue, true);
+  assert.notEqual(restored.canonicalSpokenText, true);
+  assert.equal(restored.groundingReview, undefined);
+  assert.equal(restored.importedEvidence, true);
+  assert.equal(app.calls(), 2);
 });
 
 test('foundation chat uses the source bank for canonical snippets, expiry dates and quiz grading without changing condition counts', async t => {
@@ -217,7 +234,7 @@ test('trusted pending quiz survives server restart but imported quiz metadata re
 });
 
 test('explicit condition changes and an intervening unsupported topic cannot grade a prior quiz', async t => {
-  const app = await fixture(t, { selection: { chunkIds: [], questionId: 'asthma:asthma-q1', unsupported: false } });
+  const app = await fixture(t);
   const first = await app.conversation();
   await app.chat(first.id, 'Quiz me on asthma', 'switch-quiz');
   const changed = await app.chat(first.id, 'B', 'switched-answer', { conditionIds: ['diabetes'] });
@@ -225,10 +242,14 @@ test('explicit condition changes and an intervening unsupported topic cannot gra
   const second = await app.conversation();
   await app.chat(second.id, 'Quiz me on asthma', 'intervening-quiz');
   const unknown = await app.chat(second.id, 'Tell me about lupus', 'unsupported-new-topic');
-  assert.equal(unknown.body.message.unsupported, true);
+  assert.equal(unknown.body.message.reviewedDialogue, true);
+  assert.equal(unknown.body.message.groundingReview.externalClaimCount, 0);
+  assert.equal(unknown.body.message.pendingStudyQuestion, null);
+  assert.deepEqual(unknown.body.message.citations, []);
   const stale = await app.chat(second.id, 'B', 'stale-old-answer');
   assert.equal(stale.body.message.studyAnswer, undefined);
-  assert.equal(stale.body.message.unsupported, true);
+  assert.equal(stale.body.message.reviewedDialogue, true);
+  assert.deepEqual(stale.body.message.citations, []);
 });
 
 test('invalid imported question metadata rejects atomically and commercial chat never uses personal quiz grading', async t => {

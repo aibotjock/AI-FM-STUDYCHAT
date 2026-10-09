@@ -92,7 +92,7 @@ export async function runConversationCheck({ baseUrl, env = process.env, fetchIm
     cookie = (login.headers.get('set-cookie') || '').split(';')[0];
     if (!/^studychat_session=[A-Za-z0-9._-]+$/.test(cookie)) return receipt = { failed: true, stage: 'sign_in' };
     authenticated = true;
-    const response = await request('/api/state');
+    const response = await request('/api/operator/state');
     if (!response.ok) return receipt = { failed: true, stage: 'saved_state' };
     const state = await response.json();
     if (!object(state) || !Array.isArray(state.conversations) || state.conversations.length > 500 || state.conversations.some(item => !object(item) || !Array.isArray(item.messages) || item.messages.length > 1000)) return receipt = { failed: true, stage: 'saved_state' };
@@ -102,7 +102,7 @@ export async function runConversationCheck({ baseUrl, env = process.env, fetchIm
     let conversation = candidates[0];
     if (conversation && (conversation.mode !== 'coach' || !validId(conversation.id) || conversation.messages.some(message => message.role === 'user' && !KNOWN_TURNS.some(turn => turn.requestId === message.requestId && turn.content === message.content)))) return receipt = { failed: true, uncertain: true, stage: 'saved_conversation_conflict' };
     if (!conversation) {
-      const created = await request('/api/conversations', { title: CONVERSATION_CHECK_TITLE, mode: 'coach' });
+      const created = await request('/api/operator/conversations', { title: CONVERSATION_CHECK_TITLE, mode: 'coach' });
       if (!created.ok) return receipt = { failed: true, stage: 'create_conversation' };
       conversation = await created.json();
       if (!validId(conversation?.id) || !Array.isArray(conversation.messages)) return receipt = { failed: true, stage: 'create_conversation' };

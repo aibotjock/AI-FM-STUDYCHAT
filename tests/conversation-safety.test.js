@@ -17,7 +17,11 @@ async function fixture(t, { reply, env = {} } = {}) {
   const fetchImpl = async (_url, request) => {
     const payload = JSON.parse(request.body);
     requests.push(payload);
-    const output = typeof reply === 'function' ? reply(payload, requests.length) : reply;
+    let output;
+    if (payload.response_format?.json_schema?.name === 'family_medicine_natural_review') {
+      const data = JSON.parse(payload.messages.find(message => message.content.includes('NATURAL_REVIEW_DATA=')).content.split('NATURAL_REVIEW_DATA=')[1]);
+      output = { approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: 0, flags: [], claims: [] })) };
+    } else output = typeof reply === 'function' ? reply(payload, requests.length) : reply;
     return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 5, completion_tokens: 5 }, choices: [{ message: { content: JSON.stringify(output) } }] });
   };
   const server = createApp({ dataDir, curriculum, env: { OPENAI_API_KEY: 'local-conversation-safety-fixture-only', OPENAI_MODEL: 'gpt-4.1-mini', ...env }, fetchImpl });
@@ -152,57 +156,60 @@ test('assistant dialogue history excludes unverified learner echoes and distingu
 
 test('a linked source topic does not force thanks or limited study time into medical abstention', async t => {
   const app = await fixture(t, { reply: payload => payload.messages.at(-1).content === 'Thanks.'
-    ? selection({ intent: 'continue', acknowledgment: 'thanks', followup: 'next-step' })
-    : selection({ intent: 'planning', acknowledgment: 'time', followup: 'name-goal', minutes: 10 }) });
+    ? { segments: [{ id: 's1', text: 'You’re welcome. What would you like to work on next?', sourceChunkIds: [] }] }
+    : { segments: [{ id: 's1', text: 'For this 10-minute session, we can start with one topic. What would you like to focus on?', sourceChunkIds: [] }] } });
   const conversation = await app.conversation('asthma');
   const thanks = await app.chat(conversation.id, 'Thanks.', 'linked-thanks');
   assert.equal(thanks.status, 200);
   assert.equal(thanks.body.message.unsupported, undefined);
   assert.match(thanks.body.message.content, /You’re welcome/);
-  assert.equal(thanks.body.message.studyDialogue.intent, 'continue');
+  assert.equal(thanks.body.message.reviewedDialogue, true);
   const time = await app.chat(conversation.id, 'I have 10 minutes to study. Help me plan a session.', 'limited-time-plan');
   assert.equal(time.status, 200);
   assert.equal(time.body.message.unsupported, undefined);
-  assert.equal(time.body.message.studyDialogue.intent, 'planning');
+  assert.equal(time.body.message.reviewedDialogue, true);
   assert.match(time.body.message.content, /10-minute session/);
-  assert.equal(app.calls(), 2);
-  assert.ok(app.requests[1].messages[1].content.includes('Thanks.'));
+  assert.equal(app.calls(), 4);
+  assert.ok(app.requests[2].messages[1].content.includes('Thanks.'));
   const replay = await app.chat(conversation.id, 'I have 10 minutes to study. Help me plan a session.', 'limited-time-plan');
   assert.equal(replay.body.message.id, time.body.message.id);
-  assert.equal(app.calls(), 2);
+  assert.equal(app.calls(), 4);
 });
 
 test('unsupported factual topics preserve the evidence gap but allow a subsequent study plan', async t => {
-  const app = await fixture(t, { reply: selection({ intent: 'planning', acknowledgment: 'overwhelmed', followup: 'name-goal', minutes: 10 }) });
+  const app = await fixture(t, { reply: payload => /What causes lupus/.test(payload.messages.at(-1).content)
+    ? { segments: [{ id: 's1', text: 'I cannot verify that fact from our current references. Which part would you like to narrow?', sourceChunkIds: [] }] }
+    : { segments: [{ id: 's1', text: 'We can make this a 10-minute session. What would you like to focus on first?', sourceChunkIds: [] }] } });
   const conversation = await app.conversation('asthma');
   const unknown = await app.chat(conversation.id, 'What causes lupus? Ten minutes are available.', 'unknown-time-topic');
-  assert.equal(unknown.body.message.unsupported, true);
+  assert.equal(unknown.body.message.reviewedDialogue, true);
+  assert.equal(unknown.body.message.groundingReview.externalClaimCount, 0);
   assert.deepEqual(unknown.body.message.citations, []);
-  assert.equal(app.calls(), 0);
+  assert.equal(app.calls(), 2);
   const plan = await app.chat(conversation.id, 'I feel overwhelmed. Help me plan a 10-minute study session.', 'recover-study-plan');
   assert.equal(plan.status, 200);
   assert.equal(plan.body.message.unsupported, undefined);
-  assert.equal(plan.body.message.studyDialogue.intent, 'planning');
+  assert.equal(plan.body.message.reviewedDialogue, true);
   assert.match(plan.body.message.content, /10-minute session/);
-  assert.equal(app.calls(), 1);
+  assert.equal(app.calls(), 4);
   assert.deepEqual(plan.body.message.citations, []);
 });
 
-test('a fatigue conversation respects pacing, hides answerful chunks and preserves the pending quiz', async t => {
-  const app = await fixture(t, { reply: selection({ intent: 'pause', acknowledgment: 'overwhelmed', followup: 'pause-or-short' }, ['asthma:management']) });
+test('a fatigue conversation respects pacing and preserves the pending quiz without factual hints', async t => {
+  const app = await fixture(t, { reply: { segments: [{ id: 's1', text: 'You can pause here. Would you like to take a break before choosing an option?', sourceChunkIds: [] }] } });
   const conversation = await app.conversation('asthma');
   const quiz = await app.chat(conversation.id, 'Quiz me on asthma', 'before-fatigue-quiz');
   assert.equal(app.calls(), 0);
   const pause = await app.chat(conversation.id, 'I am tired of studying asthma. Can we take a break?', 'pending-fatigue');
   assert.equal(pause.status, 200);
-  assert.equal(pause.body.message.studyDialogue.intent, 'pause');
+  assert.equal(pause.body.message.reviewedDialogue, true);
   assert.match(pause.body.message.content, /You can pause here/);
   assert.ok(!pause.body.message.content.includes('Mock management fact'));
-  assert.equal(pause.body.message.studyDialogue.pendingQuestion.key, quiz.body.message.studyQuestion.key);
-  assert.equal(app.calls(), 1);
+  assert.equal(pause.body.message.pendingStudyQuestion.key, quiz.body.message.studyQuestion.key);
+  assert.equal(app.calls(), 2);
   const answer = await app.chat(conversation.id, 'B', 'after-fatigue-answer');
   assert.equal(answer.body.message.studyAnswer.correct, true);
-  assert.equal(app.calls(), 1);
+  assert.equal(app.calls(), 2);
 });
 
 test('imported dialogue and spoken-text markers cannot authorize an unverified medical answer', async t => {

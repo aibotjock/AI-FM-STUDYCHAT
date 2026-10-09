@@ -17,7 +17,16 @@ async function fixture(t, options = {}) {
     calls++;
     const payload = JSON.parse(request.body);
     requests.push(payload);
-    const response = options.reply || { chunkIds: ['asthma:management'], questionId: null, unsupported: false };
+    let response;
+    if (options.reply) response = options.reply;
+    else if (payload.response_format?.json_schema?.name === 'family_medicine_natural_review') {
+      const data = JSON.parse(payload.messages.find(message => message.content.includes('NATURAL_REVIEW_DATA=')).content.split('NATURAL_REVIEW_DATA=')[1]);
+      response = { approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: segment.sourceChunkIds.length ? 1 : 0, flags: [], claims: segment.sourceChunkIds.length ? [{ quote: segment.text, type: 'medical', sourceChunkIds: segment.sourceChunkIds, supports: segment.sourceChunkIds.map(chunkId => ({ chunkId, excerpt: data.sources.find(source => source.key === chunkId).text })) }] : [] })) };
+    } else {
+      const data = JSON.parse(payload.messages.find(message => message.content.includes('NATURAL_TUTOR_CONTEXT=')).content.split('NATURAL_TUTOR_CONTEXT=')[1]);
+      const source = data.sources.find(source => source.key === 'asthma:management') || data.sources[0];
+      response = { segments: [{ id: 's1', text: source ? source.text : 'I cannot verify that fact from the current references. Which part would you like to narrow?', sourceChunkIds: source ? [source.key] : [] }] };
+    }
     return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 7, completion_tokens: 3 }, choices: [{ message: { content: JSON.stringify(response) } }] });
   };
   const server = createApp({ dataDir, env: options.env || {}, curriculum, fetchImpl, ...(options.authenticateRequest ? { authenticateRequest: options.authenticateRequest } : {}), ...(options.generateReply ? { generateReply: options.generateReply } : {}) });
@@ -70,8 +79,11 @@ test('expired content stays visible but cannot grade, save cards or ground chat'
   for (const route of ['answer', 'card']) assert.equal((await app.request(`/api/curriculum/asthma/${route}`, 'POST', { questionId: 'asthma-q1', choiceId: 'B' })).status, 409);
   const conversation = await app.conversation();
   const reply = await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Study asthma' });
-  assert.equal(reply.body.message.unsupported, true);
-  assert.equal(app.calls(), 0);
+  assert.equal(reply.body.message.reviewedDialogue, true);
+  assert.equal(reply.body.message.groundingReview.externalClaimCount, 0);
+  assert.equal(reply.body.message.grounded, undefined);
+  assert.deepEqual(reply.body.message.citations, []);
+  assert.equal(app.calls(), 2);
 });
 
 test('canonical cards save idempotently with source dates and existing spaced repetition', async t => {
@@ -122,25 +134,29 @@ test('condition conversation linkage survives backup and invalid references are 
   assert.equal((await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Study asthma', conditionIds: ['missing'] })).status, 400);
 });
 
-test('connected study chat selects canonical text and never exposes generated clinical prose', async t => {
+test('connected study chat releases source-reviewed natural text with canonical citations', async t => {
   const app = await fixture(t, { env: { OPENAI_API_KEY: 'mock-key' } });
   const conversation = await app.conversation();
   const payload = { conversationId: conversation.id, content: 'Study asthma inhaler technique', requestId: 'one-study-request' };
   const result = await app.request('/api/chat', 'POST', payload);
   assert.equal(result.status, 200);
-  assert.equal(result.body.message.sourceVerified, true);
+  assert.equal(result.body.message.sourceVerified, false);
+  assert.equal(result.body.message.reviewedDialogue, true);
+  assert.equal(result.body.message.groundingReview.status, 'passed');
   assert.equal(result.body.message.humanReview, false);
-  assert.equal(result.body.message.curriculum, true);
+  assert.equal(result.body.message.grounded, true);
   assert.match(result.body.message.content, /Mock management fact: review inhaler technique/);
   assert.equal(result.body.message.citations[0].url, 'https://www.nhlbi.nih.gov/health/asthma');
-  assert.equal(app.requests[0].response_format.type, 'json_object');
-  assert.ok(app.requests[0].messages.some(message => /NOT been clinician-reviewed/.test(message.content)));
+  assert.equal(app.requests[0].response_format.type, 'json_schema');
+  assert.equal(app.requests[0].response_format.json_schema.name, 'family_medicine_natural_tutor');
+  assert.equal(app.requests[1].response_format.json_schema.name, 'family_medicine_natural_review');
+  assert.ok(app.requests[0].messages.some(message => /not clinician approval/.test(message.content)));
   assert.equal((await app.request('/api/chat', 'POST', payload)).body.message.id, result.body.message.id);
-  assert.equal(app.calls(), 1);
+  assert.equal(app.calls(), 2);
 });
 
-test('invented selector answer bodies and citation laundering fall back to an honest evidence gap', async t => {
-  const app = await fixture(t, { env: { OPENAI_API_KEY: 'mock-key' }, reply: { chunkIds: ['asthma:management'], questionId: null, unsupported: false, answer: 'Take an invented medicine.' } });
+test('undeclared answer bodies cannot bypass natural draft validation or acquire citations', async t => {
+  const app = await fixture(t, { env: { OPENAI_API_KEY: 'mock-key' }, reply: { segments: [{ id: 's1', text: 'Take an invented medicine.', sourceChunkIds: ['asthma:management'] }], answer: 'Take an invented medicine.' } });
   const conversation = await app.conversation();
   const result = await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Study asthma' });
   assert.equal(result.body.message.unsupported, true);
@@ -149,14 +165,16 @@ test('invented selector answer bodies and citation laundering fall back to an ho
   assert.equal(app.calls(), 1);
 });
 
-test('unsupported clinical and dosing questions abstain without a paid provider request', async t => {
+test('unsupported clinical and dosing questions can clarify naturally without releasing factual teaching', async t => {
   const app = await fixture(t, { env: { OPENAI_API_KEY: 'mock-key' } });
   const conversation = await app.conversation();
   for (const content of ['What insulin dose?', 'What insulin dose for asthma?']) {
     const result = await app.request('/api/chat', 'POST', { conversationId: conversation.id, content });
-    assert.equal(result.body.message.unsupported, true);
+    assert.equal(result.body.message.reviewedDialogue, true);
+    assert.equal(result.body.message.groundingReview.externalClaimCount, 0);
+    assert.deepEqual(result.body.message.citations, []);
   }
-  assert.equal(app.calls(), 0);
+  assert.equal(app.calls(), 4);
 });
 
 test('sourced draft cards use canonical answers, carry dates and remain unsaved until chosen', async t => {

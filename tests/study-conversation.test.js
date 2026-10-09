@@ -19,9 +19,11 @@ async function fixture(t, respond) {
   const calls = [];
   const server = createApp({ dataDir, curriculum: references(), foundations: createStudyCurriculum({ records: [], now: () => STUDY_NOW }), env: { OPENAI_API_KEY: 'mock-not-real', OPENAI_MODEL: 'gpt-4.1-mini' }, fetchImpl: async (url, options) => {
     const body = JSON.parse(options.body); calls.push(body);
-    const prompt = body.messages.find(message => message.content.includes('STUDY_DIALOGUE_CONTEXT='))?.content;
-    const context = JSON.parse(prompt.split('STUDY_DIALOGUE_CONTEXT=')[1]);
-    return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 20, completion_tokens: 10 }, choices: [{ message: { content: JSON.stringify(respond(context, calls.length)) } }] });
+    const prompt = body.messages.find(message => /NATURAL_(?:TUTOR_CONTEXT|REVIEW_DATA)=/.test(message.content))?.content;
+    const reviewing = prompt.includes('NATURAL_REVIEW_DATA=');
+    const context = JSON.parse(prompt.split(reviewing ? 'NATURAL_REVIEW_DATA=' : 'NATURAL_TUTOR_CONTEXT=')[1]);
+    const reply = reviewing ? { approved: true, segments: context.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: 0, claims: [], flags: [] })) } : respond(context, calls.length);
+    return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 20, completion_tokens: 10 }, choices: [{ message: { content: JSON.stringify(reply) } }] });
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   const base = `http://127.0.0.1:${server.address().port}`;
@@ -77,43 +79,47 @@ test('consecutive natural followups rehydrate the last trusted current selected 
   }
 });
 
-test('linked-topic planning uses prior turns and preferences, one bounded completion and durable replay', async t => {
+test('linked-topic natural planning uses prior turns and preferences, two bounded completions and durable replay', async t => {
   let seenContext;
-  const app = await fixture(t, (context, count) => { seenContext = context; return selection(plan({ acknowledgment: count === 1 ? 'time' : 'thanks', learnerQuote: count === 1 ? '15 minutes' : null })); });
+  const app = await fixture(t, (context, count) => { seenContext = context; return { segments: [{ id: 's1', text: count === 1 ? 'For your 15 minutes, we could start with one cited asthma section and then an original question. Which section would you like to choose?' : 'We can keep that 15-minute plan. Would you like to start with one cited section?', sourceChunkIds: [] }] }; });
   assert.equal((await app.request('/api/settings', 'PUT', { coachStyle: 'direct', focus: 'exam', dailyMinutes: 30 })).status, 200);
   const first = await app.chat('I have 15 minutes to study. Help me plan.', 'plan-first');
   assert.equal(first.status, 200);
-  assert.equal(first.body.message.studyDialogue.intent, 'planning');
-  assert.equal(first.body.message.studyDialogue.minutes, 15);
-  assert.equal(first.body.message.canonicalStudyProcess, true);
+  assert.equal(first.body.message.reviewedDialogue, true);
+  assert.equal(first.body.message.groundingReview.status, 'passed');
+  assert.equal(first.body.message.groundingReview.externalClaimCount, 0);
+  assert.equal(first.body.message.sourceVerified, false);
+  assert.equal(first.body.message.canonicalStudyProcess, undefined);
   assert.equal(first.body.message.curriculum, undefined);
   assert.deepEqual(first.body.message.citations, []);
-  assert.match(first.body.message.content, /unverified learner statement/);
-  assert.doesNotMatch(first.body.message.spokenText, /unverified learner statement/);
-  assert.match(first.body.message.spokenText, /concise cited section/);
+  assert.match(first.body.message.content, /your 15 minutes/);
+  assert.equal(first.body.message.spokenText, first.body.message.content);
+  assert.equal(first.body.message.aiTotal.calls, 2);
   const replay = await app.chat('I have 15 minutes to study. Help me plan.', 'plan-first');
   assert.equal(replay.body.message.id, first.body.message.id);
-  assert.equal(app.calls.length, 1);
+  assert.equal(app.calls.length, 2);
   const second = await app.chat('Thanks, let us keep that plan.', 'plan-followup');
   assert.equal(second.status, 200);
-  assert.equal(app.calls.length, 2);
-  assert.equal(app.calls[0].max_completion_tokens ?? app.calls[0].max_tokens, 512);
-  assert.equal(app.calls[1].max_completion_tokens ?? app.calls[1].max_tokens, 512);
+  assert.equal(app.calls.length, 4);
+  for (const [index, call] of app.calls.entries()) assert.equal(call.max_completion_tokens ?? call.max_tokens, index % 2 ? 600 : 800);
   assert.equal(seenContext.preferences.coachStyle, 'direct');
   assert.ok(seenContext.history.some(message => message.role === 'user' && message.content.includes('15 minutes')));
-  assert.ok(seenContext.history.some(message => message.role === 'assistant' && message.dialogue?.intent === 'planning'));
+  assert.ok(seenContext.history.some(message => message.role === 'assistant' && message.content.includes('For your 15 minutes')));
+  const stored = (await app.request('/api/state')).body.conversations.find(conversation => conversation.messages.some(message => message.id === first.body.message.id));
+  assert.deepEqual(stored.messages.find(message => message.id === first.body.message.id).groundingReview, first.body.message.groundingReview);
 });
 
 test('planning between a canonical quiz and its answer preserves pending identity without revealing or regrading', async t => {
-  const app = await fixture(t, () => selection(plan()));
+  const app = await fixture(t, () => ({ segments: [{ id: 's1', text: 'We can use 15 minutes for this question and then decide what to review. Would you like to think through the options first?', sourceChunkIds: [] }] }));
   const quiz = await app.chat('Quiz me on asthma', 'quiz-first');
   assert.ok(quiz.body.message.studyQuestion);
   const planning = await app.chat('Help me plan a 15-minute study session.', 'plan-during-quiz');
-  assert.equal(planning.body.message.studyDialogue.intent, 'planning');
-  assert.deepEqual(planning.body.message.studyDialogue.pendingQuestion, quiz.body.message.studyQuestion);
+  assert.equal(planning.body.message.reviewedDialogue, true);
+  assert.equal(planning.body.message.groundingReview.externalClaimCount, 0);
+  assert.deepEqual(planning.body.message.pendingStudyQuestion, quiz.body.message.studyQuestion);
   assert.equal(planning.body.message.studyAnswer, undefined);
   assert.doesNotMatch(planning.body.message.content, /Mock management fact|canonical answer|Review inhaler technique/);
   const answer = await app.chat('B', 'answer-after-plan');
   assert.equal(answer.body.message.studyAnswer.correct, true);
-  assert.equal(app.calls.length, 1);
+  assert.equal(app.calls.length, 2);
 });

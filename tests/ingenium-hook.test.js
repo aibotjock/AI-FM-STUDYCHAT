@@ -23,10 +23,19 @@ const ORGANIZATION = '11111111-2222-4333-8444-555555555555';
 const PROMPT = 'Private prompt marker: synthetic recall study question.';
 const ANSWER = 'Private answer marker: choose a recall concept.';
 const STUDY_QUERY = 'Private prompt marker: explain asthma management for board study.';
-const STUDY_SELECTOR = JSON.stringify({ chunkIds: ['asthma:management'], questionId: null, unsupported: false });
+const MANAGEMENT_FACT = studyCondition().sections.find(section => section.id === 'management').text;
 const messages = [{ role: 'system', content: 'Private system instructions marker.' }, { role: 'user', content: PROMPT }];
 const reply = (model = MODEL, content = ANSWER, overrides = {}) => ({ model, choices: [{ message: { content }, finish_reason: 'stop' }], usage: { prompt_tokens: 100, completion_tokens: 20 }, ...overrides });
 const metadataKeys = ['provider', 'requestedModel', 'returnedModel', 'endpoint', 'usage', 'estimatedCostUsd', 'latencyMs', 'pricingBasis', 'recordedAt'].sort();
+
+function naturalContent(body) {
+  const schema = body.response_format?.json_schema?.name || (body.messages.some(message => message.content.includes('NATURAL_REVIEW_DATA')) ? 'family_medicine_natural_review' : body.messages.some(message => message.content.includes('NATURAL_TUTOR_CONTEXT')) ? 'family_medicine_natural_tutor' : null);
+  assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review'].includes(schema), `Unexpected generated contract ${schema}`);
+  assert.ok(body.messages.some(message => message.content.includes(schema === 'family_medicine_natural_review' ? 'NATURAL_REVIEW_DATA' : 'NATURAL_TUTOR_CONTEXT')));
+  return JSON.stringify(schema === 'family_medicine_natural_review'
+    ? { approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: MANAGEMENT_FACT, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [{ chunkId: 'asthma:management', excerpt: MANAGEMENT_FACT }] }], flags: [] }] }
+    : { segments: [{ id: 's1', text: MANAGEMENT_FACT, sourceChunkIds: ['asthma:management'] }] });
+}
 
 test('successful adapter completion invokes a metadata-only hook while the default browser contract stays unchanged', async () => {
   let upstreamCalls = 0;
@@ -109,8 +118,7 @@ async function fixture(t, { telemetryFails = false } = {}) {
     const body = JSON.parse(options.body);
     providerCalls.push(body);
     const isCheck = body.messages.some(message => message.content.includes('exactly READY'));
-    if (!isCheck) assert.ok(body.messages.some(message => message.content.includes('STUDY_REFERENCE_DATA')));
-    return Response.json(reply(body.model, isCheck ? 'READY' : STUDY_SELECTOR));
+    return Response.json(reply(body.model, isCheck ? 'READY' : naturalContent(body)));
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   const baseUrl = `http://127.0.0.1:${server.address().port}`;
@@ -135,10 +143,17 @@ function assertEventHasNoStudyContent(event) {
   assert.doesNotMatch(JSON.stringify(event), /Private|mock-provider-key|mock-owner-access|ia_x+|Mock management fact|asthma|inhaler/);
 }
 
-function assertCanonicalReply(result) {
+function assertReviewedReply(result) {
   assert.match(result.body.message.content, /Mock management fact: review inhaler technique/);
-  assert.equal(result.body.message.sourceVerified, true);
-  assert.equal(result.body.message.curriculum, true);
+  assert.equal(result.body.message.sourceVerified, false);
+  assert.equal(result.body.message.curriculum, undefined);
+  assert.equal(result.body.message.reviewedDialogue, true);
+  assert.equal(result.body.message.groundingReview.status, 'passed');
+  assert.equal(result.body.message.groundingReview.medicalClaimCount, 1);
+  assert.equal(result.body.message.aiTotal.calls, 2);
+  assert.equal(result.body.message.ai.provider, 'openai');
+  assert.equal(result.body.message.aiReview.provider, 'openai');
+  assert.equal(result.body.message.citations[0].url, 'https://www.nhlbi.nih.gov/health/asthma');
   assert.equal(result.body.message.humanReview, false);
 }
 
@@ -147,24 +162,26 @@ test('real app provider wiring emits one bounded metadata event per completed re
   const chatRequest = { conversationId: app.conversation.id, content: STUDY_QUERY, requestId: 'wiring-chat-once' };
   const first = await app.request('/api/chat', 'POST', chatRequest);
   assert.equal(first.status, 200);
-  assertCanonicalReply(first);
-  assert.equal(app.providerCalls.length, 1);
-  assert.equal(app.events.length, 1);
-  assertEventHasNoStudyContent(app.events[0]);
-  assert.equal(app.events[0].requestedModel, MODEL);
+  assertReviewedReply(first);
+  await app.server.flushIngeniumTelemetry();
+  assert.equal(app.providerCalls.length, 2);
+  assert.equal(app.events.length, 2);
+  for (const event of app.events) { assertEventHasNoStudyContent(event); assert.equal(event.requestedModel, MODEL); }
+  assert.notEqual(app.events[0].requestId, app.events[1].requestId);
   assert.equal((await app.request('/api/chat', 'POST', chatRequest)).body.message.id, first.body.message.id);
-  assert.equal(app.providerCalls.length, 1);
-  assert.equal(app.events.length, 1);
+  assert.equal(app.providerCalls.length, 2);
+  assert.equal(app.events.length, 2);
   const check = await app.request('/api/model-test', 'POST', { requestId: 'wiring-model-check-once' });
   assert.equal(check.status, 200);
   assert.equal(check.body.instructionPassed, true);
-  assert.equal(app.providerCalls.length, 2);
-  assert.equal(app.events.length, 2);
-  assertEventHasNoStudyContent(app.events[1]);
-  assert.notEqual(app.events[0].requestId, app.events[1].requestId);
+  await app.server.flushIngeniumTelemetry();
+  assert.equal(app.providerCalls.length, 3);
+  assert.equal(app.events.length, 3);
+  assertEventHasNoStudyContent(app.events[2]);
+  assert.equal(new Set(app.events.map(event => event.requestId)).size, 3);
   assert.equal((await app.request('/api/model-test', 'POST', { requestId: 'wiring-model-check-new-id' })).body.cached, true);
-  assert.equal(app.providerCalls.length, 2);
-  assert.equal(app.events.length, 2);
+  assert.equal(app.providerCalls.length, 3);
+  assert.equal(app.events.length, 3);
   assert.equal(app.catalogCalls.length, 1);
 });
 
@@ -172,10 +189,14 @@ test('metadata receiver failure preserves the app answer and all exposed status 
   const app = await fixture(t, { telemetryFails: true });
   const completed = await app.request('/api/chat', 'POST', { conversationId: app.conversation.id, content: STUDY_QUERY, requestId: 'receiver-failure-once' });
   assert.equal(completed.status, 200);
-  assertCanonicalReply(completed);
-  assert.equal(app.providerCalls.length, 1);
-  assert.equal(app.events.length, 1);
-  assertEventHasNoStudyContent(app.events[0]);
+  assertReviewedReply(completed);
+  await app.server.flushIngeniumTelemetry();
+  assert.equal(app.providerCalls.length, 2);
+  assert.ok(app.events.length >= 1);
+  for (const event of app.events) assertEventHasNoStudyContent(event);
+  const pending = await app.request('/api/ingenium-status');
+  assert.equal(pending.body.pending, 2);
+  assert.equal(pending.body.delivered, 0);
   const status = await app.request('/api/status');
   assert.equal(status.status, 200);
   assert.equal(status.body.authenticated, true);
@@ -187,13 +208,17 @@ test('selecting an owner model retains the metadata observer and reports the sel
   assert.equal((await app.request('/api/model', 'PUT', { model: MODEL_TWO })).status, 200);
   const completed = await app.request('/api/chat', 'POST', { conversationId: app.conversation.id, content: STUDY_QUERY, requestId: 'selected-model-observer' });
   assert.equal(completed.status, 200);
-  assertCanonicalReply(completed);
+  assertReviewedReply(completed);
   assert.equal(completed.body.message.ai.requestedModel, MODEL_TWO);
-  assert.equal(app.providerCalls.length, 1);
-  assert.equal(app.events.length, 1);
-  assertEventHasNoStudyContent(app.events[0]);
-  assert.equal(app.events[0].requestedModel, MODEL_TWO);
-  assert.equal(app.events[0].returnedModel, MODEL_TWO);
+  assert.equal(completed.body.message.aiReview.requestedModel, MODEL_TWO);
+  await app.server.flushIngeniumTelemetry();
+  assert.equal(app.providerCalls.length, 2);
+  assert.equal(app.events.length, 2);
+  for (const event of app.events) {
+    assertEventHasNoStudyContent(event);
+    assert.equal(event.requestedModel, MODEL_TWO);
+    assert.equal(event.returnedModel, MODEL_TWO);
+  }
 });
 
 test('durable metadata outbox survives restart and retries the same event UUID without another provider inference', async t => {
@@ -209,8 +234,7 @@ test('durable metadata outbox survives restart and retries the same event UUID w
     assert.equal(url, 'https://api.openai.com/v1/chat/completions');
     providerCalls++;
     const body = JSON.parse(options.body);
-    assert.ok(body.messages.some(message => message.content.includes('STUDY_REFERENCE_DATA')));
-    return Response.json(reply(body.model, STUDY_SELECTOR));
+    return Response.json(reply(body.model, naturalContent(body)));
   };
   t.after(async () => {
     for (const server of servers) if (server.listening) await new Promise(resolve => server.close(resolve));
@@ -238,44 +262,46 @@ test('durable metadata outbox survives restart and retries the same event UUID w
   const chatRequest = { conversationId: conversation.id, content: STUDY_QUERY, requestId: 'durable-single-inference' };
   const completed = await first.request('/api/chat', 'POST', chatRequest);
   assert.equal(completed.status, 200);
-  assertCanonicalReply(completed);
+  assertReviewedReply(completed);
   await first.server.flushIngeniumTelemetry();
-  assert.equal(providerCalls, 1);
+  assert.equal(providerCalls, 2);
   assert.ok(events.length >= 1);
   assert.equal(new Set(events.map(event => event.requestId)).size, 1);
   const eventId = events[0].requestId;
   const pending = (await first.request('/api/ingenium-status')).body;
-  assert.equal(pending.pending, 1);
+  assert.equal(pending.pending, 2);
   assert.equal(pending.delivered, 0);
   assert.equal(pending.lastResult.reason, 'delivery_failed');
   assert.doesNotMatch(JSON.stringify(pending), /mock-provider-key|mock-owner-access|ia_x+|Private/);
   const database = new DatabaseSync(join(dataDir, 'studychat.sqlite'));
   const stored = database.prepare('SELECT request_id,metadata,status FROM owner_telemetry_outbox').all();
   database.close();
-  assert.equal(stored.length, 1);
-  assert.equal(stored[0].request_id, eventId);
-  assert.equal(stored[0].status, 'pending');
-  assert.doesNotMatch(stored[0].metadata, /Private|mock-provider-key|mock-owner-access|ia_x+|Mock management fact|asthma|inhaler/);
+  assert.equal(stored.length, 2);
+  assert.ok(stored.some(row => row.request_id === eventId));
+  for (const row of stored) {
+    assert.equal(row.status, 'pending');
+    assert.doesNotMatch(row.metadata, /Private|mock-provider-key|mock-owner-access|ia_x+|Mock management fact|asthma|inhaler/);
+  }
   await new Promise(resolve => first.server.close(resolve));
   const attemptsBeforeRestart = events.length;
   receiverAvailable = true;
   const restarted = await start();
   await restarted.server.flushIngeniumTelemetry();
-  assert.equal(events.length, attemptsBeforeRestart + 1);
-  assert.equal(events.at(-1).requestId, eventId);
-  assert.deepEqual(events.at(-1), events[0]);
-  assert.equal(providerCalls, 1);
+  assert.equal(events.length, attemptsBeforeRestart + 2);
+  assert.deepEqual(new Set(events.slice(attemptsBeforeRestart).map(event => event.requestId)), new Set(stored.map(row => row.request_id)));
+  assert.deepEqual(events.slice(attemptsBeforeRestart).find(event => event.requestId === eventId), events[0]);
+  assert.equal(providerCalls, 2);
   assert.equal((await restarted.request('/api/ingenium-status')).status, 401);
   assert.equal((await restarted.request('/api/login', 'POST', { token: ACCESS_TOKEN })).status, 200);
   const delivered = (await restarted.request('/api/ingenium-status')).body;
   assert.equal(delivered.pending, 0);
-  assert.equal(delivered.delivered, 1);
+  assert.equal(delivered.delivered, 2);
   assert.equal(delivered.lastResult.accepted, true);
   assert.doesNotMatch(JSON.stringify(delivered), /mock-provider-key|mock-owner-access|ia_x+|Private/);
   assert.equal((await restarted.request('/api/chat', 'POST', chatRequest)).body.message.id, completed.body.message.id);
   await restarted.server.flushIngeniumTelemetry();
-  assert.equal(providerCalls, 1);
-  assert.equal(events.length, attemptsBeforeRestart + 1);
+  assert.equal(providerCalls, 2);
+  assert.equal(events.length, attemptsBeforeRestart + 2);
 });
 
 test('a full metadata outbox stays capped at 500 pending events while the app preserves its paid answer', async t => {
@@ -289,8 +315,8 @@ test('a full metadata outbox stays capped at 500 pending events while the app pr
   database.close();
   const completed = await app.request('/api/chat', 'POST', { conversationId: app.conversation.id, content: STUDY_QUERY, requestId: 'full-outbox-single-inference' });
   assert.equal(completed.status, 200);
-  assertCanonicalReply(completed);
-  assert.equal(app.providerCalls.length, 1);
+  assertReviewedReply(completed);
+  assert.equal(app.providerCalls.length, 2);
   const status = await app.request('/api/ingenium-status');
   assert.equal(status.status, 200);
   assert.equal(status.body.pending, 500);
