@@ -4,12 +4,15 @@
   "private": true,
   "description": "Mobile-first family medicine coaching and spaced-repetition study app",
   "type": "module",
-  "engines": { "node": ">=24.0.0" },
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "start": "node --env-file-if-exists=.env server/start.js",
     "dev": "node --watch --env-file-if-exists=.env server/start.js",
     "test": "node --test tests/*.test.js",
     "check": "node scripts/check.js && node scripts/validate-guidelines.js && node android/test-bridge.mjs",
-    "check:clinical-ready": "node scripts/validate-guidelines.js --require-ready"
+    "check:clinical-ready": "node scripts/validate-guidelines.js --require-ready",
+    "check:study-curriculum": "node scripts/validate-study-curriculum.js"
   }
 }

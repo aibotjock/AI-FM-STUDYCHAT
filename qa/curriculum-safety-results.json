@@ -1,0 +1,62 @@
+{
+  "runAt": "2026-10-09T09:37:14.826287+00:00",
+  "scope": "Independent new retrieval safety unit/HTTP cases. Existing passing curriculum tests and prior UI groups were not repeated. Seven groups passed together after six previously failing regressions were fixed and one actual-asthma resemblance case was newly added; the eighth new follow-up-after-abstention case passed separately after its guard was implemented.",
+  "results": [
+    {
+      "name": "unknown clinical topic names cannot bypass evidence requirements through conversational wording",
+      "pass": true,
+      "evidenceRun": "targeted 7-group correction run"
+    },
+    {
+      "name": "a follow-up must not jump backward across a newer unsupported clinical topic",
+      "pass": true,
+      "evidenceRun": "targeted 7-group correction run"
+    },
+    {
+      "name": "quantitative medication requests expressed without the word dose require dose evidence",
+      "pass": true,
+      "evidenceRun": "targeted 7-group correction run"
+    },
+    {
+      "name": "ambiguous clinical acronyms in a study-habit request do not confer condition coverage",
+      "pass": true,
+      "evidenceRun": "targeted 7-group correction run"
+    },
+    {
+      "name": "unlinked unknown-topic chat abstains without dispatching a provider request",
+      "pass": true,
+      "evidenceRun": "targeted 7-group correction run"
+    },
+    {
+      "name": "generic follow-up follows the latest named topic rather than the original linked-condition anchor",
+      "pass": true,
+      "evidenceRun": "targeted 7-group correction run"
+    },
+    {
+      "name": "an actual asthma record does not grant coverage for an asthma-like resemblance term",
+      "pass": true,
+      "evidenceRun": "targeted 7-group correction run"
+    },
+    {
+      "name": "a generic follow-up after an unsupported answer cannot reactivate an old topic through shared vocabulary",
+      "pass": true,
+      "evidenceRun": "new isolated unsupported-follow-up HTTP case"
+    }
+  ],
+  "findingsFixed": [
+    "Unknown clinical names phrased conversationally could previously reach unrestricted generic inference. Unmatched queries now require evidence except narrow nonclinical coaching intent.",
+    "Generic follow-up could previously skip a newer unknown topic and reuse older evidence, or revert to the original linked condition after a named topic switch. Latest topic continuity and grounded single-condition anchors now take precedence.",
+    "Medication quantity synonyms could previously bypass the dose evidence guard. Quantity/strength/puff/infusion requests are included.",
+    "SMART and CAP in nonclinical study-habit requests could previously confer clinical condition coverage. Nonclinical intent now suppresses retrieval.",
+    "A condition-like resemblance token could previously be treated as a named diagnosis. Actual Asthma fixture is now tested, rather than unrelated COPD-only fixtures.",
+    "A generic follow-up after an unsupported answer could reactivate an old topic through shared vocabulary. It now abstains without another provider request."
+  ],
+  "paidProviderCalls": 0,
+  "clinicalAccuracyEvaluated": false,
+  "remainingLimitations": [
+    "The selector can choose only canonical snippets or original questions, reducing fabricated body/citation risk. This does not establish that every summary or keyed answer is medically correct.",
+    "Official-source reading, actual corpus condition counts, freshness and medical editorial validation remain separate source/content checks.",
+    "All teaching content remains pending clinician review."
+  ],
+  "frontendRelatedRegression": "qa/curriculum-browser-results-scopes-15.json"
+}

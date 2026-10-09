@@ -1,0 +1,4059 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-09",
+  "conditions": [
+    {
+      "id": "hypertension",
+      "name": "Hypertension",
+      "aliases": [
+        "high blood pressure",
+        "HTN"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "blood pressure",
+        "PREVENT",
+        "DASH"
+      ],
+      "overview": "Study adult blood pressure classification, confirmation and risk-guided medication decisions under the 2025 US recommendations.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aha-bp-2025",
+          "title": "Top Things to Know: 2025 High Blood Pressure (BP) Guideline",
+          "organization": "American Heart Association",
+          "url": "https://professional.heart.org/en/science-news/2025-high-blood-pressure-guideline/top-things-to-know",
+          "kind": "official-recommendation",
+          "edition": "2025",
+          "publishedDate": "2025-08-14",
+          "checkedAt": "2026-10-09",
+          "locator": "Items 4, 6–10; nonpregnant adult blood pressure classification and treatment",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "acc-bp-2025",
+          "title": "New High Blood Pressure Guideline Emphasizes Prevention, Early Treatment to Reduce CVD Risk",
+          "organization": "American College of Cardiology",
+          "url": "https://www.acc.org/About-ACC/Press-Releases/2025/08/13/20/03/New-high-blood-pressure-guideline-emphasizes-prevention-early-treatment-to-reduce-CVD-risk",
+          "kind": "official-recommendation",
+          "edition": "2025",
+          "publishedDate": "2025-08-14",
+          "checkedAt": "2026-10-09",
+          "locator": "Blood pressure criteria; home monitoring; Tailored approaches to medication",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "classification",
+          "title": "Classify and confirm",
+          "text": "Stage 1 is systolic 130–139 or diastolic 80–89 mm Hg; stage 2 is systolic ≥140 or diastolic ≥90. Confirm with standardized measurements and appropriate home monitoring.",
+          "sourceIds": [
+            "aha-bp-2025"
+          ]
+        },
+        {
+          "id": "risk-treatment",
+          "title": "Risk-guided treatment",
+          "text": "Medication plus lifestyle change is recommended at ≥140/90, or at ≥130/80 with relevant comorbidities or PREVENT 10-year cardiovascular risk ≥7.5%. Lower-risk persistent hypertension after 3–6 months of lifestyle change also warrants medication.",
+          "sourceIds": [
+            "aha-bp-2025"
+          ]
+        },
+        {
+          "id": "initial-therapy",
+          "title": "Initial therapy and goals",
+          "text": "Usual treatment goal is <130/80 with individual exceptions. Stage 2 favors two first-line drugs of different classes; examples include an ARB and long-acting dihydropyridine calcium-channel blocker.",
+          "sourceIds": [
+            "acc-bp-2025"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "hypertension-q1",
+          "stem": "A 52-year-old has confirmed average BP 136/84 mm Hg and PREVENT 10-year cardiovascular risk 9%, without pregnancy or treatment contraindications. Which approach best follows the 2025 guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Lifestyle change plus antihypertensive medication"
+            },
+            {
+              "id": "B",
+              "text": "Lifestyle change only indefinitely"
+            },
+            {
+              "id": "C",
+              "text": "Wait until BP reaches 160/100"
+            },
+            {
+              "id": "D",
+              "text": "Use a smartwatch as the only confirmation"
+            },
+            {
+              "id": "E",
+              "text": "Avoid home BP monitoring"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "At ≥130/80 with PREVENT risk ≥7.5%, medication accompanies lifestyle intervention.",
+          "distractorExplanations": {
+            "B": "Risk is above the treatment threshold.",
+            "C": "That delays indicated treatment.",
+            "D": "Cuffless devices lack adequate reliability.",
+            "E": "Home monitoring supports management."
+          },
+          "sectionIds": [
+            "risk-treatment"
+          ],
+          "sourceIds": [
+            "aha-bp-2025"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Apply PREVENT risk to stage 1 hypertension treatment.",
+          "difficulty": "application"
+        },
+        {
+          "id": "hypertension-q2",
+          "stem": "A nonpregnant adult has newly confirmed BP 152/96 mm Hg and no compelling drug-specific indication. Which initial regimen best matches the guideline preference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Two ARBs"
+            },
+            {
+              "id": "B",
+              "text": "An ARB plus a long-acting dihydropyridine calcium-channel blocker"
+            },
+            {
+              "id": "C",
+              "text": "No medication for one year"
+            },
+            {
+              "id": "D",
+              "text": "A short-acting drug only as needed"
+            },
+            {
+              "id": "E",
+              "text": "Two thiazide-type diuretics"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Stage 2 favors two first-line classes, preferably as a single combination pill.",
+          "distractorExplanations": {
+            "A": "These are the same class.",
+            "C": "Persistent stage 2 warrants medication.",
+            "D": "As-needed dosing is not the preferred initial plan.",
+            "E": "These belong to the same class rather than two different first-line classes."
+          },
+          "sectionIds": [
+            "initial-therapy"
+          ],
+          "sourceIds": [
+            "acc-bp-2025"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Select a two-class initial regimen for stage 2 hypertension.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "hypertensive-emergency",
+      "name": "Hypertensive emergency",
+      "aliases": [
+        "hypertensive crisis"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "emergent",
+      "keywords": [
+        "severe hypertension",
+        "target organ injury",
+        "emergency"
+      ],
+      "overview": "Distinguish severe asymptomatic blood pressure elevation from a suspected hypertensive emergency.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aha-bp-emergency",
+          "title": "When To Call 911 About High Blood Pressure",
+          "organization": "American Heart Association",
+          "url": "https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings/when-to-call-911-for-high-blood-pressure",
+          "kind": "official-clinical-reference",
+          "edition": "unknown",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Severe hypertension; Hypertensive emergency; emergency symptoms",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "aha-bp-2025",
+          "title": "Top Things to Know: 2025 High Blood Pressure (BP) Guideline",
+          "organization": "American Heart Association",
+          "url": "https://professional.heart.org/en/science-news/2025-high-blood-pressure-guideline/top-things-to-know",
+          "kind": "official-recommendation",
+          "edition": "2025",
+          "publishedDate": "2025-08-14",
+          "checkedAt": "2026-10-09",
+          "locator": "Items 4, 6–10; nonpregnant adult blood pressure classification and treatment",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "recognition",
+          "title": "Recognize danger",
+          "text": "Marked BP elevation with new chest pain, dyspnea, weakness, visual change or difficulty speaking raises concern for acute organ injury and warrants emergency evaluation.",
+          "sourceIds": [
+            "aha-bp-emergency"
+          ]
+        },
+        {
+          "id": "classification",
+          "title": "Do not use BP alone",
+          "text": "A BP above 180/120 without acute organ-damage evidence is severe hypertension, not automatically a hypertensive emergency. Evaluate promptly and distinguish symptoms and examination findings.",
+          "sourceIds": [
+            "aha-bp-emergency"
+          ]
+        },
+        {
+          "id": "disposition",
+          "title": "Match disposition to injury",
+          "text": "Suspected hypertensive emergency requires immediate emergency care. The 2025 guideline instead favors timely oral-treatment initiation or intensification for nonpregnant severe hypertension without acute organ damage.",
+          "sourceIds": [
+            "aha-bp-2025"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "hypertensive-emergency-q1",
+          "stem": "A 61-year-old at a clinic has BP 214/128 mm Hg, new dyspnea and chest pressure. What is the best immediate disposition?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Routine follow-up in three months"
+            },
+            {
+              "id": "B",
+              "text": "Home rest until symptoms stop"
+            },
+            {
+              "id": "C",
+              "text": "Activate emergency services for urgent evaluation"
+            },
+            {
+              "id": "D",
+              "text": "Only repeat BP tomorrow"
+            },
+            {
+              "id": "E",
+              "text": "Begin an exercise session"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Severe BP with new chest symptoms or dyspnea requires emergency evaluation.",
+          "distractorExplanations": {
+            "A": "New symptoms make routine delay unsafe.",
+            "B": "Waiting could miss acute organ injury.",
+            "D": "A next-day check delays evaluation.",
+            "E": "Exercise does not address this emergency."
+          },
+          "sectionIds": [
+            "recognition",
+            "disposition"
+          ],
+          "sourceIds": [
+            "aha-bp-emergency"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Recognize symptoms requiring emergency escalation.",
+          "difficulty": "application"
+        },
+        {
+          "id": "hypertensive-emergency-q2",
+          "stem": "A nonpregnant adult has repeat BP 188/124 mm Hg after stopping prescribed medication. Assessment finds no symptoms or evidence of acute organ damage. Which plan best fits the 2025 recommendation?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Automatically label hypertensive emergency from the number alone"
+            },
+            {
+              "id": "B",
+              "text": "Ignore the result because symptoms are absent"
+            },
+            {
+              "id": "C",
+              "text": "Exercise to rapidly lower BP before evaluation"
+            },
+            {
+              "id": "D",
+              "text": "Timely reinstitution or intensification of oral therapy with follow-up"
+            },
+            {
+              "id": "E",
+              "text": "Delay all treatment six months"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Severe hypertension without acute organ damage calls for timely oral management rather than assuming an emergency solely from BP.",
+          "distractorExplanations": {
+            "A": "Organ injury distinguishes the emergency.",
+            "B": "Severe hypertension still needs management.",
+            "C": "This is not a substitute for evaluation.",
+            "E": "That is not timely treatment."
+          },
+          "sectionIds": [
+            "classification",
+            "disposition"
+          ],
+          "sourceIds": [
+            "aha-bp-2025"
+          ],
+          "domain": "acute",
+          "learningObjective": "Distinguish severe asymptomatic hypertension from emergency.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "dyslipidemia",
+      "name": "Dyslipidemia",
+      "aliases": [
+        "high cholesterol",
+        "hyperlipidemia"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "LDL",
+        "PREVENT-ASCVD",
+        "Lp(a)",
+        "CAC"
+      ],
+      "overview": "Study contemporary lipid risk assessment and the 2026 US guideline update.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aha-lipids-2026",
+          "title": "Top Things to Know: Guideline on the Management of Dyslipidemia",
+          "organization": "American Heart Association",
+          "url": "https://professional.heart.org/en/science-news/2026-guideline-on-the-management-of-dyslipidemia/top-things-to-know",
+          "kind": "official-recommendation",
+          "edition": "2026",
+          "publishedDate": "2026-03-13",
+          "checkedAt": "2026-10-09",
+          "locator": "Items 2, 6 and 7: PREVENT-ASCVD, lipoprotein(a), selective coronary calcium",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "aha-lipids-hub-2026",
+          "title": "2026 Guideline on the Management of Dyslipidemia",
+          "organization": "American Heart Association",
+          "url": "https://professional.heart.org/en/science-news/2026-guideline-on-the-management-of-dyslipidemia",
+          "kind": "official-recommendation",
+          "edition": "2026",
+          "publishedDate": "2026-03-13",
+          "checkedAt": "2026-10-09",
+          "locator": "Replacement of 2018 cholesterol guideline; key updates",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "risk",
+          "title": "Use current risk assessment",
+          "text": "The 2026 guideline uses PREVENT-ASCVD rather than the older Pooled Cohort Equations for primary prevention risk assessment in adults aged 30–79.",
+          "sourceIds": [
+            "aha-lipids-2026"
+          ]
+        },
+        {
+          "id": "biomarker",
+          "title": "Lipoprotein(a)",
+          "text": "Measure Lp(a) at least once to identify inherited risk that a conventional lipid panel may not reveal; elevated values support more intensive risk-factor management.",
+          "sourceIds": [
+            "aha-lipids-2026"
+          ]
+        },
+        {
+          "id": "personalization",
+          "title": "Personalize prevention",
+          "text": "The 2026 guideline restores risk-specific LDL-C/non-HDL-C goals and expands selective CAC assessment when additional risk classification would affect treatment. It replaces the 2018 cholesterol guideline.",
+          "sourceIds": [
+            "aha-lipids-hub-2026"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "dyslipidemia-q1",
+          "stem": "A 46-year-old without known ASCVD needs an initial cardiovascular risk estimate to discuss lipid-lowering therapy. Which tool does the 2026 guideline prefer?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Wells score"
+            },
+            {
+              "id": "B",
+              "text": "CHA2DS2-VASc"
+            },
+            {
+              "id": "C",
+              "text": "CURB-65"
+            },
+            {
+              "id": "D",
+              "text": "The older Pooled Cohort Equations as the preferred current tool"
+            },
+            {
+              "id": "E",
+              "text": "PREVENT-ASCVD"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "PREVENT-ASCVD is the recommended contemporary primary-prevention framework.",
+          "distractorExplanations": {
+            "A": "Wells evaluates a different clinical problem.",
+            "B": "CHA2DS2-VASc addresses AF stroke risk.",
+            "C": "CURB-65 addresses a different illness.",
+            "D": "The guideline moved from PCE to PREVENT-ASCVD."
+          },
+          "sectionIds": [
+            "risk"
+          ],
+          "sourceIds": [
+            "aha-lipids-2026"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Identify the current lipid primary-prevention risk tool.",
+          "difficulty": "application"
+        },
+        {
+          "id": "dyslipidemia-q2",
+          "stem": "A 43-year-old with a strong family history of premature ASCVD has never had Lp(a) measured. Which action best follows the 2026 guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Measure Lp(a) at least once"
+            },
+            {
+              "id": "B",
+              "text": "Avoid testing because LDL-C is normal"
+            },
+            {
+              "id": "C",
+              "text": "Measure Lp(a) only after a heart attack"
+            },
+            {
+              "id": "D",
+              "text": "Replace all lipid testing with urinalysis"
+            },
+            {
+              "id": "E",
+              "text": "Assume lifestyle excludes inherited risk"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "At least one Lp(a) measurement can reveal risk beyond the conventional lipid panel.",
+          "distractorExplanations": {
+            "B": "LDL-C does not exclude elevated Lp(a).",
+            "C": "Waiting for an event misses risk assessment.",
+            "D": "Urinalysis does not measure this biomarker.",
+            "E": "Healthy habits do not exclude inherited risk."
+          },
+          "sectionIds": [
+            "biomarker"
+          ],
+          "sourceIds": [
+            "aha-lipids-2026"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Use Lp(a) testing in lifelong lipid risk assessment.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "type-2-diabetes",
+      "name": "Type 2 diabetes mellitus",
+      "aliases": [
+        "T2DM",
+        "type 2 diabetes"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "A1c",
+        "glycemia",
+        "SGLT2",
+        "heart failure"
+      ],
+      "overview": "Study diagnostic confirmation and comorbidity-directed therapy using federal clinical guidance.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "niddk-diabetes-tests",
+          "title": "Diabetes & Prediabetes Tests",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/professionals/clinical-tools-patient-management/diabetes/diabetes-prediabetes",
+          "kind": "official-clinical-reference",
+          "edition": "unknown",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "A1C test; confirmation and differing test results",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "va-dm-2023",
+          "title": "VA/DoD Clinical Practice Guideline for the Management of Type 2 Diabetes Mellitus: Provider Summary",
+          "organization": "Department of Veterans Affairs and Department of Defense",
+          "url": "https://www.healthquality.va.gov/guidelines/CD/diabetes/VADOD-Diabetes-CPG-Provider-Summary_final_508.pdf",
+          "kind": "clinical-guideline",
+          "edition": "Version 6.0 | 2023",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Recommendation 2 (prediabetes), recommendations 21–22 (heart failure and CKD), Table 3 metformin; May 2023 printed edition",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Confirm diagnosis",
+          "text": "Laboratory A1C ≥6.5% meets a diabetes threshold. In an asymptomatic person, confirm the abnormal finding with repeat diagnostic testing rather than relying on one result.",
+          "sourceIds": [
+            "niddk-diabetes-tests"
+          ]
+        },
+        {
+          "id": "comorbidity",
+          "title": "Treat beyond A1C",
+          "text": "VA/DoD recommends an SGLT2 inhibitor for type 2 diabetes with heart failure to reduce heart-failure hospitalization, and an agent with proven renal benefit when CKD is present.",
+          "sourceIds": [
+            "va-dm-2023"
+          ]
+        },
+        {
+          "id": "renal-safety",
+          "title": "Medication safety",
+          "text": "Medication selection must consider kidney function. The VA/DoD pharmacotherapy table lists metformin as contraindicated below eGFR 30 mL/min/1.73 m²; do not equate glycemic efficacy with suitability.",
+          "sourceIds": [
+            "va-dm-2023"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "type-2-diabetes-q1",
+          "stem": "An asymptomatic adult has a first laboratory A1C of 6.7%. No prior glucose results are available. What is the best next diagnostic step?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Declare that A1C can never diagnose diabetes"
+            },
+            {
+              "id": "B",
+              "text": "Repeat diagnostic testing to confirm diabetes"
+            },
+            {
+              "id": "C",
+              "text": "Start lifelong insulin without confirmation"
+            },
+            {
+              "id": "D",
+              "text": "Classify the result as normal"
+            },
+            {
+              "id": "E",
+              "text": "Use a urine glucose dipstick as the only confirmation"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "A1C meets the diabetes threshold, but an asymptomatic first abnormal result needs confirmation.",
+          "distractorExplanations": {
+            "A": "A1C is an accepted diagnostic test.",
+            "C": "Confirmation is the issue in this vignette.",
+            "D": "6.7% exceeds the threshold.",
+            "E": "Urine glucose is not the indicated confirmation."
+          },
+          "sectionIds": [
+            "diagnosis"
+          ],
+          "sourceIds": [
+            "niddk-diabetes-tests"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Confirm an asymptomatic diabetes-range A1C.",
+          "difficulty": "application"
+        },
+        {
+          "id": "type-2-diabetes-q2",
+          "stem": "A 66-year-old with type 2 diabetes and stable heart failure has eGFR 65 and no contraindication to the choices. Which drug class is specifically recommended to reduce heart-failure admissions?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Sulfonylurea"
+            },
+            {
+              "id": "B",
+              "text": "Meglitinide"
+            },
+            {
+              "id": "C",
+              "text": "SGLT2 inhibitor"
+            },
+            {
+              "id": "D",
+              "text": "Alpha-glucosidase inhibitor"
+            },
+            {
+              "id": "E",
+              "text": "Insulin solely for its claimed heart-failure prevention effect"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "VA/DoD recommends an SGLT2 inhibitor for this heart-failure outcome.",
+          "distractorExplanations": {
+            "A": "It is not the class specified for this outcome.",
+            "B": "It is not the class specified for this outcome.",
+            "D": "It is not the class specified for this outcome.",
+            "E": "The stated prevention claim does not identify the recommended class."
+          },
+          "sectionIds": [
+            "comorbidity"
+          ],
+          "sourceIds": [
+            "va-dm-2023"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Choose diabetes therapy with established heart-failure benefit.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "prediabetes",
+      "name": "Prediabetes",
+      "aliases": [
+        "impaired fasting glucose",
+        "impaired glucose tolerance"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "preventive",
+      "keywords": [
+        "diabetes prevention",
+        "A1c",
+        "weight"
+      ],
+      "overview": "Study recognition, progression surveillance and diabetes prevention.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "niddk-prediabetes",
+          "title": "Insulin Resistance & Prediabetes",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/prediabetes-insulin-resistance",
+          "kind": "official-clinical-reference",
+          "edition": "unknown",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Blood tests; annual diabetes testing; Managing your weight; Medicines",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "va-dm-2023",
+          "title": "VA/DoD Clinical Practice Guideline for the Management of Type 2 Diabetes Mellitus: Provider Summary",
+          "organization": "Department of Veterans Affairs and Department of Defense",
+          "url": "https://www.healthquality.va.gov/guidelines/CD/diabetes/VADOD-Diabetes-CPG-Provider-Summary_final_508.pdf",
+          "kind": "clinical-guideline",
+          "edition": "Version 6.0 | 2023",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Recommendation 2 (prediabetes), recommendations 21–22 (heart failure and CKD), Table 3 metformin; May 2023 printed edition",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "recognition",
+          "title": "Identify prediabetes",
+          "text": "A1C 5.7–6.4%, fasting glucose 100–125 mg/dL, or two-hour OGTT glucose 140–199 mg/dL falls in the prediabetes range.",
+          "sourceIds": [
+            "niddk-prediabetes"
+          ]
+        },
+        {
+          "id": "prevention",
+          "title": "Reduce progression risk",
+          "text": "A structured lifestyle program addressing activity and weight can delay diabetes. NIH DPP data support a 5–7% initial weight-loss target when excess weight is present.",
+          "sourceIds": [
+            "niddk-prediabetes"
+          ]
+        },
+        {
+          "id": "follow-up",
+          "title": "Follow progression",
+          "text": "NIDDK advises annual type 2 diabetes testing after prediabetes is identified. VA/DoD also supports lifestyle changes and selected medication prevention for higher-risk adults.",
+          "sourceIds": [
+            "niddk-prediabetes",
+            "va-dm-2023"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "prediabetes-q1",
+          "stem": "An adult has A1C 6.1% confirmed on repeat testing and no diabetes symptoms. Which classification best fits?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Normal glycemia"
+            },
+            {
+              "id": "B",
+              "text": "Type 1 diabetes established by A1C alone"
+            },
+            {
+              "id": "C",
+              "text": "Diabetic ketoacidosis"
+            },
+            {
+              "id": "D",
+              "text": "Prediabetes"
+            },
+            {
+              "id": "E",
+              "text": "Type 2 diabetes established by this value"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "6.1% is within the prediabetes A1C range of 5.7–6.4%.",
+          "distractorExplanations": {
+            "A": "The value is above the normal range.",
+            "B": "This result does not establish type 1 diabetes.",
+            "C": "It does not demonstrate ketoacidosis.",
+            "E": "It is below the diabetes A1C threshold."
+          },
+          "sectionIds": [
+            "recognition"
+          ],
+          "sourceIds": [
+            "niddk-prediabetes"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Classify an A1C in the prediabetes range.",
+          "difficulty": "application"
+        },
+        {
+          "id": "prediabetes-q2",
+          "stem": "A 49-year-old with obesity and newly identified prediabetes begins a prevention program. Which paired plan is best supported?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No retesting until symptoms develop"
+            },
+            {
+              "id": "B",
+              "text": "Avoid physical activity and check once in ten years"
+            },
+            {
+              "id": "C",
+              "text": "Treat all such patients with insulin"
+            },
+            {
+              "id": "D",
+              "text": "Rely on urine glucose alone each decade"
+            },
+            {
+              "id": "E",
+              "text": "Weight-loss/activity support and annual diabetes testing"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Weight/activity intervention reduces progression risk; annual testing monitors for diabetes.",
+          "distractorExplanations": {
+            "A": "Waiting for symptoms misses progression.",
+            "B": "That omits useful prevention and surveillance.",
+            "C": "Insulin is not the specified prevention approach.",
+            "D": "This is not the recommended surveillance."
+          },
+          "sectionIds": [
+            "prevention",
+            "follow-up"
+          ],
+          "sourceIds": [
+            "niddk-prediabetes"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Pair diabetes prevention with appropriate surveillance.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "type-1-diabetes",
+      "name": "Type 1 diabetes mellitus",
+      "aliases": [
+        "T1DM",
+        "autoimmune diabetes"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "insulin",
+        "autoantibodies",
+        "DKA"
+      ],
+      "overview": "Study insulin dependence, adult presentations and prevention of metabolic emergencies.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "niddk-type1",
+          "title": "Type 1 Diabetes",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/type-1-diabetes",
+          "kind": "official-clinical-reference",
+          "edition": "Last Reviewed February 2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Who is more likely to develop type 1 diabetes?; How can I manage type 1 diabetes?; insulin and autoantibodies",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "endo-hypoglycemia-2022",
+          "title": "High Risk for Hypoglycemia Guideline Resources",
+          "organization": "Endocrine Society",
+          "url": "https://www.endocrine.org/clinical-practice-guidelines/high-risk-for-hypoglycemia",
+          "kind": "official-recommendation",
+          "edition": "2022 guideline; JCEM March 2023",
+          "publishedDate": "2022-12-07",
+          "checkedAt": "2026-10-09",
+          "locator": "Recommendations 1, 9 and 10; fingerstick confirmation remarks",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "classification",
+          "title": "Age does not exclude type 1",
+          "text": "Type 1 diabetes may appear in adulthood. Classification can require autoantibody testing; a glucose diagnostic test alone does not determine diabetes type.",
+          "sourceIds": [
+            "niddk-type1"
+          ]
+        },
+        {
+          "id": "insulin",
+          "title": "Insulin is essential",
+          "text": "Established type 1 diabetes requires insulin. Delivery can use injections, pens or pumps alongside glucose monitoring and a tailored education plan.",
+          "sourceIds": [
+            "niddk-type1"
+          ]
+        },
+        {
+          "id": "safety",
+          "title": "Recognize ketoacidosis risk",
+          "text": "Insulin deficiency increases ketone production and DKA risk, particularly during infection or other physiological stress. Review warning symptoms and emergency plans.",
+          "sourceIds": [
+            "niddk-type1"
+          ]
+        },
+        {
+          "id": "monitoring",
+          "title": "Glucose monitoring recommendation",
+          "text": "Endocrine Society guidance favors CGM for type 1 diabetes treated with multiple daily injections. Retain fingerstick testing to confirm discordant symptoms or readings.",
+          "sourceIds": [
+            "endo-hypoglycemia-2022"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "type-1-diabetes-q1",
+          "stem": "A 27-year-old with established autoimmune type 1 diabetes asks which treatment is indispensable even when diet is carefully managed. Which is the best answer?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Insulin"
+            },
+            {
+              "id": "B",
+              "text": "A carbohydrate-free diet alone"
+            },
+            {
+              "id": "C",
+              "text": "An herbal supplement alone"
+            },
+            {
+              "id": "D",
+              "text": "Exercise alone"
+            },
+            {
+              "id": "E",
+              "text": "A statin as the sole diabetes drug"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Insulin is essential in established type 1 diabetes.",
+          "distractorExplanations": {
+            "B": "Diet does not replace missing insulin.",
+            "C": "A supplement does not replace insulin.",
+            "D": "Activity does not replace insulin.",
+            "E": "A statin does not replace insulin."
+          },
+          "sectionIds": [
+            "insulin"
+          ],
+          "sourceIds": [
+            "niddk-type1"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize the indispensable treatment for type 1 diabetes.",
+          "difficulty": "application"
+        },
+        {
+          "id": "type-1-diabetes-q2",
+          "stem": "An adult with type 1 diabetes uses multiple daily insulin injections and has recurring glucose fluctuations. Which monitoring approach best matches Endocrine Society guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Fingerstick monitoring is always preferred over CGM"
+            },
+            {
+              "id": "B",
+              "text": "Use CGM while retaining fingerstick confirmation when needed"
+            },
+            {
+              "id": "C",
+              "text": "Stop monitoring once insulin is prescribed"
+            },
+            {
+              "id": "D",
+              "text": "Use symptoms alone without glucose measurements"
+            },
+            {
+              "id": "E",
+              "text": "Treat every discordant sensor reading without confirmation"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "CGM is recommended with multiple daily injections; fingerstick confirmation remains available for discordant symptoms or sensor limitations.",
+          "distractorExplanations": {
+            "A": "The recommendation favors CGM.",
+            "C": "Insulin does not eliminate monitoring needs.",
+            "D": "Symptoms alone do not provide glucose measurements.",
+            "E": "Discordant readings may require confirmation."
+          },
+          "sectionIds": [
+            "monitoring"
+          ],
+          "sourceIds": [
+            "endo-hypoglycemia-2022"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Apply CGM guidance while recognizing the need for confirmatory fingerstick testing.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "hypoglycemia",
+      "name": "Hypoglycemia",
+      "aliases": [
+        "low blood glucose",
+        "low blood sugar"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "acute",
+      "keywords": [
+        "insulin",
+        "glucose",
+        "glucagon"
+      ],
+      "overview": "Study rapid recognition and treatment of medication-associated low blood glucose.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "niddk-hypoglycemia",
+          "title": "Low Blood Glucose (Hypoglycemia)",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/low-blood-glucose-hypoglycemia",
+          "kind": "official-clinical-reference",
+          "edition": "unknown",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Causes; How do I treat low blood glucose?; severe low blood glucose and glucagon",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "endo-hypoglycemia-2022",
+          "title": "High Risk for Hypoglycemia Guideline Resources",
+          "organization": "Endocrine Society",
+          "url": "https://www.endocrine.org/clinical-practice-guidelines/high-risk-for-hypoglycemia",
+          "kind": "official-recommendation",
+          "edition": "2022 guideline; JCEM March 2023",
+          "publishedDate": "2022-12-07",
+          "checkedAt": "2026-10-09",
+          "locator": "Recommendations 1, 9 and 10; fingerstick confirmation remarks",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "recognition",
+          "title": "Identify a low value",
+          "text": "For many adults with diabetes, glucose <70 mg/dL is low. Insulin and insulin-secretagogue drugs, missed meals, increased activity and alcohol can contribute.",
+          "sourceIds": [
+            "niddk-hypoglycemia"
+          ]
+        },
+        {
+          "id": "oral-treatment",
+          "title": "Treat when swallowing is safe",
+          "text": "An alert person able to swallow can take 15–20 g of fast carbohydrate or glucose; recheck after 15 minutes and repeat if still low.",
+          "sourceIds": [
+            "niddk-hypoglycemia"
+          ]
+        },
+        {
+          "id": "severe",
+          "title": "Severe episodes need rescue",
+          "text": "If a person cannot self-treat safely, glucagon can be given by a trained helper and emergency help is required. Prevention includes reviewing medications and eating/activity patterns.",
+          "sourceIds": [
+            "niddk-hypoglycemia"
+          ]
+        },
+        {
+          "id": "prevention",
+          "title": "Prevent recurrent severe episodes",
+          "text": "Insulin-treated patients benefit from structured hypoglycemia education. For outpatient severe episodes, Endocrine Society guidance favors ready-to-use glucagon over preparations requiring mixing.",
+          "sourceIds": [
+            "endo-hypoglycemia-2022"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "hypoglycemia-q1",
+          "stem": "An insulin-treated adult is awake, can swallow and has glucose 58 mg/dL after missing lunch. What is the best immediate action?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Give extra insulin"
+            },
+            {
+              "id": "B",
+              "text": "Wait until the next scheduled visit"
+            },
+            {
+              "id": "C",
+              "text": "Provide 15–20 g fast carbohydrate and recheck in 15 minutes"
+            },
+            {
+              "id": "D",
+              "text": "Take only plain water"
+            },
+            {
+              "id": "E",
+              "text": "Begin vigorous exercise"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Safe oral glucose/carbohydrate with prompt reassessment treats this episode.",
+          "distractorExplanations": {
+            "A": "Extra insulin does not correct a low value.",
+            "B": "Treatment should not be delayed.",
+            "D": "Water does not supply glucose.",
+            "E": "Activity may further lower glucose."
+          },
+          "sectionIds": [
+            "oral-treatment"
+          ],
+          "sourceIds": [
+            "niddk-hypoglycemia"
+          ],
+          "domain": "acute",
+          "learningObjective": "Treat hypoglycemia when oral intake is safe.",
+          "difficulty": "application"
+        },
+        {
+          "id": "hypoglycemia-q2",
+          "stem": "A family member finds an insulin-treated adult unable to cooperate or swallow safely; a glucose check is very low. A prescribed glucagon kit is available and the helper is trained. Which response is best?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Force solid food into the mouth"
+            },
+            {
+              "id": "B",
+              "text": "Wait for spontaneous awakening"
+            },
+            {
+              "id": "C",
+              "text": "Give a corrective insulin dose"
+            },
+            {
+              "id": "D",
+              "text": "Give glucagon and activate emergency help"
+            },
+            {
+              "id": "E",
+              "text": "Offer diet soda only"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Glucagon rescue and emergency assistance are appropriate when self-treatment is unsafe.",
+          "distractorExplanations": {
+            "A": "Unsafe swallowing rules out this option.",
+            "B": "Severe hypoglycemia needs rescue.",
+            "C": "Insulin is not rescue for a low glucose.",
+            "E": "Diet soda does not supply rescue glucose."
+          },
+          "sectionIds": [
+            "severe"
+          ],
+          "sourceIds": [
+            "niddk-hypoglycemia"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Recognize when glucagon and emergency help are needed.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "diabetic-ketoacidosis",
+      "name": "Diabetic ketoacidosis",
+      "aliases": [
+        "DKA"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "emergent",
+      "keywords": [
+        "ketones",
+        "insulin deficiency",
+        "dehydration"
+      ],
+      "overview": "Study DKA warning features and emergency treatment principles; this module does not provide a dosing protocol.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-dka",
+          "title": "Diabetic Ketoacidosis",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/diabetes/about/diabetic-ketoacidosis.html",
+          "kind": "official-clinical-reference",
+          "edition": "May 15, 2024",
+          "publishedDate": "2024-05-15",
+          "checkedAt": "2026-10-09",
+          "locator": "Signs and symptoms; Test for ketones; High ketones? Call 911; Treatment",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "jbds-dka-2023",
+          "title": "The Management of Diabetic Ketoacidosis in Adults",
+          "organization": "Joint British Diabetes Societies for Inpatient Care",
+          "url": "https://abcd.care/sites/default/files/site_uploads/JBDS_Guidelines_Current/JBDS_02_DKA_Guideline_with_QR_code_March_2023.pdf",
+          "kind": "clinical-guideline",
+          "edition": "Revised March 2023; United Kingdom; CC BY-NC 4.0",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Page 3 copyright; page 9 pathway; pages 20–21 potassium and hypoglycemia complications",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "recognition",
+          "title": "Recognize the syndrome",
+          "text": "Insulin deficiency promotes ketone production. Vomiting, abdominal pain, deep rapid breathing and fruity breath in a person with diabetes suggest DKA.",
+          "sourceIds": [
+            "cdc-dka"
+          ]
+        },
+        {
+          "id": "escalation",
+          "title": "Escalate promptly",
+          "text": "High ketones with DKA symptoms require emergency evaluation; inability to keep fluids down or difficulty breathing should not be managed as routine outpatient hyperglycemia.",
+          "sourceIds": [
+            "cdc-dka"
+          ]
+        },
+        {
+          "id": "treatment",
+          "title": "Understand treatment components",
+          "text": "Emergency treatment addresses fluid loss, electrolytes, insulin deficiency and the precipitating illness. A glucose value alone does not replace clinical assessment.",
+          "sourceIds": [
+            "cdc-dka",
+            "jbds-dka-2023"
+          ]
+        },
+        {
+          "id": "monitoring",
+          "title": "Supplementary UK inpatient safety guidance",
+          "text": "UK JBDS guidance stresses repeated glucose, ketone and potassium assessment during treatment to avoid hypoglycemia and potassium complications. This supplement does not replace US inpatient protocols.",
+          "sourceIds": [
+            "jbds-dka-2023"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "diabetic-ketoacidosis-q1",
+          "stem": "An adult with diabetes has vomiting, fruity breath, fast deep breathing and high urine ketones. Which action is most appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Wait one week for a routine appointment"
+            },
+            {
+              "id": "B",
+              "text": "Only restrict carbohydrates at home"
+            },
+            {
+              "id": "C",
+              "text": "Begin vigorous exercise"
+            },
+            {
+              "id": "D",
+              "text": "Treat as isolated anxiety without assessment"
+            },
+            {
+              "id": "E",
+              "text": "Emergency evaluation now"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "The combination is concerning for DKA and requires immediate emergency evaluation.",
+          "distractorExplanations": {
+            "A": "The warning features require prompt care.",
+            "B": "Diet does not address the emergency.",
+            "C": "Exercise is not the appropriate disposition.",
+            "D": "The metabolic features need evaluation."
+          },
+          "sectionIds": [
+            "recognition",
+            "escalation"
+          ],
+          "sourceIds": [
+            "cdc-dka"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Identify DKA warning features requiring emergency care.",
+          "difficulty": "application"
+        },
+        {
+          "id": "diabetic-ketoacidosis-q2",
+          "stem": "A hospitalized patient has confirmed DKA triggered by an infection. Which treatment bundle addresses the principal problems?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Fluid and electrolyte management, insulin and treatment of the trigger"
+            },
+            {
+              "id": "B",
+              "text": "Insulin alone without reassessing hydration or electrolytes"
+            },
+            {
+              "id": "C",
+              "text": "Antibiotics alone"
+            },
+            {
+              "id": "D",
+              "text": "A statin and no metabolic treatment"
+            },
+            {
+              "id": "E",
+              "text": "Discharge solely because thirst briefly improves"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "DKA care addresses volume, electrolytes, insulin deficiency and its trigger.",
+          "distractorExplanations": {
+            "B": "That omits other key treatment components.",
+            "C": "Infection treatment does not replace metabolic treatment.",
+            "D": "This does not address DKA.",
+            "E": "Symptom improvement alone does not establish resolution."
+          },
+          "sectionIds": [
+            "treatment"
+          ],
+          "sourceIds": [
+            "cdc-dka",
+            "jbds-dka-2023"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Identify the components of DKA treatment without memorizing an unsafe isolated dose.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "hypothyroidism",
+      "name": "Hypothyroidism",
+      "aliases": [
+        "underactive thyroid"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "TSH",
+        "free T4",
+        "levothyroxine"
+      ],
+      "overview": "Study biochemical interpretation, replacement therapy and monitoring.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "ata-hypothyroidism",
+          "title": "Adult Hypothyroidism",
+          "organization": "American Thyroid Association",
+          "url": "https://www.thyroid.org/hypothyroidism/",
+          "kind": "official-clinical-reference",
+          "edition": "unknown",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "How is hypothyroidism diagnosed?; How is hypothyroidism treated?; Follow-up",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "ata-hypothyroid-rec",
+          "title": "New Hypothyroidism Treatment Guidelines from American Thyroid Association Published in Thyroid Journal",
+          "organization": "American Thyroid Association",
+          "url": "https://www.thyroid.org/new-hypothyroidism-treatment-guidelines-from-american-thyroid-association-published-in-thyroid-journal/",
+          "kind": "official-recommendation",
+          "edition": "2014 guideline announcement",
+          "publishedDate": "2014-09-30",
+          "checkedAt": "2026-10-09",
+          "locator": "Guideline announcement conclusion on levothyroxine standard therapy; not full guideline text",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Interpret TSH and free T4",
+          "text": "High TSH with low free T4 supports primary hypothyroidism. Pituitary disease can make TSH misleading, so interpret it with free T4 and clinical context.",
+          "sourceIds": [
+            "ata-hypothyroidism"
+          ]
+        },
+        {
+          "id": "replacement",
+          "title": "Replace missing hormone",
+          "text": "Levothyroxine is the standard hormone replacement; ATA recommendations do not establish routine superiority of alternative preparations over levothyroxine.",
+          "sourceIds": [
+            "ata-hypothyroid-rec"
+          ]
+        },
+        {
+          "id": "monitoring",
+          "title": "Allow time for reassessment",
+          "text": "ATA patient guidance advises blood testing 6–8 weeks after starting or changing a hormone dose; pregnancy and other factors may require closer monitoring.",
+          "sourceIds": [
+            "ata-hypothyroidism"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "hypothyroidism-q1",
+          "stem": "A 45-year-old has fatigue, elevated TSH and low free T4, with no pituitary history. Which treatment best targets the hormonal deficit?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Methimazole"
+            },
+            {
+              "id": "B",
+              "text": "Levothyroxine"
+            },
+            {
+              "id": "C",
+              "text": "Radioactive iodine"
+            },
+            {
+              "id": "D",
+              "text": "Propylthiouracil"
+            },
+            {
+              "id": "E",
+              "text": "A beta blocker as replacement hormone"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "This pattern supports primary hypothyroidism, for which levothyroxine replaces deficient hormone.",
+          "distractorExplanations": {
+            "A": "It does not replace deficient hormone.",
+            "C": "It does not replace deficient hormone.",
+            "D": "It does not replace deficient hormone.",
+            "E": "A beta blocker is not thyroid hormone."
+          },
+          "sectionIds": [
+            "diagnosis",
+            "replacement"
+          ],
+          "sourceIds": [
+            "ata-hypothyroidism",
+            "ata-hypothyroid-rec"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Match primary hypothyroidism to hormone replacement.",
+          "difficulty": "application"
+        },
+        {
+          "id": "hypothyroidism-q2",
+          "stem": "A nonpregnant adult has a levothyroxine dose adjustment without urgent complications. When does ATA patient guidance recommend routine repeat blood testing?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "The next day"
+            },
+            {
+              "id": "B",
+              "text": "Only if a nodule develops"
+            },
+            {
+              "id": "C",
+              "text": "After 6–8 weeks"
+            },
+            {
+              "id": "D",
+              "text": "After five years"
+            },
+            {
+              "id": "E",
+              "text": "Never after a dose change"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "The usual reassessment interval after a dose change is 6–8 weeks.",
+          "distractorExplanations": {
+            "A": "That is earlier than the stated routine interval.",
+            "B": "Nodules are not required to monitor replacement.",
+            "D": "That delays reassessment excessively.",
+            "E": "Dose changes require follow-up testing."
+          },
+          "sectionIds": [
+            "monitoring"
+          ],
+          "sourceIds": [
+            "ata-hypothyroidism"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Plan routine monitoring after thyroid hormone adjustment.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "hyperthyroidism",
+      "name": "Hyperthyroidism",
+      "aliases": [
+        "thyrotoxicosis",
+        "overactive thyroid"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "TSH",
+        "methimazole",
+        "thyroiditis",
+        "agranulocytosis"
+      ],
+      "overview": "Study cause-specific therapy and antithyroid-drug safety.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "ata-hyperthyroidism",
+          "title": "Hyperthyroidism",
+          "organization": "American Thyroid Association",
+          "url": "https://www.thyroid.org/hyperthyroidism/",
+          "kind": "official-clinical-reference",
+          "edition": "unknown",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "How is hyperthyroidism diagnosed?; Beta blockers; Antithyroid drugs; fever/sore throat precautions; thyroiditis",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "ata-hyperthyroid-recommendations-2016",
+          "title": "American Thyroid Association Task Force Updates Treatment Guidelines for Hyperthyroidism",
+          "organization": "American Thyroid Association",
+          "url": "https://www.thyroid.org/patient-thyroid-information/ct-for-patients/november-2016/vol-9-issue-11-p-3-7/",
+          "kind": "official-recommendation",
+          "edition": "Clinical Thyroidology for the Public, November 2016; summary of 2016 ATA guideline",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Retained recommendations: cause-specific treatment and active moderate-to-severe thyroid eye disease",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Confirm and determine cause",
+          "text": "Hyperthyroidism generally shows low TSH with high T4 and/or T3. Graves disease, autonomous nodules and thyroiditis require different management.",
+          "sourceIds": [
+            "ata-hyperthyroidism"
+          ]
+        },
+        {
+          "id": "mechanism",
+          "title": "Match treatment to mechanism",
+          "text": "Beta blockers can reduce adrenergic symptoms. Antithyroid drugs inhibit new hormone synthesis and are ineffective for thyroiditis-related leakage of stored hormone.",
+          "sourceIds": [
+            "ata-hyperthyroidism",
+            "ata-hyperthyroid-recommendations-2016"
+          ]
+        },
+        {
+          "id": "drug-safety",
+          "title": "Recognize a drug emergency",
+          "text": "Fever or severe sore throat during methimazole or PTU treatment requires urgent assessment and CBC; withhold further doses pending clearance because agranulocytosis is possible.",
+          "sourceIds": [
+            "ata-hyperthyroidism"
+          ]
+        },
+        {
+          "id": "eye-disease",
+          "title": "Recognize a treatment-selection qualifier",
+          "text": "ATA guidance favors antithyroid medication or surgery over radioactive iodine for active moderate-to-severe or sight-threatening Graves eye disease; decisions remain individualized.",
+          "sourceIds": [
+            "ata-hyperthyroid-recommendations-2016"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "hyperthyroidism-q1",
+          "stem": "A patient with confirmed thyroiditis has transient thyrotoxicosis and bothersome palpitations. There is no beta-blocker contraindication. Which option best addresses symptoms without targeting new hormone synthesis?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Methimazole as mandatory definitive therapy"
+            },
+            {
+              "id": "B",
+              "text": "Levothyroxine"
+            },
+            {
+              "id": "C",
+              "text": "Radioactive iodine for every thyroiditis episode"
+            },
+            {
+              "id": "D",
+              "text": "A beta blocker"
+            },
+            {
+              "id": "E",
+              "text": "Ignore symptomatic tachycardia"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Beta blockers address symptoms; antithyroid drugs do not treat hormone leakage from thyroiditis.",
+          "distractorExplanations": {
+            "A": "It does not treat this mechanism.",
+            "B": "It supplies thyroid hormone.",
+            "C": "Radioactive iodine is not effective for thyroiditis.",
+            "E": "Symptoms still merit assessment and management."
+          },
+          "sectionIds": [
+            "mechanism"
+          ],
+          "sourceIds": [
+            "ata-hyperthyroidism",
+            "ata-hyperthyroid-recommendations-2016"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Distinguish thyroiditis from hormone-overproduction disorders.",
+          "difficulty": "application"
+        },
+        {
+          "id": "hyperthyroidism-q2",
+          "stem": "An adult taking methimazole for Graves disease develops fever and severe sore throat. Which response is best?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Double the next methimazole dose"
+            },
+            {
+              "id": "B",
+              "text": "Continue without assessment for a month"
+            },
+            {
+              "id": "C",
+              "text": "Switch immediately to PTU without assessment"
+            },
+            {
+              "id": "D",
+              "text": "Treat with exercise alone"
+            },
+            {
+              "id": "E",
+              "text": "Withhold the drug and seek urgent CBC/evaluation"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "The symptoms may signal agranulocytosis; withhold further doses pending urgent evaluation.",
+          "distractorExplanations": {
+            "A": "Increasing exposure is inappropriate.",
+            "B": "This delays a potentially serious drug reaction.",
+            "C": "A switch does not resolve the need to evaluate.",
+            "D": "Exercise does not address the drug safety issue."
+          },
+          "sectionIds": [
+            "drug-safety"
+          ],
+          "sourceIds": [
+            "ata-hyperthyroidism"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize antithyroid-drug agranulocytosis warning symptoms.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "thyroid-nodule",
+      "name": "Thyroid nodule",
+      "aliases": [
+        "thyroid nodules"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "ultrasound",
+        "TSH",
+        "FNA",
+        "radionuclide"
+      ],
+      "overview": "Study the initial evaluation of adult nodules using the ATA nodule recommendations, separate from differentiated thyroid cancer treatment.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "ata-nodules-2015",
+          "title": "2015 American Thyroid Association Management Guidelines for Adult Patients with Thyroid Nodules and Differentiated Thyroid Cancer: The American Thyroid Association Guidelines Task Force on Thyroid Nodules and Differentiated Thyroid Cancer",
+          "organization": "American Thyroid Association; publisher-deposited full text in PubMed Central",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4739132/",
+          "kind": "clinical-guideline",
+          "edition": "2015 guideline; Thyroid January 2016",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Recommendations 2 and 6; Table 6 and recommendation 8: thyroid nodule evaluation (not differentiated cancer treatment)",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "initial",
+          "title": "Initial assessment",
+          "text": "Measure TSH and perform thyroid/neck ultrasound for a suspected nodule; ultrasound pattern and size determine biopsy consideration.",
+          "sourceIds": [
+            "ata-nodules-2015"
+          ]
+        },
+        {
+          "id": "low-tsh",
+          "title": "Low TSH changes the pathway",
+          "text": "Subnormal TSH prompts a radionuclide thyroid scan to assess function. Do not use that scan as the initial imaging choice when TSH is normal or elevated.",
+          "sourceIds": [
+            "ata-nodules-2015"
+          ]
+        },
+        {
+          "id": "biopsy",
+          "title": "High-suspicion ultrasound",
+          "text": "ATA recommends FNA for a high-suspicion nodule ≥1 cm. A solid hypoechoic nodule with microcalcifications is an example of this pattern.",
+          "sourceIds": [
+            "ata-nodules-2015"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "thyroid-nodule-q1",
+          "stem": "An adult has a newly detected thyroid nodule and subnormal TSH. Which additional test best evaluates whether the nodule is functioning?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "A radionuclide thyroid scan"
+            },
+            {
+              "id": "B",
+              "text": "Routine thyroglobulin as the sole test"
+            },
+            {
+              "id": "C",
+              "text": "A fasting lipid panel"
+            },
+            {
+              "id": "D",
+              "text": "A D-dimer"
+            },
+            {
+              "id": "E",
+              "text": "No evaluation because all nodules are malignant"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Subnormal TSH warrants radionuclide functional assessment in the ATA pathway.",
+          "distractorExplanations": {
+            "B": "It does not identify nodule function.",
+            "C": "It does not evaluate thyroid function.",
+            "D": "It does not evaluate thyroid function.",
+            "E": "The premise is false and evaluation is still needed."
+          },
+          "sectionIds": [
+            "low-tsh"
+          ],
+          "sourceIds": [
+            "ata-nodules-2015"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Use TSH to select functional nodule imaging.",
+          "difficulty": "application"
+        },
+        {
+          "id": "thyroid-nodule-q2",
+          "stem": "A euthyroid adult has a 1.4-cm solid hypoechoic thyroid nodule with microcalcifications. Which next diagnostic action best follows the ATA high-suspicion pathway?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Ignore it because TSH is normal"
+            },
+            {
+              "id": "B",
+              "text": "Perform ultrasound-guided fine-needle aspiration"
+            },
+            {
+              "id": "C",
+              "text": "Repeat imaging only after ten years"
+            },
+            {
+              "id": "D",
+              "text": "Treat immediately with insulin"
+            },
+            {
+              "id": "E",
+              "text": "Use a normal TSH as proof of benign histology"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "A high-suspicion nodule ≥1 cm meets the ATA FNA criterion.",
+          "distractorExplanations": {
+            "A": "Normal TSH does not establish benign histology.",
+            "C": "That fails the indicated evaluation.",
+            "D": "Insulin does not evaluate a thyroid nodule.",
+            "E": "TSH does not establish histology."
+          },
+          "sectionIds": [
+            "biopsy"
+          ],
+          "sourceIds": [
+            "ata-nodules-2015"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Apply the ATA high-suspicion nodule FNA threshold.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "obesity",
+      "name": "Obesity",
+      "aliases": [
+        "adult obesity",
+        "excess adiposity"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "BMI",
+        "lifestyle",
+        "weight management",
+        "semaglutide",
+        "tirzepatide"
+      ],
+      "overview": "Study the 2025 federal approach to combined lifestyle, medication and procedural options.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "va-obesity-2025",
+          "title": "VA/DOD Clinical Practice Guideline for the Management of Adult Overweight and Obesity",
+          "organization": "Department of Veterans Affairs and Department of Defense",
+          "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/CD/obesity/OBE-CPG_2025-Guideline_final_20251105.pdf",
+          "kind": "clinical-guideline",
+          "edition": "September 2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Recommendations 2, 6–9, 12, 16–17; comprehensive lifestyle intervention and pharmacotherapy",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "lifestyle",
+          "title": "Combine lifestyle components",
+          "text": "A comprehensive intervention combines behavioral support, dietary changes and physical activity. An energy deficit supports weight loss; no single dietary pattern is universally preferred.",
+          "sourceIds": [
+            "va-obesity-2025"
+          ]
+        },
+        {
+          "id": "medication",
+          "title": "Medication supplements lifestyle",
+          "text": "VA/DoD recommends semaglutide or tirzepatide with lifestyle intervention for BMI ≥30, or ≥27 with an obesity-associated condition, after assessing suitability and preferences.",
+          "sourceIds": [
+            "va-obesity-2025"
+          ]
+        },
+        {
+          "id": "maintenance",
+          "title": "Plan long-term maintenance",
+          "text": "Weight maintenance needs ongoing support. The guideline supports continued pharmacotherapy to maintain achieved loss and considers metabolic surgery at BMI ≥35, or ≥30 with type 2 diabetes.",
+          "sourceIds": [
+            "va-obesity-2025"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "obesity-q1",
+          "stem": "An adult with BMI 34 wants a structured initial weight-management plan. Which program best reflects comprehensive lifestyle intervention?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Diet advice alone with no follow-up"
+            },
+            {
+              "id": "B",
+              "text": "Only a promise of rapid weight loss"
+            },
+            {
+              "id": "C",
+              "text": "Behavioral support, dietary changes and physical activity"
+            },
+            {
+              "id": "D",
+              "text": "Avoiding all activity indefinitely"
+            },
+            {
+              "id": "E",
+              "text": "A supplement without assessment"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Comprehensive intervention combines behavioral, dietary and physical-activity components.",
+          "distractorExplanations": {
+            "A": "It omits two core components.",
+            "B": "A promise does not constitute a program.",
+            "D": "It omits physical activity.",
+            "E": "It is not a comprehensive intervention."
+          },
+          "sectionIds": [
+            "lifestyle"
+          ],
+          "sourceIds": [
+            "va-obesity-2025"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Identify the components of a comprehensive obesity intervention.",
+          "difficulty": "application"
+        },
+        {
+          "id": "obesity-q2",
+          "stem": "A nonpregnant adult has BMI 28 and hypertension. Lifestyle support continues, and no contraindications to weight-management medicines are identified. Which option is supported by the 2025 VA/DoD guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Medicines are always prohibited below BMI 40"
+            },
+            {
+              "id": "B",
+              "text": "Replace lifestyle support entirely with medication"
+            },
+            {
+              "id": "C",
+              "text": "Prescribe thyroid hormone despite normal thyroid function"
+            },
+            {
+              "id": "D",
+              "text": "Consider semaglutide or tirzepatide alongside lifestyle intervention"
+            },
+            {
+              "id": "E",
+              "text": "Wait until a cardiovascular event occurs"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "BMI ≥27 plus an obesity-associated condition meets the guideline category for these medications with lifestyle support.",
+          "distractorExplanations": {
+            "A": "That is not the guideline threshold.",
+            "B": "The recommendation includes lifestyle intervention.",
+            "C": "That is not the supported option here.",
+            "E": "The recommendation does not require a prior event."
+          },
+          "sectionIds": [
+            "medication"
+          ],
+          "sourceIds": [
+            "va-obesity-2025"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Apply the medication eligibility category without treating it as a patient-specific prescription.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "stable-coronary-artery-disease",
+      "name": "Stable coronary artery disease",
+      "aliases": [
+        "chronic coronary disease",
+        "stable angina",
+        "CAD"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "antianginal",
+        "secondary prevention",
+        "statin"
+      ],
+      "overview": "Study chronic coronary disease prevention, symptom management and testing decisions.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aha-ccd-2023",
+          "title": "Top Things to Know: 2023 Guideline for the Management of Patients With Chronic Coronary Disease",
+          "organization": "American Heart Association",
+          "url": "https://professional.heart.org/en/science-news/2023-guideline-for-the-management-of-patients-with-chronic-coronary-disease/top-things-to-know",
+          "kind": "official-recommendation",
+          "edition": "2023",
+          "publishedDate": "2023-07-20",
+          "checkedAt": "2026-10-09",
+          "locator": "Items 3–7 and 10: exercise, antianginal treatment, statins and symptom-directed testing",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "prevention",
+          "title": "Secondary prevention",
+          "text": "Healthy eating, exercise and appropriate cardiac rehabilitation support chronic coronary disease care. Statins remain first-line lipid-lowering therapy.",
+          "sourceIds": [
+            "aha-ccd-2023"
+          ]
+        },
+        {
+          "id": "symptoms",
+          "title": "Treat angina and distinguish indications",
+          "text": "A beta blocker or calcium-channel blocker is first-line antianginal therapy. Long-term beta blockers are not recommended solely to improve outcomes without recent MI, LVEF ≤50% or another indication.",
+          "sourceIds": [
+            "aha-ccd-2023"
+          ]
+        },
+        {
+          "id": "testing",
+          "title": "Test for a clinical reason",
+          "text": "Routine periodic anatomic or ischemic testing is not recommended when clinical and functional status has not changed.",
+          "sourceIds": [
+            "aha-ccd-2023"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "stable-coronary-artery-disease-q1",
+          "stem": "A patient with stable CAD has unchanged exercise capacity and no new symptoms since the previous visit. What is the best approach to routine annual ischemic testing?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Order it automatically every year"
+            },
+            {
+              "id": "B",
+              "text": "Order it solely because of age"
+            },
+            {
+              "id": "C",
+              "text": "Replace all follow-up with imaging"
+            },
+            {
+              "id": "D",
+              "text": "Schedule urgent angiography despite no change"
+            },
+            {
+              "id": "E",
+              "text": "Avoid routine periodic testing without a clinical change"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Unchanged clinical/functional status does not warrant routine periodic ischemic testing.",
+          "distractorExplanations": {
+            "A": "Automatic testing is not recommended.",
+            "B": "Age alone is not the stated indication.",
+            "C": "Clinical follow-up still matters.",
+            "D": "No change is supplied to justify that escalation."
+          },
+          "sectionIds": [
+            "testing"
+          ],
+          "sourceIds": [
+            "aha-ccd-2023"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Avoid unnecessary surveillance testing in stable CAD.",
+          "difficulty": "application"
+        },
+        {
+          "id": "stable-coronary-artery-disease-q2",
+          "stem": "A patient with chronic CAD has no MI in the past year, LVEF 60%, no angina and no other beta-blocker indication. Which statement best reflects the 2023 guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Routine long-term beta blocker is not recommended solely to improve outcomes in this scenario"
+            },
+            {
+              "id": "B",
+              "text": "All such patients require lifelong beta blockers solely for survival"
+            },
+            {
+              "id": "C",
+              "text": "Beta blockers replace statins"
+            },
+            {
+              "id": "D",
+              "text": "Exercise must be prohibited"
+            },
+            {
+              "id": "E",
+              "text": "Dietary supplements replace secondary-prevention medication"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "The guideline distinguishes antianginal or other indications from unsupported routine outcome-only beta-blocker use.",
+          "distractorExplanations": {
+            "B": "The guideline does not make that blanket recommendation.",
+            "C": "They do not replace lipid treatment.",
+            "D": "Activity is part of chronic disease care.",
+            "E": "Supplements do not replace recommended prevention."
+          },
+          "sectionIds": [
+            "symptoms",
+            "prevention"
+          ],
+          "sourceIds": [
+            "aha-ccd-2023"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Distinguish beta-blocker indications in chronic coronary disease.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "acute-coronary-syndrome",
+      "name": "Acute coronary syndrome",
+      "aliases": [
+        "ACS",
+        "STEMI",
+        "NSTEMI"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "emergent",
+      "keywords": [
+        "DAPT",
+        "revascularization",
+        "cardiogenic shock"
+      ],
+      "overview": "Study selected 2025 ACS management distinctions and secondary prevention.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aha-acs-2025",
+          "title": "Top Things to Know: 2025 Guideline for Acute Coronary Syndromes",
+          "organization": "American Heart Association",
+          "url": "https://professional.heart.org/en/science-news/2025-guideline-for-the-management-of-patients-with-acute-coronary-syndromes/top-things-to-know",
+          "kind": "official-recommendation",
+          "edition": "2025",
+          "publishedDate": "2025-02-27",
+          "checkedAt": "2026-10-09",
+          "locator": "Items 1–2: DAPT default; item 6: cardiogenic shock culprit revascularization; item 9: rehabilitation",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "antiplatelet",
+          "title": "Default antiplatelet strategy",
+          "text": "Aspirin plus an oral P2Y12 inhibitor is the default DAPT strategy for at least 12 months in ACS without high bleeding risk; bleeding risk and anticoagulation can change the plan.",
+          "sourceIds": [
+            "aha-acs-2025"
+          ]
+        },
+        {
+          "id": "shock",
+          "title": "Cardiogenic shock",
+          "text": "ACS with cardiogenic shock requires emergency culprit-vessel revascularization. Routine simultaneous PCI of non-infarct arteries is not recommended.",
+          "sourceIds": [
+            "aha-acs-2025"
+          ]
+        },
+        {
+          "id": "recovery",
+          "title": "Secondary prevention",
+          "text": "After discharge, referral to cardiac rehabilitation and follow-up lipid assessment are recommended; prevention continues beyond the acute procedure.",
+          "sourceIds": [
+            "aha-acs-2025"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "acute-coronary-syndrome-q1",
+          "stem": "An adult completes PCI for ACS, has no high bleeding risk and no indication for chronic anticoagulation. What is the guideline default antiplatelet plan?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No antiplatelet treatment after discharge"
+            },
+            {
+              "id": "B",
+              "text": "Aspirin plus an oral P2Y12 inhibitor for at least 12 months"
+            },
+            {
+              "id": "C",
+              "text": "Aspirin only for two days in every case"
+            },
+            {
+              "id": "D",
+              "text": "An anticoagulant replaces both in every patient"
+            },
+            {
+              "id": "E",
+              "text": "Routine indefinite triple therapy for all"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "The default is at least 12 months of DAPT when high bleeding risk is absent.",
+          "distractorExplanations": {
+            "A": "ACS needs antiplatelet management.",
+            "C": "That is not the default duration or combination.",
+            "D": "No anticoagulation indication is supplied.",
+            "E": "Triple therapy is not the universal default."
+          },
+          "sectionIds": [
+            "antiplatelet"
+          ],
+          "sourceIds": [
+            "aha-acs-2025"
+          ],
+          "domain": "acute",
+          "learningObjective": "Identify the default ACS antiplatelet strategy and its stated exception.",
+          "difficulty": "application"
+        },
+        {
+          "id": "acute-coronary-syndrome-q2",
+          "stem": "A patient with acute MI develops cardiogenic shock and has a culprit artery plus additional nonculprit stenoses. Which strategy best follows the guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Delay revascularization until an outpatient appointment"
+            },
+            {
+              "id": "B",
+              "text": "Routine immediate PCI of every lesion regardless of culprit status"
+            },
+            {
+              "id": "C",
+              "text": "Emergency culprit-vessel revascularization without routine simultaneous nonculprit PCI"
+            },
+            {
+              "id": "D",
+              "text": "Treat only with dietary counseling"
+            },
+            {
+              "id": "E",
+              "text": "Use cardiac rehabilitation as the acute shock treatment"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Emergency culprit revascularization is indicated; routine simultaneous nonculprit PCI is not.",
+          "distractorExplanations": {
+            "A": "Shock requires urgent care.",
+            "B": "The routine multivessel strategy is not recommended here.",
+            "D": "Counseling does not treat acute shock.",
+            "E": "Rehabilitation is a later prevention measure."
+          },
+          "sectionIds": [
+            "shock"
+          ],
+          "sourceIds": [
+            "aha-acs-2025"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Choose the revascularization focus in ACS with cardiogenic shock.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "heart-failure",
+      "name": "Heart failure",
+      "aliases": [
+        "HFrEF",
+        "HFpEF",
+        "HFmrEF"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "ejection fraction",
+        "GDMT",
+        "SGLT2",
+        "filling pressure"
+      ],
+      "overview": "Study ejection-fraction phenotypes, modern therapy classes and management after recovery.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aha-hf-2022",
+          "title": "Top Things to Know: 2022 Guideline for the Management of Heart Failure",
+          "organization": "American Heart Association",
+          "url": "https://professional.heart.org/en/science-news/2022-guideline-for-the-management-of%20heart-failure/top-things-to-know",
+          "kind": "official-recommendation",
+          "edition": "2022",
+          "publishedDate": "2022-04-01",
+          "checkedAt": "2026-10-09",
+          "locator": "Items 1–4, 7: GDMT including SGLT2 inhibitors; improved LVEF; evidence of elevated filling pressures",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "therapy",
+          "title": "Modern HFrEF therapy",
+          "text": "Guideline-directed HFrEF therapy includes four foundational medication classes, including an SGLT2 inhibitor. Therapy selection also depends on contraindications and tolerability.",
+          "sourceIds": [
+            "aha-hf-2022"
+          ]
+        },
+        {
+          "id": "improved",
+          "title": "Improved EF does not erase history",
+          "text": "Patients with prior HFrEF whose LVEF improves above 40% should continue their HFrEF treatment rather than assume the disease is cured.",
+          "sourceIds": [
+            "aha-hf-2022"
+          ]
+        },
+        {
+          "id": "preserved",
+          "title": "Confirm preserved-EF disease",
+          "text": "When LVEF exceeds 40%, evidence of elevated filling pressures helps confirm heart failure. Natriuretic peptides, imaging and hemodynamic assessment may supply that evidence.",
+          "sourceIds": [
+            "aha-hf-2022"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "heart-failure-q1",
+          "stem": "A patient previously had LVEF 30%. After treatment, LVEF is 52% and symptoms improve. What is the best medication principle?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Stop all HFrEF treatment because EF normalized"
+            },
+            {
+              "id": "B",
+              "text": "Treat EF improvement as proof no heart disease ever existed"
+            },
+            {
+              "id": "C",
+              "text": "Continue only when edema returns"
+            },
+            {
+              "id": "D",
+              "text": "Continue HFrEF treatment if tolerated"
+            },
+            {
+              "id": "E",
+              "text": "Replace medication with supplements"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Improved LVEF after HFrEF is an indication to continue the HFrEF treatment plan.",
+          "distractorExplanations": {
+            "A": "Recovery does not justify blanket withdrawal.",
+            "B": "Prior HFrEF remains relevant.",
+            "C": "Treatment is not limited to episodes of edema.",
+            "E": "Supplements do not replace GDMT."
+          },
+          "sectionIds": [
+            "improved"
+          ],
+          "sourceIds": [
+            "aha-hf-2022"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Maintain treatment after improvement of a previously reduced EF.",
+          "difficulty": "application"
+        },
+        {
+          "id": "heart-failure-q2",
+          "stem": "A patient has unexplained dyspnea and LVEF 60%. Which additional finding supports HFpEF rather than using normal EF alone to make the diagnosis?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Only the absence of a murmur"
+            },
+            {
+              "id": "B",
+              "text": "A normal EF with no further evaluation"
+            },
+            {
+              "id": "C",
+              "text": "Normal shoe size"
+            },
+            {
+              "id": "D",
+              "text": "An isolated dietary preference"
+            },
+            {
+              "id": "E",
+              "text": "Evidence of elevated filling pressures"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "With LVEF >40%, elevated filling-pressure evidence supports a heart-failure diagnosis.",
+          "distractorExplanations": {
+            "A": "That alone does not establish the diagnosis.",
+            "B": "EF alone is insufficient.",
+            "C": "It is not diagnostic evidence.",
+            "D": "It is not diagnostic evidence."
+          },
+          "sectionIds": [
+            "preserved"
+          ],
+          "sourceIds": [
+            "aha-hf-2022"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Require supporting evidence for preserved-EF heart failure.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "atrial-fibrillation",
+      "name": "Atrial fibrillation",
+      "aliases": [
+        "AF",
+        "AFib"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "stroke risk",
+        "anticoagulation",
+        "DOAC"
+      ],
+      "overview": "Study risk-based stroke prevention and anticoagulant exceptions.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "acc-af-2023",
+          "title": "2023 Guideline for Diagnosis and Management of Atrial Fibrillation: Key Perspectives",
+          "organization": "American College of Cardiology",
+          "url": "https://www.acc.org/Latest-in-Cardiology/ten-points-to-remember/2023/11/27/19/46/2023-acc-guideline-for-af-gl-af",
+          "kind": "official-recommendation",
+          "edition": "2023",
+          "publishedDate": "2023-11-27",
+          "checkedAt": "2026-10-09",
+          "locator": "Stroke prevention based on thromboembolic risk; DOAC exceptions; aspirin; lifestyle factors",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "risk",
+          "title": "Stroke risk guides prevention",
+          "text": "Use a validated risk framework for estimated annual thromboembolism risk. At risk ≥2% per year, stroke prevention is based on that risk regardless of AF pattern.",
+          "sourceIds": [
+            "acc-af-2023"
+          ]
+        },
+        {
+          "id": "drug",
+          "title": "Choose the appropriate anticoagulant",
+          "text": "DOACs are preferred over warfarin for eligible patients, except with mechanical valves or mitral stenosis requiring a vitamin K antagonist.",
+          "sourceIds": [
+            "acc-af-2023"
+          ]
+        },
+        {
+          "id": "aspirin",
+          "title": "Aspirin is not a substitute",
+          "text": "In an anticoagulation candidate without another antiplatelet indication, aspirin alone or aspirin plus clopidogrel is not the recommended alternative for AF stroke prevention.",
+          "sourceIds": [
+            "acc-af-2023"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "atrial-fibrillation-q1",
+          "stem": "An adult with AF has an estimated annual thromboembolic risk above 2%, a mechanical mitral valve and no bleeding contraindication. Which anticoagulation option fits the guideline exception?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Warfarin"
+            },
+            {
+              "id": "B",
+              "text": "Apixaban"
+            },
+            {
+              "id": "C",
+              "text": "Rivaroxaban"
+            },
+            {
+              "id": "D",
+              "text": "Dabigatran"
+            },
+            {
+              "id": "E",
+              "text": "Aspirin alone"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "A mechanical valve is an exception to the usual DOAC preference; warfarin is appropriate.",
+          "distractorExplanations": {
+            "B": "A mechanical valve changes the usual DOAC choice.",
+            "C": "A mechanical valve changes the usual DOAC choice.",
+            "D": "A mechanical valve changes the usual DOAC choice.",
+            "E": "Aspirin is not a substitute for indicated anticoagulation."
+          },
+          "sectionIds": [
+            "drug",
+            "aspirin"
+          ],
+          "sourceIds": [
+            "acc-af-2023"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Apply the mechanical-valve exception to DOAC preference.",
+          "difficulty": "application"
+        },
+        {
+          "id": "atrial-fibrillation-q2",
+          "stem": "A patient has paroxysmal AF and validated annual stroke risk above 2%. Renal function permits a DOAC, there is no mechanical valve or significant mitral stenosis, and there is no other antiplatelet indication. Which strategy best follows the guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Use aspirin alone because episodes are intermittent"
+            },
+            {
+              "id": "B",
+              "text": "Use an appropriate DOAC after shared decision-making"
+            },
+            {
+              "id": "C",
+              "text": "Prevent stroke only during symptomatic episodes"
+            },
+            {
+              "id": "D",
+              "text": "Use aspirin plus clopidogrel instead of anticoagulation"
+            },
+            {
+              "id": "E",
+              "text": "Ignore stroke risk if the office pulse is regular"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Stroke prevention follows thromboembolic risk regardless of AF pattern; eligible patients generally favor a DOAC.",
+          "distractorExplanations": {
+            "A": "AF pattern does not eliminate the risk-based indication.",
+            "C": "That is not the recommended risk-based strategy.",
+            "D": "Dual antiplatelets are not the recommended substitute.",
+            "E": "A regular office pulse does not erase AF stroke risk."
+          },
+          "sectionIds": [
+            "risk",
+            "drug",
+            "aspirin"
+          ],
+          "sourceIds": [
+            "acc-af-2023"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Base AF stroke prevention on risk rather than episode pattern.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "deep-vein-thrombosis",
+      "name": "Deep vein thrombosis",
+      "aliases": [
+        "DVT"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "acute",
+      "keywords": [
+        "pretest probability",
+        "D-dimer",
+        "ultrasound",
+        "anticoagulation"
+      ],
+      "overview": "Study probability-directed diagnosis and initial management of uncomplicated lower-extremity DVT.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "ash-dvt-diagnosis",
+          "title": "Diagnosis of Venous Thromboembolism: An Educational Slide Set",
+          "organization": "American Society of Hematology",
+          "url": "https://www.hematology.org/-/media/hematology/files/clinicians/guidelines/vte/ash-teaching-slide-setvtediagnosispdffinal71923.pdf",
+          "kind": "official-recommendation",
+          "edition": "2018 guidelines; 2023 teaching slide file",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Lower-extremity DVT diagnostic strategies: pretest probability, D-dimer and ultrasound; avoid positive D-dimer as diagnosis",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "ash-dvt-treatment",
+          "title": "Treatment of Deep Vein Thrombosis and Pulmonary Embolism: An Educational Slide Set",
+          "organization": "American Society of Hematology",
+          "url": "https://www.hematology.org/education/clinicians/guidelines-and-quality-care/clinical-practice-guidelines/-/media/3bf8a3b4e2f14571b81649863cec03ae.ashx",
+          "kind": "official-recommendation",
+          "edition": "2020 guidelines",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Initial anticoagulation; outpatient uncomplicated DVT; anticoagulation preferred over thrombolysis for most proximal DVT",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Start with probability",
+          "text": "Clinical pretest probability determines the diagnostic pathway. In low-probability suspected DVT, a negative high-sensitivity D-dimer can exclude DVT; otherwise ultrasound may be needed.",
+          "sourceIds": [
+            "ash-dvt-diagnosis"
+          ]
+        },
+        {
+          "id": "positive",
+          "title": "A positive D-dimer is not confirmation",
+          "text": "Do not diagnose DVT from a positive D-dimer alone. Imaging confirms the diagnosis in the appropriate pathway.",
+          "sourceIds": [
+            "ash-dvt-diagnosis"
+          ]
+        },
+        {
+          "id": "treatment",
+          "title": "Most proximal DVT uses anticoagulation",
+          "text": "Most uncomplicated proximal DVT is treated with anticoagulation rather than routine thrombolysis. Suitable uncomplicated patients may receive outpatient treatment with appropriate support.",
+          "sourceIds": [
+            "ash-dvt-treatment"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "deep-vein-thrombosis-q1",
+          "stem": "An ambulatory adult has low clinical pretest probability for a first lower-extremity DVT and a negative high-sensitivity D-dimer in an appropriate diagnostic pathway. What is the best interpretation?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "DVT is confirmed"
+            },
+            {
+              "id": "B",
+              "text": "All patients require catheter venography"
+            },
+            {
+              "id": "C",
+              "text": "DVT can be excluded without additional testing in this pathway"
+            },
+            {
+              "id": "D",
+              "text": "Start thrombolysis solely from calf discomfort"
+            },
+            {
+              "id": "E",
+              "text": "A negative result confirms PE"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "In a low-probability pathway, a negative high-sensitivity D-dimer can rule out DVT.",
+          "distractorExplanations": {
+            "A": "A negative result does not confirm DVT.",
+            "B": "That is not required in this pathway.",
+            "D": "There is no confirmed clot or indication for thrombolysis.",
+            "E": "It does not confirm another clot diagnosis."
+          },
+          "sectionIds": [
+            "diagnosis"
+          ],
+          "sourceIds": [
+            "ash-dvt-diagnosis"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply a low-probability DVT rule-out strategy.",
+          "difficulty": "application"
+        },
+        {
+          "id": "deep-vein-thrombosis-q2",
+          "stem": "Ultrasound confirms a first proximal leg DVT in a stable adult with mild symptoms, no limb threat and no anticoagulation contraindication. Which initial strategy is best?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Routine systemic thrombolysis for every proximal clot"
+            },
+            {
+              "id": "B",
+              "text": "No treatment unless PE occurs"
+            },
+            {
+              "id": "C",
+              "text": "Aspirin alone as definitive treatment"
+            },
+            {
+              "id": "D",
+              "text": "Anticoagulation rather than routine thrombolysis"
+            },
+            {
+              "id": "E",
+              "text": "Place an IVC filter in every case"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Anticoagulation is preferred over routine thrombolysis for most uncomplicated proximal DVT.",
+          "distractorExplanations": {
+            "A": "The vignette lacks a reason for routine thrombolysis.",
+            "B": "Confirmed proximal DVT needs treatment.",
+            "C": "Aspirin is not the indicated initial strategy.",
+            "E": "The vignette does not justify routine filter placement."
+          },
+          "sectionIds": [
+            "treatment"
+          ],
+          "sourceIds": [
+            "ash-dvt-treatment"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select standard initial therapy for uncomplicated proximal DVT.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "pulmonary-embolism",
+      "name": "Pulmonary embolism",
+      "aliases": [
+        "PE"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "emergent",
+      "keywords": [
+        "risk category",
+        "right ventricle",
+        "DOAC",
+        "anticoagulation"
+      ],
+      "overview": "Study the 2026 PE severity framework, appropriate disposition and longer-term anticoagulation.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aha-pe-2026",
+          "title": "Top Things to Know: 2026 Guideline for the Evaluation and Management of Acute Pulmonary Embolism in Adults",
+          "organization": "American Heart Association",
+          "url": "https://professional.heart.org/en/science-news/2026-guideline-for-the-evaluation-and-management-of-acute-pulmonary-embolism-in-adults/top-things-to-know",
+          "kind": "official-recommendation",
+          "edition": "2026",
+          "publishedDate": "2026-02-19",
+          "checkedAt": "2026-10-09",
+          "locator": "Items 1–5: severity categories and hospitalization; item 8: oral anticoagulation; items 9–10: extended treatment and follow-up",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "severity",
+          "title": "Assess severity rather than clot alone",
+          "text": "The 2026 AHA/ACC scheme spans categories A–E. Symptoms plus right-ventricular dysfunction or elevated biomarkers, incipient failure, or persistent hypotension warrant hospitalization.",
+          "sourceIds": [
+            "aha-pe-2026"
+          ]
+        },
+        {
+          "id": "anticoagulation",
+          "title": "Oral anticoagulant selection",
+          "text": "For patients eligible for oral anticoagulation, a DOAC is recommended over a vitamin K antagonist unless contraindicated.",
+          "sourceIds": [
+            "aha-pe-2026"
+          ]
+        },
+        {
+          "id": "follow-up",
+          "title": "Extended treatment and recovery",
+          "text": "Without a major reversible risk factor, or with a persistent risk factor, continued anticoagulation beyond the initial 3–6 months is recommended. Review symptoms and functional limitations for at least one year.",
+          "sourceIds": [
+            "aha-pe-2026"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "pulmonary-embolism-q1",
+          "stem": "An adult has confirmed acute PE, dyspnea and right-ventricular dysfunction despite normal blood pressure. Which disposition best follows the 2026 severity guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Discharge automatically because BP is normal"
+            },
+            {
+              "id": "B",
+              "text": "Delay all treatment until a monthly visit"
+            },
+            {
+              "id": "C",
+              "text": "Treat as a category A asymptomatic PE"
+            },
+            {
+              "id": "D",
+              "text": "Ignore right-ventricular findings"
+            },
+            {
+              "id": "E",
+              "text": "Hospitalize to optimize management"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Symptomatic PE with right-ventricular dysfunction belongs to a category requiring hospitalization.",
+          "distractorExplanations": {
+            "A": "Normal BP does not eliminate elevated severity.",
+            "B": "This delays necessary management.",
+            "C": "The patient is symptomatic with RV dysfunction.",
+            "D": "RV findings contribute to severity classification."
+          },
+          "sectionIds": [
+            "severity"
+          ],
+          "sourceIds": [
+            "aha-pe-2026"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Identify PE severity requiring hospitalization despite normotension.",
+          "difficulty": "application"
+        },
+        {
+          "id": "pulmonary-embolism-q2",
+          "stem": "A patient finishes initial anticoagulation for a first PE with no major reversible provoking factor. Bleeding assessment permits continued treatment. Which recommendation best fits the 2026 guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Continue anticoagulation into an extended phase after individualized discussion"
+            },
+            {
+              "id": "B",
+              "text": "Automatically stop at one month"
+            },
+            {
+              "id": "C",
+              "text": "Use aspirin as a universal replacement"
+            },
+            {
+              "id": "D",
+              "text": "Stop solely because symptoms resolved"
+            },
+            {
+              "id": "E",
+              "text": "Repeat only a chest radiograph instead of prevention"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Without a major reversible risk factor, extended anticoagulation is recommended after the initial phase.",
+          "distractorExplanations": {
+            "B": "That is shorter than the initial treatment phase.",
+            "C": "It is not the stated replacement strategy.",
+            "D": "Symptom resolution does not establish low recurrence risk.",
+            "E": "A radiograph does not replace recurrence prevention."
+          },
+          "sectionIds": [
+            "follow-up"
+          ],
+          "sourceIds": [
+            "aha-pe-2026"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize a setting favoring extended PE anticoagulation.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "chronic-kidney-disease",
+      "name": "Chronic kidney disease",
+      "aliases": [
+        "CKD"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "eGFR",
+        "albuminuria",
+        "ACR",
+        "SGLT2"
+      ],
+      "overview": "Study kidney damage/chronicity and kidney-protective therapy under international KDIGO recommendations.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "kdigo-ckd-2024",
+          "title": "KDIGO 2024 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease",
+          "organization": "Kidney Disease: Improving Global Outcomes (international)",
+          "url": "https://kdigo.org/wp-content/uploads/2026/04/KDIGO-2024-CKD-Guideline.pdf",
+          "kind": "clinical-guideline",
+          "edition": "2024",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Practice points 1.1.1.1 and 1.1.3.1–2: GFR, ACR and chronicity; recommendations 3.7.1–2: SGLT2 inhibitors",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Demonstrate chronicity",
+          "text": "CKD requires persistent kidney-function or structural abnormalities for at least three months. One low eGFR during acute illness is insufficient to establish chronic disease.",
+          "sourceIds": [
+            "kdigo-ckd-2024"
+          ]
+        },
+        {
+          "id": "staging",
+          "title": "Use GFR and albuminuria",
+          "text": "Assess both eGFR and urine albumin-to-creatinine ratio; they provide complementary information for staging and progression risk.",
+          "sourceIds": [
+            "kdigo-ckd-2024"
+          ]
+        },
+        {
+          "id": "protection",
+          "title": "Kidney-protective therapy",
+          "text": "KDIGO recommends an SGLT2 inhibitor for type 2 diabetes with CKD and eGFR ≥20, and for eligible adults with CKD, eGFR ≥20 and ACR ≥200 mg/g or heart failure.",
+          "sourceIds": [
+            "kdigo-ckd-2024"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "chronic-kidney-disease-q1",
+          "stem": "During an acute gastroenteritis episode, an adult has a first eGFR of 48. No prior renal records or chronic structural findings exist. What is the best interpretation?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "CKD is established from this one value"
+            },
+            {
+              "id": "B",
+              "text": "Assess the acute cause and seek evidence of persistence/chronicity"
+            },
+            {
+              "id": "C",
+              "text": "This excludes any acute kidney problem"
+            },
+            {
+              "id": "D",
+              "text": "Classify permanent kidney failure immediately"
+            },
+            {
+              "id": "E",
+              "text": "Albuminuria testing is never useful"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "A single low eGFR during acute illness does not establish the required chronicity.",
+          "distractorExplanations": {
+            "A": "Persistence or other chronic evidence is needed.",
+            "C": "An acute cause remains possible.",
+            "D": "The isolated value does not establish permanence.",
+            "E": "ACR contributes to kidney assessment."
+          },
+          "sectionIds": [
+            "diagnosis",
+            "staging"
+          ],
+          "sourceIds": [
+            "kdigo-ckd-2024"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Avoid diagnosing CKD from an isolated acute eGFR decrease.",
+          "difficulty": "application"
+        },
+        {
+          "id": "chronic-kidney-disease-q2",
+          "stem": "A stable adult with type 2 diabetes has CKD, eGFR 38 and no contraindication to SGLT2 therapy. Which class is recommended for kidney protection?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "An antibiotic without infection"
+            },
+            {
+              "id": "B",
+              "text": "A benzodiazepine"
+            },
+            {
+              "id": "C",
+              "text": "SGLT2 inhibitor"
+            },
+            {
+              "id": "D",
+              "text": "A thyroid suppressant without thyroid disease"
+            },
+            {
+              "id": "E",
+              "text": "No kidney-protective consideration until dialysis"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "KDIGO recommends an SGLT2 inhibitor for type 2 diabetes with CKD at eGFR ≥20.",
+          "distractorExplanations": {
+            "A": "There is no infection indication.",
+            "B": "It is not the kidney-protective class.",
+            "D": "It is not the kidney-protective class.",
+            "E": "Kidney-protective treatment precedes dialysis."
+          },
+          "sectionIds": [
+            "protection"
+          ],
+          "sourceIds": [
+            "kdigo-ckd-2024"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Apply the CKD SGLT2 recommendation at an eligible eGFR.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "acute-kidney-injury",
+      "name": "Acute kidney injury",
+      "aliases": [
+        "AKI",
+        "acute renal injury"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "acute",
+      "keywords": [
+        "creatinine",
+        "urine output",
+        "renal replacement"
+      ],
+      "overview": "Study established KDIGO AKI definitions and urgent complications; the 2026 review draft is not treated as final guidance.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "kdigo-aki-2012",
+          "title": "KDIGO Clinical Practice Guideline for Acute Kidney Injury",
+          "organization": "Kidney Disease: Improving Global Outcomes (international)",
+          "url": "https://kdigo.org/wp-content/uploads/2019/01/KDIGO-2012-AKI-Guideline-English.pdf",
+          "kind": "clinical-guideline",
+          "edition": "2012 final",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Recommendations 2.1.1, 2.3.1, 2.3.2, 5.1.1–2: diagnosis, cause assessment, monitoring and emergency renal replacement",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "definition",
+          "title": "Recognize an acute change",
+          "text": "KDIGO AKI criteria include a creatinine rise ≥0.3 mg/dL within 48 hours, ≥1.5 times baseline within seven days, or urine output <0.5 mL/kg/hour for six hours.",
+          "sourceIds": [
+            "kdigo-aki-2012"
+          ]
+        },
+        {
+          "id": "cause",
+          "title": "Assess cause and trend",
+          "text": "Evaluate the cause promptly, including reversible contributors, and monitor creatinine and urine output; the clinical context matters beyond a single laboratory value.",
+          "sourceIds": [
+            "kdigo-aki-2012"
+          ]
+        },
+        {
+          "id": "emergency",
+          "title": "Renal replacement for complications",
+          "text": "Life-threatening fluid, electrolyte or acid-base abnormalities can require emergency renal replacement. Do not use an isolated BUN or creatinine threshold as the only trigger.",
+          "sourceIds": [
+            "kdigo-aki-2012"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "acute-kidney-injury-q1",
+          "stem": "A hospitalized adult’s creatinine increases from 0.9 to 1.3 mg/dL in 36 hours. What is the best classification principle?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No AKI because creatinine is below 2"
+            },
+            {
+              "id": "B",
+              "text": "CKD is proven solely by this change"
+            },
+            {
+              "id": "C",
+              "text": "AKI always requires anuria"
+            },
+            {
+              "id": "D",
+              "text": "This meets the acute creatinine-rise criterion for AKI"
+            },
+            {
+              "id": "E",
+              "text": "The increase can be ignored"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "A 0.4-mg/dL rise within 48 hours exceeds the ≥0.3 AKI criterion.",
+          "distractorExplanations": {
+            "A": "The change criterion is not a fixed creatinine cutoff.",
+            "B": "This is acute rather than proof of chronicity.",
+            "C": "Creatinine or urine-output criteria can establish AKI.",
+            "E": "The acute rise warrants evaluation."
+          },
+          "sectionIds": [
+            "definition"
+          ],
+          "sourceIds": [
+            "kdigo-aki-2012"
+          ],
+          "domain": "acute",
+          "learningObjective": "Identify AKI from the timing and magnitude of creatinine change.",
+          "difficulty": "application"
+        },
+        {
+          "id": "acute-kidney-injury-q2",
+          "stem": "A patient with AKI has refractory life-threatening electrolyte and acid-base abnormalities despite initial treatment. What best guides urgent renal replacement?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Wait for creatinine to exceed a universal number"
+            },
+            {
+              "id": "B",
+              "text": "Wait until the next clinic visit"
+            },
+            {
+              "id": "C",
+              "text": "Use only the BUN value regardless of symptoms"
+            },
+            {
+              "id": "D",
+              "text": "Never provide renal replacement during acute illness"
+            },
+            {
+              "id": "E",
+              "text": "The life-threatening complications and overall clinical context"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Emergency renal replacement is guided by dangerous fluid, electrolyte or acid-base complications and context.",
+          "distractorExplanations": {
+            "A": "A single threshold is not the sole trigger.",
+            "B": "The complications are urgent.",
+            "C": "BUN alone is not the recommended decision rule.",
+            "D": "Acute complications may require renal replacement."
+          },
+          "sectionIds": [
+            "emergency"
+          ],
+          "sourceIds": [
+            "kdigo-aki-2012"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Use complications rather than an isolated laboratory cutoff for emergency renal replacement.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "nephrolithiasis",
+      "name": "Nephrolithiasis",
+      "aliases": [
+        "kidney stones",
+        "renal calculi"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "acute",
+      "keywords": [
+        "flank pain",
+        "obstruction",
+        "stone prevention",
+        "24-hour urine"
+      ],
+      "overview": "Study stone evaluation, obstruction-related urgency and individualized recurrence prevention from federal references.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "niddk-stones-diagnosis",
+          "title": "Diagnosis of Kidney Stones",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones/diagnosis",
+          "kind": "official-clinical-reference",
+          "edition": "Last Reviewed May 2017",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Lab tests and imaging tests",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "niddk-stones-treatment",
+          "title": "Treatment for Kidney Stones",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones/treatment",
+          "kind": "official-clinical-reference",
+          "edition": "Last Reviewed May 2017",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Treatment based on size and blockage; collected stone/24-hour urine; drinking liquids and prevention",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cari-stone-nutrition-2025",
+          "title": "Nutrition therapy for the prevention of kidney stones",
+          "organization": "CARI Guidelines; Australia and New Zealand",
+          "url": "https://www.cariguidelines.org/guidelines/kidney-stones/nutrition-therapy-for-the-prevention-of-kidney-stones/",
+          "kind": "clinical-guideline",
+          "edition": "Date written October 2025; adult Australia–New Zealand guideline",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Fluid intake recommendation a; volume-overload tailoring practice point; calcium recommendation c",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Confirm and look for obstruction",
+          "text": "Urine and blood testing plus appropriate imaging help identify stones and urinary blockage; symptoms alone do not determine stone size or location.",
+          "sourceIds": [
+            "niddk-stones-diagnosis"
+          ]
+        },
+        {
+          "id": "urgency",
+          "title": "Recognize need for urgent treatment",
+          "text": "Large stones, urinary obstruction or severe pain can require urgent treatment rather than waiting for spontaneous passage.",
+          "sourceIds": [
+            "niddk-stones-treatment"
+          ]
+        },
+        {
+          "id": "prevention",
+          "title": "Use stone-specific prevention",
+          "text": "Recovered stone analysis and selected 24-hour urine testing can guide recurrence prevention. Adequate liquids generally reduce risk, adjusted for comorbid fluid restrictions.",
+          "sourceIds": [
+            "niddk-stones-treatment"
+          ]
+        },
+        {
+          "id": "nutrition",
+          "title": "Supplementary adult stone-prevention guideline",
+          "text": "Australia–New Zealand CARI guidance targets urine output ≥2.5 L/day with individualized fluid intake. Maintain normal dietary calcium for calcium stones; carefully tailor fluids when volume overload is possible.",
+          "sourceIds": [
+            "cari-stone-nutrition-2025"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "nephrolithiasis-q1",
+          "stem": "An adult with flank pain has imaging-confirmed urinary obstruction from a large stone and severe uncontrolled pain. Which plan best fits the federal treatment reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Urgent urologic assessment for treatment"
+            },
+            {
+              "id": "B",
+              "text": "Assume every stone passes safely without assessment"
+            },
+            {
+              "id": "C",
+              "text": "Wait six months regardless of pain"
+            },
+            {
+              "id": "D",
+              "text": "Treat only with a dietary supplement"
+            },
+            {
+              "id": "E",
+              "text": "Avoid evaluating obstruction"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Obstruction and severe pain are reasons stones may need urgent intervention.",
+          "distractorExplanations": {
+            "B": "Size and obstruction affect treatment.",
+            "C": "The current findings warrant timely care.",
+            "D": "A supplement does not address obstruction.",
+            "E": "Obstruction is a key treatment factor."
+          },
+          "sectionIds": [
+            "urgency"
+          ],
+          "sourceIds": [
+            "niddk-stones-treatment"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize stone findings requiring urgent treatment assessment.",
+          "difficulty": "application"
+        },
+        {
+          "id": "nephrolithiasis-q2",
+          "stem": "An adult with recurrent calcium stones has no fluid restriction. When studying supplementary Australia–New Zealand CARI guidance, which fluid goal is recommended?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Stop drinking water after symptoms resolve"
+            },
+            {
+              "id": "B",
+              "text": "Individualize intake to achieve at least 2.5 L urine daily"
+            },
+            {
+              "id": "C",
+              "text": "Use the same fluid amount regardless of comorbidities"
+            },
+            {
+              "id": "D",
+              "text": "Aim for progressively more concentrated urine"
+            },
+            {
+              "id": "E",
+              "text": "Rely on calcium elimination instead of fluid planning"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "CARI targets at least 2.5 L daily urine output; fluid advice is individualized, especially with volume-overload risk.",
+          "distractorExplanations": {
+            "A": "Recurrence prevention continues after symptoms resolve.",
+            "C": "Comorbidities affect safe fluid planning.",
+            "D": "Fluid intake aims to dilute urine.",
+            "E": "CARI supports normal dietary calcium for calcium stones."
+          },
+          "sectionIds": [
+            "nutrition"
+          ],
+          "sourceIds": [
+            "cari-stone-nutrition-2025"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply a supplementary adult urine-volume goal without imposing it on fluid-restricted patients.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "uncomplicated-cystitis",
+      "name": "Uncomplicated cystitis",
+      "aliases": [
+        "bladder infection",
+        "lower UTI"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "acute",
+      "keywords": [
+        "dysuria",
+        "urinalysis",
+        "urine culture",
+        "antibiotic stewardship"
+      ],
+      "overview": "Study lower urinary infection evaluation and stewardship; this reference-based module deliberately omits an empiric antibiotic dosing table.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "niddk-cystitis-diagnosis",
+          "title": "Diagnosis of Bladder Infection in Adults",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/diagnosis",
+          "kind": "official-clinical-reference",
+          "edition": "unknown",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "History, physical examination, urinalysis and urine culture",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "niddk-cystitis-treatment",
+          "title": "Treatment for Bladder Infection in Adults",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/treatment",
+          "kind": "official-clinical-reference",
+          "edition": "unknown",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Medicines; unconfirmed diagnosis and avoiding unnecessary antibiotics; complicated bladder infections",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-adult-cystitis-2024",
+          "title": "Outpatient Clinical Care for Adults",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/adult-outpatient.html",
+          "kind": "official-recommendation",
+          "edition": "April 16, 2024",
+          "publishedDate": "2024-04-16",
+          "checkedAt": "2026-10-09",
+          "locator": "Acute uncomplicated cystitis: healthy adult nonpregnant premenopausal women; first-line agents and fluoroquinolone reservation",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Evaluate a lower urinary syndrome",
+          "text": "Use history, examination and urine testing to assess suspected bladder infection. Urinalysis can show inflammatory findings; culture identifies bacteria and can inform treatment.",
+          "sourceIds": [
+            "niddk-cystitis-diagnosis"
+          ]
+        },
+        {
+          "id": "treatment",
+          "title": "Use antibiotic information appropriately",
+          "text": "When bacterial bladder infection is supported, antibiotic choice considers the organism and drug allergies. If the diagnosis is unconfirmed, evaluate alternatives rather than assuming antibiotics are always needed.",
+          "sourceIds": [
+            "niddk-cystitis-treatment"
+          ]
+        },
+        {
+          "id": "escalation",
+          "title": "Recognize upper-tract illness",
+          "text": "Progression to kidney infection changes assessment and treatment; severe illness can require intravenous antibiotics and hospital-level care.",
+          "sourceIds": [
+            "niddk-cystitis-treatment"
+          ]
+        },
+        {
+          "id": "first-line",
+          "title": "Use scoped federal antibiotic recommendations",
+          "text": "For healthy nonpregnant premenopausal adults with uncomplicated cystitis, CDC lists nitrofurantoin, fosfomycin and TMP-SMX when local resistance is <20% as first-line options. Reserve fluoroquinolones when other agents are unsuitable.",
+          "sourceIds": [
+            "cdc-adult-cystitis-2024"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "uncomplicated-cystitis-q1",
+          "stem": "A 28-year-old nonpregnant woman has culture-confirmed cystitis. The organism is resistant to her empiric antibiotic. Which plan best supports the next antibiotic selection?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Continue the initial drug regardless of resistance"
+            },
+            {
+              "id": "B",
+              "text": "Assume every antibiotic has identical activity"
+            },
+            {
+              "id": "C",
+              "text": "Use susceptibility results and the drug-allergy history"
+            },
+            {
+              "id": "D",
+              "text": "Choose a drug that caused a previous serious allergy"
+            },
+            {
+              "id": "E",
+              "text": "Avoid antibiotics in every confirmed bacterial bladder infection"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Organism susceptibility and allergy history guide an effective, suitable antibiotic.",
+          "distractorExplanations": {
+            "A": "Resistance is a reason to reassess selection.",
+            "B": "Susceptibility results distinguish antibiotic activity.",
+            "D": "The allergy history must affect selection.",
+            "E": "Confirmed bacterial infection may warrant antibiotics."
+          },
+          "sectionIds": [
+            "diagnosis",
+            "treatment"
+          ],
+          "sourceIds": [
+            "niddk-cystitis-diagnosis",
+            "niddk-cystitis-treatment"
+          ],
+          "domain": "acute",
+          "learningObjective": "Use susceptibility and allergy information to select targeted cystitis treatment.",
+          "difficulty": "application"
+        },
+        {
+          "id": "uncomplicated-cystitis-q2",
+          "stem": "A healthy 27-year-old nonpregnant woman has uncomplicated cystitis, normal kidney function and no drug allergies. Which plan matches CDC first-line recommendations?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Choose a fluoroquinolone routinely before suitable alternatives"
+            },
+            {
+              "id": "B",
+              "text": "Avoid all antibiotics despite confirmed bacterial infection"
+            },
+            {
+              "id": "C",
+              "text": "Choose TMP-SMX regardless of local resistance"
+            },
+            {
+              "id": "D",
+              "text": "Use an appropriate first-line agent such as nitrofurantoin"
+            },
+            {
+              "id": "E",
+              "text": "Treat every case as a hospitalized kidney infection"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Nitrofurantoin is a first-line option within this population; fluoroquinolones are reserved when other agents are unsuitable.",
+          "distractorExplanations": {
+            "A": "CDC reserves fluoroquinolones when alternatives are unsuitable.",
+            "B": "Confirmed bacterial infection warrants appropriate treatment.",
+            "C": "CDC conditions TMP-SMX use on local resistance <20%.",
+            "E": "The vignette describes uncomplicated lower-tract infection."
+          },
+          "sectionIds": [
+            "first-line"
+          ],
+          "sourceIds": [
+            "cdc-adult-cystitis-2024"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply federal first-line cystitis recommendations within the defined adult population.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "pyelonephritis",
+      "name": "Pyelonephritis",
+      "aliases": [
+        "kidney infection",
+        "upper UTI"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "acute",
+      "keywords": [
+        "urine culture",
+        "antibiotics",
+        "obstruction",
+        "severe infection"
+      ],
+      "overview": "Study upper urinary infection culture-guided treatment and complications using independent federal references.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "niddk-pyelo-diagnosis",
+          "title": "Diagnosis of Kidney Infection (Pyelonephritis)",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis/diagnosis",
+          "kind": "official-clinical-reference",
+          "edition": "unknown",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Urinalysis; urine culture; blood tests; imaging for abnormalities and obstruction",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "niddk-pyelo-treatment",
+          "title": "Treatment for Kidney Infection (Pyelonephritis)",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis/treatment",
+          "kind": "official-clinical-reference",
+          "edition": "unknown",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Antibiotics selected and adjusted by laboratory results; hospital treatment for severe illness; structural obstruction",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-uti-clinical-2026",
+          "title": "Clinical Overview of Urinary Tract Infections",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/uti/hcp/clinical-overview/index.html",
+          "kind": "official-recommendation",
+          "edition": "July 16, 2026",
+          "publishedDate": "2026-07-16",
+          "checkedAt": "2026-10-09",
+          "locator": "Definition of complicated UTI including pyelonephritis; Patient management and close monitoring for treatment failure",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "testing",
+          "title": "Assess infection and kidney function",
+          "text": "Urinalysis and urine culture support diagnosis; culture identifies bacteria. Blood tests assess serious infection and kidney function, and imaging may identify structural problems.",
+          "sourceIds": [
+            "niddk-pyelo-diagnosis"
+          ]
+        },
+        {
+          "id": "treatment",
+          "title": "Adjust antibiotics to results",
+          "text": "Antibiotics are started for kidney infection and may be changed when laboratory results identify the organism. Severe illness may require hospitalization and intravenous treatment.",
+          "sourceIds": [
+            "niddk-pyelo-treatment"
+          ]
+        },
+        {
+          "id": "obstruction",
+          "title": "Address structural contributors",
+          "text": "A urinary blockage or structural problem may need procedural correction in addition to antibiotics; antibiotic treatment alone does not remove a mechanical obstruction.",
+          "sourceIds": [
+            "niddk-pyelo-treatment"
+          ]
+        },
+        {
+          "id": "follow-up",
+          "title": "Monitor complicated infection response",
+          "text": "CDC includes pyelonephritis among complicated UTIs and recommends close monitoring for treatment failure. Presentation may require hospitalization; antimicrobial susceptibility patterns affect treatment planning.",
+          "sourceIds": [
+            "cdc-uti-clinical-2026"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "pyelonephritis-q1",
+          "stem": "An adult is treated for pyelonephritis. The urine culture later identifies an organism resistant to the initial drug. What is the best next principle?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Continue the inactive drug because treatment already began"
+            },
+            {
+              "id": "B",
+              "text": "Stop reviewing all microbiology"
+            },
+            {
+              "id": "C",
+              "text": "Replace antibiotics with exercise"
+            },
+            {
+              "id": "D",
+              "text": "Assume cultures never affect treatment"
+            },
+            {
+              "id": "E",
+              "text": "Change to an effective antibiotic guided by laboratory results"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Laboratory identification and susceptibility results can require antibiotic adjustment.",
+          "distractorExplanations": {
+            "A": "Resistance makes reassessment necessary.",
+            "B": "Results should inform treatment.",
+            "C": "Exercise does not replace infection treatment.",
+            "D": "Cultures can change treatment selection."
+          },
+          "sectionIds": [
+            "testing",
+            "treatment"
+          ],
+          "sourceIds": [
+            "niddk-pyelo-diagnosis",
+            "niddk-pyelo-treatment"
+          ],
+          "domain": "acute",
+          "learningObjective": "Adjust pyelonephritis therapy using culture results.",
+          "difficulty": "application"
+        },
+        {
+          "id": "pyelonephritis-q2",
+          "stem": "A patient with kidney infection has a urinary blockage identified on imaging. Which plan best addresses both problems?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Evaluate and correct the blockage while treating the infection"
+            },
+            {
+              "id": "B",
+              "text": "Antibiotics alone always remove the blockage"
+            },
+            {
+              "id": "C",
+              "text": "Ignore imaging once antibiotics begin"
+            },
+            {
+              "id": "D",
+              "text": "Treat only the blockage and ignore infection"
+            },
+            {
+              "id": "E",
+              "text": "Defer assessment for a year"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Obstruction may require procedural treatment in addition to antibiotics.",
+          "distractorExplanations": {
+            "B": "Antibiotics do not mechanically remove obstruction.",
+            "C": "Structural findings affect treatment.",
+            "D": "Both infection and obstruction need attention.",
+            "E": "The identified complication needs timely care."
+          },
+          "sectionIds": [
+            "obstruction"
+          ],
+          "sourceIds": [
+            "niddk-pyelo-treatment"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize the need to address obstruction with upper urinary infection.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "benign-prostatic-hyperplasia",
+      "name": "Benign prostatic hyperplasia",
+      "aliases": [
+        "BPH",
+        "enlarged prostate",
+        "LUTS"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "lower urinary symptoms",
+        "alpha blocker",
+        "5-alpha reductase"
+      ],
+      "overview": "Study evaluation and medication mechanisms from a federal reference; current AUA2026 recommendations remain a separately identified rights/access gap.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "niddk-bph",
+          "title": "Enlarged Prostate (Benign Prostatic Hyperplasia)",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/prostate-problems/enlarged-prostate-benign-prostatic-hyperplasia",
+          "kind": "official-clinical-reference",
+          "edition": "Last Reviewed June 2024",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Diagnosis; watchful waiting; alpha blockers and 5-alpha reductase inhibitors; treatment escalation",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "assessment",
+          "title": "Evaluate symptoms and alternatives",
+          "text": "History, examination and urine testing help assess lower urinary tract symptoms. Review medication contributors and how symptoms affect quality of life.",
+          "sourceIds": [
+            "niddk-bph"
+          ]
+        },
+        {
+          "id": "watchful",
+          "title": "Mild unbothersome symptoms",
+          "text": "Watchful waiting with follow-up can be appropriate when enlargement and symptoms do not meaningfully affect quality of life.",
+          "sourceIds": [
+            "niddk-bph"
+          ]
+        },
+        {
+          "id": "medications",
+          "title": "Distinguish drug mechanisms",
+          "text": "Alpha blockers relax bladder-neck/prostate smooth muscle; 5-alpha reductase inhibitors reduce prostate growth or size. Combination therapy may benefit selected patients.",
+          "sourceIds": [
+            "niddk-bph"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "benign-prostatic-hyperplasia-q1",
+          "stem": "An older adult has mild BPH symptoms that do not affect quality of life, with no identified complication. Which option is reasonable?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Immediate prostate surgery for everyone"
+            },
+            {
+              "id": "B",
+              "text": "Watchful waiting with follow-up"
+            },
+            {
+              "id": "C",
+              "text": "Indefinite antibiotics without infection"
+            },
+            {
+              "id": "D",
+              "text": "Chemotherapy as the default"
+            },
+            {
+              "id": "E",
+              "text": "Ignore symptoms permanently with no reassessment"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Watchful waiting is an option for mild, unbothersome symptoms.",
+          "distractorExplanations": {
+            "A": "The vignette does not require immediate surgery.",
+            "C": "No infection is identified.",
+            "D": "BPH is not an indication for default chemotherapy.",
+            "E": "Watchful waiting includes follow-up."
+          },
+          "sectionIds": [
+            "watchful"
+          ],
+          "sourceIds": [
+            "niddk-bph"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Choose observation for mild unbothersome BPH symptoms.",
+          "difficulty": "application"
+        },
+        {
+          "id": "benign-prostatic-hyperplasia-q2",
+          "stem": "A patient discusses BPH medication options. Which class primarily relaxes bladder-neck and prostate smooth muscle rather than shrinking prostate tissue?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "5-alpha reductase inhibitor"
+            },
+            {
+              "id": "B",
+              "text": "Antibiotic"
+            },
+            {
+              "id": "C",
+              "text": "Alpha blocker"
+            },
+            {
+              "id": "D",
+              "text": "Thyroid hormone"
+            },
+            {
+              "id": "E",
+              "text": "Urate-lowering therapy"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Alpha blockers facilitate urine flow through smooth-muscle relaxation.",
+          "distractorExplanations": {
+            "A": "This class targets growth/size through a different mechanism.",
+            "B": "It does not supply the stated BPH mechanism.",
+            "D": "It does not supply the stated BPH mechanism.",
+            "E": "It does not supply the stated BPH mechanism."
+          },
+          "sectionIds": [
+            "medications"
+          ],
+          "sourceIds": [
+            "niddk-bph"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Distinguish alpha-blocker and 5-alpha reductase inhibitor mechanisms.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "gout",
+      "name": "Gout",
+      "aliases": [
+        "gouty arthritis"
+      ],
+      "specialty": "Cardiometabolic and renal",
+      "domain": "chronic",
+      "keywords": [
+        "urate",
+        "allopurinol",
+        "tophi",
+        "flare prophylaxis"
+      ],
+      "overview": "Study crystal disease and guideline-based urate-lowering treatment principles.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "acr-gout-reference",
+          "title": "Gout",
+          "organization": "American College of Rheumatology",
+          "url": "https://rheumatology.org/patients/gout",
+          "kind": "official-clinical-reference",
+          "edition": "Updated February 2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Signs and symptoms; joint fluid diagnosis; Common Treatments",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "acr-gout-2020",
+          "title": "2020 American College of Rheumatology Guideline for the Management of Gout",
+          "organization": "American College of Rheumatology",
+          "url": "https://assets.contentstack.io/v3/assets/bltee37abb6b278ab2c/blt04d52e3b6ff5112f/632cab5b258fb55f6b2186af/gout-guideline-2020.pdf",
+          "kind": "clinical-guideline",
+          "edition": "2020",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Tables 1–3 and flare management: tophi/frequent flares, allopurinol first line including CKD, serum urate <6 mg/dL, prophylaxis 3–6 months",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Separate urate elevation from gout",
+          "text": "High serum urate alone does not prove gout. Joint-fluid assessment for urate crystals may clarify a swollen-joint diagnosis.",
+          "sourceIds": [
+            "acr-gout-reference"
+          ]
+        },
+        {
+          "id": "urate-lowering",
+          "title": "Choose and titrate therapy",
+          "text": "For gout warranting urate-lowering treatment, ACR prefers allopurinol first line, including CKD. Start low, lower in CKD, and titrate using serial urate toward <6 mg/dL.",
+          "sourceIds": [
+            "acr-gout-2020"
+          ]
+        },
+        {
+          "id": "prophylaxis",
+          "title": "Prevent initiation-related flares",
+          "text": "When starting urate-lowering treatment, anti-inflammatory prophylaxis is recommended for at least 3–6 months, adjusted for ongoing flares and individual medication risks.",
+          "sourceIds": [
+            "acr-gout-2020"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "gout-q1",
+          "stem": "An adult with recurrent gout and tophi has CKD stage 3 and an indication for urate-lowering therapy. No contraindication to allopurinol is identified. Which approach best follows ACR?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Never use allopurinol in CKD"
+            },
+            {
+              "id": "B",
+              "text": "Start the maximum dose immediately"
+            },
+            {
+              "id": "C",
+              "text": "Use pegloticase as routine first-line therapy"
+            },
+            {
+              "id": "D",
+              "text": "Begin allopurinol at a low dose and titrate to urate target"
+            },
+            {
+              "id": "E",
+              "text": "Use diet alone as the mandatory sole therapy"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Allopurinol remains preferred first line in CKD, with low-dose initiation and titration.",
+          "distractorExplanations": {
+            "A": "CKD does not exclude the preferred first-line agent.",
+            "B": "High-dose initiation is not recommended.",
+            "C": "Pegloticase is not first-line therapy.",
+            "E": "The stated disease warrants pharmacologic consideration."
+          },
+          "sectionIds": [
+            "urate-lowering"
+          ],
+          "sourceIds": [
+            "acr-gout-2020"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Apply allopurinol first-line therapy safely in gout with CKD.",
+          "difficulty": "application"
+        },
+        {
+          "id": "gout-q2",
+          "stem": "A patient begins indicated urate-lowering therapy after recurrent gout flares. Which accompanying plan best follows ACR?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No prophylaxis because a urate drug prevents every early flare"
+            },
+            {
+              "id": "B",
+              "text": "Stop prophylaxis after a single day regardless of flares"
+            },
+            {
+              "id": "C",
+              "text": "Avoid monitoring urate permanently"
+            },
+            {
+              "id": "D",
+              "text": "Stop urate therapy whenever the laboratory value improves"
+            },
+            {
+              "id": "E",
+              "text": "Anti-inflammatory prophylaxis for at least 3–6 months with reassessment"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Prophylaxis during initiation reduces flare risk and continues at least 3–6 months with reassessment.",
+          "distractorExplanations": {
+            "A": "Early flares remain possible.",
+            "B": "That is shorter than the recommended interval.",
+            "C": "Serial urate informs titration.",
+            "D": "A brief improvement does not justify this blanket stop rule."
+          },
+          "sectionIds": [
+            "prophylaxis",
+            "urate-lowering"
+          ],
+          "sourceIds": [
+            "acr-gout-2020"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Use anti-inflammatory prophylaxis when starting urate-lowering therapy.",
+          "difficulty": "application"
+        }
+      ]
+    }
+  ]
+}

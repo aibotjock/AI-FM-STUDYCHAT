@@ -1,7 +1,7 @@
 {
   "version": "2026-10-09",
   "checkedAt": "2026-10-09",
-  "checkType": "official-source-currency-and-inventory-review",
+  "checkType": "official-source-currency-and-educational-curriculum-review",
   "clinicalApproval": false,
   "clinicalReviewer": null,
   "approvedGuidelineRecords": 0,
@@ -9,9 +9,11 @@
     "frequency": "monthly",
     "timeZone": "America/New_York",
     "urgentSafetyUpdates": "review-when-identified",
-    "automaticClinicalPublication": false
+    "automaticClinicalPublication": false,
+    "automaticPersonalStudyRefresh": true,
+    "personalRefreshRequires": "Actual permitted official evidence and affected integrity checks; unresolved records quarantined; clinician review remains pending."
   },
-  "notice": "Source observations and original-material inventory only. Not a medical accuracy certification, commercial license, clinician approval, or app-store publication approval.",
+  "notice": "Automated editorial source checks and original educational summaries/questions for the personal study pilot. Not an independent clinician review, medical accuracy certification, commercial license or app-store approval. Formal-source gaps and jurisdiction limits remain visible.",
   "inventory": {
     "fictionalCases": 12,
     "communicationAndProfessionalismCases": 8,
@@ -20,7 +22,13 @@
     "authoredReasoningAndLearningCards": 10,
     "sourceLinkedTeachBackCards": 2,
     "reflectionCompetencies": 6,
-    "publishedGuidelineTeachingRecords": 0
+    "publishedGuidelineTeachingRecords": 0,
+    "personalStudyConditions": 105,
+    "originalBoardStyleQuestions": 210,
+    "commercialApprovedGuidelineRecords": 0,
+    "personalStudySections": 323,
+    "personalFormalGuidelineOrRecommendationConditions": 100,
+    "distinctCurriculumSourceUrls": 136
   },
   "checks": [
     {
@@ -29,7 +37,9 @@
       "status": "checked",
       "displayedEdition": "Blueprint effective from 2025; current linked page",
       "observation": "Domain weights remain acute 35%, chronic 25%, emergent 20%, preventive 15%, foundations 5%.",
-      "affectedFiles": ["shared/blueprint.js"],
+      "affectedFiles": [
+        "shared/blueprint.js"
+      ],
       "action": "No factual change needed. Continue monthly metadata checks; this is not a guideline corpus."
     },
     {
@@ -38,7 +48,9 @@
       "status": "checked",
       "displayedEdition": "2026 FMCE Examination Information Booklet v.1.0",
       "observation": "Printed page 36 agrees with the dedicated blueprint page.",
-      "affectedFiles": ["shared/blueprint.js"],
+      "affectedFiles": [
+        "shared/blueprint.js"
+      ],
       "action": "No factual change needed. On future checks look for a newer official booklet rather than assuming this fixed PDF remains the current edition."
     },
     {
@@ -47,7 +59,9 @@
       "status": "checked",
       "displayedEdition": "Health Literacy Universal Precautions Toolkit, 3rd Edition; page last reviewed April 2024",
       "observation": "The own-words and clarify-and-check-again descriptions support the two original teach-back card summaries.",
-      "affectedFiles": ["shared/content.js"],
+      "affectedFiles": [
+        "shared/content.js"
+      ],
       "action": "No factual change needed. Source checking does not upgrade learner cards to clinician-approved commercial teaching records."
     },
     {
@@ -56,7 +70,10 @@
       "status": "checked-metadata-only",
       "displayedEdition": "Current overview; individual guidelines have separate editions",
       "observation": "Endorsed, affirmation of value, and not endorsed remain distinct; AAFP may publish a separate recommendation when it differs from USPSTF.",
-      "affectedFiles": ["content/source-registry.json", "docs/CLINICAL_CONTENT.md"],
+      "affectedFiles": [
+        "content/source-registry.json",
+        "docs/CLINICAL_CONTENT.md"
+      ],
       "action": "No recommendations imported. Review the exact applicable guideline before drafting clinical teaching."
     },
     {
@@ -67,7 +84,9 @@
       "observation": "Official landing page rendered an internal Drupal error and did not provide a usable latest recommendation list.",
       "fallbackUrl": "https://www.uspreventiveservicestaskforce.org/uspstf/topic_search_results",
       "fallbackStatus": "available-not-a-complete-topic-by-topic-clinical-review",
-      "affectedFiles": ["content/source-registry.json"],
+      "affectedFiles": [
+        "content/source-registry.json"
+      ],
       "action": "Retry the official page or use verified official recommendation links. Do not mark all USPSTF guidance current based on this check. No recommendations imported."
     },
     {
@@ -76,7 +95,9 @@
       "status": "checked-metadata-only",
       "displayedEdition": "Sexually Transmitted Infections Treatment Guidelines, 2021; page last reviewed June 13, 2023",
       "observation": "The landing page also displayed a September 21, 2026 Bicillin L-A shelf-life/supply notice with official follow-up links.",
-      "affectedFiles": ["content/source-registry.json"],
+      "affectedFiles": [
+        "content/source-registry.json"
+      ],
       "action": "No recommendations imported. Check linked updates and FDA notices when developing affected teaching; the older guideline edition alone is not enough."
     },
     {
@@ -85,7 +106,9 @@
       "status": "checked-metadata-only",
       "displayedEdition": "Page dated April 16, 2024",
       "observation": "The adult outpatient source remains available; displayed page date does not establish that every linked condition-specific recommendation is current.",
-      "affectedFiles": ["content/source-registry.json"],
+      "affectedFiles": [
+        "content/source-registry.json"
+      ],
       "action": "No recommendations imported. Review the current condition-specific primary guideline before drafting clinical teaching."
     },
     {
@@ -94,7 +117,10 @@
       "status": "checked-conflict-needs-clinical-triage",
       "displayedEdition": "Child/adolescent and adult addenda updated July 2, 2025",
       "observation": "The landing page labels differ from AAFP's linked 2026 childhood schedule and AAFP states it does not endorse CDC's 2025 schedules.",
-      "affectedFiles": ["content/source-registry.json", "docs/CLINICAL_CONTENT.md"],
+      "affectedFiles": [
+        "content/source-registry.json",
+        "docs/CLINICAL_CONTENT.md"
+      ],
       "action": "No vaccine schedule recommendations imported. Do not silently combine sources; a clinician must identify the chosen edition, endorsement, and conflicts."
     },
     {
@@ -104,7 +130,9 @@
       "displayedEdition": "Linked Recommended Child and Adolescent Immunization Schedule, United States, 2026; PDF dated March 1, 2026",
       "linkedEditionUrl": "https://www.aafp.org/assets/image/upload/v1774979609/bhmf8pcgmuhzn7jcekdd.pdf",
       "observation": "Current page links a distinct AAFP-adopted schedule and identifies its differing endorsement position.",
-      "affectedFiles": ["docs/CLINICAL_CONTENT.md"],
+      "affectedFiles": [
+        "docs/CLINICAL_CONTENT.md"
+      ],
       "action": "No recommendations imported. Follow the current landing page's link on future checks rather than assuming the fixed PDF is the newest edition."
     },
     {
@@ -117,8 +145,41 @@
       ],
       "status": "checked-no-permissions-granted",
       "observation": "Public access is not a content license. Source-specific restrictions and permission requirements remain relevant.",
-      "affectedFiles": ["content/source-registry.json", "docs/CLINICAL_CONTENT.md"],
+      "affectedFiles": [
+        "content/source-registry.json",
+        "docs/CLINICAL_CONTENT.md"
+      ],
       "action": "Keep all registry commercial-corpus and AI-processing approvals false until actual documented review/permissions exist. Monthly follow-up must also check AAFP permissions and any new source-specific terms."
+    }
+  ],
+  "curriculumManifest": "content/curriculum-manifest.json",
+  "conditionSourceAudits": [
+    "docs/source-audit/cardiometabolic.md",
+    "docs/source-audit/respiratory_infectious.md",
+    "docs/source-audit/neuro_msk_derm.md",
+    "docs/source-audit/women_children_prevention.md",
+    "docs/source-audit/common_additions.md"
+  ],
+  "officialReferenceOnlyConditions": [
+    {
+      "id": "benign-positional-vertigo",
+      "name": "Benign paroxysmal positional vertigo"
+    },
+    {
+      "id": "benign-prostatic-hyperplasia",
+      "name": "Benign prostatic hyperplasia"
+    },
+    {
+      "id": "endometriosis",
+      "name": "Endometriosis"
+    },
+    {
+      "id": "generalized-anxiety-disorder",
+      "name": "Generalized anxiety disorder"
+    },
+    {
+      "id": "vitamin-b12-deficiency",
+      "name": "Vitamin B12 deficiency"
     }
   ]
 }

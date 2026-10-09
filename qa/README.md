@@ -30,3 +30,9 @@ were repeated after their fixes; two additional pending-setup scenarios were
 checked separately. Microphone, WebRTC, speaker autoplay and transcript route
 responses are browser fakes. Backend caption durability is covered separately
 by `tests/voice-routes.test.js`; actual phone audio remains an owner check.
+# Source-linked curriculum checks
+
+The curriculum addition has its own recorded scopes: `curriculum-browser-results.json` (16 fixture-based mobile groups), `curriculum-safety-results.json` (8 independent retrieval/dispatch safety groups), and `curriculum-production-data-results.json` (7 new real-100-condition mobile groups). These use real local app routes, synthetic provider responses where needed and zero paid calls. They do not establish medical accuracy. The production-data report preserves the exact file hashes tested; subsequent text-only source-budget condensation is documented in the validation ledger.
+
+Use `qa/curriculum-browser-qa.mjs` with `QA_SCOPES` to select only newly affected or failed groups. `qa/curriculum-production-data-qa.mjs` checks actual corpus dimensions and extreme content sizes. `node scripts/validate-study-curriculum.js` checks full dataset integrity, canonical grading/card bounds, source dates and concise per-source factual budgets. Keep passed unrelated login, model, voice, dictation and zoom suites unchanged unless a relevant defect/change justifies repeating them.
+

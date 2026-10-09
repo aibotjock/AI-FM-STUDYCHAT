@@ -1,0 +1,3813 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-09",
+  "conditions": [
+    {
+      "id": "asthma",
+      "name": "Asthma",
+      "aliases": [
+        "persistent asthma",
+        "SMART"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "chronic",
+      "keywords": [
+        "wheeze",
+        "ICS",
+        "formoterol",
+        "controller",
+        "reliever"
+      ],
+      "overview": "Study persistent-asthma controller choices using the US NAEPP focused update; this module does not cover every asthma severity or acute emergency.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "nhlbi-asthma-2020-clinician",
+          "title": "2020 Focused Updates to the Asthma Management Guidelines: Clinician’s Guide",
+          "organization": "NHLBI / National Asthma Education and Prevention Program",
+          "url": "https://www.nhlbi.nih.gov/sites/default/files/publications/Asthma%20Clinicians%20Guide%20508_02-03-21.pdf",
+          "kind": "clinical-guideline",
+          "edition": "2020 focused update; clinician guide PDF revised February 2021",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Pages 3–5: ages 4+, SMART, and long-acting muscarinic antagonists",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "controller",
+          "title": "Controller and reliever",
+          "text": "For moderate-to-severe persistent asthma in people aged at least four years, NAEPP recommends ICS-formoterol as both maintenance and relief therapy.",
+          "sourceIds": [
+            "nhlbi-asthma-2020-clinician"
+          ]
+        },
+        {
+          "id": "smart-scope",
+          "title": "SMART boundaries",
+          "text": "The SMART evidence concerns formoterol. ICS-salmeterol maintenance should not be paired with ICS-formoterol as its reliever.",
+          "sourceIds": [
+            "nhlbi-asthma-2020-clinician"
+          ]
+        },
+        {
+          "id": "add-on",
+          "title": "Add-on treatment",
+          "text": "When ICS alone is insufficient, adding a LABA is preferred to adding a LAMA; a LAMA is an alternative when LABA cannot be used.",
+          "sourceIds": [
+            "nhlbi-asthma-2020-clinician"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A 29-year-old has moderate persistent asthma despite an appropriate low-dose ICS regimen. Adherence and inhaler technique are confirmed. Which guideline-preferred regimen uses one inhaler for maintenance and symptom relief?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Antibiotic therapy"
+            },
+            {
+              "id": "B",
+              "text": "Salmeterol alone for both purposes"
+            },
+            {
+              "id": "C",
+              "text": "Daily LAMA alone"
+            },
+            {
+              "id": "D",
+              "text": "Daily oral corticosteroid alone"
+            },
+            {
+              "id": "E",
+              "text": "ICS-formoterol for both purposes"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "NAEPP recommends ICS-formoterol maintenance-and-reliever therapy in this setting.",
+          "distractorExplanations": {
+            "A": "No infection is described.",
+            "B": "This lacks the recommended ICS-containing SMART regimen.",
+            "C": "LAMA alone does not provide the recommended controller combination.",
+            "D": "This is not the preferred step-up strategy."
+          },
+          "sectionIds": [
+            "controller"
+          ],
+          "sourceIds": [
+            "nhlbi-asthma-2020-clinician"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Select the ICS-formoterol SMART approach.",
+          "difficulty": "application",
+          "id": "asthma-q1"
+        },
+        {
+          "stem": "A 36-year-old with persistent asthma remains symptomatic on ICS alone. Technique and adherence are adequate. A LABA is available and tolerated. Which add-on is preferred by the US focused guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Use antibiotics as a controller"
+            },
+            {
+              "id": "B",
+              "text": "Add a LABA to the ICS"
+            },
+            {
+              "id": "C",
+              "text": "Use salmeterol without ICS"
+            },
+            {
+              "id": "D",
+              "text": "Stop the ICS"
+            },
+            {
+              "id": "E",
+              "text": "Add a LAMA instead of any LABA"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "The focused update favors LABA addition over LAMA addition when LABA can be used.",
+          "distractorExplanations": {
+            "A": "Antibiotics are not the specified controller step.",
+            "C": "The recommended add-on retains ICS.",
+            "D": "This removes the existing controller.",
+            "E": "LAMA is the alternative when LABA cannot be used."
+          },
+          "sectionIds": [
+            "add-on"
+          ],
+          "sourceIds": [
+            "nhlbi-asthma-2020-clinician"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Distinguish preferred LABA addition from the LAMA alternative.",
+          "difficulty": "application",
+          "id": "asthma-q2"
+        }
+      ]
+    },
+    {
+      "id": "copd",
+      "name": "Chronic obstructive pulmonary disease",
+      "aliases": [
+        "COPD",
+        "emphysema",
+        "chronic bronchitis"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "chronic",
+      "keywords": [
+        "spirometry",
+        "smoking",
+        "LABA",
+        "LAMA",
+        "exacerbation"
+      ],
+      "overview": "Study confirmation, risk reduction and symptomatic maintenance treatment using the newly posted US VA/DoD 2026 guideline.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "vadod-copd-2026",
+          "title": "VA/DOD Clinical Practice Guideline for the Management of Chronic Obstructive Pulmonary Disease – Provider Summary",
+          "organization": "US Department of Veterans Affairs / Department of Defense",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/CD/copd/COPD-CPG_2026-Provider-Summary_final_20261007.pdf",
+          "kind": "clinical-guideline",
+          "edition": "September 2026; official file posted October 7, 2026",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Recommendations 1, 4, 8 and 9; summary tables, pages 5–7",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "confirmation",
+          "title": "Diagnostic confirmation",
+          "text": "VA/DoD suggests post-bronchodilator spirometry to confirm a clinical COPD diagnosis.",
+          "sourceIds": [
+            "vadod-copd-2026"
+          ]
+        },
+        {
+          "id": "risk-reduction",
+          "title": "Risk reduction",
+          "text": "Smoking cessation with complete abstinence is recommended. Respiratory vaccination is also suggested to reduce exacerbation risk.",
+          "sourceIds": [
+            "vadod-copd-2026"
+          ]
+        },
+        {
+          "id": "maintenance",
+          "title": "Maintenance selection",
+          "text": "For significant symptom burden, LABA/LAMA combination is recommended over monotherapy. Prior-year exacerbations requiring steroids or antibiotics support ICS/LABA/LAMA triple therapy.",
+          "sourceIds": [
+            "vadod-copd-2026"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A 61-year-old smoker has progressive exertional dyspnea and chronic cough. COPD is suspected clinically. Which test best follows the VA/DoD confirmation recommendation?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Post-bronchodilator spirometry"
+            },
+            {
+              "id": "B",
+              "text": "Chest radiograph alone"
+            },
+            {
+              "id": "C",
+              "text": "A trial of antibiotics alone"
+            },
+            {
+              "id": "D",
+              "text": "Serum IgE alone"
+            },
+            {
+              "id": "E",
+              "text": "D-dimer alone"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Post-bronchodilator spirometry confirms the clinical diagnosis.",
+          "distractorExplanations": {
+            "B": "Imaging alone does not replace spirometric confirmation.",
+            "C": "A treatment response does not confirm COPD.",
+            "D": "This does not confirm COPD.",
+            "E": "This does not establish chronic airflow obstruction."
+          },
+          "sectionIds": [
+            "confirmation"
+          ],
+          "sourceIds": [
+            "vadod-copd-2026"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Choose objective COPD confirmation.",
+          "difficulty": "application",
+          "id": "copd-q1"
+        },
+        {
+          "stem": "A patient with confirmed COPD has significant daily symptom burden despite bronchodilator monotherapy. Which maintenance change is specifically recommended over monotherapy in the 2026 VA/DoD guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Stop all inhalers"
+            },
+            {
+              "id": "B",
+              "text": "ICS alone"
+            },
+            {
+              "id": "C",
+              "text": "Combined LABA/LAMA"
+            },
+            {
+              "id": "D",
+              "text": "Scheduled systemic corticosteroids alone"
+            },
+            {
+              "id": "E",
+              "text": "Chronic antibiotic monotherapy"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "The 2026 guideline recommends LABA/LAMA over monotherapy for significant symptom burden.",
+          "distractorExplanations": {
+            "A": "This removes symptomatic treatment.",
+            "B": "This is not dual bronchodilation.",
+            "D": "This is not the recommended maintenance escalation.",
+            "E": "This is not the specified bronchodilator escalation."
+          },
+          "sectionIds": [
+            "maintenance"
+          ],
+          "sourceIds": [
+            "vadod-copd-2026"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Apply dual long-acting bronchodilation for significant COPD symptoms.",
+          "difficulty": "application",
+          "id": "copd-q2"
+        }
+      ]
+    },
+    {
+      "id": "community-acquired-pneumonia",
+      "name": "Community-acquired pneumonia",
+      "aliases": [
+        "CAP",
+        "pneumonia"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "acute",
+      "keywords": [
+        "infiltrate",
+        "hypoxia",
+        "severity",
+        "antibiotic",
+        "ventilation"
+      ],
+      "overview": "Study adult CAP recognition, severity and inpatient regimen selection. Updated disputed viral-positive and duration questions are outside this module.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "idsa-cap-pathway",
+          "title": "CAP Clinical Pathway",
+          "organization": "Infectious Diseases Society of America",
+          "url": "https://www.idsociety.org/globalassets/idsa/practice-guidelines/community-acquired-pneumonia-in-adults/cap-clinical-pathway-final-online.pdf",
+          "kind": "official-recommendation",
+          "edition": "Official pathway based on 2019 ATS/IDSA guideline; posted version date not stated in PDF",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Tables 1, 2 and 4; adult nonimmunocompromised population",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "recognition",
+          "title": "Recognition",
+          "text": "Adult CAP assessment combines a new imaging infiltrate with respiratory symptoms and another compatible clinical finding.",
+          "sourceIds": [
+            "idsa-cap-pathway"
+          ]
+        },
+        {
+          "id": "severity",
+          "title": "Severe disease",
+          "text": "Vasopressor-dependent septic shock or respiratory failure requiring mechanical ventilation is a major severe-CAP criterion.",
+          "sourceIds": [
+            "idsa-cap-pathway"
+          ]
+        },
+        {
+          "id": "inpatient-treatment",
+          "title": "Nonsevere inpatient treatment",
+          "text": "Without MRSA or Pseudomonas risk factors, a beta-lactam plus macrolide is a preferred inpatient regimen; a respiratory fluoroquinolone is another pathway option.",
+          "sourceIds": [
+            "idsa-cap-pathway"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An immunocompetent adult with imaging-confirmed CAP requires mechanical ventilation for respiratory failure. How should the severity be classified under the IDSA pathway?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Low-risk outpatient CAP"
+            },
+            {
+              "id": "B",
+              "text": "Severe CAP"
+            },
+            {
+              "id": "C",
+              "text": "Uncomplicated bronchitis"
+            },
+            {
+              "id": "D",
+              "text": "Mild CAP because only one criterion exists"
+            },
+            {
+              "id": "E",
+              "text": "Latent infection"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Mechanical ventilation is a major criterion; one major criterion establishes severe CAP.",
+          "distractorExplanations": {
+            "A": "Ventilatory support excludes this description.",
+            "C": "The case has imaging-confirmed pneumonia.",
+            "D": "A major criterion is sufficient.",
+            "E": "This is active acute illness."
+          },
+          "sectionIds": [
+            "severity"
+          ],
+          "sourceIds": [
+            "idsa-cap-pathway"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize a major severe-CAP criterion.",
+          "difficulty": "application",
+          "id": "community-acquired-pneumonia-q1"
+        },
+        {
+          "stem": "An adult is hospitalized with nonsevere CAP and has no MRSA or Pseudomonas risk factors, medication allergies or relevant contraindications. Which pair matches the pathway’s preferred regimen class?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Vancomycin plus antifungal"
+            },
+            {
+              "id": "B",
+              "text": "Beta-lactam plus macrolide"
+            },
+            {
+              "id": "C",
+              "text": "Antifungal plus antiviral only"
+            },
+            {
+              "id": "D",
+              "text": "ICS plus LABA"
+            },
+            {
+              "id": "E",
+              "text": "Two macrolides"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "The preferred pair is a beta-lactam with a macrolide.",
+          "distractorExplanations": {
+            "A": "No resistant-pathogen indication is provided.",
+            "C": "This omits the described antibacterial regimen.",
+            "D": "These are not antibacterial classes.",
+            "E": "This is not the recommended pair."
+          },
+          "sectionIds": [
+            "inpatient-treatment"
+          ],
+          "sourceIds": [
+            "idsa-cap-pathway"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select standard nonsevere inpatient CAP antibacterial classes.",
+          "difficulty": "application",
+          "id": "community-acquired-pneumonia-q2"
+        }
+      ]
+    },
+    {
+      "id": "acute-bronchitis",
+      "name": "Acute uncomplicated bronchitis",
+      "aliases": [
+        "bronchitis",
+        "chest cold"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "acute",
+      "keywords": [
+        "cough",
+        "sputum",
+        "antibiotic stewardship"
+      ],
+      "overview": "Study uncomplicated adult cough after pneumonia has been considered.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-adult-outpatient",
+          "title": "Outpatient Clinical Care for Adults",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/adult-outpatient.html",
+          "kind": "official-recommendation",
+          "edition": "Current official web page; edition not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Acute uncomplicated bronchitis row",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "assessment",
+          "title": "Assessment",
+          "text": "Assess vitals and lungs for pneumonia.",
+          "sourceIds": [
+            "cdc-adult-outpatient"
+          ]
+        },
+        {
+          "id": "sputum",
+          "title": "Sputum interpretation",
+          "text": "Sputum color does not prove bacterial infection.",
+          "sourceIds": [
+            "cdc-adult-outpatient"
+          ]
+        },
+        {
+          "id": "antibiotics",
+          "title": "Antibiotic stewardship",
+          "text": "No routine antibiotics, irrespective of cough duration.",
+          "sourceIds": [
+            "cdc-adult-outpatient"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A healthy adult has a cough with green sputum, normal vital signs and no focal lung findings. Uncomplicated bronchitis is diagnosed. Which action best fits CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Routine chest CT"
+            },
+            {
+              "id": "B",
+              "text": "Antibiotics because sputum is green"
+            },
+            {
+              "id": "C",
+              "text": "Supportive care without routine antibiotics"
+            },
+            {
+              "id": "D",
+              "text": "Antibiotics until the cough stops"
+            },
+            {
+              "id": "E",
+              "text": "Routine intravenous antibiotics"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Color does not justify antibiotics.",
+          "distractorExplanations": {
+            "A": "Not routine.",
+            "B": "Color doesn't establish bacteria.",
+            "D": "Duration doesn't justify antibiotics.",
+            "E": "No severe illness."
+          },
+          "sectionIds": [
+            "sputum",
+            "antibiotics"
+          ],
+          "sourceIds": [
+            "cdc-adult-outpatient"
+          ],
+          "domain": "acute",
+          "learningObjective": "Avoid color-driven antibiotic prescribing.",
+          "difficulty": "application",
+          "id": "acute-bronchitis-q1"
+        },
+        {
+          "stem": "An adult labeled as having bronchitis now has tachypnea and focal consolidation on examination. What should be reassessed first?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Need for chronic ICS"
+            },
+            {
+              "id": "B",
+              "text": "Seasonal allergy testing"
+            },
+            {
+              "id": "C",
+              "text": "Routine repeat cough suppressant"
+            },
+            {
+              "id": "D",
+              "text": "Pneumonia"
+            },
+            {
+              "id": "E",
+              "text": "Sputum color alone"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Reassess for pneumonia.",
+          "distractorExplanations": {
+            "A": "Misses pneumonia.",
+            "B": "Misses pneumonia.",
+            "C": "Misses pneumonia.",
+            "E": "Color isn't diagnostic."
+          },
+          "sectionIds": [
+            "assessment"
+          ],
+          "sourceIds": [
+            "cdc-adult-outpatient"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize when the uncomplicated-bronchitis pathway no longer applies.",
+          "difficulty": "application",
+          "id": "acute-bronchitis-q2"
+        }
+      ]
+    },
+    {
+      "id": "bacterial-rhinosinusitis",
+      "name": "Acute bacterial rhinosinusitis",
+      "aliases": [
+        "ABRS",
+        "bacterial sinusitis"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "acute",
+      "keywords": [
+        "sinusitis",
+        "double worsening",
+        "persistent nasal symptoms"
+      ],
+      "overview": "Study adult bacterial sinusitis patterns and uncomplicated management.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-adult-outpatient",
+          "title": "Outpatient Clinical Care for Adults",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/adult-outpatient.html",
+          "kind": "official-recommendation",
+          "edition": "Current official web page; edition not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Acute rhinosinusitis row",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "patterns",
+          "title": "Bacterial patterns",
+          "text": "Bacterial clues: >10 days unimproved, severe illness, or deterioration after improvement.",
+          "sourceIds": [
+            "cdc-adult-outpatient"
+          ]
+        },
+        {
+          "id": "observation",
+          "title": "Observation",
+          "text": "Uncomplicated: watchful waiting with reliable follow-up.",
+          "sourceIds": [
+            "cdc-adult-outpatient"
+          ]
+        },
+        {
+          "id": "therapy",
+          "title": "Antibiotic selection",
+          "text": "First-line antibiotics: amoxicillin/amoxicillin-clavulanate; avoid azithromycin because of resistance.",
+          "sourceIds": [
+            "cdc-adult-outpatient"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An adult improves after a respiratory illness, then develops renewed fever, facial discomfort and increased nasal discharge. Which pattern supports bacterial sinusitis?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Double worsening"
+            },
+            {
+              "id": "B",
+              "text": "Improving symptoms"
+            },
+            {
+              "id": "C",
+              "text": "Brief sneezing only"
+            },
+            {
+              "id": "D",
+              "text": "Sputum color alone"
+            },
+            {
+              "id": "E",
+              "text": "Isolated nasal itching"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Improvement followed by worsening.",
+          "distractorExplanations": {
+            "B": "Symptoms worsened.",
+            "C": "No worsening.",
+            "D": "Not double worsening.",
+            "E": "No worsening."
+          },
+          "sectionIds": [
+            "patterns"
+          ],
+          "sourceIds": [
+            "cdc-adult-outpatient"
+          ],
+          "domain": "acute",
+          "learningObjective": "Identify double worsening.",
+          "difficulty": "application",
+          "id": "bacterial-rhinosinusitis-q1"
+        },
+        {
+          "stem": "An uncomplicated adult case has reliable follow-up and no urgent complication. Which non-antibiotic initial approach is supported?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Routine hospitalization"
+            },
+            {
+              "id": "B",
+              "text": "Indefinite antibiotics"
+            },
+            {
+              "id": "C",
+              "text": "Watchful waiting"
+            },
+            {
+              "id": "D",
+              "text": "Immediate CT for all"
+            },
+            {
+              "id": "E",
+              "text": "Immediate surgery"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Uncomplicated, reliable follow-up: observe.",
+          "distractorExplanations": {
+            "A": "No complication.",
+            "B": "Not observation.",
+            "D": "Not routine.",
+            "E": "No indication."
+          },
+          "sectionIds": [
+            "observation"
+          ],
+          "sourceIds": [
+            "cdc-adult-outpatient"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize observation as a valid option.",
+          "difficulty": "application",
+          "id": "bacterial-rhinosinusitis-q2"
+        }
+      ]
+    },
+    {
+      "id": "streptococcal-pharyngitis",
+      "name": "Group A streptococcal pharyngitis",
+      "aliases": [
+        "GAS pharyngitis",
+        "strep throat"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "acute",
+      "keywords": [
+        "RADT",
+        "throat culture",
+        "penicillin",
+        "rheumatic fever"
+      ],
+      "overview": "Study confirmation, age-specific negative-test follow-up and treatment of confirmed GAS pharyngitis.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-strep-clinical",
+          "title": "Clinical Guidance for Group A Streptococcal Pharyngitis",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html",
+          "kind": "official-recommendation",
+          "edition": "Current official web page; edition not stated",
+          "publishedDate": "2025-11-18",
+          "checkedAt": "2026-10-09",
+          "locator": "Diagnosis; negative RADT; recommended antibiotics",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "testing",
+          "title": "Testing indications",
+          "text": "Clear viral features obviate GAS testing. Without such features, examination alone cannot reliably distinguish GAS from viral pharyngitis.",
+          "sourceIds": [
+            "cdc-strep-clinical"
+          ]
+        },
+        {
+          "id": "negative-radt",
+          "title": "Negative rapid test",
+          "text": "A symptomatic child aged at least three years needs a throat culture after a negative RADT; adults do not routinely need that backup.",
+          "sourceIds": [
+            "cdc-strep-clinical"
+          ]
+        },
+        {
+          "id": "treatment",
+          "title": "Confirmed infection",
+          "text": "A positive RADT or culture warrants antibiotics. Penicillin or amoxicillin is preferred when appropriate.",
+          "sourceIds": [
+            "cdc-strep-clinical"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An eight-year-old has abrupt sore throat and fever without cough or rhinorrhea. The RADT is negative. What is the appropriate next diagnostic step?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No further testing in any child"
+            },
+            {
+              "id": "B",
+              "text": "Serum antistreptolysin O to diagnose this episode"
+            },
+            {
+              "id": "C",
+              "text": "Chest radiograph"
+            },
+            {
+              "id": "D",
+              "text": "Throat culture"
+            },
+            {
+              "id": "E",
+              "text": "Immediate broad-spectrum antibiotics without confirmation"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Symptomatic children in this age group need culture backup after negative RADT.",
+          "distractorExplanations": {
+            "A": "This applies neither to the age nor CDC pathway.",
+            "B": "This is not the recommended acute confirmation test.",
+            "C": "This does not confirm GAS.",
+            "E": "Confirmation remains needed."
+          },
+          "sectionIds": [
+            "negative-radt"
+          ],
+          "sourceIds": [
+            "cdc-strep-clinical"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply age-specific backup testing.",
+          "difficulty": "application",
+          "id": "streptococcal-pharyngitis-q1"
+        },
+        {
+          "stem": "An otherwise healthy adult with no penicillin allergy has GAS confirmed by RADT. Which oral antibiotic is a CDC first choice?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No antibiotic despite confirmation"
+            },
+            {
+              "id": "B",
+              "text": "Amoxicillin"
+            },
+            {
+              "id": "C",
+              "text": "Ciprofloxacin"
+            },
+            {
+              "id": "D",
+              "text": "Doxycycline"
+            },
+            {
+              "id": "E",
+              "text": "Metronidazole"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Amoxicillin or penicillin is recommended for confirmed GAS.",
+          "distractorExplanations": {
+            "A": "Confirmed infection warrants treatment.",
+            "C": "This is not the stated first choice.",
+            "D": "This is not the stated first choice.",
+            "E": "This is not the stated first choice."
+          },
+          "sectionIds": [
+            "treatment"
+          ],
+          "sourceIds": [
+            "cdc-strep-clinical"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select narrow first-line treatment for confirmed GAS.",
+          "difficulty": "application",
+          "id": "streptococcal-pharyngitis-q2"
+        }
+      ]
+    },
+    {
+      "id": "influenza",
+      "name": "Influenza",
+      "aliases": [
+        "flu"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "acute",
+      "keywords": [
+        "oseltamivir",
+        "antiviral",
+        "high risk",
+        "hospitalized"
+      ],
+      "overview": "Study prioritization and timing of influenza antivirals, rather than assuming every case requires medication.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-influenza-antivirals",
+          "title": "Influenza Antiviral Medications: Summary for Clinicians",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html",
+          "kind": "official-recommendation",
+          "edition": "Current official web page; edition not stated",
+          "publishedDate": "2026-03-10",
+          "checkedAt": "2026-10-09",
+          "locator": "Priority Groups; Antiviral Drug Options; co-circulation",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "priority",
+          "title": "Treatment priority",
+          "text": "Hospitalization, severe or progressive illness, and higher complication risk favor prompt antiviral treatment for suspected or confirmed influenza.",
+          "sourceIds": [
+            "cdc-influenza-antivirals"
+          ]
+        },
+        {
+          "id": "timing",
+          "title": "Timing",
+          "text": "Do not delay priority-group treatment for test results. Progressive illness can warrant treatment beyond two days of symptoms.",
+          "sourceIds": [
+            "cdc-influenza-antivirals"
+          ]
+        },
+        {
+          "id": "hospital",
+          "title": "Hospitalized illness",
+          "text": "Oral or enteric oseltamivir should be started promptly in hospitalized patients with suspected or confirmed influenza.",
+          "sourceIds": [
+            "cdc-influenza-antivirals"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A 72-year-old is hospitalized with suspected influenza pneumonia during active community transmission. Testing is pending. What is the best antiviral approach?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Start oral or enteric oseltamivir promptly"
+            },
+            {
+              "id": "B",
+              "text": "Wait for culture confirmation"
+            },
+            {
+              "id": "C",
+              "text": "Avoid antivirals if symptoms exceed two days"
+            },
+            {
+              "id": "D",
+              "text": "Give antiviral only after discharge"
+            },
+            {
+              "id": "E",
+              "text": "Give antibiotics as the only influenza treatment"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Hospitalized suspected influenza warrants prompt oseltamivir without waiting for confirmation.",
+          "distractorExplanations": {
+            "B": "Testing should not delay treatment here.",
+            "C": "The two-day cutoff does not exclude priority treatment.",
+            "D": "This delays indicated therapy.",
+            "E": "Antibiotics do not replace influenza antiviral treatment."
+          },
+          "sectionIds": [
+            "timing",
+            "hospital"
+          ],
+          "sourceIds": [
+            "cdc-influenza-antivirals"
+          ],
+          "domain": "acute",
+          "learningObjective": "Prioritize empiric antiviral treatment in hospitalized suspected influenza.",
+          "difficulty": "application",
+          "id": "influenza-q1"
+        },
+        {
+          "stem": "A patient with chronic lung disease presents on day four of suspected influenza with progressively worsening illness. Which principle best fits CDC recommendations?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Treat promptly despite symptom duration"
+            },
+            {
+              "id": "B",
+              "text": "All antiviral benefit ends at 48 hours"
+            },
+            {
+              "id": "C",
+              "text": "No testing or treatment is permitted"
+            },
+            {
+              "id": "D",
+              "text": "Only symptom-free contacts can receive antivirals"
+            },
+            {
+              "id": "E",
+              "text": "Wait until hospitalization is required"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Progressive illness supports prompt antiviral treatment even beyond two days.",
+          "distractorExplanations": {
+            "B": "This is an inappropriate absolute cutoff.",
+            "C": "This is not the priority pathway.",
+            "D": "The patient is symptomatic.",
+            "E": "This unnecessarily delays care in the vignette."
+          },
+          "sectionIds": [
+            "priority",
+            "timing"
+          ],
+          "sourceIds": [
+            "cdc-influenza-antivirals"
+          ],
+          "domain": "acute",
+          "learningObjective": "Distinguish priority illness from the early uncomplicated outpatient window.",
+          "difficulty": "application",
+          "id": "influenza-q2"
+        }
+      ]
+    },
+    {
+      "id": "covid-19",
+      "name": "COVID-19",
+      "aliases": [
+        "SARS-CoV-2 infection"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "acute",
+      "keywords": [
+        "nirmatrelvir",
+        "ritonavir",
+        "remdesivir",
+        "drug interaction",
+        "antiviral window"
+      ],
+      "overview": "Study risk-based early outpatient antiviral treatment. Eligibility, interactions and product labels require current checking.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-covid-outpatient",
+          "title": "COVID-19 Treatment Clinical Care for Outpatients",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/covid/hcp/clinical-care/outpatient-treatment.html",
+          "kind": "official-recommendation",
+          "edition": "Official page updated October 8, 2026",
+          "publishedDate": "2024-07-16",
+          "checkedAt": "2026-10-09",
+          "locator": "Who qualifies; nirmatrelvir-ritonavir; intravenous remdesivir",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "risk",
+          "title": "Risk-based treatment",
+          "text": "Consider antivirals for mild-to-moderate disease with risk factors for severe outcomes; advancing age and immunocompromise are important risks.",
+          "sourceIds": [
+            "cdc-covid-outpatient"
+          ]
+        },
+        {
+          "id": "oral",
+          "title": "Oral option",
+          "text": "Nirmatrelvir-ritonavir must start within five days. Review eligibility and drug interactions before choosing it.",
+          "sourceIds": [
+            "cdc-covid-outpatient"
+          ]
+        },
+        {
+          "id": "intravenous",
+          "title": "Intravenous alternative",
+          "text": "A three-day remdesivir course started within seven days is a preferred alternative when nirmatrelvir-ritonavir is unsuitable.",
+          "sourceIds": [
+            "cdc-covid-outpatient"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A high-risk adult has mild COVID-19 on symptom day three. Nirmatrelvir-ritonavir is being considered. Which additional step is essential before selection?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Review eligibility and drug interactions"
+            },
+            {
+              "id": "B",
+              "text": "Require hypoxemia first"
+            },
+            {
+              "id": "C",
+              "text": "Wait until day ten"
+            },
+            {
+              "id": "D",
+              "text": "Substitute routine antibiotics"
+            },
+            {
+              "id": "E",
+              "text": "Ignore all concomitant medicines"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Ritonavir interactions and treatment eligibility must be reviewed within the treatment window.",
+          "distractorExplanations": {
+            "B": "Outpatient risk-based treatment does not require hypoxemia.",
+            "C": "This misses the oral treatment window.",
+            "D": "Antibiotics do not replace antiviral selection.",
+            "E": "Interactions can determine suitability."
+          },
+          "sectionIds": [
+            "risk",
+            "oral"
+          ],
+          "sourceIds": [
+            "cdc-covid-outpatient"
+          ],
+          "domain": "acute",
+          "learningObjective": "Check interactions before early oral COVID-19 treatment.",
+          "difficulty": "application",
+          "id": "covid-19-q1"
+        },
+        {
+          "stem": "A high-risk adult with mild COVID-19 presents on day six. Nirmatrelvir-ritonavir cannot be used, and remdesivir is accessible and appropriate. Which course fits CDC outpatient guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Begin nirmatrelvir-ritonavir on day fourteen"
+            },
+            {
+              "id": "B",
+              "text": "No antiviral option because five days elapsed"
+            },
+            {
+              "id": "C",
+              "text": "Three-day intravenous remdesivir"
+            },
+            {
+              "id": "D",
+              "text": "Single-day oral oseltamivir"
+            },
+            {
+              "id": "E",
+              "text": "Routine amoxicillin alone"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Remdesivir can begin within seven days as a three-day outpatient course.",
+          "distractorExplanations": {
+            "A": "This exceeds the stated oral window.",
+            "B": "Remdesivir has a seven-day window.",
+            "D": "This is not a COVID-19 regimen.",
+            "E": "This is not an antiviral regimen."
+          },
+          "sectionIds": [
+            "intravenous"
+          ],
+          "sourceIds": [
+            "cdc-covid-outpatient"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply the remdesivir outpatient window.",
+          "difficulty": "application",
+          "id": "covid-19-q2"
+        }
+      ]
+    },
+    {
+      "id": "allergic-rhinitis",
+      "name": "Allergic rhinitis",
+      "aliases": [
+        "hay fever",
+        "persistent allergic rhinitis"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "chronic",
+      "keywords": [
+        "intranasal corticosteroid",
+        "antihistamine",
+        "rhinitis",
+        "montelukast"
+      ],
+      "overview": "Study evidence-based nasal treatment and testing limits from the US Joint Task Force practice parameter.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "jtf-rhinitis-2020",
+          "title": "Rhinitis 2020: A practice parameter update",
+          "organization": "Joint Task Force on Practice Parameters / AAAAI and ACAAI",
+          "url": "https://www.aaaai.org/Aaaai/media/Media-Library-PDFs/Allergist%20Resources/Statements%20and%20Practice%20Parameters/Rhinitis-2020-A-practice-parameter-update.pdf",
+          "kind": "clinical-guideline",
+          "edition": "2020 practice parameter",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Summary; intranasal corticosteroids; montelukast; food allergy testing",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "first-line",
+          "title": "Persistent symptoms",
+          "text": "An intranasal corticosteroid is preferred monotherapy for persistent allergic rhinitis.",
+          "sourceIds": [
+            "jtf-rhinitis-2020"
+          ]
+        },
+        {
+          "id": "escalation",
+          "title": "Inadequate response",
+          "text": "Combining an intranasal corticosteroid with an intranasal antihistamine can add benefit. Montelukast is reserved for inadequate response or intolerance to alternatives.",
+          "sourceIds": [
+            "jtf-rhinitis-2020"
+          ]
+        },
+        {
+          "id": "testing",
+          "title": "Testing boundary",
+          "text": "Routine food-allergy testing is not recommended as part of a rhinitis evaluation.",
+          "sourceIds": [
+            "jtf-rhinitis-2020"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An adult has persistent allergic rhinitis affecting daily activities and has not yet tried nasal treatment. Which monotherapy is preferred?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Daily systemic corticosteroid"
+            },
+            {
+              "id": "B",
+              "text": "Montelukast before nasal therapy"
+            },
+            {
+              "id": "C",
+              "text": "Routine antibiotics"
+            },
+            {
+              "id": "D",
+              "text": "Intranasal corticosteroid"
+            },
+            {
+              "id": "E",
+              "text": "Food elimination based only on an unselected panel"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "The practice parameter favors intranasal corticosteroid monotherapy for persistent allergic rhinitis.",
+          "distractorExplanations": {
+            "A": "This is not preferred nasal monotherapy.",
+            "B": "Montelukast is reserved for failure or intolerance of alternatives.",
+            "C": "No bacterial infection is described.",
+            "E": "Routine food testing is not recommended."
+          },
+          "sectionIds": [
+            "first-line",
+            "escalation",
+            "testing"
+          ],
+          "sourceIds": [
+            "jtf-rhinitis-2020"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Select preferred persistent-rhinitis monotherapy.",
+          "difficulty": "application",
+          "id": "allergic-rhinitis-q1"
+        },
+        {
+          "stem": "A patient with allergic rhinitis asks for a broad food-allergy panel despite having no food-associated symptoms. Which approach best matches the practice parameter?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Order the panel in every rhinitis case"
+            },
+            {
+              "id": "B",
+              "text": "Require a food panel before nasal therapy"
+            },
+            {
+              "id": "C",
+              "text": "Diagnose food allergy from sneezing alone"
+            },
+            {
+              "id": "D",
+              "text": "Use antibiotics instead of assessment"
+            },
+            {
+              "id": "E",
+              "text": "Avoid routine food-allergy testing for rhinitis"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Rhinitis alone is not an indication for routine food-allergy testing.",
+          "distractorExplanations": {
+            "A": "Routine panels are not recommended.",
+            "B": "The panel is not a prerequisite.",
+            "C": "The vignette lacks a food-allergy history.",
+            "D": "This does not address the question."
+          },
+          "sectionIds": [
+            "testing"
+          ],
+          "sourceIds": [
+            "jtf-rhinitis-2020"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Avoid unsupported food-allergy evaluation in isolated rhinitis.",
+          "difficulty": "application",
+          "id": "allergic-rhinitis-q2"
+        }
+      ]
+    },
+    {
+      "id": "tuberculosis",
+      "name": "Tuberculosis infection and disease",
+      "aliases": [
+        "TB",
+        "latent tuberculosis",
+        "LTBI"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "chronic",
+      "keywords": [
+        "IGRA",
+        "BCG",
+        "rifamycin",
+        "active disease"
+      ],
+      "overview": "Study the distinction between infection and active disease, BCG-related test selection and preventive treatment.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-tb-latent",
+          "title": "Clinical Overview of Latent Tuberculosis Infection",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/tb/hcp/clinical-overview/latent-tuberculosis-infection.html",
+          "kind": "official-recommendation",
+          "edition": "Current official web page; edition not stated",
+          "publishedDate": "2025-04-17",
+          "checkedAt": "2026-10-09",
+          "locator": "Diagnosis; treatment and recovery",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-tb-testing",
+          "title": "Clinical Testing and Diagnosis for Tuberculosis",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/tb/hcp/testing-diagnosis/index.html",
+          "kind": "official-recommendation",
+          "edition": "Current official web page; edition not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "TB blood tests; diagnosis",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "infection-disease",
+          "title": "Infection versus disease",
+          "text": "A positive IGRA or skin test indicates infection; evaluate for active TB before assigning latent infection or starting preventive treatment.",
+          "sourceIds": [
+            "cdc-tb-latent"
+          ]
+        },
+        {
+          "id": "bcg",
+          "title": "BCG and testing",
+          "text": "A TB blood test is preferred for BCG-vaccinated people aged at least five years.",
+          "sourceIds": [
+            "cdc-tb-testing"
+          ]
+        },
+        {
+          "id": "prevention",
+          "title": "Latent infection treatment",
+          "text": "CDC preferentially recommends eligible three- or four-month rifamycin-based regimens over longer isoniazid monotherapy.",
+          "sourceIds": [
+            "cdc-tb-latent"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A 30-year-old BCG-vaccinated immigrant needs testing for TB infection. Which test avoids the BCG-related limitation of skin testing and is CDC-preferred?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Serum bacterial antibody panel"
+            },
+            {
+              "id": "B",
+              "text": "Repeat BCG vaccination"
+            },
+            {
+              "id": "C",
+              "text": "Routine sputum culture in all asymptomatic people"
+            },
+            {
+              "id": "D",
+              "text": "Chest radiograph as the only infection test"
+            },
+            {
+              "id": "E",
+              "text": "Interferon-gamma release assay"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "CDC prefers a TB blood test in BCG-vaccinated people in this age group.",
+          "distractorExplanations": {
+            "A": "This is not the recommended test.",
+            "B": "Vaccination is not a diagnostic test.",
+            "C": "This is not the preferred screening test here.",
+            "D": "Imaging does not replace infection testing."
+          },
+          "sectionIds": [
+            "bcg"
+          ],
+          "sourceIds": [
+            "cdc-tb-testing"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Choose IGRA for BCG-vaccinated adults.",
+          "difficulty": "application",
+          "id": "tuberculosis-q1"
+        },
+        {
+          "stem": "A patient has a positive IGRA and is being considered for latent-TB treatment. What must occur before preventive therapy is started?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Begin monotherapy without evaluation"
+            },
+            {
+              "id": "B",
+              "text": "Assume the IGRA proves active pulmonary disease"
+            },
+            {
+              "id": "C",
+              "text": "Repeat BCG vaccination"
+            },
+            {
+              "id": "D",
+              "text": "Exclude active TB disease"
+            },
+            {
+              "id": "E",
+              "text": "Ignore symptoms if the IGRA is positive"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Active disease must be excluded before latent-infection treatment.",
+          "distractorExplanations": {
+            "A": "This skips a required distinction.",
+            "B": "IGRA alone does not establish active disease.",
+            "C": "This does not exclude active disease.",
+            "E": "Symptoms remain clinically relevant."
+          },
+          "sectionIds": [
+            "infection-disease"
+          ],
+          "sourceIds": [
+            "cdc-tb-latent"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Separate TB infection from active disease before preventive therapy.",
+          "difficulty": "application",
+          "id": "tuberculosis-q2"
+        }
+      ]
+    },
+    {
+      "id": "acute-otitis-media",
+      "name": "Acute otitis media",
+      "aliases": [
+        "AOM",
+        "middle ear infection"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "acute",
+      "keywords": [
+        "bulging tympanic membrane",
+        "effusion",
+        "amoxicillin",
+        "conjunctivitis"
+      ],
+      "overview": "Study objective pediatric AOM diagnosis and initial antibiotic choice.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-pediatric-aom",
+          "title": "Outpatient Clinical Care for Pediatric Populations",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/pediatric-outpatient.html",
+          "kind": "official-recommendation",
+          "edition": "Current official web page; edition not stated",
+          "publishedDate": "2024-04-22",
+          "checkedAt": "2026-10-09",
+          "locator": "Acute otitis media row",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Diagnostic evidence",
+          "text": "AOM requires middle-ear effusion and compatible acute findings such as a bulging tympanic membrane; erythema alone is insufficient.",
+          "sourceIds": [
+            "cdc-pediatric-aom"
+          ]
+        },
+        {
+          "id": "observation",
+          "title": "Observation candidates",
+          "text": "Selected mild cases can undergo shared-decision watchful waiting, with eligibility depending on age and laterality.",
+          "sourceIds": [
+            "cdc-pediatric-aom"
+          ]
+        },
+        {
+          "id": "antibiotics",
+          "title": "Antibiotic choice",
+          "text": "Amoxicillin is first-line without recent exposure. Recent amoxicillin, purulent conjunctivitis or relevant recurrent treatment failure favors amoxicillin/clavulanate.",
+          "sourceIds": [
+            "cdc-pediatric-aom"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A child with a respiratory infection has an erythematous tympanic membrane but no middle-ear effusion on pneumatic otoscopy. What is the best conclusion?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Effusion assessment is irrelevant"
+            },
+            {
+              "id": "B",
+              "text": "AOM diagnostic criteria are not met"
+            },
+            {
+              "id": "C",
+              "text": "Recurrent AOM requires prophylactic antibiotics"
+            },
+            {
+              "id": "D",
+              "text": "AOM is confirmed by redness alone"
+            },
+            {
+              "id": "E",
+              "text": "All children with redness require ceftriaxone"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Without middle-ear effusion, CDC says not to diagnose AOM.",
+          "distractorExplanations": {
+            "A": "Effusion is required.",
+            "C": "Recurrent disease is not established.",
+            "D": "Redness alone is insufficient.",
+            "E": "The diagnostic prerequisite is absent."
+          },
+          "sectionIds": [
+            "diagnosis"
+          ],
+          "sourceIds": [
+            "cdc-pediatric-aom"
+          ],
+          "domain": "acute",
+          "learningObjective": "Avoid diagnosing AOM from erythema alone.",
+          "difficulty": "application",
+          "id": "acute-otitis-media-q1"
+        },
+        {
+          "stem": "A child has confirmed AOM requiring antibiotics and concurrent purulent conjunctivitis. There is no beta-lactam allergy. Which oral choice fits CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No antibiotic because conjunctivitis is present"
+            },
+            {
+              "id": "B",
+              "text": "Metronidazole"
+            },
+            {
+              "id": "C",
+              "text": "Doxycycline as routine pediatric first-line"
+            },
+            {
+              "id": "D",
+              "text": "Amoxicillin/clavulanate"
+            },
+            {
+              "id": "E",
+              "text": "Azithromycin in every case"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Purulent conjunctivitis is a reason to choose amoxicillin/clavulanate.",
+          "distractorExplanations": {
+            "A": "The case states antibiotics are indicated.",
+            "B": "This is not the specified AOM regimen.",
+            "C": "This is not routine first-line AOM treatment.",
+            "E": "This is not the specified choice."
+          },
+          "sectionIds": [
+            "antibiotics"
+          ],
+          "sourceIds": [
+            "cdc-pediatric-aom"
+          ],
+          "domain": "acute",
+          "learningObjective": "Use conjunctivitis as a modifier of AOM antibiotic choice.",
+          "difficulty": "application",
+          "id": "acute-otitis-media-q2"
+        }
+      ]
+    },
+    {
+      "id": "otitis-externa",
+      "name": "Acute otitis externa",
+      "aliases": [
+        "swimmer’s ear",
+        "external ear infection"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "acute",
+      "keywords": [
+        "tragal tenderness",
+        "ear canal",
+        "topical therapy",
+        "facial palsy"
+      ],
+      "overview": "Study external-canal infection and escalation signs. The cited HSE guideline is Irish supplementary guidance, not a US guideline.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "hse-otitis-externa-2026",
+          "title": "Acute otitis externa guideline",
+          "organization": "Health Service Executive, Ireland",
+          "url": "https://assets.hse.ie/media/documents/Acute_otitis_externa_guidelinev2.pdf",
+          "kind": "clinical-guideline",
+          "edition": "Ireland; Version 2.0 reviewed March 2026",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Pages 1–3: examination; treatment; urgent referral",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "recognition",
+          "title": "External-canal localization",
+          "text": "Tragal or pinna tenderness with ear-canal inflammation supports otitis externa.",
+          "sourceIds": [
+            "hse-otitis-externa-2026"
+          ]
+        },
+        {
+          "id": "local-treatment",
+          "title": "Local treatment",
+          "text": "The Irish HSE guideline uses topical antimicrobial options, with attention to tympanic-membrane integrity, analgesia and keeping the ear dry.",
+          "sourceIds": [
+            "hse-otitis-externa-2026"
+          ]
+        },
+        {
+          "id": "escalation",
+          "title": "Escalation signs",
+          "text": "Cranial nerve involvement, granulation tissue or extension of pain in a high-risk patient raises concern for necrotizing disease and warrants urgent hospital referral.",
+          "sourceIds": [
+            "hse-otitis-externa-2026"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A swimmer has rapid-onset ear pain, a swollen erythematous ear canal and marked tragal tenderness. Which anatomic diagnosis best fits these findings?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Otitis media with effusion"
+            },
+            {
+              "id": "B",
+              "text": "Mastoiditis"
+            },
+            {
+              "id": "C",
+              "text": "Temporomandibular pain"
+            },
+            {
+              "id": "D",
+              "text": "Acute otitis media"
+            },
+            {
+              "id": "E",
+              "text": "Acute otitis externa"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "The painful tragus and inflamed canal localize the problem to the external ear.",
+          "distractorExplanations": {
+            "A": "This does not best localize the painful canal findings.",
+            "B": "No mastoid findings are described.",
+            "C": "The canal is visibly inflamed.",
+            "D": "The prominent findings are in the external canal."
+          },
+          "sectionIds": [
+            "recognition"
+          ],
+          "sourceIds": [
+            "hse-otitis-externa-2026"
+          ],
+          "domain": "acute",
+          "learningObjective": "Localize ear pain to the external canal.",
+          "difficulty": "application",
+          "id": "otitis-externa-q1"
+        },
+        {
+          "stem": "An older patient with diabetes has an external-ear infection, granulation tissue and new facial weakness. Which response is appropriate under the cited supplementary guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Urgent hospital referral for possible necrotizing otitis externa"
+            },
+            {
+              "id": "B",
+              "text": "Routine follow-up in a month"
+            },
+            {
+              "id": "C",
+              "text": "Treat as simple allergy"
+            },
+            {
+              "id": "D",
+              "text": "Ignore the weakness if drops were prescribed"
+            },
+            {
+              "id": "E",
+              "text": "Ear irrigation alone"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "High-risk infection with cranial nerve involvement requires urgent escalation.",
+          "distractorExplanations": {
+            "B": "This delays evaluation of a red flag.",
+            "C": "The infection and weakness are not simple allergy.",
+            "D": "New weakness changes the assessment.",
+            "E": "This does not address possible invasive disease."
+          },
+          "sectionIds": [
+            "escalation"
+          ],
+          "sourceIds": [
+            "hse-otitis-externa-2026"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Recognize invasive external-ear infection red flags.",
+          "difficulty": "application",
+          "id": "otitis-externa-q2"
+        }
+      ]
+    },
+    {
+      "id": "gastroesophageal-reflux-disease",
+      "name": "Gastroesophageal reflux disease",
+      "aliases": [
+        "GERD",
+        "reflux"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "chronic",
+      "keywords": [
+        "PPI",
+        "heartburn",
+        "alarm symptoms",
+        "endoscopy"
+      ],
+      "overview": "Study empiric treatment versus objective investigation using AGA best-practice advice.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aga-gerd-2022",
+          "title": "Personalized approach to the evaluation and management of gastroesophageal reflux disease (GERD)",
+          "organization": "American Gastroenterological Association",
+          "url": "https://gastro.org/clinical-guidance/personalized-approach-to-the-evaluation-and-management-of-gastroesophageal-reflux-disease-gerd/",
+          "kind": "official-recommendation",
+          "edition": "2022 clinical practice update",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Best practice advice 4, 6 and 8",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "empiric",
+          "title": "Typical symptoms",
+          "text": "Troublesome typical symptoms without alarm features support a four- to eight-week single-dose PPI trial, then the lowest effective dose if improved.",
+          "sourceIds": [
+            "aga-gerd-2022"
+          ]
+        },
+        {
+          "id": "investigation",
+          "title": "Investigation",
+          "text": "Alarm features or inadequate response to a PPI trial warrant endoscopic investigation; additional reflux testing depends on findings.",
+          "sourceIds": [
+            "aga-gerd-2022"
+          ]
+        },
+        {
+          "id": "extraesophageal",
+          "title": "Isolated extraesophageal symptoms",
+          "text": "For isolated extraesophageal symptoms with suspected reflux, AGA favors objective testing off medication before empiric PPI treatment.",
+          "sourceIds": [
+            "aga-gerd-2022"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An adult has troublesome heartburn and regurgitation without alarm features. A cardiac explanation is not suspected. Which initial strategy fits AGA advice?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No treatment without a positive stool test"
+            },
+            {
+              "id": "B",
+              "text": "Indefinite antibiotics"
+            },
+            {
+              "id": "C",
+              "text": "Single-dose PPI trial for four to eight weeks"
+            },
+            {
+              "id": "D",
+              "text": "Routine twice-daily PPI forever"
+            },
+            {
+              "id": "E",
+              "text": "Immediate antireflux surgery"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "A time-limited single-dose PPI trial is appropriate for typical symptoms without alarms.",
+          "distractorExplanations": {
+            "A": "Stool testing is not the indicated prerequisite.",
+            "B": "This is not GERD treatment.",
+            "D": "Duration and dose should be reassessed.",
+            "E": "Invasive therapy requires further confirmation."
+          },
+          "sectionIds": [
+            "empiric"
+          ],
+          "sourceIds": [
+            "aga-gerd-2022"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Use a bounded empiric PPI trial in typical uncomplicated reflux.",
+          "difficulty": "application",
+          "id": "gastroesophageal-reflux-disease-q1"
+        },
+        {
+          "stem": "A patient treated for presumed GERD develops progressive dysphagia and has persistent symptoms despite a PPI trial. What evaluation is favored?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Upper endoscopy"
+            },
+            {
+              "id": "B",
+              "text": "Routine influenza test"
+            },
+            {
+              "id": "C",
+              "text": "No evaluation until symptoms disappear"
+            },
+            {
+              "id": "D",
+              "text": "Increase medication indefinitely without investigation"
+            },
+            {
+              "id": "E",
+              "text": "Food-allergy panel alone"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Alarm symptoms and inadequate response favor endoscopic investigation.",
+          "distractorExplanations": {
+            "B": "This is unrelated to the symptom pattern.",
+            "C": "This delays appropriate investigation.",
+            "D": "This bypasses alarm-feature evaluation.",
+            "E": "This does not address the described alarm."
+          },
+          "sectionIds": [
+            "investigation"
+          ],
+          "sourceIds": [
+            "aga-gerd-2022"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize when reflux symptoms require endoscopic evaluation.",
+          "difficulty": "application",
+          "id": "gastroesophageal-reflux-disease-q2"
+        }
+      ]
+    },
+    {
+      "id": "peptic-ulcer-h-pylori",
+      "name": "Peptic ulcer disease and Helicobacter pylori infection",
+      "aliases": [
+        "PUD",
+        "H. pylori",
+        "Helicobacter pylori"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "chronic",
+      "keywords": [
+        "bismuth quadruple",
+        "eradication",
+        "urea breath test",
+        "PPI hold"
+      ],
+      "overview": "Study H. pylori-associated ulcer disease, susceptibility-aware treatment and eradication confirmation.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "acg-hpylori-2024",
+          "title": "ACG Guideline Highlights: Treatment of Helicobacter pylori Infection",
+          "organization": "American College of Gastroenterology",
+          "url": "https://gi.org/wp-content/uploads/2025/01/ACG-Hpylori-Guidelines-Highlights-2024-FINAL.pdf.pdf",
+          "kind": "official-recommendation",
+          "edition": "2024 guideline highlights; underlying guideline September 2024",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "When to test; treatment table; treatment pearls",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "testing",
+          "title": "Testing and ulcer history",
+          "text": "Current or previous peptic ulcer disease is an indication to assess H. pylori when prior eradication is not established.",
+          "sourceIds": [
+            "acg-hpylori-2024"
+          ]
+        },
+        {
+          "id": "eradication",
+          "title": "Treatment selection",
+          "text": "Optimized bismuth quadruple treatment is recommended empirically. Avoid clarithromycin- or levofloxacin-containing regimens without demonstrated susceptibility.",
+          "sourceIds": [
+            "acg-hpylori-2024"
+          ]
+        },
+        {
+          "id": "test-of-cure",
+          "title": "Confirming eradication",
+          "text": "Confirm cure at least four weeks after therapy using breath, stool-antigen or biopsy testing. Hold PPIs two weeks and antibiotics/bismuth four weeks to avoid false negatives.",
+          "sourceIds": [
+            "acg-hpylori-2024"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A treatment-naive adult has confirmed H. pylori infection and no susceptibility result. Which listed option best matches the empiric ACG recommendation?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "PPI alone"
+            },
+            {
+              "id": "B",
+              "text": "Clarithromycin triple therapy regardless of resistance"
+            },
+            {
+              "id": "C",
+              "text": "No treatment after a positive test"
+            },
+            {
+              "id": "D",
+              "text": "Optimized bismuth quadruple therapy"
+            },
+            {
+              "id": "E",
+              "text": "Levofloxacin alone"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Optimized bismuth quadruple therapy is the recommended empiric option.",
+          "distractorExplanations": {
+            "A": "Acid suppression alone does not provide the regimen.",
+            "B": "Susceptibility is not demonstrated.",
+            "C": "Confirmed infection should be treated.",
+            "E": "Susceptibility is not demonstrated."
+          },
+          "sectionIds": [
+            "eradication"
+          ],
+          "sourceIds": [
+            "acg-hpylori-2024"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Choose resistance-aware empiric H. pylori treatment.",
+          "difficulty": "application",
+          "id": "peptic-ulcer-h-pylori-q1"
+        },
+        {
+          "stem": "A patient finished H. pylori therapy six weeks ago and remains on a PPI. Which plan improves the validity of a stool-antigen test of cure?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Test one day after restarting antibiotics"
+            },
+            {
+              "id": "B",
+              "text": "Test while continuing the PPI"
+            },
+            {
+              "id": "C",
+              "text": "Hold the PPI for two weeks before testing"
+            },
+            {
+              "id": "D",
+              "text": "Replace the test with routine antibody titers"
+            },
+            {
+              "id": "E",
+              "text": "Use symptoms alone to prove cure"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "The timing after therapy is adequate; the PPI should be withheld for two weeks.",
+          "distractorExplanations": {
+            "A": "Recent antibiotics undermine testing.",
+            "B": "This increases false-negative risk.",
+            "D": "This is not the specified cure test.",
+            "E": "Symptoms do not establish eradication."
+          },
+          "sectionIds": [
+            "test-of-cure"
+          ],
+          "sourceIds": [
+            "acg-hpylori-2024"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Prepare properly for an H. pylori test of cure.",
+          "difficulty": "application",
+          "id": "peptic-ulcer-h-pylori-q2"
+        }
+      ]
+    },
+    {
+      "id": "irritable-bowel-syndrome",
+      "name": "Irritable bowel syndrome",
+      "aliases": [
+        "IBS",
+        "IBS-C",
+        "IBS-D"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "chronic",
+      "keywords": [
+        "low FODMAP",
+        "soluble fiber",
+        "dietitian",
+        "gut-brain"
+      ],
+      "overview": "Study dietary management after an IBS diagnosis has been established; this is not a complete diagnostic exclusion algorithm.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aga-ibs-diet-2022",
+          "title": "AGA Clinical Practice Update on the Role of Diet in Irritable Bowel Syndrome: Expert Review",
+          "organization": "American Gastroenterological Association",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/35337654/",
+          "kind": "official-recommendation",
+          "edition": "2022 clinical practice update",
+          "publishedDate": "2022-03-23",
+          "checkedAt": "2026-10-09",
+          "locator": "Best practice advice 1–3 and 5–7 in official commissioned publication abstract",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "fiber",
+          "title": "Soluble fiber",
+          "text": "Soluble fiber can improve global IBS symptoms.",
+          "sourceIds": [
+            "aga-ibs-diet-2022"
+          ]
+        },
+        {
+          "id": "fodmap",
+          "title": "Low-FODMAP strategy",
+          "text": "A low-FODMAP intervention is a bounded restriction phase of no more than four to six weeks, followed by reintroduction and individualized maintenance.",
+          "sourceIds": [
+            "aga-ibs-diet-2022"
+          ]
+        },
+        {
+          "id": "candidate",
+          "title": "Patient selection",
+          "text": "Dietitian support aids implementation. Restrictive diets are poor choices with malnutrition risk, food insecurity or an eating disorder.",
+          "sourceIds": [
+            "aga-ibs-diet-2022"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An adult with established IBS improves during a four-week low-FODMAP trial with a dietitian. Which next step best matches the intended strategy?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Maintain maximal restriction indefinitely"
+            },
+            {
+              "id": "B",
+              "text": "Repeat unselected food panels monthly"
+            },
+            {
+              "id": "C",
+              "text": "Reintroduce foods and personalize the diet"
+            },
+            {
+              "id": "D",
+              "text": "Eliminate every fiber source"
+            },
+            {
+              "id": "E",
+              "text": "Begin antibiotics for all IBS"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Reintroduction and personalization follow the short restriction phase.",
+          "distractorExplanations": {
+            "A": "The restriction phase is intentionally bounded.",
+            "B": "This is not the advised sequence.",
+            "D": "This is not the advised sequence.",
+            "E": "This does not follow the dietary strategy."
+          },
+          "sectionIds": [
+            "fodmap"
+          ],
+          "sourceIds": [
+            "aga-ibs-diet-2022"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Use all three phases of a low-FODMAP intervention.",
+          "difficulty": "application",
+          "id": "irritable-bowel-syndrome-q1"
+        },
+        {
+          "stem": "A patient with IBS has an active eating disorder and a severely restricted intake. Which initial dietary recommendation is most appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Add several new food bans"
+            },
+            {
+              "id": "B",
+              "text": "Prescribe fasting until symptoms cease"
+            },
+            {
+              "id": "C",
+              "text": "Avoid further restrictive dieting and arrange individualized nutritional support"
+            },
+            {
+              "id": "D",
+              "text": "Remove all carbohydrates permanently"
+            },
+            {
+              "id": "E",
+              "text": "Begin a stricter low-FODMAP elimination immediately"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "An eating disorder makes restrictive diet interventions a poor choice; individualized support is favored.",
+          "distractorExplanations": {
+            "A": "This compounds restriction.",
+            "B": "This compounds restriction.",
+            "D": "This compounds restriction.",
+            "E": "This compounds restriction."
+          },
+          "sectionIds": [
+            "candidate"
+          ],
+          "sourceIds": [
+            "aga-ibs-diet-2022"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize contraindications to restrictive IBS dietary strategies.",
+          "difficulty": "application",
+          "id": "irritable-bowel-syndrome-q2"
+        }
+      ]
+    },
+    {
+      "id": "chronic-constipation",
+      "name": "Chronic idiopathic constipation",
+      "aliases": [
+        "CIC",
+        "refractory constipation"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "chronic",
+      "keywords": [
+        "PEG",
+        "linaclotide",
+        "anorectal manometry",
+        "balloon expulsion",
+        "biofeedback"
+      ],
+      "overview": "Study adult medication choices and the 2026 evaluation pathway before labeling disease refractory.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aga-acg-cic-2023",
+          "title": "Pharmacological management of chronic idiopathic constipation",
+          "organization": "American Gastroenterological Association / American College of Gastroenterology",
+          "url": "https://gastro.org/clinical-guidance/pharmacological-management-of-chronic-idiopathic-constipation-cic/",
+          "kind": "clinical-guideline",
+          "edition": "2023 joint guideline",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Recommendations 2 and 8",
+          "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "aga-refractory-constipation-2026",
+          "title": "Evaluation and management of refractory constipation",
+          "organization": "American Gastroenterological Association",
+          "url": "https://gastro.org/clinical-guidance/evaluation-and-management-of-refractory-constipation/",
+          "kind": "official-recommendation",
+          "edition": "2026 clinical practice update",
+          "publishedDate": "2026-01-07",
+          "checkedAt": "2026-10-09",
+          "locator": "Best practice advice: anorectal testing, secondary causes and surgery",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "initial",
+          "title": "Medication evidence",
+          "text": "The joint guideline recommends polyethylene glycol for adult CIC.",
+          "sourceIds": [
+            "aga-acg-cic-2023"
+          ]
+        },
+        {
+          "id": "escalation",
+          "title": "Medication escalation",
+          "text": "For CIC not responding to over-the-counter agents, linaclotide is a recommended prescription option.",
+          "sourceIds": [
+            "aga-acg-cic-2023"
+          ]
+        },
+        {
+          "id": "refractory",
+          "title": "Before declaring refractory disease",
+          "text": "Evaluate secondary causes and consider anorectal manometry with balloon expulsion testing; indicated pelvic-floor biofeedback precedes a refractory label. Surgery requires confirmed slow transit and exclusion of pelvic-floor dysfunction.",
+          "sourceIds": [
+            "aga-refractory-constipation-2026"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An adult with CIC has an inadequate response to over-the-counter therapy and seeks a prescription option. Which agent carries a joint AGA/ACG recommendation in this setting?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Linaclotide"
+            },
+            {
+              "id": "B",
+              "text": "Oseltamivir"
+            },
+            {
+              "id": "C",
+              "text": "Amoxicillin"
+            },
+            {
+              "id": "D",
+              "text": "Routine chronic opioid"
+            },
+            {
+              "id": "E",
+              "text": "Loperamide"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Linaclotide is recommended when adult CIC does not respond to OTC agents.",
+          "distractorExplanations": {
+            "B": "This is not the specified constipation therapy.",
+            "C": "This is not the specified constipation therapy.",
+            "D": "This is not the specified constipation therapy.",
+            "E": "This is not the specified constipation therapy."
+          },
+          "sectionIds": [
+            "escalation"
+          ],
+          "sourceIds": [
+            "aga-acg-cic-2023"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Choose a recommended prescription option after OTC failure.",
+          "difficulty": "application",
+          "id": "chronic-constipation-q1"
+        },
+        {
+          "stem": "A patient with chronic constipation has failed several laxatives and is called refractory, but has never had assessment for a defecatory disorder. Which evaluation should usually precede that label?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Routine brain CT"
+            },
+            {
+              "id": "B",
+              "text": "Immediate colectomy"
+            },
+            {
+              "id": "C",
+              "text": "Stop all evaluation because laxatives failed"
+            },
+            {
+              "id": "D",
+              "text": "H. pylori serology"
+            },
+            {
+              "id": "E",
+              "text": "Anorectal manometry with balloon expulsion testing"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "The 2026 update calls for anorectal evaluation and indicated biofeedback before labeling most cases refractory.",
+          "distractorExplanations": {
+            "A": "This does not assess defecation physiology.",
+            "B": "Surgery requires more physiologic evaluation.",
+            "C": "Failure warrants further evaluation.",
+            "D": "This does not assess defecation physiology."
+          },
+          "sectionIds": [
+            "refractory"
+          ],
+          "sourceIds": [
+            "aga-refractory-constipation-2026"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Evaluate pelvic-floor dysfunction before a refractory-constipation label.",
+          "difficulty": "application",
+          "id": "chronic-constipation-q2"
+        }
+      ]
+    },
+    {
+      "id": "acute-gastroenteritis",
+      "name": "Acute infectious gastroenteritis",
+      "aliases": [
+        "infectious diarrhea",
+        "acute diarrhea"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "acute",
+      "keywords": [
+        "oral rehydration",
+        "dehydration",
+        "STEC",
+        "bloody diarrhea"
+      ],
+      "overview": "Study hydration and cautious antibacterial use in acute infectious diarrhea.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "idsa-infectious-diarrhea-2017",
+          "title": "IDSA 2017 Clinical Practice Guidelines for the Diagnosis and Management of Infectious Diarrhea",
+          "organization": "Infectious Diseases Society of America",
+          "url": "https://www.idsociety.org/practice-guideline/infectious-diarrhea",
+          "kind": "clinical-guideline",
+          "edition": "2017 clinical practice guideline",
+          "publishedDate": "2017-10-19",
+          "checkedAt": "2026-10-09",
+          "locator": "Recommendations 35, 36, 39, 41 and 45",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "rehydration",
+          "title": "Rehydration",
+          "text": "Reduced-osmolarity oral rehydration solution is first-line for mild-to-moderate dehydration. Shock, severe dehydration or altered mental status warrants isotonic intravenous fluids.",
+          "sourceIds": [
+            "idsa-infectious-diarrhea-2017"
+          ]
+        },
+        {
+          "id": "antibiotics",
+          "title": "Antibiotic restraint",
+          "text": "Most acute watery diarrhea without recent international travel does not require empiric antibiotics. Avoid antimicrobials in STEC O157 or Shiga-toxin-2 infection.",
+          "sourceIds": [
+            "idsa-infectious-diarrhea-2017"
+          ]
+        },
+        {
+          "id": "feeding",
+          "title": "Nutrition",
+          "text": "Resume an age-appropriate usual diet during or immediately after rehydration; breastfeeding should continue.",
+          "sourceIds": [
+            "idsa-infectious-diarrhea-2017"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A child with acute diarrhea has mild dehydration, normal mental status and can drink. Which initial hydration is guideline-preferred?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Immediate parenteral nutrition"
+            },
+            {
+              "id": "B",
+              "text": "Antibiotics instead of fluids"
+            },
+            {
+              "id": "C",
+              "text": "Hypertonic saline for every case"
+            },
+            {
+              "id": "D",
+              "text": "Reduced-osmolarity oral rehydration solution"
+            },
+            {
+              "id": "E",
+              "text": "Withhold all fluids"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Oral rehydration is first-line for mild-to-moderate dehydration when feasible.",
+          "distractorExplanations": {
+            "A": "This is not the initial hydration strategy.",
+            "B": "This does not replace losses.",
+            "C": "This is not the recommended routine fluid.",
+            "E": "This does not replace losses."
+          },
+          "sectionIds": [
+            "rehydration"
+          ],
+          "sourceIds": [
+            "idsa-infectious-diarrhea-2017"
+          ],
+          "domain": "acute",
+          "learningObjective": "Match hydration route to dehydration severity.",
+          "difficulty": "application",
+          "id": "acute-gastroenteritis-q1"
+        },
+        {
+          "stem": "An immunocompetent adult has bloody diarrhea with confirmed STEC O157. Which antibacterial approach fits IDSA guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Antibiotics until all contacts test negative"
+            },
+            {
+              "id": "B",
+              "text": "Routine amoxicillin"
+            },
+            {
+              "id": "C",
+              "text": "Routine empiric ciprofloxacin"
+            },
+            {
+              "id": "D",
+              "text": "Avoid antimicrobials for this infection"
+            },
+            {
+              "id": "E",
+              "text": "Treat solely to sterilize every stool culture"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Antimicrobials should be avoided for STEC O157.",
+          "distractorExplanations": {
+            "A": "This is not the indicated endpoint.",
+            "B": "This conflicts with the stated STEC precaution.",
+            "C": "This conflicts with the stated STEC precaution.",
+            "E": "This conflicts with the stated STEC precaution."
+          },
+          "sectionIds": [
+            "antibiotics"
+          ],
+          "sourceIds": [
+            "idsa-infectious-diarrhea-2017"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize a pathogen-specific reason to avoid antibiotics.",
+          "difficulty": "application",
+          "id": "acute-gastroenteritis-q2"
+        }
+      ]
+    },
+    {
+      "id": "acute-cholecystitis",
+      "name": "Acute cholecystitis",
+      "aliases": [
+        "gallbladder inflammation"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "acute",
+      "keywords": [
+        "ultrasound",
+        "HIDA",
+        "MRCP",
+        "right upper quadrant"
+      ],
+      "overview": "Study the current US imaging sequence for suspected acute cholecystitis; this module does not substitute for acute surgical assessment.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "idsa-cholecystitis-imaging-2024",
+          "title": "2024 Clinical Practice Guideline Update by the Infectious Diseases Society of America on Complicated Intraabdominal Infections: Diagnostic Imaging of Suspected Acute Cholecystitis and Acute Cholangitis in Adults, Children, and Pregnant People",
+          "organization": "Infectious Diseases Society of America",
+          "url": "https://academic.oup.com/cid/article/79/Supplement_3/S104/7706134",
+          "kind": "clinical-guideline",
+          "edition": "2024 guideline chapter",
+          "publishedDate": "2024-06-13",
+          "checkedAt": "2026-10-09",
+          "locator": "Initial and subsequent imaging recommendations; implementation considerations",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "initial",
+          "title": "Initial imaging",
+          "text": "For nonpregnant adults with suspected acute cholecystitis, IDSA suggests abdominal ultrasound first.",
+          "sourceIds": [
+            "idsa-cholecystitis-imaging-2024"
+          ]
+        },
+        {
+          "id": "second",
+          "title": "After inconclusive ultrasound",
+          "text": "Persistent suspicion with equivocal ultrasound supports abdominal CT, particularly when complications or alternative diagnoses need evaluation.",
+          "sourceIds": [
+            "idsa-cholecystitis-imaging-2024"
+          ]
+        },
+        {
+          "id": "third",
+          "title": "Persistent uncertainty",
+          "text": "If ultrasound and CT remain nondiagnostic, MRI/MRCP or HIDA can be used. The guideline notes direct ultrasound-to-HIDA may suit selected high-suspicion cases.",
+          "sourceIds": [
+            "idsa-cholecystitis-imaging-2024"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A nonpregnant adult is being evaluated for suspected acute cholecystitis. No imaging has been performed. Which initial modality is suggested by IDSA?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Colonoscopy"
+            },
+            {
+              "id": "B",
+              "text": "Routine ERCP"
+            },
+            {
+              "id": "C",
+              "text": "Brain MRI"
+            },
+            {
+              "id": "D",
+              "text": "Abdominal ultrasound"
+            },
+            {
+              "id": "E",
+              "text": "Chest radiograph"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Ultrasound is the suggested initial modality.",
+          "distractorExplanations": {
+            "A": "This does not target the gallbladder.",
+            "B": "This is not the initial imaging recommendation.",
+            "C": "This does not target the gallbladder.",
+            "E": "This does not target the gallbladder."
+          },
+          "sectionIds": [
+            "initial"
+          ],
+          "sourceIds": [
+            "idsa-cholecystitis-imaging-2024"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select first-line imaging for suspected cholecystitis.",
+          "difficulty": "application",
+          "id": "acute-cholecystitis-q1"
+        },
+        {
+          "stem": "A nonpregnant patient has persistent concern for acute cholecystitis after both ultrasound and CT are nondiagnostic. Which listed imaging study is an appropriate next option?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "HIDA scan"
+            },
+            {
+              "id": "B",
+              "text": "Bone-density scan"
+            },
+            {
+              "id": "C",
+              "text": "Screening mammogram"
+            },
+            {
+              "id": "D",
+              "text": "Routine echocardiogram"
+            },
+            {
+              "id": "E",
+              "text": "Sinus CT"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "HIDA or MRI/MRCP is a supported subsequent option after nondiagnostic ultrasound and CT.",
+          "distractorExplanations": {
+            "B": "This does not resolve gallbladder uncertainty.",
+            "C": "This does not resolve gallbladder uncertainty.",
+            "D": "This does not resolve gallbladder uncertainty.",
+            "E": "This does not resolve gallbladder uncertainty."
+          },
+          "sectionIds": [
+            "third"
+          ],
+          "sourceIds": [
+            "idsa-cholecystitis-imaging-2024"
+          ],
+          "domain": "acute",
+          "learningObjective": "Escalate imaging after persistent diagnostic uncertainty.",
+          "difficulty": "application",
+          "id": "acute-cholecystitis-q2"
+        }
+      ]
+    },
+    {
+      "id": "acute-diverticulitis",
+      "name": "Acute colonic diverticulitis",
+      "aliases": [
+        "diverticulitis"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "acute",
+      "keywords": [
+        "CT",
+        "selective antibiotics",
+        "colonoscopy",
+        "immunocompromise"
+      ],
+      "overview": "Study uncomplicated versus higher-risk disease and recovery evaluation using AGA best-practice advice.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aga-diverticulitis-2021",
+          "title": "Medical management of colonic diverticulitis",
+          "organization": "American Gastroenterological Association",
+          "url": "https://gastro.org/clinical-guidance/medical-management-of-colonic-diverticulitis/",
+          "kind": "official-recommendation",
+          "edition": "2021 clinical practice update",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Best practice advice 1–3 and 6–8",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "confirmation",
+          "title": "Confirmation",
+          "text": "Consider CT for a first unconfirmed episode, severe presentation, poor improvement or immunocompromise.",
+          "sourceIds": [
+            "aga-diverticulitis-2021"
+          ]
+        },
+        {
+          "id": "antibiotics",
+          "title": "Selective antibiotic treatment",
+          "text": "Mild uncomplicated disease in an immunocompetent patient can use antibiotics selectively. Immunocompromise, complications or higher-risk features favor antibiotics.",
+          "sourceIds": [
+            "aga-diverticulitis-2021"
+          ]
+        },
+        {
+          "id": "colonoscopy",
+          "title": "Recovery evaluation",
+          "text": "When colonoscopy is indicated after an episode, delay it six to eight weeks or until symptoms fully resolve, whichever is longer; alarms can justify earlier evaluation.",
+          "sourceIds": [
+            "aga-diverticulitis-2021"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An immunocompetent, nonfrail adult has mild CT-confirmed uncomplicated diverticulitis, no vomiting or high-risk features, and reliable reassessment. Which antibiotic principle fits AGA advice?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Treat until every diverticulum disappears"
+            },
+            {
+              "id": "B",
+              "text": "Selective rather than routine antibiotic use is reasonable"
+            },
+            {
+              "id": "C",
+              "text": "Antibiotics are prohibited even if complications develop"
+            },
+            {
+              "id": "D",
+              "text": "Antibiotics are mandatory in every episode"
+            },
+            {
+              "id": "E",
+              "text": "All cases require antifungals"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Selected mild uncomplicated cases can be managed without routine antibiotics.",
+          "distractorExplanations": {
+            "A": "This is not a treatment endpoint.",
+            "C": "Complications change the indication.",
+            "D": "This ignores the selected low-risk group.",
+            "E": "This is not the stated treatment."
+          },
+          "sectionIds": [
+            "antibiotics"
+          ],
+          "sourceIds": [
+            "aga-diverticulitis-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Distinguish selective antibiotics in low-risk uncomplicated diverticulitis.",
+          "difficulty": "application",
+          "id": "acute-diverticulitis-q1"
+        },
+        {
+          "stem": "Colonoscopy is indicated after a patient’s first diverticulitis episode. Symptoms resolved two weeks ago, and there are no alarm features. Which timing principle best follows AGA advice?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Never perform colonoscopy after diverticulitis"
+            },
+            {
+              "id": "B",
+              "text": "Delay for five years regardless of history"
+            },
+            {
+              "id": "C",
+              "text": "Wait six to eight weeks after the episode or until full resolution, whichever is longer"
+            },
+            {
+              "id": "D",
+              "text": "Routine colonoscopy during peak inflammation"
+            },
+            {
+              "id": "E",
+              "text": "Only repeat CT indefinitely"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "AGA advises the six- to eight-week or complete-resolution interval when colonoscopy is indicated.",
+          "distractorExplanations": {
+            "A": "Some patients require recovery evaluation.",
+            "B": "This is not the advised timing.",
+            "D": "This ignores the advised recovery interval.",
+            "E": "CT does not replace the indicated procedure."
+          },
+          "sectionIds": [
+            "colonoscopy"
+          ],
+          "sourceIds": [
+            "aga-diverticulitis-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply post-diverticulitis colonoscopy timing.",
+          "difficulty": "application",
+          "id": "acute-diverticulitis-q2"
+        }
+      ]
+    },
+    {
+      "id": "appendicitis",
+      "name": "Acute appendicitis",
+      "aliases": [
+        "appendicitis"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "emergent",
+      "keywords": [
+        "CT",
+        "ultrasound",
+        "MRI",
+        "pregnancy",
+        "right lower quadrant"
+      ],
+      "overview": "Study population-specific imaging for suspected appendicitis; this condition requires timely acute evaluation.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "idsa-appendicitis-imaging-2024",
+          "title": "IDSA 2024 Guideline Update on the Risk Assessment, Diagnostic Imaging, and Microbiological Evaluation of Complicated Intra-abdominal Infections in Adults, Children, and Pregnant People",
+          "organization": "Infectious Diseases Society of America",
+          "url": "https://www.idsociety.org/practice-guideline/intra-abdominal-infections/",
+          "kind": "clinical-guideline",
+          "edition": "2024 guideline update",
+          "publishedDate": "2024-06-13",
+          "checkedAt": "2026-10-09",
+          "locator": "Diagnostic Imaging for Suspected Acute Appendicitis: adults, children and pregnant people",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "adult",
+          "title": "Nonpregnant adults",
+          "text": "IDSA suggests abdominal CT initially for suspected appendicitis in nonpregnant adults; clinical circumstances can modify this conditional recommendation.",
+          "sourceIds": [
+            "idsa-appendicitis-imaging-2024"
+          ]
+        },
+        {
+          "id": "children",
+          "title": "Children",
+          "text": "Ultrasound is suggested initially in children. Persistent suspicion after nondiagnostic ultrasound warrants MRI or CT rather than another ultrasound.",
+          "sourceIds": [
+            "idsa-appendicitis-imaging-2024"
+          ]
+        },
+        {
+          "id": "pregnancy",
+          "title": "Pregnancy",
+          "text": "An ultrasound-first strategy with MRI after nondiagnostic results is suggested in pregnancy. Initial MRI is also reasonable when readily available.",
+          "sourceIds": [
+            "idsa-appendicitis-imaging-2024"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A ten-year-old is being evaluated for suspected appendicitis. Which initial imaging modality follows the IDSA pediatric recommendation?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "HIDA"
+            },
+            {
+              "id": "B",
+              "text": "No imaging because of age"
+            },
+            {
+              "id": "C",
+              "text": "Colonoscopy"
+            },
+            {
+              "id": "D",
+              "text": "Routine chest CT"
+            },
+            {
+              "id": "E",
+              "text": "Ultrasound"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "The pediatric recommendation suggests ultrasound first.",
+          "distractorExplanations": {
+            "A": "Wrong target.",
+            "B": "Age does not remove evaluation.",
+            "C": "Not the initial strategy.",
+            "D": "Wrong target."
+          },
+          "sectionIds": [
+            "children"
+          ],
+          "sourceIds": [
+            "idsa-appendicitis-imaging-2024"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Select radiation-sparing initial pediatric imaging.",
+          "difficulty": "application",
+          "id": "appendicitis-q1"
+        },
+        {
+          "stem": "A pregnant patient has suspected appendicitis and a nondiagnostic initial ultrasound. Clinical concern persists. Which subsequent study is suggested?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No additional assessment"
+            },
+            {
+              "id": "B",
+              "text": "DEXA"
+            },
+            {
+              "id": "C",
+              "text": "MRI"
+            },
+            {
+              "id": "D",
+              "text": "Repeat ultrasound indefinitely"
+            },
+            {
+              "id": "E",
+              "text": "Screening chest radiograph"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "MRI is suggested after nondiagnostic ultrasound in pregnancy.",
+          "distractorExplanations": {
+            "A": "Concern persists.",
+            "B": "Wrong target.",
+            "D": "The pathway escalates imaging.",
+            "E": "Wrong target."
+          },
+          "sectionIds": [
+            "pregnancy"
+          ],
+          "sourceIds": [
+            "idsa-appendicitis-imaging-2024"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Apply pregnancy-specific escalation after nondiagnostic ultrasound.",
+          "difficulty": "application",
+          "id": "appendicitis-q2"
+        }
+      ]
+    },
+    {
+      "id": "hepatitis-c",
+      "name": "Hepatitis C",
+      "aliases": [
+        "HCV infection"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "chronic",
+      "keywords": [
+        "HCV RNA",
+        "antibody",
+        "reflex testing",
+        "DAA"
+      ],
+      "overview": "Study antibody-to-RNA testing, recent-exposure interpretation and linkage to antiviral care.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-hcv-diagnosis",
+          "title": "Clinical Screening and Diagnosis for Hepatitis C",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/hepatitis-c/hcp/diagnosis-testing/",
+          "kind": "official-recommendation",
+          "edition": "Current official web page; edition not stated",
+          "publishedDate": "2025-01-31",
+          "checkedAt": "2026-10-09",
+          "locator": "HCV antibody; NAT testing; interpretation; next steps",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "sequence",
+          "title": "Testing sequence",
+          "text": "Start with HCV antibody and reflex to HCV RNA when reactive; antibody alone cannot establish current infection.",
+          "sourceIds": [
+            "cdc-hcv-diagnosis"
+          ]
+        },
+        {
+          "id": "recent",
+          "title": "Recent exposure",
+          "text": "Suspected exposure within six months warrants RNA testing even with a negative antibody result.",
+          "sourceIds": [
+            "cdc-hcv-diagnosis"
+          ]
+        },
+        {
+          "id": "positive-rna",
+          "title": "Current infection",
+          "text": "Detected RNA indicates current infection and requires evaluation and linkage to direct-acting antiviral treatment; vaccination and other preventive needs also merit assessment.",
+          "sourceIds": [
+            "cdc-hcv-diagnosis"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An adult’s hepatitis C antibody is reactive. No RNA test has been performed. Which test determines whether infection is currently present?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "HBsAg alone"
+            },
+            {
+              "id": "B",
+              "text": "Serum albumin alone"
+            },
+            {
+              "id": "C",
+              "text": "Liver ultrasound alone"
+            },
+            {
+              "id": "D",
+              "text": "Repeat antibody alone"
+            },
+            {
+              "id": "E",
+              "text": "HCV RNA testing"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "RNA detection distinguishes current infection from a reactive antibody alone.",
+          "distractorExplanations": {
+            "A": "This tests a different virus.",
+            "B": "This does not establish viremia.",
+            "C": "This does not establish viremia.",
+            "D": "This does not resolve current viremia."
+          },
+          "sectionIds": [
+            "sequence"
+          ],
+          "sourceIds": [
+            "cdc-hcv-diagnosis"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Distinguish HCV exposure markers from current infection.",
+          "difficulty": "application",
+          "id": "hepatitis-c-q1"
+        },
+        {
+          "stem": "A patient reports a possible HCV exposure three weeks ago and has a negative HCV antibody result. Which diagnostic approach fits CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Treat the antibody as proof of immunity"
+            },
+            {
+              "id": "B",
+              "text": "Exclude HCV solely from the antibody result"
+            },
+            {
+              "id": "C",
+              "text": "No additional testing under any circumstances"
+            },
+            {
+              "id": "D",
+              "text": "Test only for influenza"
+            },
+            {
+              "id": "E",
+              "text": "Order HCV RNA"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Recent exposure can precede detectable antibodies; RNA testing is recommended.",
+          "distractorExplanations": {
+            "A": "A negative antibody does not establish immunity.",
+            "B": "This ignores the recent-exposure window.",
+            "C": "This ignores the recent-exposure window.",
+            "D": "This does not assess the reported exposure."
+          },
+          "sectionIds": [
+            "recent"
+          ],
+          "sourceIds": [
+            "cdc-hcv-diagnosis"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Choose virologic testing after recent HCV exposure.",
+          "difficulty": "application",
+          "id": "hepatitis-c-q2"
+        }
+      ]
+    },
+    {
+      "id": "hepatitis-b",
+      "name": "Hepatitis B",
+      "aliases": [
+        "HBV infection"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "chronic",
+      "keywords": [
+        "HBsAg",
+        "anti-HBs",
+        "anti-HBc",
+        "triple panel"
+      ],
+      "overview": "Study triple-panel interpretation and linkage of infection to longitudinal liver care.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-hbv-diagnosis",
+          "title": "Clinical Testing and Diagnosis for Hepatitis B",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/hepatitis-b/hcp/diagnosis-testing/",
+          "kind": "official-recommendation",
+          "edition": "Current official web page; edition not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Recommended tests; interpretation table; what to do next",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "panel",
+          "title": "Triple panel",
+          "text": "Initial screening uses HBsAg, anti-HBs and total anti-HBc.",
+          "sourceIds": [
+            "cdc-hbv-diagnosis"
+          ]
+        },
+        {
+          "id": "interpretation",
+          "title": "Serologic patterns",
+          "text": "HBsAg with total anti-HBc indicates infection; IgM anti-HBc helps distinguish acute infection. Anti-HBs without anti-HBc after documented vaccination indicates vaccine-associated immunity.",
+          "sourceIds": [
+            "cdc-hbv-diagnosis"
+          ]
+        },
+        {
+          "id": "follow-up",
+          "title": "Linkage to care",
+          "text": "Confirmed infection needs liver-disease evaluation, monitoring and treatment assessment. Resolved infection still carries a reactivation counseling need.",
+          "sourceIds": [
+            "cdc-hbv-diagnosis"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A vaccinated adult has negative HBsAg, negative total anti-HBc and positive anti-HBs, with a documented completed vaccine series. What is the best interpretation?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Acute hepatitis B"
+            },
+            {
+              "id": "B",
+              "text": "Chronic hepatitis B"
+            },
+            {
+              "id": "C",
+              "text": "All results prove active viremia"
+            },
+            {
+              "id": "D",
+              "text": "Immune through vaccination"
+            },
+            {
+              "id": "E",
+              "text": "Resolved natural infection"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Anti-HBs without core antibody after completed vaccination indicates vaccine-derived immunity.",
+          "distractorExplanations": {
+            "A": "The acute pattern is not present.",
+            "B": "The infection pattern is not present.",
+            "C": "The surface antigen is negative.",
+            "E": "Resolved natural infection includes core antibody."
+          },
+          "sectionIds": [
+            "interpretation"
+          ],
+          "sourceIds": [
+            "cdc-hbv-diagnosis"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Interpret vaccine-associated HBV immunity.",
+          "difficulty": "application",
+          "id": "hepatitis-b-q1"
+        },
+        {
+          "stem": "An adult has positive HBsAg, positive total anti-HBc, positive IgM anti-HBc and negative anti-HBs. Which interpretation best fits the CDC table?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Vaccine immunity alone"
+            },
+            {
+              "id": "B",
+              "text": "Negative screening panel"
+            },
+            {
+              "id": "C",
+              "text": "Resolved infection"
+            },
+            {
+              "id": "D",
+              "text": "Susceptible with no infection"
+            },
+            {
+              "id": "E",
+              "text": "Acute hepatitis B infection"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "The table associates this combination with acute infection.",
+          "distractorExplanations": {
+            "A": "Vaccination alone does not produce this pattern.",
+            "B": "Several markers are positive.",
+            "C": "HBsAg remains positive.",
+            "D": "Infection markers are present."
+          },
+          "sectionIds": [
+            "interpretation",
+            "follow-up"
+          ],
+          "sourceIds": [
+            "cdc-hbv-diagnosis"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Distinguish acute HBV infection from immunity and susceptibility.",
+          "difficulty": "application",
+          "id": "hepatitis-b-q2"
+        }
+      ]
+    },
+    {
+      "id": "hiv",
+      "name": "Human immunodeficiency virus infection",
+      "aliases": [
+        "HIV",
+        "HIV-1"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "chronic",
+      "keywords": [
+        "ART",
+        "viral suppression",
+        "adherence",
+        "CD4"
+      ],
+      "overview": "Study prompt ART initiation, sustained suppression and engagement in care using the US federal HIV guidelines.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "nih-hiv-art-initiation",
+          "title": "Initiation of Antiretroviral Therapy",
+          "organization": "US Department of Health and Human Services / NIH HIV guideline panel",
+          "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-arv/initiation-antiretroviral-therapy?view=full",
+          "kind": "clinical-guideline",
+          "edition": "Current online Adult and Adolescent ARV guideline chapter; chapter date not stated in retrieved excerpt",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Panel recommendations; initiating ART; prevention of HIV transmission",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "initiation",
+          "title": "Initiation",
+          "text": "ART is recommended for all people with HIV and should start as soon as possible after diagnosis; high CD4 count is not a reason to defer.",
+          "sourceIds": [
+            "nih-hiv-art-initiation"
+          ]
+        },
+        {
+          "id": "adherence",
+          "title": "Engagement and adherence",
+          "text": "Discuss lifelong treatment, benefits and adherence, and identify barriers to sustained care. Currently available ART is not curative.",
+          "sourceIds": [
+            "nih-hiv-art-initiation"
+          ]
+        },
+        {
+          "id": "transmission",
+          "title": "Transmission and suppression",
+          "text": "Maintained HIV RNA below 200 copies/mL with ART prevents sexual transmission.",
+          "sourceIds": [
+            "nih-hiv-art-initiation"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An asymptomatic adult with confirmed HIV has a CD4 count of 720 cells/mm³ and is ready to engage in care. Which approach follows federal guidelines?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Wait until CD4 falls below 200"
+            },
+            {
+              "id": "B",
+              "text": "Start ART as soon as possible"
+            },
+            {
+              "id": "C",
+              "text": "Use antibiotics in place of ART"
+            },
+            {
+              "id": "D",
+              "text": "Treat only if an opportunistic infection appears"
+            },
+            {
+              "id": "E",
+              "text": "Wait for an AIDS-defining illness"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "ART is recommended for all people with HIV, including those with high CD4 counts.",
+          "distractorExplanations": {
+            "A": "This unnecessarily defers recommended therapy.",
+            "C": "Antibiotics do not replace ART.",
+            "D": "Symptoms are not required for ART.",
+            "E": "AIDS is not a prerequisite."
+          },
+          "sectionIds": [
+            "initiation"
+          ],
+          "sourceIds": [
+            "nih-hiv-art-initiation"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Avoid CD4-threshold deferral of ART.",
+          "difficulty": "application",
+          "id": "hiv-q1"
+        },
+        {
+          "stem": "A patient newly starting ART says daily treatment will be difficult because of transportation and housing instability. Which response best follows the guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Discuss lifelong adherence and help address care barriers"
+            },
+            {
+              "id": "B",
+              "text": "Stop all HIV follow-up"
+            },
+            {
+              "id": "C",
+              "text": "Promise ART cures HIV after one month"
+            },
+            {
+              "id": "D",
+              "text": "Advise intermittent dosing without evaluation"
+            },
+            {
+              "id": "E",
+              "text": "Dismiss the barriers until virologic failure"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "The panel recommends counseling and addressing barriers to engagement and adherence.",
+          "distractorExplanations": {
+            "B": "This removes support.",
+            "C": "Current ART is not curative.",
+            "D": "This does not support sustained treatment.",
+            "E": "This ignores a stated care need."
+          },
+          "sectionIds": [
+            "adherence"
+          ],
+          "sourceIds": [
+            "nih-hiv-art-initiation"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Integrate adherence support into ART initiation.",
+          "difficulty": "application",
+          "id": "hiv-q2"
+        }
+      ]
+    },
+    {
+      "id": "chlamydia",
+      "name": "Chlamydial infection",
+      "aliases": [
+        "Chlamydia trachomatis",
+        "urogenital chlamydia"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "acute",
+      "keywords": [
+        "doxycycline",
+        "NAAT",
+        "partner treatment",
+        "retesting"
+      ],
+      "overview": "Study uncomplicated adult treatment and prevention of reinfection; pregnancy requires a separate regimen.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-chlamydia-2021",
+          "title": "Chlamydial Infections – STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
+          "kind": "clinical-guideline",
+          "edition": "STI Treatment Guidelines, 2021; last reviewed July 22, 2021",
+          "publishedDate": "2021-07-22",
+          "checkedAt": "2026-10-09",
+          "locator": "Adult regimens; follow-up; management of sex partners",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "adult-treatment",
+          "title": "Nonpregnant adult treatment",
+          "text": "Doxycycline 100 mg orally twice daily for seven days is recommended for uncomplicated adolescent and adult infection outside pregnancy.",
+          "sourceIds": [
+            "cdc-chlamydia-2021"
+          ]
+        },
+        {
+          "id": "partners",
+          "title": "Partner management",
+          "text": "Recent sex partners need evaluation and treatment. Abstain until the regimen is complete, symptoms resolve and partners are treated.",
+          "sourceIds": [
+            "cdc-chlamydia-2021"
+          ]
+        },
+        {
+          "id": "retesting",
+          "title": "Follow-up",
+          "text": "Retest approximately three months after treatment for reinfection. Routine four-week test of cure is not indicated in nonpregnant adherent patients without ongoing symptoms or reinfection concern.",
+          "sourceIds": [
+            "cdc-chlamydia-2021"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A nonpregnant adult has NAAT-confirmed uncomplicated chlamydia, no medication contraindications and reliable adherence. Which listed regimen is CDC-recommended?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Metronidazole alone"
+            },
+            {
+              "id": "B",
+              "text": "Doxycycline 100 mg twice daily for seven days"
+            },
+            {
+              "id": "C",
+              "text": "PPI for two weeks"
+            },
+            {
+              "id": "D",
+              "text": "No treatment if symptoms are mild"
+            },
+            {
+              "id": "E",
+              "text": "Ceftriaxone alone"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Doxycycline for seven days is the recommended adult regimen.",
+          "distractorExplanations": {
+            "A": "This does not match the chlamydia regimen.",
+            "C": "This is not an antimicrobial regimen.",
+            "D": "Confirmed infection needs treatment.",
+            "E": "This does not match the chlamydia regimen."
+          },
+          "sectionIds": [
+            "adult-treatment"
+          ],
+          "sourceIds": [
+            "cdc-chlamydia-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select the recommended nonpregnant adult chlamydia regimen.",
+          "difficulty": "application",
+          "id": "chlamydia-q1"
+        },
+        {
+          "stem": "A nonpregnant adult completed recommended chlamydia treatment with confirmed adherence and no ongoing symptoms. Which routine follow-up best addresses reinfection?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No future testing in any circumstance"
+            },
+            {
+              "id": "B",
+              "text": "Weekly testing forever"
+            },
+            {
+              "id": "C",
+              "text": "NAAT the next day as proof of cure"
+            },
+            {
+              "id": "D",
+              "text": "Antibiotics for all asymptomatic contacts indefinitely"
+            },
+            {
+              "id": "E",
+              "text": "Retest at approximately three months"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "CDC advises retesting around three months to detect reinfection.",
+          "distractorExplanations": {
+            "A": "This misses routine reinfection testing.",
+            "B": "This is not routine follow-up.",
+            "C": "Early NAAT can reflect nonviable organisms.",
+            "D": "This is not targeted partner management."
+          },
+          "sectionIds": [
+            "retesting"
+          ],
+          "sourceIds": [
+            "cdc-chlamydia-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Distinguish reinfection retesting from an unnecessary early test of cure.",
+          "difficulty": "application",
+          "id": "chlamydia-q2"
+        }
+      ]
+    },
+    {
+      "id": "gonorrhea",
+      "name": "Gonococcal infection",
+      "aliases": [
+        "Neisseria gonorrhoeae",
+        "gonococcal urethritis"
+      ],
+      "specialty": "Respiratory, infectious and gastrointestinal",
+      "domain": "acute",
+      "keywords": [
+        "ceftriaxone",
+        "pharyngeal",
+        "test of cure",
+        "weight"
+      ],
+      "overview": "Study weight-based ceftriaxone treatment and site-specific follow-up using current CDC STI guidance.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-gonorrhea-2021",
+          "title": "Gonococcal Infections Among Adolescents and Adults – STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm",
+          "kind": "clinical-guideline",
+          "edition": "STI Treatment Guidelines, 2021; page reviewed September 21, 2022",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Uncomplicated anogenital infection; pharyngeal infection; follow-up",
+          "reuse": "original-summary-no-full-text"
+        }
+      ],
+      "sections": [
+        {
+          "id": "regimen",
+          "title": "Uncomplicated infection",
+          "text": "Use ceftriaxone 500 mg IM once when weight is below 150 kg; use 1 g at 150 kg or above. Address chlamydia if it has not been excluded.",
+          "sourceIds": [
+            "cdc-gonorrhea-2021"
+          ]
+        },
+        {
+          "id": "site",
+          "title": "Pharyngeal follow-up",
+          "text": "Pharyngeal gonorrhea needs a test of cure seven to fourteen days after initial treatment; uncomplicated treated anogenital infection does not routinely require this.",
+          "sourceIds": [
+            "cdc-gonorrhea-2021"
+          ]
+        },
+        {
+          "id": "reinfection",
+          "title": "Reinfection prevention",
+          "text": "Retest about three months after treatment and ensure recent partners receive evaluation and treatment.",
+          "sourceIds": [
+            "cdc-gonorrhea-2021"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An 80-kg adult has uncomplicated urethral gonorrhea. Chlamydia testing is negative, and there is no relevant allergy. Which regimen is recommended?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Doxycycline alone"
+            },
+            {
+              "id": "B",
+              "text": "Ceftriaxone 500 mg IM once"
+            },
+            {
+              "id": "C",
+              "text": "No treatment because chlamydia is excluded"
+            },
+            {
+              "id": "D",
+              "text": "Azithromycin alone"
+            },
+            {
+              "id": "E",
+              "text": "Ceftriaxone 250 mg once as the current standard"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "The recommended dose below 150 kg is ceftriaxone 500 mg IM once.",
+          "distractorExplanations": {
+            "A": "This is not the gonorrhea regimen.",
+            "C": "Gonorrhea still requires treatment.",
+            "D": "This is not the recommended regimen.",
+            "E": "This is not the current recommended dose."
+          },
+          "sectionIds": [
+            "regimen"
+          ],
+          "sourceIds": [
+            "cdc-gonorrhea-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply the weight-based uncomplicated gonorrhea regimen.",
+          "difficulty": "application",
+          "id": "gonorrhea-q1"
+        },
+        {
+          "stem": "A patient has completed recommended treatment for pharyngeal gonorrhea. Which early follow-up is specifically recommended for this site?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No test of cure for any gonorrhea site"
+            },
+            {
+              "id": "B",
+              "text": "Test of cure at seven to fourteen days"
+            },
+            {
+              "id": "C",
+              "text": "Antibody testing instead of culture or NAAT"
+            },
+            {
+              "id": "D",
+              "text": "Daily ceftriaxone indefinitely"
+            },
+            {
+              "id": "E",
+              "text": "Repeat testing only after five years"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Pharyngeal infection requires a seven- to fourteen-day test of cure.",
+          "distractorExplanations": {
+            "A": "Pharyngeal disease is the exception.",
+            "C": "This is not the specified test method.",
+            "D": "This is not the specified follow-up.",
+            "E": "This misses required early follow-up."
+          },
+          "sectionIds": [
+            "site"
+          ],
+          "sourceIds": [
+            "cdc-gonorrhea-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Distinguish pharyngeal test-of-cure requirements.",
+          "difficulty": "application",
+          "id": "gonorrhea-q2"
+        }
+      ]
+    }
+  ]
+}

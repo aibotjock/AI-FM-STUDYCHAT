@@ -1,0 +1,3949 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-09",
+  "conditions": [
+    {
+      "id": "abnormal-uterine-bleeding",
+      "name": "Abnormal uterine bleeding",
+      "aliases": [
+        "AUB",
+        "heavy menstrual bleeding"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "acute",
+      "keywords": [
+        "PALM-COEIN",
+        "uterine bleeding",
+        "hypovolemia"
+      ],
+      "overview": "Study acute bleeding priorities in nonpregnant reproductive-age patients; this is not a complete chronic bleeding workup.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "acog-aub-557-abstract",
+          "title": "ACOG committee opinion no. 557: Management of acute abnormal uterine bleeding in nonpregnant reproductive-aged women",
+          "organization": "American College of Obstetricians and Gynecologists",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/23635706/",
+          "kind": "clinical-guideline",
+          "edition": "Committee Opinion 557, April 2013; accessible abstract",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Abstract: initial stabilization, medical therapy, surgical escalation",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "stabilization",
+          "title": "Stabilization first",
+          "text": "Assess circulating-volume loss and instability before etiologic classification or outpatient treatment.",
+          "sourceIds": [
+            "acog-aub-557-abstract"
+          ]
+        },
+        {
+          "id": "management",
+          "title": "Initial treatment",
+          "text": "When appropriate, begin medical therapy chosen around contraindications; PALM-COEIN organizes the causes after stabilization.",
+          "sourceIds": [
+            "acog-aub-557-abstract"
+          ]
+        },
+        {
+          "id": "escalation",
+          "title": "Escalation and maintenance",
+          "text": "Instability, medical contraindications or treatment failure warrant surgical consideration; controlled bleeding needs a maintenance plan.",
+          "sourceIds": [
+            "acog-aub-557-abstract"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A nonpregnant 32-year-old has brisk uterine bleeding, confusion and hypotension. Which priority precedes assigning a PALM-COEIN category?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Hemodynamic assessment and stabilization"
+            },
+            {
+              "id": "B",
+              "text": "Outpatient maintenance therapy only"
+            },
+            {
+              "id": "C",
+              "text": "Routine follow-up next month"
+            },
+            {
+              "id": "D",
+              "text": "Etiologic classification before stabilization"
+            },
+            {
+              "id": "E",
+              "text": "Reassurance alone"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Acute instability takes priority over classifying bleeding causes.",
+          "distractorExplanations": {
+            "B": "This does not address her instability.",
+            "C": "Delay leaves active instability untreated.",
+            "D": "Classification follows immediate stabilization.",
+            "E": "She has signs of volume loss."
+          },
+          "sectionIds": [
+            "stabilization"
+          ],
+          "sourceIds": [
+            "acog-aub-557-abstract"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Prioritize stabilization in severe acute uterine bleeding.",
+          "difficulty": "application",
+          "id": "abnormal-uterine-bleeding-q1"
+        },
+        {
+          "stem": "A stable nonpregnant patient has acute uterine bleeding. Evaluation finds no contraindication to medical treatment. What is the usual initial strategy?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Emergency surgery despite clinical stability"
+            },
+            {
+              "id": "B",
+              "text": "Medical therapy with an appropriate maintenance plan"
+            },
+            {
+              "id": "C",
+              "text": "Immediate hysterectomy for every patient"
+            },
+            {
+              "id": "D",
+              "text": "No treatment until another hemorrhage"
+            },
+            {
+              "id": "E",
+              "text": "Ignore treatment contraindications"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Medical treatment is generally the first approach when clinically appropriate; ongoing management follows control.",
+          "distractorExplanations": {
+            "A": "Stability permits a medical approach.",
+            "C": "Routine surgery is not the initial default.",
+            "D": "Active bleeding warrants treatment.",
+            "E": "Therapy requires individualized contraindication assessment."
+          },
+          "sectionIds": [
+            "management"
+          ],
+          "sourceIds": [
+            "acog-aub-557-abstract"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select initial medical management for suitable stable patients.",
+          "difficulty": "application",
+          "id": "abnormal-uterine-bleeding-q2"
+        }
+      ],
+      "limitations": [
+        "Accessible ACOG primary abstract only; current reaffirmation status and full text were inaccessible. Detailed chronic diagnostic workup and medication doses are not covered."
+      ]
+    },
+    {
+      "id": "polycystic-ovary-syndrome",
+      "name": "Polycystic ovary syndrome",
+      "aliases": [
+        "PCOS",
+        "polyendocrine metabolic ovarian syndrome",
+        "PMOS"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "chronic",
+      "keywords": [
+        "hyperandrogenism",
+        "ovulatory dysfunction",
+        "letrozole"
+      ],
+      "overview": "Study adult diagnosis, metabolic assessment and anovulatory infertility using the international guideline hosted by ASRM.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "asrm-pcos-2023",
+          "title": "Recommendations from the 2023 International Evidence-based Guideline for the Assessment and Management of Polyendocrine Metabolic Ovarian Syndrome",
+          "organization": "American Society for Reproductive Medicine / international guideline partnership",
+          "url": "https://www.asrm.org/practice-guidance/practice-committee-documents/recommendations-from-the-2023-international-evidence-based-guideline-for-the-assessment-and-management-of-polyendocrine-metabolic-ovarian-syndrome-2023/",
+          "kind": "clinical-guideline",
+          "edition": "2023; current ASRM page uses PMOS terminology",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Recommendations 1.4.9, 1.5, 1.9 and 5.3.1",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "International, with US society participation"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Adult diagnostic approach",
+          "text": "After excluding other causes, adult ovulatory dysfunction plus hyperandrogenism can establish diagnosis without ovarian ultrasound or AMH.",
+          "sourceIds": [
+            "asrm-pcos-2023"
+          ]
+        },
+        {
+          "id": "risk",
+          "title": "Broader risk assessment",
+          "text": "The syndrome also warrants assessment of glycemic, cardiovascular and psychological risks; reproductive symptoms are only part of its burden.",
+          "sourceIds": [
+            "asrm-pcos-2023"
+          ]
+        },
+        {
+          "id": "infertility",
+          "title": "Anovulatory infertility",
+          "text": "Letrozole is the preferred initial ovulation-induction drug when anovulation is the only infertility factor; exclude pregnancy first.",
+          "sourceIds": [
+            "asrm-pcos-2023"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An adult has persistent ovulatory dysfunction and biochemical hyperandrogenism. Other etiologies are excluded. What additional ovarian test is mandatory to establish PCOS?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Both ultrasound and AMH"
+            },
+            {
+              "id": "B",
+              "text": "Ovarian biopsy"
+            },
+            {
+              "id": "C",
+              "text": "Neither ultrasound nor AMH is mandatory"
+            },
+            {
+              "id": "D",
+              "text": "Ultrasound in every adult"
+            },
+            {
+              "id": "E",
+              "text": "AMH in every adult"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Adult ovulatory dysfunction and hyperandrogenism make additional ovarian morphology testing unnecessary.",
+          "distractorExplanations": {
+            "A": "Combining both is not required.",
+            "B": "Biopsy is not a diagnostic requirement.",
+            "D": "These two features already satisfy criteria.",
+            "E": "AMH is unnecessary in this presentation."
+          },
+          "sectionIds": [
+            "diagnosis"
+          ],
+          "sourceIds": [
+            "asrm-pcos-2023"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Avoid unnecessary ovarian testing in an adult meeting clinical criteria.",
+          "difficulty": "application",
+          "id": "polycystic-ovary-syndrome-q1"
+        },
+        {
+          "stem": "A patient with PCOS seeks pregnancy. Evaluation shows anovulation alone, normal semen and no other infertility factor; pregnancy is excluded. Which initial drug is preferred?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Combined oral contraceptive"
+            },
+            {
+              "id": "B",
+              "text": "Immediate gonadotropins as the default"
+            },
+            {
+              "id": "C",
+              "text": "No ovulation treatment is possible"
+            },
+            {
+              "id": "D",
+              "text": "Letrozole"
+            },
+            {
+              "id": "E",
+              "text": "Metformin as the preferred ovulation agent"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "The guideline prefers letrozole for isolated anovulatory infertility.",
+          "distractorExplanations": {
+            "A": "This does not induce ovulation for conception.",
+            "B": "Letrozole is the preferred initial agent.",
+            "C": "Effective induction treatment is available.",
+            "E": "More effective induction agents are available."
+          },
+          "sectionIds": [
+            "infertility"
+          ],
+          "sourceIds": [
+            "asrm-pcos-2023"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Identify first-line induction for isolated PCOS anovulation.",
+          "difficulty": "application",
+          "id": "polycystic-ovary-syndrome-q2"
+        }
+      ],
+      "limitations": [
+        "International 2023 guideline with US ASRM participation; current ASRM page uses PMOS nomenclature. Recommendations cited here concern adults, not adolescent diagnostic thresholds."
+      ]
+    },
+    {
+      "id": "menopausal-symptoms",
+      "name": "Menopausal symptoms",
+      "aliases": [
+        "menopause",
+        "vasomotor symptoms",
+        "genitourinary syndrome of menopause"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "chronic",
+      "keywords": [
+        "hot flashes",
+        "vaginal estrogen",
+        "progestogen"
+      ],
+      "overview": "Study symptom-directed hormone choices, uterine protection and individualized risk discussion.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "menopause-ht-2022",
+          "title": "The 2022 hormone therapy position statement of The North American Menopause Society",
+          "organization": "The Menopause Society (formerly NAMS)",
+          "url": "https://menopause.org/wp-content/uploads/professional/nams-2022-hormone-therapy-position-statement.pdf",
+          "kind": "clinical-guideline",
+          "edition": "2022 position statement",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Vasomotor symptoms; genitourinary symptoms; endometrial cancer sections",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "menopause-ht-reference",
+          "title": "Menopause Topics: Hormone Therapy",
+          "organization": "The Menopause Society",
+          "url": "https://menopause.org/patient-education/menopause-topics/hormone-therapy",
+          "kind": "official-clinical-reference",
+          "edition": "Current page; no edition date displayed",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Types of hormone therapy; safety and contraindications",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "vasomotor",
+          "title": "Vasomotor treatment",
+          "text": "Systemic hormone therapy effectively treats bothersome hot flashes; decisions account for timing, contraindications and preferences.",
+          "sourceIds": [
+            "menopause-ht-2022"
+          ]
+        },
+        {
+          "id": "uterus",
+          "title": "Endometrial protection",
+          "text": "An intact uterus generally requires adequate progestogen with systemic estrogen; conjugated estrogen/bazedoxifene is a specified exception.",
+          "sourceIds": [
+            "menopause-ht-2022"
+          ]
+        },
+        {
+          "id": "genitourinary",
+          "title": "Local symptoms",
+          "text": "Low-dose vaginal estrogen targets genitourinary symptoms; it differs from systemic treatment and generally does not require added progestogen.",
+          "sourceIds": [
+            "menopause-ht-2022",
+            "menopause-ht-reference"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A 53-year-old with an intact uterus elects systemic estradiol for bothersome hot flashes after individualized assessment. Which addition protects the endometrium?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Unopposed systemic estradiol indefinitely"
+            },
+            {
+              "id": "B",
+              "text": "An antibiotic"
+            },
+            {
+              "id": "C",
+              "text": "A topical skin moisturizer"
+            },
+            {
+              "id": "D",
+              "text": "No protection because she is postmenopausal"
+            },
+            {
+              "id": "E",
+              "text": "An adequate progestogen regimen"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Systemic estrogen requires adequate endometrial protection in patients with a uterus.",
+          "distractorExplanations": {
+            "A": "It lacks endometrial protection.",
+            "B": "It does not provide uterine protection.",
+            "C": "It does not oppose endometrial stimulation.",
+            "D": "Uterine status remains relevant."
+          },
+          "sectionIds": [
+            "uterus"
+          ],
+          "sourceIds": [
+            "menopause-ht-2022"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Distinguish systemic estrogen requirements with an intact uterus.",
+          "difficulty": "application",
+          "id": "menopausal-symptoms-q1"
+        },
+        {
+          "stem": "A postmenopausal patient has persistent vaginal dryness despite nonprescription measures, without hot flashes or another systemic indication. Which option targets her symptoms?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Low-dose vaginal estrogen after risk assessment"
+            },
+            {
+              "id": "B",
+              "text": "Systemic estrogen is always required"
+            },
+            {
+              "id": "C",
+              "text": "Routine added progestogen with every local dose"
+            },
+            {
+              "id": "D",
+              "text": "Antibiotics without evidence of infection"
+            },
+            {
+              "id": "E",
+              "text": "Ignore the symptoms"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Local vaginal estrogen can address genitourinary symptoms without a systemic treatment indication.",
+          "distractorExplanations": {
+            "B": "Local symptoms can receive local treatment.",
+            "C": "It is generally unnecessary with low-dose vaginal estrogen.",
+            "D": "The vignette identifies no infection.",
+            "E": "Effective symptom-directed options exist."
+          },
+          "sectionIds": [
+            "genitourinary"
+          ],
+          "sourceIds": [
+            "menopause-ht-2022"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Match hormone route to localized menopausal symptoms.",
+          "difficulty": "application",
+          "id": "menopausal-symptoms-q2"
+        }
+      ]
+    },
+    {
+      "id": "endometriosis",
+      "name": "Endometriosis",
+      "aliases": [
+        "endometriosis-associated pain"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "chronic",
+      "keywords": [
+        "pelvic pain",
+        "hormonal suppression",
+        "fertility goals"
+      ],
+      "overview": "Study treatment goals from NIH information; detailed March 2026 ACOG diagnostic recommendations require accessible verification before expansion.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "nichd-endometriosis-treatment",
+          "title": "What are the treatments for endometriosis?",
+          "organization": "NIH National Institute of Child Health and Human Development",
+          "url": "https://www.nichd.nih.gov/health/topics/endometri/conditioninfo/treatment",
+          "kind": "official-clinical-reference",
+          "edition": "Official treatment reference; reviewed December 11, 2025; no guideline edition asserted",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Hormone therapy, including contraceptive formulations and pregnancy precautions; treatment goals; recurrence",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "goals",
+          "title": "Treatment goals",
+          "text": "Treatment selection depends on pain burden and fertility goals; symptom control does not represent a permanent cure.",
+          "sourceIds": [
+            "nichd-endometriosis-treatment"
+          ]
+        },
+        {
+          "id": "hormonal",
+          "title": "Hormonal suppression",
+          "text": "Hormonal treatment can reduce pain. An appropriate progestin-only contraceptive formulation can address pain and contraception when estrogen is unsuitable; absent menstruation alone does not ensure pregnancy prevention.",
+          "sourceIds": [
+            "nichd-endometriosis-treatment"
+          ]
+        },
+        {
+          "id": "counseling",
+          "title": "Counseling about recurrence",
+          "text": "Symptoms may return after hormonal treatment stops or after surgery; treatment and fertility planning need individualized discussion.",
+          "sourceIds": [
+            "nichd-endometriosis-treatment"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A patient with established endometriosis seeks hormonal pain suppression and contraception. Estrogen is unsuitable because of high thrombotic risk. Which option fits this goal?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "An ovulation-induction drug"
+            },
+            {
+              "id": "B",
+              "text": "An appropriate progestin-only contraceptive formulation"
+            },
+            {
+              "id": "C",
+              "text": "Estrogen despite the contraindication"
+            },
+            {
+              "id": "D",
+              "text": "An antibiotic for suppression"
+            },
+            {
+              "id": "E",
+              "text": "A promise of permanent cure"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "NIH lists progestin-only contraceptive options when estrogen is unsuitable; contraceptive choice must be explicit rather than inferred from menstrual suppression.",
+          "distractorExplanations": {
+            "A": "She is seeking suppression, not conception.",
+            "C": "The stated risk makes estrogen unsuitable.",
+            "D": "No infection is identified.",
+            "E": "Suppression does not guarantee cure."
+          },
+          "sectionIds": [
+            "hormonal"
+          ],
+          "sourceIds": [
+            "nichd-endometriosis-treatment"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize an estrogen-free option for endometriosis pain suppression.",
+          "difficulty": "application",
+          "id": "endometriosis-q1"
+        },
+        {
+          "stem": "A patient improved with hormonal treatment for endometriosis but asks whether stopping it guarantees permanent pain relief. What is the most accurate counseling?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Recurrence proves the original diagnosis was wrong"
+            },
+            {
+              "id": "B",
+              "text": "Fertility goals never affect treatment"
+            },
+            {
+              "id": "C",
+              "text": "Symptoms may recur after treatment stops"
+            },
+            {
+              "id": "D",
+              "text": "Hormonal therapy permanently cures all disease"
+            },
+            {
+              "id": "E",
+              "text": "Treatment eliminates every existing adhesion"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Symptom relief during suppression does not assure durable remission after stopping therapy.",
+          "distractorExplanations": {
+            "A": "Recurrence is compatible with endometriosis.",
+            "B": "Reproductive goals influence treatment selection.",
+            "D": "Permanent cure is not established.",
+            "E": "Hormonal suppression does not remove existing adhesions."
+          },
+          "sectionIds": [
+            "counseling"
+          ],
+          "sourceIds": [
+            "nichd-endometriosis-treatment"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Set appropriate expectations about hormonal symptom control.",
+          "difficulty": "application",
+          "id": "endometriosis-q2"
+        }
+      ],
+      "limitations": [
+        "NIH official informational reference, not a formal guideline. The March 2026 ACOG diagnostic guideline and February 2026 official announcement were inaccessible and are not used as evidence. ESHRE 2022 was verified on its official site but excluded because its PDF prohibits commercial use without permission."
+      ]
+    },
+    {
+      "id": "pelvic-inflammatory-disease",
+      "name": "Pelvic inflammatory disease",
+      "aliases": [
+        "PID"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "acute",
+      "keywords": [
+        "cervical motion tenderness",
+        "ceftriaxone",
+        "doxycycline",
+        "metronidazole"
+      ],
+      "overview": "Study presumptive treatment, broad antimicrobial coverage and failure of outpatient management.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-pid-2021",
+          "title": "Pelvic Inflammatory Disease (PID) - STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/pid.htm",
+          "kind": "clinical-guideline",
+          "edition": "2021 STI Treatment Guidelines",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Diagnostic considerations; IM/oral treatment; follow-up",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Presumptive diagnosis",
+          "text": "STI risk, unexplained pelvic pain and cervical-motion, uterine or adnexal tenderness support prompt presumptive treatment.",
+          "sourceIds": [
+            "cdc-pid-2021"
+          ]
+        },
+        {
+          "id": "management",
+          "title": "Outpatient coverage",
+          "text": "For suitable mild-to-moderate disease, ceftriaxone plus doxycycline and metronidazole covers common organisms, including anaerobes.",
+          "sourceIds": [
+            "cdc-pid-2021"
+          ]
+        },
+        {
+          "id": "follow-up",
+          "title": "Failure to improve",
+          "text": "Failure to improve within 72 hours of outpatient treatment warrants hospitalization, regimen review and additional diagnostic evaluation.",
+          "sourceIds": [
+            "cdc-pid-2021"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A nonpregnant sexually active patient has unexplained pelvic pain, cervical-motion tenderness and STI risk. She is stable, tolerates oral therapy and has no admission criterion. Which regimen best fits?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Fluconazole alone"
+            },
+            {
+              "id": "B",
+              "text": "Doxycycline alone"
+            },
+            {
+              "id": "C",
+              "text": "Await every microbiology result before treatment"
+            },
+            {
+              "id": "D",
+              "text": "Ceftriaxone plus doxycycline and metronidazole"
+            },
+            {
+              "id": "E",
+              "text": "Metronidazole alone"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "CDC recommends a cephalosporin with doxycycline and metronidazole for appropriate outpatient PID.",
+          "distractorExplanations": {
+            "A": "It does not treat PID.",
+            "B": "It lacks the recommended combination coverage.",
+            "C": "Presumptive treatment should begin promptly.",
+            "E": "It omits required broad coverage."
+          },
+          "sectionIds": [
+            "management"
+          ],
+          "sourceIds": [
+            "cdc-pid-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize the recommended outpatient PID combination.",
+          "difficulty": "application",
+          "id": "pelvic-inflammatory-disease-q1"
+        },
+        {
+          "stem": "A patient taking the recommended outpatient PID regimen has no clinical improvement after 72 hours. Which next step is appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Continue unchanged without reassessment"
+            },
+            {
+              "id": "B",
+              "text": "Stop antibiotics because PID is excluded"
+            },
+            {
+              "id": "C",
+              "text": "Routine follow-up in one month"
+            },
+            {
+              "id": "D",
+              "text": "Add an antifungal without evaluation"
+            },
+            {
+              "id": "E",
+              "text": "Hospital evaluation with regimen and diagnosis reassessment"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "CDC calls for hospitalization and additional evaluation after 72-hour outpatient nonresponse.",
+          "distractorExplanations": {
+            "A": "Nonresponse requires escalation and evaluation.",
+            "B": "Nonresponse does not by itself exclude PID.",
+            "C": "This delays necessary reassessment.",
+            "D": "This does not address treatment failure."
+          },
+          "sectionIds": [
+            "follow-up"
+          ],
+          "sourceIds": [
+            "cdc-pid-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Escalate outpatient PID treatment failure appropriately.",
+          "difficulty": "application",
+          "id": "pelvic-inflammatory-disease-q2"
+        }
+      ]
+    },
+    {
+      "id": "cervical-dysplasia",
+      "name": "Cervical dysplasia",
+      "aliases": [
+        "CIN",
+        "cervical intraepithelial neoplasia",
+        "HSIL"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "preventive",
+      "keywords": [
+        "HPV16",
+        "colposcopy",
+        "CIN3",
+        "surveillance"
+      ],
+      "overview": "Study risk-based evaluation and sustained surveillance after high-grade cervical precancer treatment.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "asccp-risk-2019",
+          "title": "2019 ASCCP Risk-Based Management Consensus Guidelines for Abnormal Cervical Cancer Screening Tests and Cancer Precursors",
+          "organization": "American Society for Colposcopy and Cervical Pathology",
+          "url": "https://asccp.org/wp-content/uploads/2025/09/2019_ASCCP_Risk_Based_Management_Consensus.3.pdf",
+          "kind": "clinical-guideline",
+          "edition": "2019 consensus, published April 2020; selected durable recommendations",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Executive summary points 7\u20138; Sections J.3 and K.1",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "risk",
+          "title": "Risk-based evaluation",
+          "text": "Current results, prior testing and treatment history determine risk; HPV16 or HPV18 warrants evaluation even with negative cytology.",
+          "sourceIds": [
+            "asccp-risk-2019"
+          ]
+        },
+        {
+          "id": "high-grade",
+          "title": "High-grade disease",
+          "text": "CIN3 is a direct precancer requiring treatment. Age, pregnancy and reproductive concerns alter other management pathways.",
+          "sourceIds": [
+            "asccp-risk-2019"
+          ]
+        },
+        {
+          "id": "surveillance",
+          "title": "Long-term surveillance",
+          "text": "After treatment and initial intensive surveillance for high-grade disease, HPV-based testing every three years continues for at least 25 years.",
+          "sourceIds": [
+            "asccp-risk-2019"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A nonpregnant 34-year-old has HPV16-positive cervical screening with negative cytology. What is the appropriate evaluation rather than routine screening alone?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Colposcopy"
+            },
+            {
+              "id": "B",
+              "text": "Return directly to routine five-year screening"
+            },
+            {
+              "id": "C",
+              "text": "Ignore HPV because cytology is negative"
+            },
+            {
+              "id": "D",
+              "text": "Empiric antibiotics"
+            },
+            {
+              "id": "E",
+              "text": "Treat as invasive cancer without evaluation"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "HPV16-associated risk warrants colposcopic evaluation despite negative cytology.",
+          "distractorExplanations": {
+            "B": "HPV16 warrants additional evaluation.",
+            "C": "Negative cytology does not remove HPV16 risk.",
+            "D": "They do not evaluate cervical precancer.",
+            "E": "A screening result is not a cancer diagnosis."
+          },
+          "sectionIds": [
+            "risk"
+          ],
+          "sourceIds": [
+            "asccp-risk-2019"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Act on high-risk HPV despite negative cytology.",
+          "difficulty": "application",
+          "id": "cervical-dysplasia-q1"
+        },
+        {
+          "stem": "A patient treated for CIN3 has completed the initial intensive surveillance with reassuring results. Which long-term strategy is recommended?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No surveillance beyond age 65 regardless of history"
+            },
+            {
+              "id": "B",
+              "text": "HPV-based surveillance every three years for at least 25 years"
+            },
+            {
+              "id": "C",
+              "text": "End screening immediately"
+            },
+            {
+              "id": "D",
+              "text": "Routine five-year intervals immediately"
+            },
+            {
+              "id": "E",
+              "text": "One negative cytology permanently clears risk"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "High-grade precancer treatment requires prolonged HPV-based surveillance.",
+          "distractorExplanations": {
+            "A": "Treatment history can require surveillance beyond 65.",
+            "C": "Risk remains elevated after treatment.",
+            "D": "Treated high-grade disease retains higher risk.",
+            "E": "A single result does not eliminate long-term risk."
+          },
+          "sectionIds": [
+            "surveillance"
+          ],
+          "sourceIds": [
+            "asccp-risk-2019"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Distinguish post-treatment surveillance from routine screening.",
+          "difficulty": "application",
+          "id": "cervical-dysplasia-q2"
+        }
+      ]
+    },
+    {
+      "id": "gestational-diabetes",
+      "name": "Gestational diabetes mellitus",
+      "aliases": [
+        "GDM"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "chronic",
+      "keywords": [
+        "pregnancy",
+        "glucose challenge",
+        "oral glucose tolerance"
+      ],
+      "overview": "Study recognition through screening, confirmatory testing and maternal-fetal consequences; this module does not supply a full insulin protocol.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "uspstf-gdm-2021",
+          "title": "Gestational Diabetes: Screening",
+          "organization": "US Preventive Services Task Force",
+          "url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/gestational-diabetes-screening",
+          "kind": "official-recommendation",
+          "edition": "August 10, 2021 final recommendation",
+          "publishedDate": "2021-08-10",
+          "checkedAt": "2026-10-09",
+          "locator": "Clinician summary; screening strategies; treatment benefits",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "screening",
+          "title": "Screening window",
+          "text": "Screen asymptomatic pregnant persons without known diabetes at 24 weeks or later; routine earlier screening evidence is insufficient.",
+          "sourceIds": [
+            "uspstf-gdm-2021"
+          ]
+        },
+        {
+          "id": "testing",
+          "title": "Two-step testing",
+          "text": "In the common US two-step strategy, an abnormal glucose challenge leads to a diagnostic oral glucose tolerance test.",
+          "sourceIds": [
+            "uspstf-gdm-2021"
+          ]
+        },
+        {
+          "id": "consequences",
+          "title": "Why detection matters",
+          "text": "Gestational diabetes increases maternal-fetal risks; treatment of screen-detected disease reduces outcomes such as macrosomia and shoulder dystocia.",
+          "sourceIds": [
+            "uspstf-gdm-2021"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An asymptomatic patient at 25 weeks of pregnancy has no prior diabetes diagnosis and has not been screened. Which plan is appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Screen only if glycosuria appears"
+            },
+            {
+              "id": "B",
+              "text": "Exclude diabetes because she feels well"
+            },
+            {
+              "id": "C",
+              "text": "Screen for gestational diabetes now"
+            },
+            {
+              "id": "D",
+              "text": "Wait until delivery"
+            },
+            {
+              "id": "E",
+              "text": "Do not screen without symptoms"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "USPSTF recommends screening from 24 weeks onward in this population.",
+          "distractorExplanations": {
+            "A": "Glycosuria is not required for screening.",
+            "B": "Symptoms are not required for disease detection.",
+            "D": "The recommended screening window is already reached.",
+            "E": "The recommendation covers asymptomatic pregnancy."
+          },
+          "sectionIds": [
+            "screening"
+          ],
+          "sourceIds": [
+            "uspstf-gdm-2021"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply gestational diabetes screening to asymptomatic pregnancy.",
+          "difficulty": "application",
+          "id": "gestational-diabetes-q1"
+        },
+        {
+          "stem": "A practice uses the US two-step strategy. A pregnant patient has a positive screening glucose challenge. Which test establishes whether gestational diabetes is present?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Urine glucose alone"
+            },
+            {
+              "id": "B",
+              "text": "Diagnose solely from the screening result"
+            },
+            {
+              "id": "C",
+              "text": "No further evaluation"
+            },
+            {
+              "id": "D",
+              "text": "Diagnostic oral glucose tolerance test"
+            },
+            {
+              "id": "E",
+              "text": "Repeat the same screen indefinitely"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "The two-step pathway separates a screening challenge from the diagnostic tolerance test.",
+          "distractorExplanations": {
+            "A": "This is not the specified diagnostic step.",
+            "B": "The two-step strategy requires confirmation.",
+            "C": "The abnormal screen requires diagnostic follow-up.",
+            "E": "The next step is diagnostic testing."
+          },
+          "sectionIds": [
+            "testing"
+          ],
+          "sourceIds": [
+            "uspstf-gdm-2021"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Distinguish the screening test from diagnostic confirmation.",
+          "difficulty": "application",
+          "id": "gestational-diabetes-q2"
+        }
+      ]
+    },
+    {
+      "id": "preeclampsia",
+      "name": "Preeclampsia",
+      "aliases": [
+        "hypertensive disorders of pregnancy"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "emergent",
+      "keywords": [
+        "pregnancy hypertension",
+        "aspirin prophylaxis",
+        "blood pressure"
+      ],
+      "overview": "Study antenatal detection and risk-based prevention; detailed acute severe-feature management is outside this bounded module.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "uspstf-preeclampsia-aspirin-2021",
+          "title": "Aspirin Use to Prevent Preeclampsia and Related Morbidity and Mortality: Preventive Medication",
+          "organization": "US Preventive Services Task Force",
+          "url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/low-dose-aspirin-use-for-the-prevention-of-morbidity-and-mortality-from-preeclampsia-preventive-medication",
+          "kind": "official-recommendation",
+          "edition": "September 28, 2021 final recommendation",
+          "publishedDate": "2021-09-28",
+          "checkedAt": "2026-10-09",
+          "locator": "Clinician summary: high-risk factors and aspirin timing",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "uspstf-pregnancy-hypertension-2023",
+          "title": "Hypertensive Disorders of Pregnancy: Screening",
+          "organization": "US Preventive Services Task Force",
+          "url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/hypertensive-disorders-pregnancy-screening",
+          "kind": "official-recommendation",
+          "edition": "September 19, 2023 final recommendation",
+          "publishedDate": "2023-09-19",
+          "checkedAt": "2026-10-09",
+          "locator": "Blood pressure screening throughout pregnancy",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "recognition",
+          "title": "Recognition",
+          "text": "New hypertension after 20 weeks with proteinuria or specified organ dysfunction supports preeclampsia; proteinuria is not obligatory when qualifying organ findings occur.",
+          "sourceIds": [
+            "uspstf-pregnancy-hypertension-2023"
+          ]
+        },
+        {
+          "id": "detection",
+          "title": "Antenatal detection",
+          "text": "Measure blood pressure throughout pregnancy, including each prenatal visit, to detect hypertensive disorders that may be clinically silent.",
+          "sourceIds": [
+            "uspstf-pregnancy-hypertension-2023"
+          ]
+        },
+        {
+          "id": "risk",
+          "title": "High-risk history",
+          "text": "Prior preeclampsia, multifetal gestation, chronic hypertension, pregestational diabetes, kidney disease or specified autoimmune disease confer high risk.",
+          "sourceIds": [
+            "uspstf-preeclampsia-aspirin-2021"
+          ]
+        },
+        {
+          "id": "prevention",
+          "title": "Risk-based prevention",
+          "text": "For eligible high-risk asymptomatic pregnancy, low-dose aspirin 81 mg daily after 12 weeks is recommended; assess contraindications.",
+          "sourceIds": [
+            "uspstf-preeclampsia-aspirin-2021"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A patient at 14 weeks of pregnancy has chronic hypertension and no aspirin contraindication. Which preventive measure is recommended for preeclampsia risk?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Wait until severe hypertension develops"
+            },
+            {
+              "id": "B",
+              "text": "Aspirin only once at delivery"
+            },
+            {
+              "id": "C",
+              "text": "No prophylaxis because she is asymptomatic"
+            },
+            {
+              "id": "D",
+              "text": "A routine antibiotic course"
+            },
+            {
+              "id": "E",
+              "text": "Low-dose aspirin 81 mg daily"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Chronic hypertension is a high-risk factor supporting low-dose aspirin after 12 weeks.",
+          "distractorExplanations": {
+            "A": "Prophylaxis precedes clinical disease.",
+            "B": "The preventive regimen is daily.",
+            "C": "Prevention targets asymptomatic high-risk pregnancy.",
+            "D": "Antibiotics do not provide this prophylaxis."
+          },
+          "sectionIds": [
+            "prevention"
+          ],
+          "sourceIds": [
+            "uspstf-preeclampsia-aspirin-2021"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Identify aspirin prophylaxis for a high-risk pregnancy.",
+          "difficulty": "application",
+          "id": "preeclampsia-q1"
+        },
+        {
+          "stem": "A previously normotensive patient at 30 weeks develops new hypertension and proteinuria. Which diagnosis best explains this pattern?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Chronic hypertension predating pregnancy"
+            },
+            {
+              "id": "B",
+              "text": "Gestational hypertension without preeclampsia"
+            },
+            {
+              "id": "C",
+              "text": "Gestational diabetes"
+            },
+            {
+              "id": "D",
+              "text": "Preeclampsia"
+            },
+            {
+              "id": "E",
+              "text": "Eclampsia in the absence of seizures"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "New hypertension after 20 weeks accompanied by proteinuria supports preeclampsia.",
+          "distractorExplanations": {
+            "A": "She was previously normotensive.",
+            "B": "Proteinuria supports preeclampsia rather than isolated hypertension.",
+            "C": "Glucose abnormalities are not described.",
+            "E": "No seizures are reported."
+          },
+          "sectionIds": [
+            "recognition"
+          ],
+          "sourceIds": [
+            "uspstf-pregnancy-hypertension-2023"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize the hypertension-plus-proteinuria presentation of preeclampsia.",
+          "difficulty": "application",
+          "id": "preeclampsia-q2"
+        }
+      ],
+      "limitations": [
+        "Coverage is limited to recognition, screening and prevention. This module does not provide full severe-feature, acute antihypertensive, delivery-timing or magnesium protocols."
+      ]
+    },
+    {
+      "id": "ectopic-pregnancy",
+      "name": "Ectopic pregnancy",
+      "aliases": [
+        "tubal ectopic pregnancy"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "emergent",
+      "keywords": [
+        "extrauterine pregnancy",
+        "methotrexate",
+        "hemodynamic instability"
+      ],
+      "overview": "Study the distinction between an unstable emergency and specialist-selected treatment of an early stable tubal ectopic pregnancy.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "acog-ectopic-193-abstract",
+          "title": "ACOG Practice Bulletin No. 193: Tubal Ectopic Pregnancy",
+          "organization": "American College of Obstetricians and Gynecologists",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/29470343/",
+          "kind": "clinical-guideline",
+          "edition": "Practice Bulletin 193, March 2018; accessible abstract, correction linked",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Abstract: location, early treatment options and unstable surgical emergency",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "recognition",
+          "title": "Recognition",
+          "text": "Ectopic pregnancy lies outside the uterine cavity, most often in a fallopian tube.",
+          "sourceIds": [
+            "acog-ectopic-193-abstract"
+          ]
+        },
+        {
+          "id": "unstable",
+          "title": "Unstable presentation",
+          "text": "Hemodynamic instability with tubal ectopic pregnancy is an emergency requiring prompt surgical intervention.",
+          "sourceIds": [
+            "acog-ectopic-193-abstract"
+          ]
+        },
+        {
+          "id": "stable",
+          "title": "Selected stable treatment",
+          "text": "Early stable tubal ectopic pregnancy may be managed with minimally invasive surgery or methotrexate after specialist eligibility assessment.",
+          "sourceIds": [
+            "acog-ectopic-193-abstract"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A patient with confirmed tubal ectopic pregnancy develops hypotension and altered mentation. Which treatment priority is appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Expectant outpatient observation"
+            },
+            {
+              "id": "B",
+              "text": "Prompt emergency surgical intervention with stabilization"
+            },
+            {
+              "id": "C",
+              "text": "Routine outpatient methotrexate"
+            },
+            {
+              "id": "D",
+              "text": "Repeat testing in one week"
+            },
+            {
+              "id": "E",
+              "text": "Oral contraception alone"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "An unstable tubal ectopic pregnancy requires prompt surgical management.",
+          "distractorExplanations": {
+            "A": "Instability precludes this approach.",
+            "C": "Instability requires emergency surgery.",
+            "D": "Delay is inappropriate in an unstable emergency.",
+            "E": "It does not treat the ectopic emergency."
+          },
+          "sectionIds": [
+            "unstable"
+          ],
+          "sourceIds": [
+            "acog-ectopic-193-abstract"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Recognize the unstable ectopic pregnancy emergency.",
+          "difficulty": "application",
+          "id": "ectopic-pregnancy-q1"
+        },
+        {
+          "stem": "A stable patient has an early tubal ectopic pregnancy. A specialist has confirmed eligibility for medical management and arranged follow-up. Which drug is an established option?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Insulin"
+            },
+            {
+              "id": "B",
+              "text": "A topical antifungal"
+            },
+            {
+              "id": "C",
+              "text": "Methotrexate"
+            },
+            {
+              "id": "D",
+              "text": "An oral antibiotic"
+            },
+            {
+              "id": "E",
+              "text": "A combined contraceptive pill"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Methotrexate is a medical option for appropriately selected early tubal ectopic pregnancy.",
+          "distractorExplanations": {
+            "A": "It does not treat ectopic pregnancy.",
+            "B": "It has no role in this treatment.",
+            "D": "It is not the cited ectopic treatment.",
+            "E": "It is not medical treatment of established ectopic pregnancy."
+          },
+          "sectionIds": [
+            "stable"
+          ],
+          "sourceIds": [
+            "acog-ectopic-193-abstract"
+          ],
+          "domain": "acute",
+          "learningObjective": "Identify medical therapy after ectopic treatment eligibility assessment.",
+          "difficulty": "application",
+          "id": "ectopic-pregnancy-q2"
+        }
+      ],
+      "limitations": [
+        "Accessible ACOG primary abstract only. Detailed diagnostic thresholds, methotrexate eligibility, follow-up protocols and the linked correction were not reproduced."
+      ]
+    },
+    {
+      "id": "vulvovaginal-candidiasis",
+      "name": "Vulvovaginal candidiasis",
+      "aliases": [
+        "VVC",
+        "vaginal yeast infection"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "acute",
+      "keywords": [
+        "hyphae",
+        "normal vaginal pH",
+        "topical azole"
+      ],
+      "overview": "Study microbiologic confirmation, pregnancy-specific treatment and when recurrent disease requires reevaluation.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-vvc-2021",
+          "title": "Vulvovaginal Candidiasis - STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm",
+          "kind": "clinical-guideline",
+          "edition": "2021 STI Treatment Guidelines",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Diagnostic considerations; complicated disease; pregnancy",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Diagnosis",
+          "text": "Compatible vaginitis plus yeast on microscopy or testing supports candidiasis; vaginal pH is usually normal, below 4.5.",
+          "sourceIds": [
+            "cdc-vvc-2021"
+          ]
+        },
+        {
+          "id": "pregnancy",
+          "title": "Pregnancy treatment",
+          "text": "Pregnancy calls for a seven-day topical azole course; oral fluconazole should not be used.",
+          "sourceIds": [
+            "cdc-vvc-2021"
+          ]
+        },
+        {
+          "id": "complicated",
+          "title": "Complicated presentations",
+          "text": "Persistent or recurrent symptoms warrant evaluation, with culture or PCR in complicated disease to identify non-albicans species.",
+          "sourceIds": [
+            "cdc-vvc-2021"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A pregnant patient has symptomatic, microscopy-confirmed vulvovaginal candidiasis. Which treatment is recommended?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Oral metronidazole"
+            },
+            {
+              "id": "B",
+              "text": "An antibiotic for presumed cervicitis"
+            },
+            {
+              "id": "C",
+              "text": "No treatment for symptomatic infection"
+            },
+            {
+              "id": "D",
+              "text": "Topical azole therapy for seven days"
+            },
+            {
+              "id": "E",
+              "text": "Single-dose oral fluconazole"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "CDC recommends only seven-day topical azole treatment during pregnancy.",
+          "distractorExplanations": {
+            "A": "It does not treat Candida.",
+            "B": "Candidiasis is confirmed, not cervicitis.",
+            "C": "Pregnancy has a recommended topical treatment.",
+            "E": "CDC advises against oral fluconazole in pregnancy."
+          },
+          "sectionIds": [
+            "pregnancy"
+          ],
+          "sourceIds": [
+            "cdc-vvc-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply pregnancy-specific candidiasis treatment.",
+          "difficulty": "application",
+          "id": "vulvovaginal-candidiasis-q1"
+        },
+        {
+          "stem": "A patient has vulvar pruritus, thick discharge, vaginal pH 4.0 and budding yeast with pseudohyphae on wet preparation. Which diagnosis is supported?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Bacterial vaginosis"
+            },
+            {
+              "id": "B",
+              "text": "Trichomoniasis"
+            },
+            {
+              "id": "C",
+              "text": "Pelvic inflammatory disease"
+            },
+            {
+              "id": "D",
+              "text": "Genital herpes"
+            },
+            {
+              "id": "E",
+              "text": "Vulvovaginal candidiasis"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Compatible symptoms, yeast microscopy and normal pH support Candida vaginitis.",
+          "distractorExplanations": {
+            "A": "The demonstrated yeast supports another cause.",
+            "B": "No trichomonads are demonstrated.",
+            "C": "The findings identify vaginitis, not upper-tract infection.",
+            "D": "The stated findings are not ulcerative disease."
+          },
+          "sectionIds": [
+            "diagnosis"
+          ],
+          "sourceIds": [
+            "cdc-vvc-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Interpret microscopy and pH in symptomatic vaginitis.",
+          "difficulty": "application",
+          "id": "vulvovaginal-candidiasis-q2"
+        }
+      ]
+    },
+    {
+      "id": "bacterial-vaginosis",
+      "name": "Bacterial vaginosis",
+      "aliases": [
+        "BV"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "acute",
+      "keywords": [
+        "clue cells",
+        "Amsel criteria",
+        "metronidazole"
+      ],
+      "overview": "Study symptomatic diagnosis and initial treatment; this record deliberately excludes evolving recurrent-disease partner-treatment recommendations.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-bv-2021",
+          "title": "Bacterial Vaginosis - STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/bv.htm",
+          "kind": "clinical-guideline",
+          "edition": "2021 STI Treatment Guidelines; bounded initial-treatment scope",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Amsel criteria; recommended regimens; symptomatic pregnancy",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Diagnosis",
+          "text": "Three Amsel findings support BV: homogeneous discharge, clue cells, pH above 4.5 and amine odor are the four criteria.",
+          "sourceIds": [
+            "cdc-bv-2021"
+          ]
+        },
+        {
+          "id": "management",
+          "title": "Initial symptomatic treatment",
+          "text": "Oral metronidazole 500 mg twice daily for seven days is one recommended regimen; vaginal alternatives also exist.",
+          "sourceIds": [
+            "cdc-bv-2021"
+          ]
+        },
+        {
+          "id": "pregnancy",
+          "title": "Symptomatic pregnancy",
+          "text": "Treat symptomatic BV in pregnancy. This record does not address updated partner therapy for recurrent BV.",
+          "sourceIds": [
+            "cdc-bv-2021"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A patient has thin vaginal discharge, pH 5.2, clue cells and an amine odor. Which diagnosis best accounts for these findings?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Bacterial vaginosis"
+            },
+            {
+              "id": "B",
+              "text": "Vulvovaginal candidiasis"
+            },
+            {
+              "id": "C",
+              "text": "Genital herpes"
+            },
+            {
+              "id": "D",
+              "text": "Ectopic pregnancy"
+            },
+            {
+              "id": "E",
+              "text": "Cervical dysplasia"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "The findings meet Amsel criteria for BV.",
+          "distractorExplanations": {
+            "B": "Clue cells and elevated pH support BV instead.",
+            "C": "No ulcerative findings are described.",
+            "D": "The findings are specific to vaginitis evaluation.",
+            "E": "These are not cervical precancer findings."
+          },
+          "sectionIds": [
+            "diagnosis"
+          ],
+          "sourceIds": [
+            "cdc-bv-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize a classic Amsel-positive presentation.",
+          "difficulty": "application",
+          "id": "bacterial-vaginosis-q1"
+        },
+        {
+          "stem": "A nonpregnant patient with a first episode of symptomatic BV prefers oral therapy and has no contraindication. Which regimen is recommended?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No treatment because she is nonpregnant"
+            },
+            {
+              "id": "B",
+              "text": "Metronidazole 500 mg twice daily for seven days"
+            },
+            {
+              "id": "C",
+              "text": "Fluconazole once"
+            },
+            {
+              "id": "D",
+              "text": "Acyclovir"
+            },
+            {
+              "id": "E",
+              "text": "Doxycycline alone"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "A seven-day oral metronidazole course is a CDC initial-treatment option.",
+          "distractorExplanations": {
+            "A": "Symptomatic BV warrants treatment.",
+            "C": "This targets yeast rather than BV.",
+            "D": "This targets herpes rather than BV.",
+            "E": "It is not a listed BV regimen."
+          },
+          "sectionIds": [
+            "management"
+          ],
+          "sourceIds": [
+            "cdc-bv-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Choose a recommended oral regimen for initial symptomatic BV.",
+          "difficulty": "application",
+          "id": "bacterial-vaginosis-q2"
+        }
+      ],
+      "limitations": [
+        "Initial symptomatic diagnosis/treatment only. The CDC 2021 page does not establish current recurrent-BV partner-treatment policy; that evolving issue is excluded."
+      ]
+    },
+    {
+      "id": "trichomoniasis",
+      "name": "Trichomoniasis",
+      "aliases": [
+        "Trichomonas vaginalis infection"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "acute",
+      "keywords": [
+        "NAAT",
+        "metronidazole",
+        "partner treatment",
+        "retesting"
+      ],
+      "overview": "Study testing limitations, sex-specific recommended therapy and prevention of reinfection.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-trich-2021",
+          "title": "Trichomoniasis - STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm",
+          "kind": "clinical-guideline",
+          "edition": "2021 STI Treatment Guidelines; page reviewed September 21, 2022",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Diagnostic considerations; treatment; follow-up and partner management",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Testing",
+          "text": "Wet-mount sensitivity is limited; a negative result does not exclude trichomoniasis, and available molecular testing improves detection.",
+          "sourceIds": [
+            "cdc-trich-2021"
+          ]
+        },
+        {
+          "id": "management",
+          "title": "Treatment",
+          "text": "For women, oral metronidazole 500 mg twice daily for seven days is recommended; the male regimen differs.",
+          "sourceIds": [
+            "cdc-trich-2021"
+          ]
+        },
+        {
+          "id": "follow-up",
+          "title": "Reinfection prevention",
+          "text": "Treat current partners, abstain until treatment and symptoms resolve, and retest sexually active women at about three months.",
+          "sourceIds": [
+            "cdc-trich-2021"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A woman has NAAT-confirmed trichomoniasis and no treatment contraindication. Which CDC regimen is recommended?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Acyclovir for seven days"
+            },
+            {
+              "id": "B",
+              "text": "No treatment after a positive NAAT"
+            },
+            {
+              "id": "C",
+              "text": "Metronidazole 500 mg twice daily for seven days"
+            },
+            {
+              "id": "D",
+              "text": "Vaginal metronidazole gel alone"
+            },
+            {
+              "id": "E",
+              "text": "Fluconazole once"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Women receive the seven-day oral metronidazole regimen.",
+          "distractorExplanations": {
+            "A": "It is not trichomoniasis treatment.",
+            "B": "Confirmed infection warrants treatment.",
+            "D": "The gel is not recommended for trichomoniasis.",
+            "E": "It treats yeast, not trichomoniasis."
+          },
+          "sectionIds": [
+            "management"
+          ],
+          "sourceIds": [
+            "cdc-trich-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Distinguish recommended oral treatment from inappropriate local therapy.",
+          "difficulty": "application",
+          "id": "trichomoniasis-q1"
+        },
+        {
+          "stem": "A sexually active woman completed trichomoniasis treatment and believes her partner was treated. What follow-up is still recommended?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Only repeat a wet mount immediately"
+            },
+            {
+              "id": "B",
+              "text": "Routine lifelong monthly testing"
+            },
+            {
+              "id": "C",
+              "text": "Use a Pap smear as the follow-up infection test"
+            },
+            {
+              "id": "D",
+              "text": "Retesting for trichomoniasis at about three months"
+            },
+            {
+              "id": "E",
+              "text": "No retesting because the partner was treated"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "CDC recommends approximately three-month retesting regardless of presumed partner treatment.",
+          "distractorExplanations": {
+            "A": "This does not replace the recommended later retest.",
+            "B": "That schedule is not recommended here.",
+            "C": "A dedicated infection test is appropriate.",
+            "E": "Reinfection risk still warrants retesting."
+          },
+          "sectionIds": [
+            "follow-up"
+          ],
+          "sourceIds": [
+            "cdc-trich-2021"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply recommended retesting after treated trichomoniasis.",
+          "difficulty": "application",
+          "id": "trichomoniasis-q2"
+        }
+      ]
+    },
+    {
+      "id": "syphilis",
+      "name": "Syphilis",
+      "aliases": [
+        "Treponema pallidum infection"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "acute",
+      "keywords": [
+        "chancre",
+        "benzathine penicillin",
+        "pregnancy",
+        "desensitization"
+      ],
+      "overview": "Study primary/secondary treatment and the unique requirement for penicillin during pregnancy; other stages need separate regimens.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-syphilis-early-2021",
+          "title": "P&S Syphilis - STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/p-and-s-syphilis.htm",
+          "kind": "clinical-guideline",
+          "edition": "2021 STI Treatment Guidelines",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Primary/secondary treatment; clinical and serologic follow-up",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "cdc-syphilis-pregnancy-2021",
+          "title": "Syphilis During Pregnancy - STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/syphilis-pregnancy.htm",
+          "kind": "clinical-guideline",
+          "edition": "2021 STI Treatment Guidelines",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Treatment and penicillin allergy",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "early-treatment",
+          "title": "Early syphilis treatment",
+          "text": "For nonpregnant adults with primary or secondary syphilis, benzathine penicillin G 2.4 million units IM once is recommended.",
+          "sourceIds": [
+            "cdc-syphilis-early-2021"
+          ]
+        },
+        {
+          "id": "pregnancy",
+          "title": "Pregnancy and allergy",
+          "text": "No proven nonpenicillin alternative prevents congenital infection; confirmed allergy in pregnancy requires desensitization and stage-appropriate penicillin.",
+          "sourceIds": [
+            "cdc-syphilis-pregnancy-2021"
+          ]
+        },
+        {
+          "id": "follow-up",
+          "title": "Follow-up",
+          "text": "Early syphilis requires clinical and quantitative serologic follow-up; staging and neurologic findings affect evaluation and treatment.",
+          "sourceIds": [
+            "cdc-syphilis-early-2021"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A nonpregnant adult has confirmed primary syphilis without neurologic or ocular findings. Which regimen is recommended?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Oral amoxicillin as the standard regimen"
+            },
+            {
+              "id": "B",
+              "text": "Topical antibiotic to the chancre alone"
+            },
+            {
+              "id": "C",
+              "text": "No treatment because the lesion may heal"
+            },
+            {
+              "id": "D",
+              "text": "An antifungal course"
+            },
+            {
+              "id": "E",
+              "text": "Benzathine penicillin G 2.4 million units IM once"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "The recommended adult primary/secondary regimen is a single benzathine penicillin G dose.",
+          "distractorExplanations": {
+            "A": "It is not the recommended standard regimen.",
+            "B": "Local treatment does not address systemic infection.",
+            "C": "Lesion healing does not eliminate infection.",
+            "D": "It does not treat syphilis."
+          },
+          "sectionIds": [
+            "early-treatment"
+          ],
+          "sourceIds": [
+            "cdc-syphilis-early-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Identify standard treatment for uncomplicated primary syphilis.",
+          "difficulty": "application",
+          "id": "syphilis-q1"
+        },
+        {
+          "stem": "A pregnant patient has syphilis and confirmed immediate penicillin allergy. Which plan best follows CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Desensitization followed by stage-appropriate penicillin G"
+            },
+            {
+              "id": "B",
+              "text": "Substitute doxycycline as equally proven fetal protection"
+            },
+            {
+              "id": "C",
+              "text": "Defer all treatment until delivery"
+            },
+            {
+              "id": "D",
+              "text": "Use topical treatment alone"
+            },
+            {
+              "id": "E",
+              "text": "Treat only the partner"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Penicillin is required in pregnancy; allergy is managed through desensitization.",
+          "distractorExplanations": {
+            "B": "No proven penicillin alternative exists in pregnancy.",
+            "C": "This leaves maternal and fetal infection untreated.",
+            "D": "It cannot treat systemic infection.",
+            "E": "The pregnant patient also requires treatment."
+          },
+          "sectionIds": [
+            "pregnancy"
+          ],
+          "sourceIds": [
+            "cdc-syphilis-pregnancy-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Manage penicillin allergy when treating syphilis during pregnancy.",
+          "difficulty": "application",
+          "id": "syphilis-q2"
+        }
+      ]
+    },
+    {
+      "id": "genital-herpes",
+      "name": "Genital herpes",
+      "aliases": [
+        "HSV-2",
+        "genital HSV"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "chronic",
+      "keywords": [
+        "acyclovir",
+        "valacyclovir",
+        "suppression",
+        "asymptomatic shedding"
+      ],
+      "overview": "Study first-episode therapy, recurrence control and the limits of transmission prevention.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-herpes-2021",
+          "title": "Herpes - STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm",
+          "kind": "clinical-guideline",
+          "edition": "2021 STI Treatment Guidelines",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "First clinical episode; suppressive HSV-2 therapy; counseling",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "first-episode",
+          "title": "First episode",
+          "text": "Treat every first clinical genital herpes episode with systemic antiviral therapy; topical antivirals provide little benefit.",
+          "sourceIds": [
+            "cdc-herpes-2021"
+          ]
+        },
+        {
+          "id": "suppression",
+          "title": "Recurrent disease",
+          "text": "Daily suppressive antivirals reduce HSV-2 recurrences and can reduce transmission in appropriate symptomatic discordant couples.",
+          "sourceIds": [
+            "cdc-herpes-2021"
+          ]
+        },
+        {
+          "id": "counseling",
+          "title": "Counseling",
+          "text": "Treatment does not eradicate latent virus. Condoms and avoiding sex during outbreaks complement suppression; shedding can occur without lesions.",
+          "sourceIds": [
+            "cdc-herpes-2021"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A patient has a first clinical episode of laboratory-confirmed genital herpes. Lesions are mild and she can take oral medication. Which plan is appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Antibiotics alone"
+            },
+            {
+              "id": "B",
+              "text": "Systemic oral antiviral therapy"
+            },
+            {
+              "id": "C",
+              "text": "Topical antiviral alone"
+            },
+            {
+              "id": "D",
+              "text": "No treatment because lesions are mild"
+            },
+            {
+              "id": "E",
+              "text": "An oral antifungal"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Even mild first episodes warrant systemic antiviral treatment.",
+          "distractorExplanations": {
+            "A": "No bacterial infection is identified.",
+            "C": "Topical treatment offers minimal benefit.",
+            "D": "All first episodes should receive antivirals.",
+            "E": "It does not treat HSV."
+          },
+          "sectionIds": [
+            "first-episode"
+          ],
+          "sourceIds": [
+            "cdc-herpes-2021"
+          ],
+          "domain": "acute",
+          "learningObjective": "Treat a first genital herpes episode appropriately.",
+          "difficulty": "application",
+          "id": "genital-herpes-q1"
+        },
+        {
+          "stem": "A patient with frequent symptomatic HSV-2 recurrences wants to reduce outbreaks and transmission to a susceptible partner. Which strategy best fits?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Use antibiotics indefinitely"
+            },
+            {
+              "id": "B",
+              "text": "Tell the couple condoms are unnecessary"
+            },
+            {
+              "id": "C",
+              "text": "Daily suppression plus transmission-risk counseling"
+            },
+            {
+              "id": "D",
+              "text": "Promise that suppression eradicates HSV"
+            },
+            {
+              "id": "E",
+              "text": "Avoid sex only when fever occurs"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Suppressive antivirals reduce recurrence and can reduce, rather than eliminate, transmission risk.",
+          "distractorExplanations": {
+            "A": "Antibiotics do not suppress HSV.",
+            "B": "Barrier counseling remains part of prevention.",
+            "D": "Latent infection is not eradicated.",
+            "E": "Outbreaks and asymptomatic shedding remain relevant."
+          },
+          "sectionIds": [
+            "suppression"
+          ],
+          "sourceIds": [
+            "cdc-herpes-2021"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Explain the benefits and limits of HSV-2 suppression.",
+          "difficulty": "application",
+          "id": "genital-herpes-q2"
+        }
+      ]
+    },
+    {
+      "id": "attention-deficit-hyperactivity-disorder",
+      "name": "Attention-deficit/hyperactivity disorder",
+      "aliases": [
+        "ADHD"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "chronic",
+      "keywords": [
+        "behavior management",
+        "school reports",
+        "preschool",
+        "impairment"
+      ],
+      "overview": "Study pediatric diagnosis across settings and age-sensitive treatment using current CDC recommendations citing AAP guidance.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-adhd-care-2026",
+          "title": "Clinical Care of ADHD in Children",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/adhd/hcp/clinical-care/index.html",
+          "kind": "official-recommendation",
+          "edition": "Page updated/reviewed July 30, 2026; cites AAP 2019 guideline",
+          "publishedDate": "2024-05-15",
+          "checkedAt": "2026-10-09",
+          "locator": "Diagnosis/evaluation; preschool and school-age treatment",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Evaluation across settings",
+          "text": "Document developmentally inappropriate, impairing symptoms across settings using caregiver and school reports; consider mimics and coexisting conditions.",
+          "sourceIds": [
+            "cdc-adhd-care-2026"
+          ]
+        },
+        {
+          "id": "preschool",
+          "title": "Preschool treatment",
+          "text": "Parent training in behavior management is initial treatment in preschool children; medication is considered for persistent serious impairment.",
+          "sourceIds": [
+            "cdc-adhd-care-2026"
+          ]
+        },
+        {
+          "id": "school-age",
+          "title": "School-age treatment",
+          "text": "For school-age children, FDA-approved medication combines with parent/classroom behavioral strategies and educational supports.",
+          "sourceIds": [
+            "cdc-adhd-care-2026"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A 5-year-old meets ADHD criteria across home and preschool. The family has not tried treatment and impairment is not an immediate safety crisis. Which initial approach is recommended?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Antibiotics"
+            },
+            {
+              "id": "B",
+              "text": "Wait until adulthood for all treatment"
+            },
+            {
+              "id": "C",
+              "text": "Use only punitive discipline"
+            },
+            {
+              "id": "D",
+              "text": "Parent training in behavior management"
+            },
+            {
+              "id": "E",
+              "text": "Begin medication without discussing behavioral treatment"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "For preschool ADHD, parent behavior-management training is the initial recommended approach.",
+          "distractorExplanations": {
+            "A": "They do not treat ADHD.",
+            "B": "Effective preschool treatment is available.",
+            "C": "This is not evidence-based behavior management.",
+            "E": "Preschool treatment begins with behavioral strategies."
+          },
+          "sectionIds": [
+            "preschool"
+          ],
+          "sourceIds": [
+            "cdc-adhd-care-2026"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Select initial behavioral treatment for preschool ADHD.",
+          "difficulty": "application",
+          "id": "attention-deficit-hyperactivity-disorder-q1"
+        },
+        {
+          "stem": "A 9-year-old has suspected ADHD based only on a parent questionnaire. What information is particularly important before confirming the diagnosis?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "A brain scan for every child"
+            },
+            {
+              "id": "B",
+              "text": "One isolated distracted day"
+            },
+            {
+              "id": "C",
+              "text": "An antibiotic response"
+            },
+            {
+              "id": "D",
+              "text": "A normal grade average excludes ADHD"
+            },
+            {
+              "id": "E",
+              "text": "School reports documenting symptoms and impairment across settings"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Evaluation requires evidence across settings and assessment of functional impairment and alternative causes.",
+          "distractorExplanations": {
+            "A": "It does not replace clinical diagnostic assessment.",
+            "B": "This does not establish persistent impairment.",
+            "C": "This is not a diagnostic criterion.",
+            "D": "Grades alone do not establish absence of impairment."
+          },
+          "sectionIds": [
+            "diagnosis"
+          ],
+          "sourceIds": [
+            "cdc-adhd-care-2026"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Avoid diagnosing ADHD from one setting alone.",
+          "difficulty": "application",
+          "id": "attention-deficit-hyperactivity-disorder-q2"
+        }
+      ]
+    },
+    {
+      "id": "bronchiolitis",
+      "name": "Viral bronchiolitis",
+      "aliases": [
+        "infant bronchiolitis"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "acute",
+      "keywords": [
+        "infant",
+        "first wheeze",
+        "hydration",
+        "supportive care"
+      ],
+      "overview": "Study typical uncomplicated infant bronchiolitis through a current US institutional consensus guideline; complex lung disease needs separate assessment.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "ucsf-bronchiolitis-2024",
+          "title": "Consensus Clinical Guidelines for Inpatient Management of Viral Bronchiolitis",
+          "organization": "UCSF Northern California Pediatric Hospital Medicine Consortium",
+          "url": "https://medconnection.ucsfbenioffchildrens.org/bronchiolitis-guidelines",
+          "kind": "clinical-guideline",
+          "edition": "July 16, 2024 institutional consensus",
+          "publishedDate": "2024-07-16",
+          "checkedAt": "2026-10-09",
+          "locator": "Uncomplicated definition; diagnostics; treatment and hydration",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Typical presentation",
+          "text": "An infant with a first viral wheezing illness and diffuse findings is usually diagnosed clinically; routine imaging and laboratory testing are unnecessary.",
+          "sourceIds": [
+            "ucsf-bronchiolitis-2024"
+          ]
+        },
+        {
+          "id": "management",
+          "title": "Supportive management",
+          "text": "For uncomplicated infant bronchiolitis, prioritize respiratory and hydration assessment; routine albuterol, steroids and antibiotics are not recommended.",
+          "sourceIds": [
+            "ucsf-bronchiolitis-2024"
+          ]
+        },
+        {
+          "id": "hydration",
+          "title": "Feeding difficulty",
+          "text": "Infants unable to maintain intake need consideration of nasogastric or intravenous hydration according to respiratory status and clinical judgment.",
+          "sourceIds": [
+            "ucsf-bronchiolitis-2024"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A previously healthy 4-month-old has a first wheezing illness after coryza, diffuse crackles, adequate intake and stable oxygenation. Which plan is most appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Supportive care and reassessment of breathing and hydration"
+            },
+            {
+              "id": "B",
+              "text": "Routine albuterol and systemic steroids"
+            },
+            {
+              "id": "C",
+              "text": "Antibiotics without bacterial evidence"
+            },
+            {
+              "id": "D",
+              "text": "Routine chest CT"
+            },
+            {
+              "id": "E",
+              "text": "Chest physiotherapy as standard treatment"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Typical uncomplicated infant bronchiolitis receives supportive management.",
+          "distractorExplanations": {
+            "B": "They are not routine uncomplicated bronchiolitis therapy.",
+            "C": "No concomitant bacterial infection is described.",
+            "D": "Typical illness does not require advanced imaging.",
+            "E": "It is not routine recommended care."
+          },
+          "sectionIds": [
+            "management"
+          ],
+          "sourceIds": [
+            "ucsf-bronchiolitis-2024"
+          ],
+          "domain": "acute",
+          "learningObjective": "Avoid routine ineffective medications in uncomplicated bronchiolitis.",
+          "difficulty": "application",
+          "id": "bronchiolitis-q1"
+        },
+        {
+          "stem": "A 6-month-old with bronchiolitis has inadequate intake and clinical dehydration. What additional management should be considered?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Routine chest physiotherapy instead of fluids"
+            },
+            {
+              "id": "B",
+              "text": "Nasogastric or intravenous hydration"
+            },
+            {
+              "id": "C",
+              "text": "Continue inadequate oral intake without intervention"
+            },
+            {
+              "id": "D",
+              "text": "Antibiotics solely for poor feeding"
+            },
+            {
+              "id": "E",
+              "text": "Force feeds despite worsening respiratory distress"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Feeding difficulty and dehydration justify NG or IV hydration selected around the respiratory assessment.",
+          "distractorExplanations": {
+            "A": "It does not correct dehydration.",
+            "C": "Dehydration requires additional support.",
+            "D": "Poor feeding does not establish bacterial infection.",
+            "E": "Feeding safety must be assessed."
+          },
+          "sectionIds": [
+            "hydration"
+          ],
+          "sourceIds": [
+            "ucsf-bronchiolitis-2024"
+          ],
+          "domain": "acute",
+          "learningObjective": "Provide hydration support when infant oral intake is inadequate.",
+          "difficulty": "application",
+          "id": "bronchiolitis-q2"
+        }
+      ],
+      "limitations": [
+        "US institutional consensus, not a new national AAP guideline. AAP 2014 status was not established as current; only UCSF 2024 recommendations are used."
+      ]
+    },
+    {
+      "id": "croup",
+      "name": "Croup",
+      "aliases": [
+        "laryngotracheobronchitis"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "acute",
+      "keywords": [
+        "barky cough",
+        "stridor",
+        "dexamethasone",
+        "nebulized epinephrine"
+      ],
+      "overview": "Study typical croup severity and treatment using the March 2026 UCSF consensus update.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "ucsf-croup-2026",
+          "title": "Consensus Guidelines for Management of Croup: Northern California Pediatric Hospital Medicine Consortium",
+          "organization": "UCSF Northern California Pediatric Hospital Medicine Consortium",
+          "url": "https://medconnection.ucsfbenioffchildrens.org/croup-guidelines",
+          "kind": "clinical-guideline",
+          "edition": "Updated March 2026 institutional consensus",
+          "publishedDate": "2026-03-01",
+          "checkedAt": "2026-10-09",
+          "locator": "Severity assessment; steroid therapy; persistent symptoms",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "recognition",
+          "title": "Recognition and severity",
+          "text": "Barky cough, hoarseness and inspiratory stridor suggest croup; stridor at rest and increased work of breathing indicate greater severity.",
+          "sourceIds": [
+            "ucsf-croup-2026"
+          ]
+        },
+        {
+          "id": "management",
+          "title": "Initial therapy",
+          "text": "Dexamethasone is used across typical croup severity levels; nebulized epinephrine treats clinically significant stridor and respiratory distress.",
+          "sourceIds": [
+            "ucsf-croup-2026"
+          ]
+        },
+        {
+          "id": "disposition",
+          "title": "Reassessment and disposition",
+          "text": "Persistent stridor at rest or substantial work of breathing after treatment supports admission; discharge depends on sustained clinical improvement.",
+          "sourceIds": [
+            "ucsf-croup-2026"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A well-appearing 2-year-old has a barky cough and hoarse voice but no stridor at rest or significant distress. Which medication is recommended for typical croup?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No steroid because the illness is mild"
+            },
+            {
+              "id": "B",
+              "text": "Daily repeat dexamethasone automatically"
+            },
+            {
+              "id": "C",
+              "text": "A single dexamethasone dose"
+            },
+            {
+              "id": "D",
+              "text": "Routine antibiotics"
+            },
+            {
+              "id": "E",
+              "text": "Albuterol as the main croup treatment"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Typical mild croup still benefits from a single dexamethasone treatment.",
+          "distractorExplanations": {
+            "A": "Dexamethasone is recommended across severity levels.",
+            "B": "Routine repeated steroid dosing is not recommended.",
+            "D": "No bacterial alternative diagnosis is described.",
+            "E": "It does not target typical upper-airway disease."
+          },
+          "sectionIds": [
+            "management"
+          ],
+          "sourceIds": [
+            "ucsf-croup-2026"
+          ],
+          "domain": "acute",
+          "learningObjective": "Use steroid therapy in typical mild croup.",
+          "difficulty": "application",
+          "id": "croup-q1"
+        },
+        {
+          "stem": "A child with croup still has stridor at rest and moderate work of breathing after dexamethasone and nebulized epinephrine. What disposition is supported?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Discharge because epinephrine was given once"
+            },
+            {
+              "id": "B",
+              "text": "Routine follow-up in a month"
+            },
+            {
+              "id": "C",
+              "text": "Replace monitoring with empiric oral antibiotics"
+            },
+            {
+              "id": "D",
+              "text": "Hospital admission for continued monitoring and treatment"
+            },
+            {
+              "id": "E",
+              "text": "Immediate discharge without reassessment"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Persistent stridor and respiratory work despite treatment are admission criteria.",
+          "distractorExplanations": {
+            "A": "Disposition depends on response, not simply treatment receipt.",
+            "B": "Ongoing respiratory distress needs current assessment.",
+            "C": "No bacterial diagnosis is established.",
+            "E": "Persistent moderate symptoms support admission."
+          },
+          "sectionIds": [
+            "disposition"
+          ],
+          "sourceIds": [
+            "ucsf-croup-2026"
+          ],
+          "domain": "acute",
+          "learningObjective": "Base croup disposition on persistent symptoms after therapy.",
+          "difficulty": "application",
+          "id": "croup-q2"
+        }
+      ],
+      "limitations": [
+        "US institutional consensus. The 2026 page has inconsistent fixed epinephrine-dose disposition thresholds; this module excludes that issue and uses persistent clinical symptoms."
+      ]
+    },
+    {
+      "id": "pediatric-urinary-tract-infection",
+      "name": "Pediatric urinary tract infection",
+      "aliases": [
+        "childhood UTI",
+        "febrile UTI in children"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "acute",
+      "keywords": [
+        "catheter specimen",
+        "urinalysis",
+        "culture",
+        "VCUG"
+      ],
+      "overview": "Study reliable urine collection and selective imaging using February 2025 US institutional consensus; antibiotic choice depends on local susceptibility.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "ucsf-pediatric-uti-2025",
+          "title": "Consensus Guidelines for Management of Pediatric Urinary Tract Infection (UTI)",
+          "organization": "UCSF Northern California Pediatric Hospital Medicine Consortium",
+          "url": "https://medconnection.ucsfbenioffchildrens.org/news/consensus-guidelines-for-management-of-pediatric-urinary-tract-infection-uti",
+          "kind": "clinical-guideline",
+          "edition": "February 11, 2025 institutional consensus",
+          "publishedDate": "2025-02-11",
+          "checkedAt": "2026-10-09",
+          "locator": "Collection methods; urinalysis interpretation; imaging",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "collection",
+          "title": "Collection quality",
+          "text": "For a non-toilet-trained child needing definitive culture, catheter collection is preferred over a bag specimen prone to contamination.",
+          "sourceIds": [
+            "ucsf-pediatric-uti-2025"
+          ]
+        },
+        {
+          "id": "interpretation",
+          "title": "Interpretation",
+          "text": "Interpret pyuria and culture together with symptoms and collection method; negative nitrite alone does not exclude infection.",
+          "sourceIds": [
+            "ucsf-pediatric-uti-2025"
+          ]
+        },
+        {
+          "id": "imaging",
+          "title": "Selective imaging",
+          "text": "VCUG is not routine after a first febrile UTI; concerning ultrasound findings or selected recurrent infections can justify it.",
+          "sourceIds": [
+            "ucsf-pediatric-uti-2025"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A febrile 10-month-old needs a reliable urine culture. A bag urinalysis screen is positive and catheterization is feasible. What is the preferred next specimen?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Culture the bag specimen as equally reliable"
+            },
+            {
+              "id": "B",
+              "text": "Culture stool instead"
+            },
+            {
+              "id": "C",
+              "text": "Use fever alone as culture confirmation"
+            },
+            {
+              "id": "D",
+              "text": "Ignore the positive screen"
+            },
+            {
+              "id": "E",
+              "text": "Catheter-obtained urine for culture"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "A positive bag screen should lead to a more reliable catheter culture when feasible.",
+          "distractorExplanations": {
+            "A": "Bag contamination limits definitive culture interpretation.",
+            "B": "It does not establish urinary infection.",
+            "C": "A reliable urine specimen is needed.",
+            "D": "Further diagnostic collection is warranted."
+          },
+          "sectionIds": [
+            "collection"
+          ],
+          "sourceIds": [
+            "ucsf-pediatric-uti-2025"
+          ],
+          "domain": "acute",
+          "learningObjective": "Distinguish screening urine from definitive culture collection.",
+          "difficulty": "application",
+          "id": "pediatric-urinary-tract-infection-q1"
+        },
+        {
+          "stem": "A child recovered from a first febrile UTI. Renal ultrasound is reassuring, with no obstruction concerns or recurrent infection. What is the role of VCUG?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "It is not routinely indicated"
+            },
+            {
+              "id": "B",
+              "text": "Required for every first febrile UTI"
+            },
+            {
+              "id": "C",
+              "text": "Required daily until the urine is sterile"
+            },
+            {
+              "id": "D",
+              "text": "Replaces urine culture for diagnosis"
+            },
+            {
+              "id": "E",
+              "text": "Never indicated even with future obstruction concerns"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "First infection alone with reassuring imaging does not require routine VCUG.",
+          "distractorExplanations": {
+            "B": "The guideline reserves VCUG for selected indications.",
+            "C": "This is not a recommended imaging schedule.",
+            "D": "Imaging does not replace microbiologic diagnosis.",
+            "E": "Selected concerning findings can warrant VCUG."
+          },
+          "sectionIds": [
+            "imaging"
+          ],
+          "sourceIds": [
+            "ucsf-pediatric-uti-2025"
+          ],
+          "domain": "acute",
+          "learningObjective": "Avoid routine VCUG after an uncomplicated first febrile UTI.",
+          "difficulty": "application",
+          "id": "pediatric-urinary-tract-infection-q2"
+        }
+      ],
+      "limitations": [
+        "US institutional consensus, not the retired AAP 2011 UTI algorithm. Antibiotic choice and duration must reflect the current local stewardship guidance."
+      ]
+    },
+    {
+      "id": "iron-deficiency-anemia",
+      "name": "Iron deficiency anemia",
+      "aliases": [
+        "IDA"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "chronic",
+      "keywords": [
+        "occult blood loss",
+        "bidirectional endoscopy",
+        "iron replacement"
+      ],
+      "overview": "Study adult gastrointestinal evaluation using accessible AGA recommendations; this is not a complete hematologic or pediatric anemia protocol.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aga-ida-education-2020",
+          "title": "AGA Clinical Guidelines on Gastrointestinal Evaluation of Iron Deficiency Anemia - Accompanying Educational Presentation",
+          "organization": "American Gastroenterological Association",
+          "url": "https://agau.gastro.org/course/AGA_Clinical_Guidelines_on_Gastrointestinal_Evaluation_of_Iron_Deficiency_Anemia_-_Accompanying_Educational_Presentation/d351c1ce-dc6f-4523-9606-868e04ad4359",
+          "kind": "official-recommendation",
+          "edition": "Society educational summary of 2020 guideline; page edition not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Overview recommendations 1\u20134",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "aga-ida-technical-2020",
+          "title": "AGA Technical Review on Gastrointestinal Evaluation of Iron Deficiency Anemia",
+          "organization": "American Gastroenterological Association",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/32828801/",
+          "kind": "official-clinical-reference",
+          "edition": "2020 technical review; accessible figure caption",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Figure 3: endoscopy and subsequent iron trial",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "etiology",
+          "title": "Confirm and investigate",
+          "text": "Document iron deficiency and consider gastrointestinal causes when anemia has no obvious explanation; replacement alone does not identify occult bleeding.",
+          "sourceIds": [
+            "aga-ida-education-2020"
+          ]
+        },
+        {
+          "id": "endoscopy",
+          "title": "Adult endoscopic evaluation",
+          "text": "AGA recommends upper and lower endoscopy for asymptomatic men and postmenopausal women with iron deficiency anemia.",
+          "sourceIds": [
+            "aga-ida-education-2020"
+          ]
+        },
+        {
+          "id": "negative-workup",
+          "title": "After an unrevealing workup",
+          "text": "For uncomplicated asymptomatic disease after negative endoscopic and noninvasive evaluation, try iron replacement before routine capsule endoscopy.",
+          "sourceIds": [
+            "aga-ida-education-2020",
+            "aga-ida-technical-2020"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A 68-year-old man has confirmed iron deficiency anemia without an obvious bleeding source or gastrointestinal symptoms. Which evaluation is recommended?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Routine brain imaging"
+            },
+            {
+              "id": "B",
+              "text": "Bidirectional endoscopy"
+            },
+            {
+              "id": "C",
+              "text": "Iron alone with no cause evaluation"
+            },
+            {
+              "id": "D",
+              "text": "No evaluation because he has no GI symptoms"
+            },
+            {
+              "id": "E",
+              "text": "A stool culture alone"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "AGA recommends upper and lower endoscopic evaluation in asymptomatic men with IDA.",
+          "distractorExplanations": {
+            "A": "It does not investigate the suspected cause.",
+            "C": "It may miss occult gastrointestinal pathology.",
+            "D": "Asymptomatic men still warrant evaluation.",
+            "E": "It does not evaluate this anemia appropriately."
+          },
+          "sectionIds": [
+            "endoscopy"
+          ],
+          "sourceIds": [
+            "aga-ida-education-2020"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Investigate unexplained adult iron deficiency despite absent GI symptoms.",
+          "difficulty": "application",
+          "id": "iron-deficiency-anemia-q1"
+        },
+        {
+          "stem": "An uncomplicated asymptomatic patient has IDA with negative bidirectional endoscopy and noninvasive evaluation. Which next approach generally precedes routine small-bowel capsule testing?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Empiric long-term antibiotics"
+            },
+            {
+              "id": "B",
+              "text": "Repeat colonoscopy daily"
+            },
+            {
+              "id": "C",
+              "text": "A trial of iron replacement"
+            },
+            {
+              "id": "D",
+              "text": "Immediate capsule testing in every patient"
+            },
+            {
+              "id": "E",
+              "text": "Stop evaluating and never replace iron"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "AGA supports an iron trial before routine capsule evaluation in this selected setting.",
+          "distractorExplanations": {
+            "A": "No treatable infection is identified.",
+            "B": "This is not the recommended sequence.",
+            "D": "A replacement trial generally comes first here.",
+            "E": "The deficiency still requires treatment."
+          },
+          "sectionIds": [
+            "negative-workup"
+          ],
+          "sourceIds": [
+            "aga-ida-education-2020"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Sequence iron treatment after an unrevealing initial GI workup.",
+          "difficulty": "application",
+          "id": "iron-deficiency-anemia-q2"
+        }
+      ],
+      "limitations": [
+        "Accessible AGA society recommendation summary and primary technical-review figure caption; full 2020 guideline access was blocked. No unverified ferritin cutoff is included."
+      ]
+    },
+    {
+      "id": "vitamin-b12-deficiency",
+      "name": "Vitamin B12 deficiency",
+      "aliases": [
+        "cobalamin deficiency",
+        "pernicious anemia"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "chronic",
+      "keywords": [
+        "methylmalonic acid",
+        "neuropathy",
+        "intrinsic factor",
+        "metformin"
+      ],
+      "overview": "Study recognition and confirmatory testing from the NIH health-professional reference; no US formal condition guideline is asserted.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "nih-b12-professional-2025",
+          "title": "Vitamin B12 - Health Professional Fact Sheet",
+          "organization": "NIH Office of Dietary Supplements",
+          "url": "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/",
+          "kind": "official-clinical-reference",
+          "edition": "Updated July 2, 2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Assessing status; deficiency; at-risk groups",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "recognition",
+          "title": "Neurologic recognition",
+          "text": "Vitamin B12 deficiency can cause neuropathy without anemia; a normal blood count does not exclude neurologic disease.",
+          "sourceIds": [
+            "nih-b12-professional-2025"
+          ]
+        },
+        {
+          "id": "testing",
+          "title": "Confirmatory testing",
+          "text": "Methylmalonic acid can clarify a borderline B12 result; renal impairment also elevates MMA and affects interpretation.",
+          "sourceIds": [
+            "nih-b12-professional-2025"
+          ]
+        },
+        {
+          "id": "causes",
+          "title": "Causes and risk",
+          "text": "Dietary limitation, impaired absorption, intrinsic-factor loss and medications such as metformin contribute; replacement must address the cause.",
+          "sourceIds": [
+            "nih-b12-professional-2025"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A patient has distal paresthesias and a borderline serum B12 result. Kidney function is normal. Which test can help confirm functional B12 deficiency?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "A normal hemoglobin alone"
+            },
+            {
+              "id": "B",
+              "text": "A skin fungal culture"
+            },
+            {
+              "id": "C",
+              "text": "An isolated serum sodium"
+            },
+            {
+              "id": "D",
+              "text": "Serum methylmalonic acid"
+            },
+            {
+              "id": "E",
+              "text": "A urine culture"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "MMA helps clarify borderline B12 concentrations; renal function matters in interpretation.",
+          "distractorExplanations": {
+            "A": "It cannot exclude neurologic deficiency.",
+            "B": "It does not clarify the B12 result.",
+            "C": "It does not confirm B12 deficiency.",
+            "E": "It does not assess B12 status."
+          },
+          "sectionIds": [
+            "testing"
+          ],
+          "sourceIds": [
+            "nih-b12-professional-2025"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Use MMA appropriately to clarify a borderline B12 level.",
+          "difficulty": "application",
+          "id": "vitamin-b12-deficiency-q1"
+        },
+        {
+          "stem": "A patient on a restrictive diet has neurologic symptoms consistent with B12 deficiency but no anemia. Which interpretation is most appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Normal hemoglobin rules it out"
+            },
+            {
+              "id": "B",
+              "text": "Only patients with macrocytosis can be affected"
+            },
+            {
+              "id": "C",
+              "text": "Dietary history is irrelevant"
+            },
+            {
+              "id": "D",
+              "text": "Symptoms establish the cause without further assessment"
+            },
+            {
+              "id": "E",
+              "text": "B12 deficiency remains possible despite the normal blood count"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Neurologic B12 deficiency is not excluded by absent anemia.",
+          "distractorExplanations": {
+            "A": "Neurologic manifestations can occur without anemia.",
+            "B": "Hematologic abnormalities are not required.",
+            "C": "Dietary restriction can increase risk.",
+            "D": "Laboratory and etiologic evaluation are still needed."
+          },
+          "sectionIds": [
+            "recognition"
+          ],
+          "sourceIds": [
+            "nih-b12-professional-2025"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize B12-related neurologic disease without anemia.",
+          "difficulty": "application",
+          "id": "vitamin-b12-deficiency-q2"
+        }
+      ],
+      "limitations": [
+        "NIH health-professional reference, not a formal guideline. No accessible current US condition-specific formal guideline was established. Canonical NICE NG239 pages were blocked; a third-party PDF copy was inspected but excluded because official-host verification and AI/commercial licensing were not established. No NICE recommendation is imported."
+      ]
+    },
+    {
+      "id": "anaphylaxis",
+      "name": "Anaphylaxis",
+      "aliases": [
+        "severe allergic reaction"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "emergent",
+      "keywords": [
+        "epinephrine",
+        "autoinjector",
+        "airway",
+        "biphasic reaction"
+      ],
+      "overview": "Study prompt epinephrine and risk-based preparation using the AAAAI/ACAAI practice-parameter update.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aaaai-anaphylaxis-parameter-guide-2023",
+          "title": "Anaphylaxis in Practice: A Guide to the 2023 Practice Parameter Update",
+          "organization": "American Academy of Allergy, Asthma & Immunology / American College of Allergy, Asthma & Immunology",
+          "url": "https://www.aaaai.org/Aaaai/media/Media-Library-PDFs/Allergist%20Resources/Statements%20and%20Practice%20Parameters/Anaphylaxis-in-Practice-2023.pdf",
+          "kind": "official-recommendation",
+          "edition": "2024 implementation guide to 2023 practice parameter",
+          "publishedDate": "2024-06-27",
+          "checkedAt": "2026-10-09",
+          "locator": "Recommendations 6\u20137, 23\u201327; epinephrine and community management",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "aaaai-anaphylaxis-reference",
+          "title": "Anaphylaxis Symptoms, Diagnosis, Treatment & Management",
+          "organization": "American Academy of Allergy, Asthma & Immunology",
+          "url": "https://www.aaaai.org/conditions-treatments/allergies/anaphylaxis",
+          "kind": "official-clinical-reference",
+          "edition": "Current society reference; edition not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Recognition and emergency treatment",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "acute-treatment",
+          "title": "Immediate treatment",
+          "text": "Epinephrine is first-line for suspected anaphylaxis; do not wait for every diagnostic criterion before treating a concerning evolving reaction.",
+          "sourceIds": [
+            "aaaai-anaphylaxis-parameter-guide-2023"
+          ]
+        },
+        {
+          "id": "escalation",
+          "title": "Emergency escalation",
+          "text": "Severe, persistent, recurrent or worsening symptoms after epinephrine require activation of emergency medical services.",
+          "sourceIds": [
+            "aaaai-anaphylaxis-parameter-guide-2023"
+          ]
+        },
+        {
+          "id": "preparation",
+          "title": "Preparation after an episode",
+          "text": "High-risk patients need accessible autoinjectors and training in recognition, carriage and use; previous multi-dose or biphasic episodes support multiple devices.",
+          "sourceIds": [
+            "aaaai-anaphylaxis-parameter-guide-2023"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "Minutes after peanut exposure, a patient develops generalized urticaria, wheezing and hypotension. Which medication has immediate priority?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Intramuscular epinephrine"
+            },
+            {
+              "id": "B",
+              "text": "Oral antihistamine alone"
+            },
+            {
+              "id": "C",
+              "text": "Oral corticosteroid before epinephrine"
+            },
+            {
+              "id": "D",
+              "text": "Antibiotics"
+            },
+            {
+              "id": "E",
+              "text": "Observe until every criterion is documented"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Suspected anaphylaxis requires prompt epinephrine.",
+          "distractorExplanations": {
+            "B": "It cannot replace first-line epinephrine.",
+            "C": "It delays the priority treatment.",
+            "D": "They do not treat this acute allergic reaction.",
+            "E": "Treatment should not await complete documentation."
+          },
+          "sectionIds": [
+            "acute-treatment"
+          ],
+          "sourceIds": [
+            "aaaai-anaphylaxis-parameter-guide-2023"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Prioritize epinephrine in a multisystem allergic emergency.",
+          "difficulty": "application",
+          "id": "anaphylaxis-q1"
+        },
+        {
+          "stem": "A patient previously needed multiple epinephrine doses for anaphylaxis and is planning travel. Which preparation best follows the practice parameter?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Give epinephrine daily before any symptoms"
+            },
+            {
+              "id": "B",
+              "text": "Carry multiple prescribed autoinjectors and rehearse use"
+            },
+            {
+              "id": "C",
+              "text": "Carry antihistamines instead of epinephrine"
+            },
+            {
+              "id": "D",
+              "text": "Leave devices home if asymptomatic"
+            },
+            {
+              "id": "E",
+              "text": "Rely on every restaurant stocking epinephrine"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Previous multi-dose anaphylaxis supports access to multiple autoinjectors and practical training.",
+          "distractorExplanations": {
+            "A": "Preemptive asymptomatic dosing is not recommended.",
+            "C": "They do not substitute for epinephrine.",
+            "D": "Future exposure is unpredictable.",
+            "E": "Community availability is not assured."
+          },
+          "sectionIds": [
+            "preparation"
+          ],
+          "sourceIds": [
+            "aaaai-anaphylaxis-parameter-guide-2023"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Plan autoinjector access for a patient at high recurrence risk.",
+          "difficulty": "application",
+          "id": "anaphylaxis-q2"
+        }
+      ]
+    },
+    {
+      "id": "syncope",
+      "name": "Syncope",
+      "aliases": [
+        "fainting",
+        "vasovagal syncope"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "acute",
+      "keywords": [
+        "ECG",
+        "history",
+        "cardiac risk",
+        "neurologic imaging"
+      ],
+      "overview": "Study the initial evaluation and selection of testing through AHA guidance derived from the joint syncope guideline.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aha-syncope-2017-summary",
+          "title": "Top Things to Know: 2017 Guideline for the Evaluation and Management of Patients with Syncope",
+          "organization": "American Heart Association / ACC / Heart Rhythm Society",
+          "url": "https://professional.heart.org/en/science-news/2017-acc-aha-hrs-guideline-for-the-evaluation-and-management-of-patients-with-syncope/top-things-to-know",
+          "kind": "official-recommendation",
+          "edition": "2017 joint guideline official summary",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Points 2\u20135: initial evaluation, admission and targeted tests",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "aha-syncope-reference",
+          "title": "Syncope (Fainting)",
+          "organization": "American Heart Association",
+          "url": "https://www.heart.org/en/health-topics/arrhythmia/symptoms-diagnosis--monitoring-of-arrhythmia/syncope-fainting",
+          "kind": "official-clinical-reference",
+          "edition": "Official reference; last reviewed October 21, 2024",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Initial evaluation and cardiac risk factors",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "initial",
+          "title": "Initial evaluation",
+          "text": "Start with a detailed history, examination and resting 12-lead ECG to identify likely causes and high-risk features.",
+          "sourceIds": [
+            "aha-syncope-2017-summary"
+          ]
+        },
+        {
+          "id": "risk",
+          "title": "Serious associated disease",
+          "text": "Syncope associated with a serious medical condition warrants hospital evaluation and treatment.",
+          "sourceIds": [
+            "aha-syncope-2017-summary"
+          ]
+        },
+        {
+          "id": "testing",
+          "title": "Targeted testing",
+          "text": "Routine broad laboratories, neuroimaging and EEG are not useful defaults; focal neurologic findings or a specific suspicion guide further testing.",
+          "sourceIds": [
+            "aha-syncope-2017-summary"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A patient presents after a brief faint. History and examination are underway. Which test belongs in the initial syncope evaluation?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Broad laboratory panel instead of history"
+            },
+            {
+              "id": "B",
+              "text": "No evaluation after spontaneous recovery"
+            },
+            {
+              "id": "C",
+              "text": "Resting 12-lead ECG"
+            },
+            {
+              "id": "D",
+              "text": "Brain MRI for every faint"
+            },
+            {
+              "id": "E",
+              "text": "EEG for every faint"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "The initial assessment includes a resting ECG alongside history and examination.",
+          "distractorExplanations": {
+            "A": "Testing does not replace the initial clinical evaluation.",
+            "B": "Recovery does not remove the need to evaluate.",
+            "D": "Routine neuroimaging is not recommended.",
+            "E": "Routine EEG is not recommended."
+          },
+          "sectionIds": [
+            "initial"
+          ],
+          "sourceIds": [
+            "aha-syncope-2017-summary"
+          ],
+          "domain": "acute",
+          "learningObjective": "Identify ECG as part of initial syncope assessment.",
+          "difficulty": "application",
+          "id": "syncope-q1"
+        },
+        {
+          "stem": "A patient has a typical vasovagal episode. Examination and ECG are reassuring; there is no trauma, focal deficit or seizure concern. Which approach is appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Diagnose epilepsy solely because consciousness was lost"
+            },
+            {
+              "id": "B",
+              "text": "Ignore new future high-risk findings"
+            },
+            {
+              "id": "C",
+              "text": "Hospitalize every low-risk vasovagal episode"
+            },
+            {
+              "id": "D",
+              "text": "Education and targeted follow-up without routine neuroimaging or EEG"
+            },
+            {
+              "id": "E",
+              "text": "Routine brain CT and EEG regardless of findings"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Recognized vasovagal syncope supports education; routine neurologic testing is unnecessary in this presentation.",
+          "distractorExplanations": {
+            "A": "Transient unconsciousness alone does not establish epilepsy.",
+            "B": "Reassurance does not preclude later reassessment.",
+            "C": "The guideline ties admission to serious associated conditions.",
+            "E": "Absent relevant findings, routine testing is not recommended."
+          },
+          "sectionIds": [
+            "testing"
+          ],
+          "sourceIds": [
+            "aha-syncope-2017-summary"
+          ],
+          "domain": "acute",
+          "learningObjective": "Avoid routine neurologic testing in uncomplicated vasovagal syncope.",
+          "difficulty": "application",
+          "id": "syncope-q2"
+        }
+      ]
+    },
+    {
+      "id": "pressure-injury",
+      "name": "Pressure injury",
+      "aliases": [
+        "pressure ulcer",
+        "decubitus ulcer"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "chronic",
+      "keywords": [
+        "offloading",
+        "repositioning",
+        "heel pressure",
+        "support surface"
+      ],
+      "overview": "Study prevention of further pressure injury using the current international collaboration that includes the US NPIAP.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "npiap-repositioning-2026",
+          "title": "Repositioning and Mobilization",
+          "organization": "National Pressure Injury Advisory Panel / EPUAP / PPPIA",
+          "url": "https://www.internationalguideline.com/repositioning",
+          "kind": "clinical-guideline",
+          "edition": "Fourth-edition international guideline chapter; online August 24, 2026",
+          "publishedDate": "2026-08-24",
+          "checkedAt": "2026-10-09",
+          "locator": "General considerations; individualized repositioning and reassessment",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "International, with US society participation"
+        },
+        {
+          "id": "npiap-heels-2025",
+          "title": "Preventing Heel Pressure Injuries",
+          "organization": "National Pressure Injury Advisory Panel / EPUAP / PPPIA",
+          "url": "https://www.internationalguideline.com/heels",
+          "kind": "clinical-guideline",
+          "edition": "Fourth-edition international guideline chapter; online September 16, 2025",
+          "publishedDate": "2025-09-16",
+          "checkedAt": "2026-10-09",
+          "locator": "H1: heel elevation; support surfaces and repositioning",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "International, with US society participation"
+        }
+      ],
+      "sections": [
+        {
+          "id": "assessment",
+          "title": "Individual risk assessment",
+          "text": "Assess skin, mobility, perfusion and ability to reposition; reassess pressure tolerance as clinical status changes.",
+          "sourceIds": [
+            "npiap-repositioning-2026"
+          ]
+        },
+        {
+          "id": "repositioning",
+          "title": "Repositioning plan",
+          "text": "Individualize repositioning around tissue tolerance, support surface and goals; a pressure-redistributing mattress does not replace repositioning.",
+          "sourceIds": [
+            "npiap-repositioning-2026"
+          ]
+        },
+        {
+          "id": "heels",
+          "title": "Heel offloading",
+          "text": "At-risk heels should be elevated so they do not contact the support surface; continue broader pressure redistribution and reassessment.",
+          "sourceIds": [
+            "npiap-heels-2025"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An immobile older adult has vulnerable heel skin. Which intervention specifically reduces continued heel loading?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Leave heels pressing against the mattress"
+            },
+            {
+              "id": "B",
+              "text": "Use a mattress as a substitute for all repositioning"
+            },
+            {
+              "id": "C",
+              "text": "Apply antibiotics without infection findings"
+            },
+            {
+              "id": "D",
+              "text": "Stop skin reassessment once equipment arrives"
+            },
+            {
+              "id": "E",
+              "text": "Elevate the heels clear of the support surface"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Heel elevation directly offloads the heel while broader preventive measures continue.",
+          "distractorExplanations": {
+            "A": "This retains direct heel pressure.",
+            "B": "Support surfaces do not replace offloading.",
+            "C": "This does not address pressure loading.",
+            "D": "Tissue tolerance needs ongoing reassessment."
+          },
+          "sectionIds": [
+            "heels"
+          ],
+          "sourceIds": [
+            "npiap-heels-2025"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply heel-specific pressure offloading.",
+          "difficulty": "application",
+          "id": "pressure-injury-q1"
+        },
+        {
+          "stem": "A patient at pressure-injury risk develops early skin damage despite a documented repositioning schedule. What should happen next?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Reassess and individualize the repositioning and support-surface plan"
+            },
+            {
+              "id": "B",
+              "text": "Continue the exact schedule without reassessment"
+            },
+            {
+              "id": "C",
+              "text": "Stop repositioning because a special mattress is present"
+            },
+            {
+              "id": "D",
+              "text": "Assume every patient needs an identical interval"
+            },
+            {
+              "id": "E",
+              "text": "Ignore the change until an open wound appears"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "New skin damage calls for reassessment of offloading method and frequency.",
+          "distractorExplanations": {
+            "B": "New tissue damage warrants reconsideration.",
+            "C": "A mattress does not eliminate repositioning needs.",
+            "D": "Tissue tolerance and clinical needs differ.",
+            "E": "Early damage already merits action."
+          },
+          "sectionIds": [
+            "repositioning"
+          ],
+          "sourceIds": [
+            "npiap-repositioning-2026"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Adapt prevention when tissue tolerance changes.",
+          "difficulty": "application",
+          "id": "pressure-injury-q2"
+        }
+      ],
+      "limitations": [
+        "International guideline collaboration includes US NPIAP; this module focuses on prevention of further injury rather than complete staging, debridement or infection management."
+      ]
+    },
+    {
+      "id": "thermal-burns",
+      "name": "Thermal burns",
+      "aliases": [
+        "scald",
+        "flame burn"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "acute",
+      "keywords": [
+        "burn depth",
+        "TBSA",
+        "burn center",
+        "tetanus"
+      ],
+      "overview": "Study burn referral priorities and wound-prevention considerations using ABA and CDC recommendations.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "aba-burn-referral",
+          "title": "Guidelines for Burn Patient Referral",
+          "organization": "American Burn Association",
+          "url": "https://www.ameriburn.org/burn-care-team/resources/guidelines-for-burn-patient-referral",
+          "kind": "official-recommendation",
+          "edition": "Current referral criteria; edition date not displayed",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Thermal burn consultation/transfer criteria; depth and TBSA",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "cdc-wound-tetanus",
+          "title": "Clinical Guidance for Wound Management to Prevent Tetanus",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+          "kind": "official-recommendation",
+          "edition": "Page updated/reviewed September 8, 2026",
+          "publishedDate": "2024-05-15",
+          "checkedAt": "2026-10-09",
+          "locator": "Dirty/major wounds; vaccination history and TIG assessment",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "depth",
+          "title": "Depth and surface area",
+          "text": "Superficial redness is excluded from TBSA calculations; partial-thickness and full-thickness injuries contribute to burn area.",
+          "sourceIds": [
+            "aba-burn-referral"
+          ]
+        },
+        {
+          "id": "referral",
+          "title": "Referral priority",
+          "text": "Full-thickness burns, partial-thickness burns involving at least 10% TBSA, or deep burns of key functional areas require immediate consultation and possible transfer.",
+          "sourceIds": [
+            "aba-burn-referral"
+          ]
+        },
+        {
+          "id": "tetanus",
+          "title": "Wound prevention",
+          "text": "Burns can be dirty/major wounds for tetanus assessment; vaccination history, wound care and immune status guide vaccine and immunoglobulin decisions.",
+          "sourceIds": [
+            "cdc-wound-tetanus"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "An adult has a 12% TBSA partial-thickness scald burn. Which disposition aligns with ABA referral guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Reassure because it is not full thickness"
+            },
+            {
+              "id": "B",
+              "text": "Immediate burn-center consultation with consideration of transfer"
+            },
+            {
+              "id": "C",
+              "text": "Routine follow-up only without consultation"
+            },
+            {
+              "id": "D",
+              "text": "Exclude all partial-thickness areas from TBSA"
+            },
+            {
+              "id": "E",
+              "text": "Wait for infection before consultation"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Partial-thickness burns at or above 10% TBSA warrant immediate consultation and transfer consideration.",
+          "distractorExplanations": {
+            "A": "Partial-thickness extent also matters.",
+            "C": "The partial-thickness area meets referral criteria.",
+            "D": "Partial-thickness injuries contribute to TBSA.",
+            "E": "Referral criteria do not require infection."
+          },
+          "sectionIds": [
+            "referral"
+          ],
+          "sourceIds": [
+            "aba-burn-referral"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Apply the partial-thickness burn referral threshold.",
+          "difficulty": "application",
+          "id": "thermal-burns-q1"
+        },
+        {
+          "stem": "A patient has a full-thickness hand burn affecting less than 1% TBSA. What is the appropriate referral approach?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Ignore hand function because the area is small"
+            },
+            {
+              "id": "B",
+              "text": "Wait until healing fails before consultation"
+            },
+            {
+              "id": "C",
+              "text": "Immediate burn-center consultation despite the small surface area"
+            },
+            {
+              "id": "D",
+              "text": "No referral because it is below 10% TBSA"
+            },
+            {
+              "id": "E",
+              "text": "Treat as superficial sunburn"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Full-thickness and deep hand burns meet consultation criteria regardless of small size.",
+          "distractorExplanations": {
+            "A": "Functional site influences referral.",
+            "B": "Current findings already warrant consultation.",
+            "D": "Depth and hand involvement independently matter.",
+            "E": "The stated depth is full thickness."
+          },
+          "sectionIds": [
+            "referral"
+          ],
+          "sourceIds": [
+            "aba-burn-referral"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Recognize depth and functional-site referral indications.",
+          "difficulty": "application",
+          "id": "thermal-burns-q2"
+        }
+      ]
+    },
+    {
+      "id": "herpes-zoster",
+      "name": "Herpes zoster",
+      "aliases": [
+        "shingles",
+        "zoster"
+      ],
+      "specialty": "Women's health, pediatrics and other high-yield conditions",
+      "domain": "acute",
+      "keywords": [
+        "dermatomal vesicles",
+        "antiviral",
+        "Shingrix",
+        "recombinant zoster vaccine"
+      ],
+      "overview": "Study early antiviral treatment and recombinant vaccination after an episode.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-09",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-zoster-overview",
+          "title": "Clinical Overview of Shingles (Herpes Zoster)",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/shingles/hcp/clinical-overview/index.html",
+          "kind": "official-clinical-reference",
+          "edition": "June 27, 2024 overview with section-specific updates",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Diagnosis; PCR testing; early antiviral treatment",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        },
+        {
+          "id": "cdc-zoster-vaccine",
+          "title": "Shingles Vaccine Recommendations",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/shingles/hcp/vaccine-considerations/index.html",
+          "kind": "official-recommendation",
+          "edition": "Current recombinant-zoster vaccine recommendations",
+          "publishedDate": null,
+          "checkedAt": "2026-10-09",
+          "locator": "Adults 50+; prior zoster; avoid vaccination during acute episode",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States"
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnosis",
+          "title": "Diagnosis",
+          "text": "The typical rash often permits clinical recognition; PCR is the most useful laboratory test when confirmation is needed.",
+          "sourceIds": [
+            "cdc-zoster-overview"
+          ]
+        },
+        {
+          "id": "treatment",
+          "title": "Early treatment",
+          "text": "Acyclovir, valacyclovir or famciclovir are preferred antivirals; treatment works best within 72 hours of onset.",
+          "sourceIds": [
+            "cdc-zoster-overview"
+          ]
+        },
+        {
+          "id": "vaccination",
+          "title": "Vaccination after disease",
+          "text": "Adults 50 and older still need the recommended two-dose recombinant vaccine after prior zoster; do not vaccinate during an acute episode.",
+          "sourceIds": [
+            "cdc-zoster-vaccine"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "stem": "A 66-year-old has a new painful dermatomal vesicular rash starting yesterday. Which treatment directly addresses acute zoster?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Antibiotics alone"
+            },
+            {
+              "id": "B",
+              "text": "Wait several weeks before considering an antiviral"
+            },
+            {
+              "id": "C",
+              "text": "A topical antifungal"
+            },
+            {
+              "id": "D",
+              "text": "An appropriate oral antiviral such as valacyclovir"
+            },
+            {
+              "id": "E",
+              "text": "Shingrix as treatment of the current episode"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Early systemic antiviral therapy is preferred for acute shingles.",
+          "distractorExplanations": {
+            "A": "They do not target varicella-zoster virus.",
+            "B": "Early treatment has the greatest benefit.",
+            "C": "It does not treat zoster.",
+            "E": "Vaccination prevents future disease; it is not acute treatment."
+          },
+          "sectionIds": [
+            "treatment"
+          ],
+          "sourceIds": [
+            "cdc-zoster-overview"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select timely antiviral treatment for acute zoster.",
+          "difficulty": "application",
+          "id": "herpes-zoster-q1"
+        },
+        {
+          "stem": "An immunocompetent 62-year-old recovered from shingles and has never received recombinant zoster vaccine. Which recommendation applies?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Prior shingles permanently removes vaccine need"
+            },
+            {
+              "id": "B",
+              "text": "Give vaccine only during active vesicles"
+            },
+            {
+              "id": "C",
+              "text": "Use vaccine as an antiviral replacement"
+            },
+            {
+              "id": "D",
+              "text": "Wait until age 80 as a universal requirement"
+            },
+            {
+              "id": "E",
+              "text": "Give the recommended two-dose recombinant zoster vaccine series"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Prior zoster does not remove the age-based recombinant vaccination recommendation.",
+          "distractorExplanations": {
+            "A": "Previous disease does not remove the recommendation.",
+            "B": "Avoid vaccination during an acute episode.",
+            "C": "Prevention and acute treatment have different roles.",
+            "D": "Vaccination is recommended starting at age 50."
+          },
+          "sectionIds": [
+            "vaccination"
+          ],
+          "sourceIds": [
+            "cdc-zoster-vaccine"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply zoster vaccination after a resolved prior episode.",
+          "difficulty": "application",
+          "id": "herpes-zoster-q2"
+        }
+      ]
+    }
+  ]
+}

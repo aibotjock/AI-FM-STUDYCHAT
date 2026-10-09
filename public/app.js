@@ -31,7 +31,27 @@ const state = { cards: [], reviews: [], conversations: [], settings: { focus: 'c
 let status = { authenticated: false, aiConfigured: false, authRequired: false };
 let screen = ['today','coach','review','library','progress'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'coach';
 let currentConversationId = null;
-let libraryTab = 'cards';
+let libraryTab = 'guidelines';
+let curriculumCatalog = null;
+let curriculumLoading = false;
+let curriculumError = '';
+let curriculumSearch = '';
+let curriculumDomain = '';
+let curriculumRequest = 0;
+let curriculumSearchTimer;
+let curriculumConditionId = null;
+let curriculumCondition = null;
+let curriculumDetailLoading = false;
+let curriculumDetailError = '';
+let curriculumDetailRequest = 0;
+let curriculumQuestionIndex = 0;
+let curriculumChoiceId = null;
+let curriculumGrading = false;
+let curriculumGradeError = '';
+const curriculumAnswers = new Map();
+const curriculumSavedCards = new Set();
+let curriculumSavingCard = false;
+let curriculumSessionRevision = 0;
 let searchTerm = '';
 let topicFilter = '';
 let chatBusy = false;
@@ -91,7 +111,7 @@ async function api(path, options = {}) {
   const response = await fetch(path, { ...options, headers: { 'Content-Type': 'application/json', ...options.headers } });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    if (response.status === 401 && path !== '/api/login') { status.authenticated = false; if (voiceCoach.active()) voiceCoach.stop('Voice stopped because your study session ended. Sign in again to continue.'); renderLogin(); }
+    if (response.status === 401 && path !== '/api/login') { status.authenticated = false; resetCurriculumState(); if (voiceCoach.active()) voiceCoach.stop('Voice stopped because your study session ended. Sign in again to continue.'); renderLogin(); }
     throw new Error(payload.error || payload.message || `The request failed (${response.status}). Please try again.`);
   }
   return payload;
@@ -122,6 +142,16 @@ function conversation() { return state.conversations.find(item => item.id === cu
 function dateString(value) { return value ? new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Not reviewed'; }
 function safeUrl(value) { try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) ? url.href : ''; } catch { return ''; } }
 function sourceHtml(card) { const url = safeUrl(card.sourceUrl); return url ? `<a class="source-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(card.sourceTitle || 'Reference')} ↗</a>` : `<span>${esc(card.sourceTitle || 'Personal study note')}</span>`; }
+function cardSourceStatusHtml(card) {
+  if (!card.curriculumConditionId && !card.sourceCheckedAt) return '';
+  const checkedAt = typeof card.sourceCheckedAt === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(card.sourceCheckedAt) ? card.sourceCheckedAt : '';
+  const expiry = card.sourceExpiresAt || card.expiresAt;
+  const expiresAt = typeof expiry === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(expiry) ? expiry : '';
+  const stale = expiresAt && Date.parse(`${expiresAt}T00:00:00Z`) <= Date.now();
+  return `<div class="card-source-status ${stale ? 'stale' : ''}"><strong>${stale ? 'Saved source-check window expired' : card.importedEvidence || card.importedSource ? 'Imported source metadata · not reverified' : 'Saved source-linked study card'}</strong><span>${checkedAt ? `Saved source check ${esc(checkedAt)}` : 'Source-check date unavailable'}${expiresAt ? ` · Check due ${esc(expiresAt)}` : ''} · ${card.humanReview === true ? 'Clinician review recorded' : 'Clinician review pending'}</span><small>Saved cards do not update automatically. Check the current official reference before relying on a learning point.</small>${card.curriculumConditionId ? `<button class="text-button" data-action="curriculum-card-condition" data-id="${esc(card.curriculumConditionId)}">Open current study summary ↗</button>` : ''}</div>`;
+}
+function domainLabel(value) { return ({acute:'Acute care',chronic:'Chronic care',emergent:'Emergent and urgent care',preventive:'Preventive care',foundations:'Foundations of care'})[value] || value; }
+
 function todayLabel() { return new Date().toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' }); }
 function styleLabel() { return ({ socratic: 'Socratic · one question at a time', 'teach-quiz': 'Teach, then quiz', direct:'Clear, direct explanations' })[state.settings.coachStyle] || 'Socratic coaching'; }
 function focusLabel() { return ({ 'clinical-reasoning': 'Clinical reasoning', exam:'Exam preparation', balanced:'Balanced study' })[state.settings.focus] || 'Clinical reasoning'; }
@@ -146,6 +176,7 @@ function navigate(next) {
   if (location.hash !== `#${next}`) history.replaceState(null, '', `#${next}`);
   if (screen === 'review' && !reviewSession) beginReview();
   render();
+  if (screen === 'library' && libraryTab === 'guidelines' && !curriculumCatalog && !curriculumLoading) loadCurriculum();
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 function render() {
@@ -154,6 +185,7 @@ function render() {
   if (!isLoaded) return;
   $('#main').innerHTML = ({ today: renderToday, coach: renderCoach, review: renderReview, library: renderLibrary, progress: renderProgress })[screen]();
   if (screen === 'coach') { scrollChat(); resizeComposer(); }
+  if (screen === 'library' && libraryTab === 'guidelines' && !curriculumCatalog && !curriculumLoading && !curriculumError) loadCurriculum();
 }
 
 function pageHead(eyebrow, title, subtitle, action = '') {
@@ -185,7 +217,7 @@ function renderCoach() {
   const messages = current?.messages || [];
   const lastAssistant = messages.filter(item => item.role === 'assistant').at(-1);
   return `<div class="chat-page"><div class="chat-header"><div><span class="eyebrow">A SPACE TO THINK OUT LOUD</span><h1>Your study coach</h1><p class="subtitle">${esc(focusLabel())} · ${esc(state.settings.dailyMinutes)} minutes at your pace</p></div><div class="chat-title-tools"><button class="icon-button" data-action="history" aria-label="Open conversation history" title="Conversation history">${icon('history')}</button><button class="icon-button" data-action="new-chat" aria-label="Start a new conversation" title="New conversation">${icon('plus')}</button></div></div>
-    ${pilotNotice(true)}${status.mode === 'commercial' && !status.entitlement?.active ? '<div class="notice info" style="margin-bottom:13px">Your study cards are ready. Enable coaching with a verified Google Play subscription.<button class="text-button" data-action="billing">View subscription ↗</button></div>' : ''}
+    ${studyOnlyNotice()}${pilotNotice(true)}${status.mode === 'commercial' && !status.entitlement?.active ? '<div class="notice info" style="margin-bottom:13px">Your study cards are ready. Enable coaching with a verified Google Play subscription.<button class="text-button" data-action="billing">View subscription ↗</button></div>' : ''}
     ${!status.aiConfigured && !status.privatePilot ? '<div class="notice info coach-setup-notice" style="margin-bottom:13px">Guided practice is ready. AI coaching is not configured yet.</div>' : ''}
     <section class="chat-window" aria-label="Coach conversation"><div class="chat-toolbar"><div class="coach-id"><span class="coach-avatar">✦</span><div><strong>${esc(current?.title || 'Study coach')}</strong><small>${status.aiConfigured ? 'Personalized coaching' : 'Guided practice · scripted coaching'}</small></div></div><span class="chat-mode">${esc(current?.mode === 'simulation' ? 'Clinical case' : current?.mode === 'practice' ? 'Active recall' : styleLabel())}</span></div>
     <div id="chat-messages" class="chat-messages" role="log" aria-label="Conversation messages" aria-live="polite" aria-relevant="additions">
@@ -197,12 +229,12 @@ function renderCoach() {
     ].map(([label,prompt]) => `<button class="prompt-chip" data-action="starter" data-prompt="${esc(prompt)}">${esc(label)}<span>↗</span></button>`).join('')}</div></div>`}
     ${chatBusy ? '<div class="message assistant"><div class="avatar">✦</div><div class="message-body"><div class="message-label">Coach is thinking</div><div class="typing" role="status" aria-label="Coach is thinking"><i></i><i></i><i></i></div></div></div>' : ''}
     </div><div class="chat-compose">${status.voiceEnabled ? `<div id="voice-controls" class="voice-controls">${voiceControlsHtml()}</div>` : ''}${chatError ? `<div class="notice error" style="margin-bottom:10px">${esc(chatError)} <button class="text-button" data-action="dismiss-chat-error">Dismiss</button></div>` : ''}<form id="chat-form"><div class="compose-row"><label class="screen-reader" for="chat-input">Message your study coach</label><textarea id="chat-input" name="content" rows="1" placeholder="${voiceState.active ? 'Stop voice to type a message…' : 'Ask your coach…'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''} maxlength="12000">${esc(chatDraft)}</textarea>${voiceDictationSupported() ? `<button type="button" class="icon-button mic-button ${recording ? 'recording' : ''}" data-action="dictate" aria-label="${recording ? 'Stop dictation' : 'Dictate a message'}" title="${recording ? 'Stop dictation' : 'Dictate text; review before sending'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('mic')}</button>` : ''}<button type="submit" class="icon-button send-button" aria-label="Send message" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('send')}</button></div><div class="composer-note"><span id="voice-status">${recording ? 'Dictating text… tap the mic to stop, then review and send.' : voiceDictationSupported() ? 'Type or dictate text. Review before sending.' : 'Type or use your phone keyboard’s microphone.'}</span><span>Enter to send · Shift + Enter for a new line</span></div></form></div></section>
-    <div class="chat-under"><small>Use fictional or de-identified cases. Verify clinical advice before applying it.</small><button class="text-button" data-action="draft-cards" ${!lastAssistant || chatBusy || !canChat() ? 'disabled' : ''}>Create recall cards ↗</button></div></div>`;
+    <div class="chat-under"><small>Study use only. Not medical advice. Use fictional or de-identified cases.</small><button class="text-button" data-action="draft-cards" ${!lastAssistant || chatBusy || !canChat() ? 'disabled' : ''}>Create recall cards ↗</button></div></div>`;
 }
 
 function voiceControlsHtml() {
   const active = voiceState.active;
-  return `<div class="voice-actions">${active ? `<button class="button secondary" data-action="voice-mute" aria-pressed="${voiceState.muted}">${voiceState.muted ? 'Unmute microphone' : 'Mute microphone'}</button><button class="button secondary" data-action="voice-interrupt" ${voiceState.phase === 'starting' ? 'disabled' : ''}>Interrupt coach</button><button class="button" data-action="voice-stop">Stop voice</button>` : `<button class="button" data-action="voice-start" ${chatBusy || startVoiceBusy || voiceState.setupPending || !status.aiConfigured || !voiceSupported() ? 'disabled' : ''}>${icon('mic')} ${voiceState.setupPending ? 'Finishing voice setup…' : startVoiceBusy ? 'Preparing voice…' : 'Start voice'}</button>`}${voiceState.audioBlocked ? '<button class="button secondary" data-action="voice-speaker">Enable speaker audio</button>' : ''}${voiceState.warning ? '<button class="text-button" data-action="voice-save">Save captions</button>' : ''}</div><p class="voice-session-status" role="status" aria-live="polite">${esc(voiceState.message)}</p>${voiceState.userCaption ? `<div class="voice-caption"><strong>You</strong><span>${esc(voiceState.userCaption)}</span></div>` : ''}${voiceState.assistantCaption ? `<div class="voice-caption"><strong>Coach</strong><span>${esc(voiceState.assistantCaption)}</span></div>` : ''}${voiceState.warning ? `<div class="notice error" role="alert">${esc(voiceState.warning)}</div>` : ''}<p class="voice-note">${voiceSupported() ? `Spoken AI replies · ${esc(status.voiceModel || 'gpt-realtime-2.1-mini')} · up to 10 minutes per call. Audio goes to OpenAI; this app saves text captions, not recordings. Voice is billed separately from text chat.` : 'Voice needs microphone access in an HTTPS Chrome or Safari browser.'} Clinical voice replies and captions need verification.</p>`;
+  return `<div class="voice-actions">${active ? `<button class="button secondary" data-action="voice-mute" aria-pressed="${voiceState.muted}">${voiceState.muted ? 'Unmute microphone' : 'Mute microphone'}</button><button class="button secondary" data-action="voice-interrupt" ${voiceState.phase === 'starting' ? 'disabled' : ''}>Interrupt coach</button><button class="button" data-action="voice-stop">Stop voice</button>` : `<button class="button" data-action="voice-start" ${chatBusy || startVoiceBusy || voiceState.setupPending || !status.aiConfigured || !voiceSupported() ? 'disabled' : ''}>${icon('mic')} ${voiceState.setupPending ? 'Finishing voice setup…' : startVoiceBusy ? 'Preparing voice…' : 'Start voice'}</button>`}${voiceState.audioBlocked ? '<button class="button secondary" data-action="voice-speaker">Enable speaker audio</button>' : ''}${voiceState.warning ? '<button class="text-button" data-action="voice-save">Save captions</button>' : ''}</div><p class="voice-session-status" role="status" aria-live="polite">${esc(voiceState.message)}</p>${voiceState.userCaption ? `<div class="voice-caption"><strong>You</strong><span>${esc(voiceState.userCaption)}</span></div>` : ''}${voiceState.assistantCaption ? `<div class="voice-caption"><strong>Coach</strong><span>${esc(voiceState.assistantCaption)}</span></div>` : ''}${voiceState.warning ? `<div class="notice error" role="alert">${esc(voiceState.warning)}</div>` : ''}<p class="voice-note">${voiceSupported() ? `Spoken AI replies · ${esc(status.voiceModel || 'gpt-realtime-2.1-mini')} · up to 10 minutes per call. Audio goes to OpenAI; this app saves text captions, not recordings. Voice is billed separately from text chat.` : 'Voice needs microphone access in an HTTPS Chrome or Safari browser.'} Voice speech remains unverified; use sourced text or board questions for guideline facts. Check captions for transcription errors.</p>`;
 }
 function updateVoiceUI() {
   const controls = $('#voice-controls'); if (controls) controls.innerHTML = voiceControlsHtml();
@@ -237,13 +269,127 @@ function renderReview() {
   const current = state.cards.find(card => card.id === reviewSession.queue[0]);
   if (!current) return `<div class="review-layout">${pageHead('DAILY ACTIVE RECALL', 'Make it stick.', 'A little effort now makes retrieval easier later.')}<section class="review-complete"><span class="completion-symbol">${reviewSession.completed ? '✦' : '✓'}</span><h1>${reviewSession.completed ? 'That’s a good day’s work.' : 'You’re up to date.'}</h1><p>${reviewSession.completed ? `You completed ${reviewSession.completed} reviews. ${reviewSession.good} answers felt clear on recall.` : 'There are no cards ready right now. Add a useful insight or keep thinking with your coach.'}</p><button class="button gold" data-action="starter" data-prompt="Coach me through a brief fictional family medicine case. Ask me one question at a time.">Practice with your coach ${icon('arrow')}</button><div><button class="text-button" style="color:#bdcbd3;margin-top:15px" data-action="reload-review">Check for more due cards</button></div></section><p class="footer-note">Again cards return after their short learning interval. Reviews reflect your own recall ratings, not a formal competency assessment.</p></div>`;
   const intervals = previewIntervals(current, Date.now());
-  return `<div class="review-layout">${pageHead('DAILY ACTIVE RECALL', 'Recall. Reflect. Repeat.', 'Try your answer before turning the card over.')}<div class="review-topline"><span>${reviewSession.completed + 1} of ${reviewSession.total} cards</span><span>${esc(current.state === 'new' ? 'New learning' : 'Scheduled review')}</span></div><div class="progress-track"><div class="progress-fill" style="width:${reviewSession.total ? reviewSession.completed / reviewSession.total * 100 : 0}%"></div></div><section class="review-card"><div class="section-head"><span class="pill gold">${esc(current.topic)}</span><button class="text-button" data-action="edit-card" data-id="${esc(current.id)}">Edit card ↗</button></div><h2 class="card-question">${esc(current.front)}</h2>${answerVisible ? `<div class="answer"><span class="answer-label">Compare with your answer</span>${esc(current.back)}</div><div class="source-link">${sourceHtml(current)}${current.verified ? ' · Marked verified by you' : ' · Verify this learning point'}</div>` : `<p class="recall-prompt">Say it out loud, write it down, or form a complete answer in your mind. The effort of retrieving is the useful part.</p><button class="button full reveal-button" data-action="reveal-answer">Reveal answer ${icon('arrow')}</button>`}</section>${answerVisible ? `<div class="ratings" aria-label="Rate your recall">${[['again','Again'],['hard','Hard'],['good','Good'],['easy','Easy']].map(([rating,label]) => `<button class="rating-button ${rating}" data-action="rate-card" data-rating="${rating}" ${reviewBusy ? 'disabled' : ''}>${label}<small>${esc(intervals[rating])}</small></button>`).join('')}</div><p class="rating-help">Again: missed it · Hard: recalled with difficulty<br>Good: correct with effort · Easy: immediate, confident recall</p>` : '<p class="rating-help">On a keyboard, press Space to reveal the answer.</p>'}${current.lapses >= 8 ? '<div class="notice" style="margin-top:18px">This card has repeated lapses. Try splitting it into smaller questions or ask your coach to explain the concept.</div>' : ''}</div>`;
+  return `<div class="review-layout">${pageHead('DAILY ACTIVE RECALL', 'Recall. Reflect. Repeat.', 'Try your answer before turning the card over.')}<div class="review-topline"><span>${reviewSession.completed + 1} of ${reviewSession.total} cards</span><span>${esc(current.state === 'new' ? 'New learning' : 'Scheduled review')}</span></div><div class="progress-track"><div class="progress-fill" style="width:${reviewSession.total ? reviewSession.completed / reviewSession.total * 100 : 0}%"></div></div><section class="review-card"><div class="section-head"><span class="pill gold">${esc(current.topic)}</span><button class="text-button" data-action="edit-card" data-id="${esc(current.id)}">Edit card ↗</button></div><h2 class="card-question">${esc(current.front)}</h2>${cardSourceStatusHtml(current)}${answerVisible ? `<div class="answer"><span class="answer-label">Compare with your answer</span>${esc(current.back)}</div><div class="source-link">${sourceHtml(current)}${current.verified ? ' · Marked verified by you' : ' · Verify this learning point'}</div>` : `<p class="recall-prompt">Say it out loud, write it down, or form a complete answer in your mind. The effort of retrieving is the useful part.</p><button class="button full reveal-button" data-action="reveal-answer">Reveal answer ${icon('arrow')}</button>`}</section>${answerVisible ? `<div class="ratings" aria-label="Rate your recall">${[['again','Again'],['hard','Hard'],['good','Good'],['easy','Easy']].map(([rating,label]) => `<button class="rating-button ${rating}" data-action="rate-card" data-rating="${rating}" ${reviewBusy ? 'disabled' : ''}>${label}<small>${esc(intervals[rating])}</small></button>`).join('')}</div><p class="rating-help">Again: missed it · Hard: recalled with difficulty<br>Good: correct with effort · Easy: immediate, confident recall</p>` : '<p class="rating-help">On a keyboard, press Space to reveal the answer.</p>'}${current.lapses >= 8 ? '<div class="notice" style="margin-top:18px">This card has repeated lapses. Try splitting it into smaller questions or ask your coach to explain the concept.</div>' : ''}</div>`;
 }
 
+function studyOnlyNotice() { return '<div class="notice info study-only-notice"><strong>Study use only · Not medical advice</strong><span>For learning and exam preparation. Do not use this app to diagnose, treat, or make decisions for a real patient.</span></div>'; }
+
 function renderLibrary() {
-  return `${pageHead('BUILD YOUR KNOWLEDGE BASE', 'Your learning library.', 'Focused recall cards and cases to turn knowledge into judgment.', `<button class="button" data-action="new-card">${icon('plus')} Add card</button>`)}
-    <div class="segmented" aria-label="Library section"><button data-action="library-tab" data-tab="cards" class="${libraryTab === 'cards' ? 'active' : ''}" aria-pressed="${libraryTab === 'cards'}">Recall cards</button><button data-action="library-tab" data-tab="cases" class="${libraryTab === 'cases' ? 'active' : ''}" aria-pressed="${libraryTab === 'cases'}">Clinical cases</button><button data-action="library-tab" data-tab="practice" class="${libraryTab === 'practice' ? 'active' : ''}" aria-pressed="${libraryTab === 'practice'}">Practice</button></div>
-    ${libraryTab === 'cards' ? renderCards() : libraryTab === 'cases' ? renderCases() : renderPractice()}`;
+  const tabs = [['guidelines','Guidelines & boards'],['cards','Recall cards'],['cases','Clinical cases'],['practice','Practice']];
+  return `${pageHead('BUILD YOUR KNOWLEDGE BASE', 'Your learning library.', 'Source-linked guideline summaries, original board practice and spaced repetition.', `<button class="button" data-action="new-card">${icon('plus')} Add card</button>`)}
+    ${studyOnlyNotice()}<div class="segmented library-tabs" aria-label="Library section">${tabs.map(([id,label])=>`<button data-action="library-tab" data-tab="${id}" class="${libraryTab === id ? 'active' : ''}" aria-pressed="${libraryTab === id}">${label}</button>`).join('')}</div>
+    ${libraryTab === 'guidelines' ? renderCurriculum() : libraryTab === 'cards' ? renderCards() : libraryTab === 'cases' ? renderCases() : renderPractice()}`;
+}
+
+function resetCurriculumState() {
+  curriculumSessionRevision++;curriculumRequest++;curriculumDetailRequest++;clearTimeout(curriculumSearchTimer);curriculumCatalog=null;curriculumCondition=null;curriculumConditionId=null;curriculumLoading=false;curriculumDetailLoading=false;curriculumError='';curriculumDetailError='';curriculumGrading=false;curriculumSavingCard=false;curriculumAnswers.clear();curriculumSavedCards.clear();
+}
+function curriculumIsVisible() { return screen === 'library' && libraryTab === 'guidelines' && (!status.authRequired || status.authenticated); }
+function curriculumSources(sources = [], { compact = false } = {}) {
+  return `<ul class="guideline-sources ${compact ? 'compact' : ''}">${sources.map(source=> {
+    const url = safeUrl(source.url);
+    return `<li>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(source.title || source.id || 'Official source')} ↗</a>` : `<strong>${esc(source.title || source.id || 'Official source')}</strong>`}<small>${[source.publisher,source.jurisdiction,source.kind ? ({'clinical-guideline':'Formal guideline','official-recommendation':'Official recommendation','official-clinical-reference':'Official clinical reference'})[source.kind] || source.kind : '',source.edition ? `Edition: ${source.edition}` : '',source.checkedAt ? `Source checked ${String(source.checkedAt).slice(0,10)}` : ''].filter(Boolean).map(esc).join(' · ')}</small>${source.locator ? `<small>Reference section: ${esc(source.locator)}</small>` : ''}${source.limitations ? `<small>Source limitation: ${esc(source.limitations)}</small>` : ''}</li>`;
+  }).join('')}</ul>`;
+}
+function curriculumReviewNotice(item) {
+  return `<div class="curriculum-quality"><span class="pill ${item.current === true ? 'green' : item.current === false ? 'red' : ''}">${item.current === true ? 'Within source-check window' : item.current === false ? 'Update needed' : 'Freshness not provided'}</span><span>${item.sourceVerified === true ? 'Official sources checked' : 'Source check needed'} · ${item.humanReview === true ? 'Clinician review recorded' : 'Clinician review pending'}</span>${item.formalGuideline === false ? '<span class="pill">Official reference · Formal guideline not recorded</span>' : item.formalGuideline === true ? '<span class="pill">Formal guideline or official recommendation</span>' : ''}</div><p class="curriculum-limits">These are original educational summaries and questions. A checked source is not a guarantee that every statement is correct or that a guideline remains unchanged.</p>`;
+}
+function curriculumCatalogCount() { return curriculumLoading ? 'Loading conditions…' : `${curriculumCatalog?.conditions?.length || 0} conditions shown${curriculumCatalog?.total ? ` · ${curriculumCatalog.total} in the library` : ''}${curriculumCatalog?.questionCount ? ` · ${curriculumCatalog.questionCount} original questions in the library` : ''}`; }
+function renderCurriculumCatalogResults() {
+  if (curriculumLoading) return '<div class="loading-line" role="status"><span class="spinner"></span> Finding study conditions…</div>';
+  if (curriculumError) return `<div class="notice error" role="alert">${esc(curriculumError)} <button class="text-button" data-action="curriculum-retry">Try again</button></div>`;
+  const conditions = curriculumCatalog?.conditions || [];
+  if (!conditions.length) return '<div class="empty-state"><h2>No conditions match.</h2><p>Try another term or clear the filters.</p><button class="button secondary" data-action="curriculum-clear">Clear filters</button></div>';
+  return `<div class="condition-grid">${conditions.map(item=>`<article class="condition-card"><span class="pill">${esc(domainLabel(item.domain))}</span><h2>${esc(item.title || item.name)}</h2><p>${esc(item.summary || '')}</p><small>${Number(item.questionCount) || 0} original practice questions · ${item.humanReview === true ? 'Clinician review recorded' : 'Clinician review pending'}</small><button class="button secondary" data-action="curriculum-open" data-id="${esc(item.id)}">Study condition ${icon('arrow')}</button></article>`).join('')}</div>`;
+}
+function renderCurriculum() {
+  if (curriculumConditionId) return renderCurriculumCondition();
+  const domains = curriculumCatalog?.domains || [];
+  return `<section class="curriculum-intro"><h2>Guidelines & board practice</h2><p>Explore high-yield family medicine conditions using verified official source links and original summaries. Questions practice board-style reasoning; they are not official ABFM questions or endorsed by ABFM.</p></section><div class="library-tools curriculum-tools"><label class="screen-reader" for="condition-search">Search study conditions</label><input id="condition-search" class="search-input" type="search" maxlength="120" value="${esc(curriculumSearch)}" placeholder="Search conditions or aliases…"><label class="screen-reader" for="condition-domain">Filter by study domain</label><select id="condition-domain" class="filter-select"><option value="">All domains</option>${domains.map(domain=>`<option value="${esc(typeof domain === 'string' ? domain : domain.id)}" ${curriculumDomain === (typeof domain === 'string' ? domain : domain.id) ? 'selected' : ''}>${esc(typeof domain === 'string' ? domainLabel(domain) : domain.title || domain.name)}</option>`).join('')}</select><button class="text-button" data-action="curriculum-clear">Clear filters</button></div><div class="library-summary"><span id="condition-count" role="status" aria-live="polite">${curriculumCatalogCount()}</span><span>Study summaries · Source-linked</span></div><div id="condition-results">${renderCurriculumCatalogResults()}</div><p class="footer-note">Official sources are checked monthly. New or changed recommendations need review before teaching content is marked clinician reviewed. Follow each source link for full context, exceptions and the latest publication.</p>`;
+}
+function updateCurriculumCatalogUI() {
+  if (!curriculumIsVisible() || curriculumConditionId) return;
+  const results = $('#condition-results');
+  if (results) results.innerHTML = renderCurriculumCatalogResults();
+  const count = $('#condition-count');
+  if (count) count.textContent = curriculumCatalogCount();
+  const domains = $('#condition-domain');
+  if (domains) domains.innerHTML = '<option value="">All domains</option>' + (curriculumCatalog?.domains || []).map(domain=> {
+    const id = typeof domain === 'string' ? domain : domain.id;
+    return `<option value="${esc(id)}" ${id === curriculumDomain ? 'selected' : ''}>${esc(typeof domain === 'string' ? domainLabel(domain) : domain.title || domain.name)}</option>`;
+  }).join('');
+}
+async function loadCurriculum() {
+  clearTimeout(curriculumSearchTimer);
+  const request = ++curriculumRequest;
+  curriculumLoading = true; curriculumError = ''; updateCurriculumCatalogUI();
+  try {
+    const query = new URLSearchParams(); if (curriculumSearch.trim()) query.set('q',curriculumSearch.trim()); if (curriculumDomain) query.set('domain',curriculumDomain);
+    const catalog = await api(`/api/curriculum${query.size ? `?${query}` : ''}`);
+    if (request !== curriculumRequest) return;
+    curriculumCatalog = catalog;
+  } catch (error) { if (request === curriculumRequest) curriculumError = error.message; }
+  finally { if (request === curriculumRequest) { curriculumLoading = false; updateCurriculumCatalogUI(); } }
+}
+async function openCurriculumCondition(id) {
+  const request = ++curriculumDetailRequest;
+  curriculumConditionId = id; curriculumCondition = null; curriculumDetailLoading = true; curriculumDetailError = ''; curriculumQuestionIndex = 0; curriculumChoiceId = null; curriculumGradeError = ''; render();
+  window.scrollTo({top:0,behavior:'instant'});
+  try { const data = await api(`/api/curriculum/${encodeURIComponent(id)}`); if (request !== curriculumDetailRequest) return; curriculumCondition = data.condition; }
+  catch(error) { if (request === curriculumDetailRequest) curriculumDetailError = error.message; }
+  finally { if (request === curriculumDetailRequest) { curriculumDetailLoading = false; if (curriculumIsVisible()) render(); } }
+}
+function curriculumQuestion() { return curriculumCondition?.questions?.[curriculumQuestionIndex]; }
+function curriculumQuestionKey() { return `${curriculumConditionId}:${curriculumQuestion()?.id || ''}`; }
+function renderCurriculumCondition() {
+  const back = '<button class="button secondary condition-back" data-action="curriculum-back">← All conditions</button>';
+  if (curriculumDetailLoading) return `${back}<div class="loading-line" role="status"><span class="spinner"></span> Opening source-linked study material…</div>`;
+  if (curriculumDetailError || !curriculumCondition) return `${back}<div class="notice error" role="alert">${esc(curriculumDetailError || 'This condition could not be loaded.')} <button class="text-button" data-action="curriculum-detail-retry">Try again</button></div>`;
+  const item = curriculumCondition;
+  const sources = item.sources || [];
+  const objectives = Array.isArray(item.learningObjectives) ? item.learningObjectives : [];
+  const redFlags = Array.isArray(item.redFlags) ? item.redFlags : [];
+  return `${back}<section class="condition-header"><span class="eyebrow">${esc(domainLabel(item.domain))}</span><h2>${esc(item.title || item.name)}</h2><p>${esc(item.summary || '')}</p>${curriculumReviewNotice(item)}<div class="inline-actions"><button class="button" data-action="curriculum-quiz">Practice board questions ${icon('arrow')}</button><button class="button secondary" data-action="curriculum-coach" data-id="${esc(item.id)}">Study with Coach ${icon('coach')}</button></div></section>${objectives.length ? `<section class="card condition-section"><h3>Learning objectives</h3><ul>${objectives.map(text=>`<li>${esc(text)}</li>`).join('')}</ul></section>` : ''}<div class="condition-sections">${(item.chunks || []).map(chunk=>`<section class="card condition-section"><h3>${esc(chunk.heading || chunk.section || 'Study summary')}</h3><p>${esc(chunk.text || '')}</p>${curriculumSources(sources.filter(source=>chunk.sourceIds?.includes(source.id)),{compact:true})}</section>`).join('')}</div>${redFlags.length ? `<section class="notice condition-red-flags"><strong>Red flags to recognize in exam cases</strong><ul>${redFlags.map(text=>`<li>${esc(text)}</li>`).join('')}</ul></section>` : ''}${renderCurriculumQuestion()}<section class="card condition-section"><h3>Official reference sources</h3>${curriculumSources(sources)}<p class="curriculum-limits">Original paraphrases are provided for study; full guideline text is not reproduced here. Check the current official document for complete recommendations.</p></section>`;
+}
+function renderCurriculumQuestion() {
+  const question = curriculumQuestion();
+  if (!question) return '<section class="card condition-section"><h3>Board practice</h3><p>Practice questions are not available for this condition.</p></section>';
+  const result = curriculumAnswers.get(curriculumQuestionKey());
+  const questions = curriculumCondition.questions;
+  const selected = result?.selectedChoiceId || curriculumChoiceId;
+  const resultChoices = result?.choices || [];
+  const answeredCount = questions.filter(item=>curriculumAnswers.has(`${curriculumConditionId}:${item.id}`)).length;
+  return `<section class="card board-question" id="board-question" aria-labelledby="board-question-heading"><span class="eyebrow">ORIGINAL BOARD-STYLE PRACTICE · NOT AN ABFM QUESTION</span><div class="section-head"><h3 id="board-question-heading">Question ${curriculumQuestionIndex + 1} of ${questions.length}</h3><small>${answeredCount} answered</small></div><p class="question-stem">${esc(question.stem)}</p><div class="question-choices" role="group" aria-label="Choose one answer">${(question.choices || []).map((choice,index)=>`<button class="question-choice ${selected === choice.id ? 'selected' : ''} ${result?.correctChoiceId === choice.id ? 'correct' : ''} ${result && selected === choice.id && !result.correct ? 'incorrect' : ''}" data-action="curriculum-choice" data-id="${esc(choice.id)}" aria-pressed="${selected === choice.id}" ${result || curriculumGrading ? 'disabled' : ''}><span class="choice-letter">${String.fromCharCode(65+index)}</span><span>${esc(choice.text)}</span>${result?.correctChoiceId === choice.id ? '<span class="choice-mark">Correct</span>' : ''}</button>`).join('')}</div>${curriculumGradeError ? `<div class="notice error" role="alert">${esc(curriculumGradeError)}</div>` : ''}${result ? `<div class="question-feedback ${result.correct ? 'correct' : 'incorrect'}" role="status"><h4>${result.correct ? 'Correct.' : 'Review this learning point.'}</h4><p>${esc(result.rationale || '')}</p><h4>Why each option fits or does not fit</h4><ul>${resultChoices.map((choice,index)=>`<li><strong>${String.fromCharCode(65+index)}. ${esc(choice.text)}</strong><p>${esc(choice.explanation || '')}</p></li>`).join('')}</ul>${curriculumSources(result.sources || [],{compact:true})}<p class="curriculum-limits">Source-linked educational explanation · ${result.humanReview === true ? 'Clinician review recorded' : 'Clinician review pending'}${result.current === false ? ' · Source-check window expired' : ''}</p></div>` : `<p class="curriculum-limits">Choose the single best answer before revealing the explanation.</p>`}<div class="question-actions">${result ? `<button class="button secondary" data-action="curriculum-card" ${curriculumSavingCard || curriculumSavedCards.has(curriculumQuestionKey()) ? 'disabled' : ''}>${curriculumSavedCards.has(curriculumQuestionKey()) ? 'Added to recall cards' : curriculumSavingCard ? 'Saving recall card…' : 'Save sourced recall card'}</button>` : `<button class="button" data-action="curriculum-answer" ${!curriculumChoiceId || curriculumGrading ? 'disabled' : ''}>${curriculumGrading ? 'Checking answer…' : 'Check answer'}</button>`}<button class="button secondary" data-action="curriculum-next" ${curriculumGrading || curriculumQuestionIndex >= questions.length-1 ? 'disabled' : ''}>${result ? 'Next question' : 'Skip question'} ${icon('arrow')}</button>${curriculumQuestionIndex > 0 ? `<button class="text-button" data-action="curriculum-previous" ${curriculumGrading ? 'disabled' : ''}>← Previous question</button>` : ''}</div><p class="footer-note">Original questions practice clinical reasoning and ABFM blueprint topic areas. They do not predict an exam score and are not affiliated with, endorsed by, or copied from ABFM.</p></section>`;
+}
+function updateCurriculumQuestionUI({scroll = false} = {}) {
+  if (!curriculumIsVisible()) return;
+  const container = $('#board-question');
+  if (container) container.outerHTML = renderCurriculumQuestion();
+  if (scroll) $('#board-question')?.scrollIntoView({block:'start',behavior:'smooth'});
+}
+async function answerCurriculumQuestion() {
+  const question = curriculumQuestion();
+  if (!question || !curriculumChoiceId || curriculumGrading || curriculumAnswers.has(curriculumQuestionKey())) return;
+  const key = curriculumQuestionKey(), id = curriculumConditionId, choiceId = curriculumChoiceId, revision = curriculumSessionRevision;
+  curriculumGrading = true; curriculumGradeError = ''; updateCurriculumQuestionUI();
+  try {
+    const result = await mutate(`/api/curriculum/${encodeURIComponent(id)}/answer`,'POST',{questionId:question.id,choiceId});
+    if (revision === curriculumSessionRevision) curriculumAnswers.set(key,{...result,selectedChoiceId:choiceId});
+  } catch(error) { if (revision === curriculumSessionRevision && key === curriculumQuestionKey()) curriculumGradeError = error.message; }
+  finally { if (revision === curriculumSessionRevision) {curriculumGrading = false; if (key === curriculumQuestionKey()) updateCurriculumQuestionUI();} }
+}
+async function saveCurriculumCard() {
+  const question = curriculumQuestion(), key = curriculumQuestionKey(), revision = curriculumSessionRevision;
+  if (!question || !curriculumAnswers.has(key) || curriculumSavingCard || curriculumSavedCards.has(key)) return;
+  curriculumSavingCard = true; updateCurriculumQuestionUI();
+  try { const result = await mutate(`/api/curriculum/${encodeURIComponent(curriculumConditionId)}/card`,'POST',{questionId:question.id}); if (revision !== curriculumSessionRevision) return; curriculumSavedCards.add(key); await refreshState(); notify(result.cached ? 'This sourced recall card is already in your library.' : 'Sourced recall card saved for spaced repetition.'); }
+  finally { if (revision === curriculumSessionRevision) {curriculumSavingCard = false; if (key === curriculumQuestionKey()) updateCurriculumQuestionUI();} }
+}
+async function coachCurriculumCondition() {
+  if (!curriculumCondition || chatBusy) return;
+  const item = curriculumCondition;
+  await createConversation({title:`Study: ${item.title || item.name}`,mode:'practice',conditionId:item.id});
+  return sendMessage(`Study ${item.title || item.name} using the app’s source-linked guideline summaries. Ask me one board-style recall question at a time and explain the source-supported learning point after I answer. This is study use only, not medical advice.`);
 }
 
 function renderCards() {
@@ -253,7 +399,7 @@ function renderCards() {
 }
 
 function renderCardResults(cards) {
-  return cards.length ? `<div class="card-list">${cards.map(card => `<article class="library-card ${card.suspended ? 'suspended' : ''}"><div class="card-info"><div class="card-meta"><span class="pill">${esc(card.topic)}</span>${card.suspended ? '<span>Suspended</span>' : `<span>${card.state === 'new' ? 'New' : `Due ${dateString(card.dueAt)}`}</span>`}${card.lapses >= 8 ? '<span class="pill red">Consider rewriting</span>' : ''}</div><span class="card-front">${esc(card.front)}</span><details><summary class="text-button" style="padding-left:0;display:list-item;width:fit-content">Answer & reference</summary><p class="card-back">${esc(card.back)}</p><div class="card-meta">${sourceHtml(card)}<span>${card.verified ? 'Verified by you' : 'Verification recommended'}</span></div></details></div><div class="card-actions"><button class="icon-button" data-action="edit-card" data-id="${esc(card.id)}" aria-label="Edit card">${icon('edit')}</button><button class="icon-button" data-action="suspend-card" data-id="${esc(card.id)}" aria-label="${card.suspended ? 'Resume' : 'Suspend'} card" title="${card.suspended ? 'Resume' : 'Suspend'} card">${icon(card.suspended ? 'play' : 'pause')}</button><button class="icon-button" data-action="delete-card" data-id="${esc(card.id)}" aria-label="Delete card">${icon('trash')}</button></div></article>`).join('')}</div>` : `<div class="empty-state"><h2>${state.cards.length ? 'No cards match yet.' : 'Keep one useful insight.'}</h2><p>${state.cards.length ? 'Try a broader search or choose another topic.' : 'A good card asks one clear question and gives one focused answer.'}</p><button class="button secondary" data-action="new-card">Create a recall card</button></div>`;
+  return cards.length ? `<div class="card-list">${cards.map(card => `<article class="library-card ${card.suspended ? 'suspended' : ''}"><div class="card-info"><div class="card-meta"><span class="pill">${esc(card.topic)}</span>${card.suspended ? '<span>Suspended</span>' : `<span>${card.state === 'new' ? 'New' : `Due ${dateString(card.dueAt)}`}</span>`}${card.lapses >= 8 ? '<span class="pill red">Consider rewriting</span>' : ''}</div><span class="card-front">${esc(card.front)}</span><details><summary class="text-button" style="padding-left:0;display:list-item;width:fit-content">Answer & reference</summary><p class="card-back">${esc(card.back)}</p><div class="card-meta">${sourceHtml(card)}<span>${card.verified ? 'Verified by you' : 'Verification recommended'}</span></div></details>${cardSourceStatusHtml(card)}</div><div class="card-actions"><button class="icon-button" data-action="edit-card" data-id="${esc(card.id)}" aria-label="Edit card">${icon('edit')}</button><button class="icon-button" data-action="suspend-card" data-id="${esc(card.id)}" aria-label="${card.suspended ? 'Resume' : 'Suspend'} card" title="${card.suspended ? 'Resume' : 'Suspend'} card">${icon(card.suspended ? 'play' : 'pause')}</button><button class="icon-button" data-action="delete-card" data-id="${esc(card.id)}" aria-label="Delete card">${icon('trash')}</button></div></article>`).join('')}</div>` : `<div class="empty-state"><h2>${state.cards.length ? 'No cards match yet.' : 'Keep one useful insight.'}</h2><p>${state.cards.length ? 'Try a broader search or choose another topic.' : 'A good card asks one clear question and gives one focused answer.'}</p><button class="button secondary" data-action="new-card">Create a recall card</button></div>`;
 }
 
 function renderCases() {
@@ -381,7 +527,8 @@ async function sendMessage(content) {
     chatError = '';
     chatDraft = '';
     const activeConversationId = currentConversationId;
-    if (!pendingChatRequest || pendingChatRequest.conversationId !== activeConversationId || pendingChatRequest.content !== submitted) pendingChatRequest = { conversationId: activeConversationId, content: submitted, requestId: crypto.randomUUID() };
+    const linkedCondition = conversation()?.curriculumConditionId;
+    if (!pendingChatRequest || pendingChatRequest.conversationId !== activeConversationId || pendingChatRequest.content !== submitted) pendingChatRequest = { conversationId: activeConversationId, content: submitted, requestId: crypto.randomUUID(), ...(linkedCondition ? {conditionIds:[linkedCondition]} : {}) };
     const current = conversation();
     current.messages = [...(current.messages || []), { id: `pending-${Date.now()}`, role: 'user', content: submitted }];
     render();
@@ -497,7 +644,8 @@ async function generateCards() {
   } catch (error) { dialog('Cards couldn’t be created.', 'Your conversation is still saved.', `<div class="notice error">${esc(error.message)}</div>`, '<button class="button secondary" data-action="close-dialog">Close</button>'); }
 }
 function renderDraftDialog() {
-  dialog(draftsOffline ? 'Keep a useful study habit.' : 'Keep the useful learning points.', draftsOffline ? 'Guided practice worksheets; edit them to fit your learning.' : 'Review every draft. Check clinical facts before you accept it.', `<div class="notice" style="margin-bottom:20px">${draftsOffline ? 'These are reusable worksheet prompts, not AI-generated summaries of your chat. Review the suggested answers and adapt them to your learning before saving.' : 'AI drafts may contain errors. Edit each question and answer, then add a reliable reference. Accepted drafts remain unverified until you check them.'}</div><form id="draft-form">${draftCards.map((card,index) => `<div class="draft-card" data-draft="${index}"><p class="draft-label">DRAFT CARD ${index + 1}</p><label class="check-field"><input type="checkbox" name="accept-${index}" checked>Keep this card</label><div class="form-field"><label for="draft-front-${index}">Question</label><textarea id="draft-front-${index}" name="front-${index}" maxlength="2000">${esc(card.front)}</textarea></div><div class="form-field"><label for="draft-back-${index}">Answer</label><textarea id="draft-back-${index}" name="back-${index}" maxlength="8000">${esc(card.back)}</textarea></div><div class="form-field"><label for="draft-topic-${index}">Topic</label><input id="draft-topic-${index}" name="topic-${index}" value="${esc(card.topic || 'Family medicine')}" maxlength="100"></div><div class="form-field"><label for="draft-source-${index}">Reference link (optional)</label><input type="url" id="draft-source-${index}" name="sourceUrl-${index}" value="${esc(card.sourceUrl || '')}" maxlength="2000"></div></div>`).join('')}<div id="draft-error" class="form-error" role="alert"></div></form>`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button class="button" type="submit" form="draft-form">Save selected cards</button>');
+  const sourceLinkedDrafts = draftCards.some(card=>card.curriculumConditionId && card.curriculumQuestionId);
+  dialog(draftsOffline ? 'Keep a useful study habit.' : 'Keep the useful learning points.', sourceLinkedDrafts ? 'Original source-linked study cards; clinician review pending.' : draftsOffline ? 'Guided practice worksheets; edit them to fit your learning.' : 'Review every draft. Check clinical facts before you accept it.', `<div class="notice" style="margin-bottom:20px">${sourceLinkedDrafts ? 'These original recall cards come from the sourced condition library. Source checks are not clinician approval. Unchanged cards retain their source dates; edited drafts become personal unverified notes.' : draftsOffline ? 'These are reusable worksheet prompts, not AI-generated summaries of your chat. Review the suggested answers and adapt them to your learning before saving.' : 'AI drafts may contain errors. Edit each question and answer, then add a reliable reference. Accepted drafts remain unverified until you check them.'}</div><form id="draft-form">${draftCards.map((card,index) => `<div class="draft-card" data-draft="${index}"><p class="draft-label">DRAFT CARD ${index + 1}</p><label class="check-field"><input type="checkbox" name="accept-${index}" checked>Keep this card</label><div class="form-field"><label for="draft-front-${index}">Question</label><textarea id="draft-front-${index}" name="front-${index}" maxlength="2000">${esc(card.front)}</textarea></div><div class="form-field"><label for="draft-back-${index}">Answer</label><textarea id="draft-back-${index}" name="back-${index}" maxlength="8000">${esc(card.back)}</textarea></div><div class="form-field"><label for="draft-topic-${index}">Topic</label><input id="draft-topic-${index}" name="topic-${index}" value="${esc(card.topic || 'Family medicine')}" maxlength="100"></div><div class="form-field"><label for="draft-source-${index}">Reference link (optional)</label><input type="url" id="draft-source-${index}" name="sourceUrl-${index}" value="${esc(card.sourceUrl || '')}" maxlength="2000"></div></div>`).join('')}<div id="draft-error" class="form-error" role="alert"></div></form>`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button class="button" type="submit" form="draft-form">Save selected cards</button>');
 }
 
 function importCardsDialog() {
@@ -533,12 +681,16 @@ function pilotNotice(compact=false) { return status.privatePilot ? compact ? `<d
 function renderAnswerEvidence(message) {
   const sources = Array.isArray(message.citations) ? message.citations : [];
   const sourceList = sources.map(source => {
-    const url=safeUrl(source.url);
-    const title=url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(source.title || 'Reviewed source')} ↗</a>` : esc(source.title || 'Reviewed source');
-    const reviewed=source.reviewedAt ? new Date(source.reviewedAt).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}) : '';
-    return `<li>${title}<small>${source.edition ? `Edition: ${esc(source.edition)}` : ''}${source.edition && reviewed ? ' · ' : ''}${reviewed ? `Reviewed ${esc(reviewed)}` : ''}</small></li>`;
+    const url = safeUrl(source.url), title = source.title || 'Source reference';
+    const checked = source.checkedAt || source.reviewedAt;
+    return `<li>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(title)} ↗</a>` : esc(title)}<small>${[source.edition ? `Edition: ${source.edition}` : '',checked ? `Source checked ${String(checked).slice(0,10)}` : ''].filter(Boolean).map(esc).join(' · ')}</small></li>`;
   }).join('');
-  return `${message.unsupported === true ? '<div class="answer-abstention">Verification needed: reviewed teaching evidence did not support an answer to this question.</div>' : ''}${sourceList ? `<details class="answer-sources"><summary>${sources.length === 1 ? message.importedEvidence ? 'Imported teaching reference' : 'Reviewed teaching source' : message.importedEvidence ? `${sources.length} imported teaching references` : `${sources.length} reviewed teaching sources`}</summary><ul>${sourceList}</ul><p>${message.importedEvidence ? 'These references came from an imported backup and have not been reverified against the current corpus.' : 'Reviewed excerpts support this teaching response; they are not a complete guideline or patient-specific advice.'}</p></details>` : ''}`;
+  const curriculum = message.curriculum === true || message.evidence?.curriculum === true;
+  const grounded = message.grounded === true || message.evidence?.grounded === true;
+  const humanReviewed = message.humanReview === true || message.evidence?.humanReview === true;
+  const imported = message.importedEvidence === true;
+  const explanation = imported ? 'Imported references have not been reverified against the current corpus.' : curriculum ? `${grounded ? 'Retrieved summaries support this study reply.' : 'Source-linked study response.'} ${humanReviewed ? 'Clinician review recorded.' : 'Clinician review pending; a citation does not guarantee correctness.'}` : 'References support educational review. Verify their applicability and currency.';
+  return `${message.unsupported === true ? '<div class="answer-abstention">The available study evidence does not support an answer. Check a current official source.</div>' : ''}${curriculum ? `<small class="evidence-status">${grounded ? 'Grounded in retrieved study summaries' : 'Evidence coverage limited'} · ${humanReviewed ? 'Clinician review recorded' : 'Clinician review pending'}</small>` : ''}${sourceList ? `<details class="answer-sources"><summary>${imported ? 'Imported' : 'Source-linked'} study references (${sources.length})</summary><ul>${sourceList}</ul><p>${esc(explanation)} Study use only; not medical advice.</p></details>` : ''}`;
 }
 
 function renderAccountLogin() {
@@ -656,8 +808,8 @@ async function handleAction(button) {
   if (action === 'account-mode') { accountFormMode = button.dataset.mode; return renderLogin(); }
   if (action === 'report-message') return reportDialog(id);
   if (action === 'delete-account') return accountDeletionDialog();
-  if (voiceCoach.active() && ['new-chat','history','select-conversation','start-case','practice-prompt','starter','topic-coach','confirm-delete-conversation','logout','import-backup','draft-cards','read-message'].includes(action)) await voiceCoach.stop('Voice stopped. Your microphone is off.');
-  if (chatBusy && ['new-chat','history','select-conversation','start-case','practice-prompt','starter','topic-coach'].includes(action)) return notify('Wait for your coach’s reply before starting another conversation.');
+  if (voiceCoach.active() && ['new-chat','history','select-conversation','start-case','practice-prompt','starter','topic-coach','curriculum-coach','confirm-delete-conversation','logout','import-backup','draft-cards','read-message'].includes(action)) await voiceCoach.stop('Voice stopped. Your microphone is off.');
+  if (chatBusy && ['new-chat','history','select-conversation','start-case','practice-prompt','starter','topic-coach','curriculum-coach'].includes(action)) return notify('Wait for your coach’s reply before starting another conversation.');
   switch(action) {
     case 'navigate': return navigate(button.dataset.screen);
     case 'settings': if (isLoaded) settingsDialog(); return;
@@ -675,7 +827,20 @@ async function handleAction(button) {
     case 'delete-card': return confirmDialog('Delete this recall card?', 'The card will be removed from your library. Historical review statistics are retained.', 'confirm-delete-card',id);
     case 'confirm-delete-card': await mutate(`/api/cards/${encodeURIComponent(id)}`,'DELETE'); closeDialog(); await refreshState(); if(reviewSession) reviewSession.queue = reviewSession.queue.filter(cardId => cardId !== id); render(); return notify('Recall card deleted.');
     case 'suspend-card': { const card=state.cards.find(item=>item.id===id); await mutate(`/api/cards/${encodeURIComponent(id)}`,'PUT',{suspended:!card.suspended}); await refreshState(); render(); return notify(card.suspended ? 'Card resumed.' : 'Card suspended.'); }
-    case 'library-tab': libraryTab=tab; return render();
+    case 'library-tab': libraryTab=tab; render(); if (tab === 'guidelines' && !curriculumCatalog && !curriculumLoading) return loadCurriculum(); return;
+    case 'curriculum-card-condition': libraryTab='guidelines';navigate('library');return openCurriculumCondition(id);
+    case 'curriculum-open': return openCurriculumCondition(id);
+    case 'curriculum-back': curriculumConditionId=null; curriculumCondition=null; curriculumDetailRequest++; curriculumGradeError=''; render(); return window.scrollTo({top:0,behavior:'instant'});
+    case 'curriculum-detail-retry': return openCurriculumCondition(curriculumConditionId);
+    case 'curriculum-retry': return loadCurriculum();
+    case 'curriculum-clear': curriculumSearch='';curriculumDomain='';if($('#condition-search')) $('#condition-search').value='';if($('#condition-domain')) $('#condition-domain').value='';return loadCurriculum();
+    case 'curriculum-quiz': return $('#board-question')?.scrollIntoView({block:'start',behavior:'smooth'});
+    case 'curriculum-choice': if (!curriculumGrading && !curriculumAnswers.has(curriculumQuestionKey())) {curriculumChoiceId=id;curriculumGradeError='';updateCurriculumQuestionUI();} return;
+    case 'curriculum-answer': return answerCurriculumQuestion();
+    case 'curriculum-card': return saveCurriculumCard();
+    case 'curriculum-next': if (!curriculumGrading && curriculumQuestionIndex < (curriculumCondition?.questions?.length || 0)-1) {curriculumQuestionIndex++;curriculumChoiceId=null;curriculumGradeError='';updateCurriculumQuestionUI({scroll:true});} return;
+    case 'curriculum-previous': if (!curriculumGrading && curriculumQuestionIndex>0) {curriculumQuestionIndex--;curriculumChoiceId=null;curriculumGradeError='';updateCurriculumQuestionUI({scroll:true});} return;
+    case 'curriculum-coach': return coachCurriculumCondition();
     case 'starter': navigate('coach'); return sendMessage(prompt);
     case 'practice-prompt': await createConversation({ title:prompt.slice(0,50),mode:'practice' }); return sendMessage(prompt);
     case 'topic-coach': navigate('coach'); return sendMessage(`Help me strengthen my understanding of ${topic}. Ask one active recall question at a time, wait for my answer, and help me correct gaps in my reasoning.`);
@@ -700,7 +865,7 @@ async function handleAction(button) {
     case 'import-cards': return importCardsDialog();
     case 'export': return exportBackup();
     case 'import-backup': return importBackupDialog();
-    case 'logout': await mutate('/api/logout','POST'); closeDialog(); status.authenticated=false; isLoaded=false; state.cards=[];state.conversations=[];state.reviews=[]; return renderLogin();
+    case 'logout': await mutate('/api/logout','POST'); closeDialog(); status.authenticated=false; isLoaded=false; state.cards=[];state.conversations=[];state.reviews=[];resetCurriculumState(); return renderLogin();
   }
 }
 
@@ -740,7 +905,7 @@ document.addEventListener('submit', async event => {
       errorId = 'delete-account-error';
       if (data.get('confirmation') !== 'DELETE') throw new Error('Type DELETE exactly to confirm account deletion.');
       await mutate('/api/account/delete', 'POST', { confirmation: 'DELETE' });
-      $('#app-dialog').close(); state.cards=[];state.reviews=[];state.conversations=[];state.settings={};isLoaded=false;currentConversationId=null;
+      $('#app-dialog').close(); state.cards=[];state.reviews=[];state.conversations=[];state.settings={};isLoaded=false;currentConversationId=null;resetCurriculumState();
       status=await api('/api/status'); accountFormMode='login';renderLogin();notify('Your account and saved study content were deleted.');
     } else if(form.id==='login-form') {
       errorId='login-error';
@@ -760,10 +925,16 @@ document.addEventListener('submit', async event => {
       await refreshState();$('#app-dialog').close();render();notify('Recall card saved.');
     } else if(form.id==='draft-form') {
       errorId='draft-error';
-      const selected=draftCards.map((card,index)=>({card,index})).filter(({index})=>data.get(`accept-${index}`)==='on').map(({card,index})=>({front:data.get(`front-${index}`).trim(),back:data.get(`back-${index}`).trim(),topic:data.get(`topic-${index}`).trim() || 'Family medicine',sourceTitle:card.sourceTitle || 'AI draft — verify against a reliable source',sourceUrl:data.get(`sourceUrl-${index}`).trim(),verified:false}));
+      const selected=draftCards.map((card,index)=>({card,index})).filter(({index})=>data.get(`accept-${index}`)==='on').map(({card,index})=>({original:card,front:data.get(`front-${index}`).trim(),back:data.get(`back-${index}`).trim(),topic:data.get(`topic-${index}`).trim() || 'Family medicine',sourceTitle:card.sourceTitle || 'AI draft — verify against a reliable source',sourceUrl:data.get(`sourceUrl-${index}`).trim(),verified:false}));
       if(!selected.length) throw new Error('Select at least one draft to save.');
       if(selected.some(card=>!card.front || !card.back)) throw new Error('Each selected card needs a question and answer.');
-      await mutate('/api/cards/import','POST',{cards:selected});
+      const personal=[];
+      for (const {original,...card} of selected) {
+        const canonical = original.curriculumConditionId && original.curriculumQuestionId && card.front === original.front.trim() && card.back === original.back.trim() && card.topic === original.topic && card.sourceUrl === original.sourceUrl;
+        if (canonical) await mutate(`/api/curriculum/${encodeURIComponent(original.curriculumConditionId)}/card`,'POST',{questionId:original.curriculumQuestionId});
+        else personal.push(card);
+      }
+      if(personal.length) await mutate('/api/cards/import','POST',{cards:personal});
       await refreshState();$('#app-dialog').close();render();notify(`${selected.length} recall cards saved for review.`);
     } else if(form.id==='import-cards-form') {
       errorId='import-error';
@@ -790,10 +961,12 @@ document.addEventListener('submit', async event => {
 
 document.addEventListener('input', event=>{
   if(event.target.id==='chat-input') {chatDraft=event.target.value;preserveDictationEdits(chatDraft);resizeComposer();}
+  if(event.target.id==='condition-search') {curriculumSearch=event.target.value;clearTimeout(curriculumSearchTimer);curriculumRequest++;curriculumSearchTimer=setTimeout(loadCurriculum,220);}
   if(event.target.id==='card-search') { searchTerm=event.target.value;const filtered=state.cards.filter(card=>(!topicFilter || card.topic===topicFilter) && `${card.front} ${card.back} ${card.topic}`.toLowerCase().includes(searchTerm.toLowerCase()));$('#card-results').innerHTML=renderCardResults(filtered);$('.library-summary span').textContent=`${filtered.length} cards · ${state.cards.filter(card=>card.suspended).length} suspended`; }
 });
 document.addEventListener('change',async event=>{
   try {
+    if(event.target.id==='condition-domain') {curriculumDomain=event.target.value;await loadCurriculum();}
     if(event.target.id==='topic-filter') {topicFilter=event.target.value;render();}
     if(event.target.id==='openai-model') { $('#model-profile').innerHTML=modelProfileHtml(event.target.value); $('#test-model-button').disabled=!status.aiConfigured || event.target.value!==status.model; }
     if(event.target.id==='cards-file') {const file=event.target.files[0];if(file) {if(file.size>2*1024*1024) throw new Error('Card imports must be under 2 MB.');$('#import-json').value=await file.text();}}

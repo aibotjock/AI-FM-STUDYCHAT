@@ -1,0 +1,106 @@
+{
+  "runAt": "2026-10-09T09:40:22.562Z",
+  "scope": "One new smoke using the actual shipped 100-condition/200-question corpus. Longest title, complete condition, section, question, explanations and source metadata at360x800. Prior fixture UI/voice/model/zoom suites not repeated. Grading actions only display real explanation text; no new clinical correctness claim.",
+  "viewport": {
+    "width": 360,
+    "height": 800
+  },
+  "catalog": {
+    "conditionCount": 100,
+    "questionCount": 200
+  },
+  "extremes": {
+    "title": {
+      "conditionId": "peptic-ulcer-h-pylori",
+      "length": 54
+    },
+    "condition": {
+      "conditionId": "uncomplicated-cystitis",
+      "jsonLength": 6983
+    },
+    "section": {
+      "conditionId": "hypertension",
+      "length": 245
+    },
+    "question": {
+      "conditionId": "atrial-fibrillation",
+      "index": 1,
+      "questionId": "atrial-fibrillation-q2",
+      "stem": "A patient has paroxysmal AF and validated annual stroke risk above 2%. Renal function permits a DOAC, there is no mechanical valve or significant mitral stenosis, and there is no other antiplatelet indication. Which strategy best follows the guideline?",
+      "displayLength": 506
+    },
+    "explanations": {
+      "conditionId": "uncomplicated-cystitis",
+      "index": 1,
+      "questionId": "uncomplicated-cystitis-q2",
+      "displayLength": 360
+    },
+    "source": {
+      "conditionId": "polycystic-ovary-syndrome",
+      "sourceId": "asrm-pcos-2023",
+      "displayLength": 890
+    }
+  },
+  "results": [
+    {
+      "name": "Actual shipped catalog displays 100 conditions and 200 original questions",
+      "pass": true
+    },
+    {
+      "name": "Real content fits mobile viewport: longest title",
+      "conditionId": "peptic-ulcer-h-pylori",
+      "pass": true
+    },
+    {
+      "name": "Real content fits mobile viewport: largest full condition, longest answer explanations",
+      "conditionId": "uncomplicated-cystitis",
+      "pass": true
+    },
+    {
+      "name": "Real content fits mobile viewport: longest section",
+      "conditionId": "hypertension",
+      "pass": true
+    },
+    {
+      "name": "Real content fits mobile viewport: longest question",
+      "conditionId": "atrial-fibrillation",
+      "pass": true
+    },
+    {
+      "name": "Real content fits mobile viewport: largest source metadata",
+      "conditionId": "polycystic-ovary-syndrome",
+      "pass": true
+    },
+    {
+      "name": "No JavaScript errors, overflow or AI dispatch with real dataset",
+      "pass": true
+    }
+  ],
+  "pageErrors": [],
+  "overflows": [],
+  "providerDispatches": 0,
+  "paidProviderCalls": 0,
+  "clinicalAccuracyEvaluated": false,
+  "sourceFiles": [
+    {
+      "name": "cardiometabolic.json",
+      "sha256": "7bbe1765c889237ec204df9d25c55de901971716013cf9a23d2d205a0a5ab725",
+      "bytes": 157030
+    },
+    {
+      "name": "neuro_msk_derm.json",
+      "sha256": "efe9a0581ea5126b7b861773a259ab4506e56ad88c4f6113f34390d7c7aa9602",
+      "bytes": 144090
+    },
+    {
+      "name": "respiratory_infectious.json",
+      "sha256": "b69a03eb3088859e03666ff13fbfc310a6357fe9f8ae453f4c4929cc52de98fb",
+      "bytes": 136670
+    },
+    {
+      "name": "women_children_prevention.json",
+      "sha256": "f21bbe71b0fd66c8f22416910e9bee1f6601936c2ab694eeafaace0ab77ca855",
+      "bytes": 149597
+    }
+  ]
+}

@@ -1,0 +1,1174 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-09",
+  "purpose": "Personal educational pilot; source checks are not clinician approval, rights clearance or a medical accuracy certification.",
+  "scope": "At least 100 curated common or high-yield family medicine conditions, not a prevalence ranking or complete exam syllabus.",
+  "conditions": 105,
+  "currentConditions": 105,
+  "questions": 210,
+  "sections": 323,
+  "formalGuidelineConditions": 100,
+  "officialReferenceOnlyConditions": [
+    {
+      "id": "benign-positional-vertigo",
+      "name": "Benign paroxysmal positional vertigo"
+    },
+    {
+      "id": "benign-prostatic-hyperplasia",
+      "name": "Benign prostatic hyperplasia"
+    },
+    {
+      "id": "endometriosis",
+      "name": "Endometriosis"
+    },
+    {
+      "id": "generalized-anxiety-disorder",
+      "name": "Generalized anxiety disorder"
+    },
+    {
+      "id": "vitamin-b12-deficiency",
+      "name": "Vitamin B12 deficiency"
+    }
+  ],
+  "distinctSourceUrls": 136,
+  "maximumAttributedFactualWordsPerUrl": 190,
+  "questionDomains": {
+    "acute": 74,
+    "chronic": 98,
+    "emergent": 22,
+    "preventive": 16,
+    "foundations": 0
+  },
+  "correctAnswerPositions": {
+    "A": 41,
+    "B": 42,
+    "C": 42,
+    "D": 43,
+    "E": 42
+  },
+  "clinicalApproval": false,
+  "humanReviewed": false,
+  "commercialApprovedRecords": 0,
+  "files": [
+    {
+      "path": "content/conditions/cardiometabolic.json",
+      "sha256": "7bbe1765c889237ec204df9d25c55de901971716013cf9a23d2d205a0a5ab725"
+    },
+    {
+      "path": "content/conditions/respiratory_infectious.json",
+      "sha256": "48b0ba9e13c0fdef9363fd4d519b3fbdf02f0d55a23e196984dfb98c55256337"
+    },
+    {
+      "path": "content/conditions/neuro_msk_derm.json",
+      "sha256": "340c8ff445466db050d31e5294e262d05a0fc88d43a22bb3d55550511cf9abea"
+    },
+    {
+      "path": "content/conditions/women_children_prevention.json",
+      "sha256": "f21bbe71b0fd66c8f22416910e9bee1f6601936c2ab694eeafaace0ab77ca855"
+    },
+    {
+      "path": "content/conditions/common_additions.json",
+      "sha256": "13e1bebd71b556295f43f7b2bbf1835ee604b6e3387dbce4b88390bc07f71df8"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://abcd.care/sites/default/files/site_uploads/JBDS_Guidelines_Current/JBDS_02_DKA_Guideline_with_QR_code_March_2023.pdf",
+      "organization": "Joint British Diabetes Societies for Inpatient Care",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "diabetic-ketoacidosis"
+      ]
+    },
+    {
+      "url": "https://academic.oup.com/cid/article/79/Supplement_3/S104/7706134",
+      "organization": "Infectious Diseases Society of America",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "acute-cholecystitis"
+      ]
+    },
+    {
+      "url": "https://acrjournals.onlinelibrary.wiley.com/doi/10.1002/art.41752",
+      "organization": "American College of Rheumatology",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "rheumatoid-arthritis"
+      ]
+    },
+    {
+      "url": "https://agau.gastro.org/course/AGA_Clinical_Guidelines_on_Gastrointestinal_Evaluation_of_Iron_Deficiency_Anemia_-_Accompanying_Educational_Presentation/d351c1ce-dc6f-4523-9606-868e04ad4359",
+      "organization": "American Gastroenterological Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "iron-deficiency-anemia"
+      ]
+    },
+    {
+      "url": "https://agsjournals.onlinelibrary.wiley.com/doi/10.1111/jgs.13281",
+      "organization": "American Geriatrics Society",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "delirium"
+      ]
+    },
+    {
+      "url": "https://alz-journals.onlinelibrary.wiley.com/doi/10.1002/alz.14333?af=R",
+      "organization": "Alzheimer's Association",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "alzheimer-dementia"
+      ]
+    },
+    {
+      "url": "https://asccp.org/wp-content/uploads/2025/09/2019_ASCCP_Risk_Based_Management_Consensus.3.pdf",
+      "organization": "American Society for Colposcopy and Cervical Pathology",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "cervical-dysplasia"
+      ]
+    },
+    {
+      "url": "https://assets.contentstack.io/v3/assets/bltee37abb6b278ab2c/blt04d52e3b6ff5112f/632cab5b258fb55f6b2186af/gout-guideline-2020.pdf",
+      "organization": "American College of Rheumatology",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "gout"
+      ]
+    },
+    {
+      "url": "https://assets.hse.ie/media/documents/Acute_otitis_externa_guidelinev2.pdf",
+      "organization": "Health Service Executive, Ireland",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "otitis-externa"
+      ]
+    },
+    {
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-arv/initiation-antiretroviral-therapy?view=full",
+      "organization": "US Department of Health and Human Services / NIH HIV guideline panel",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "hiv"
+      ]
+    },
+    {
+      "url": "https://gastro.org/clinical-guidance/evaluation-and-management-of-refractory-constipation/",
+      "organization": "American Gastroenterological Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "chronic-constipation"
+      ]
+    },
+    {
+      "url": "https://gastro.org/clinical-guidance/medical-management-of-colonic-diverticulitis/",
+      "organization": "American Gastroenterological Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "acute-diverticulitis"
+      ]
+    },
+    {
+      "url": "https://gastro.org/clinical-guidance/personalized-approach-to-the-evaluation-and-management-of-gastroesophageal-reflux-disease-gerd/",
+      "organization": "American Gastroenterological Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "gastroesophageal-reflux-disease"
+      ]
+    },
+    {
+      "url": "https://gastro.org/clinical-guidance/pharmacological-management-of-chronic-idiopathic-constipation-cic/",
+      "organization": "American Gastroenterological Association / American College of Gastroenterology",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "chronic-constipation"
+      ]
+    },
+    {
+      "url": "https://gi.org/wp-content/uploads/2025/01/ACG-Hpylori-Guidelines-Highlights-2024-FINAL.pdf.pdf",
+      "organization": "American College of Gastroenterology",
+      "kind": "official-recommendation",
+      "conditions": [
+        "peptic-ulcer-h-pylori"
+      ]
+    },
+    {
+      "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/CD/OA/Osteoarthritis-CPG_2026-Provider-Summary_final_20260618.pdf",
+      "organization": "Department of Veterans Affairs and Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "osteoarthritis"
+      ]
+    },
+    {
+      "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/CD/obesity/OBE-CPG_2025-Guideline_final_20251105.pdf",
+      "organization": "Department of Veterans Affairs and Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "obesity"
+      ]
+    },
+    {
+      "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/MH/bd/VA-DOD-CPG-BD-Provider-SummaryFinal508.pdf",
+      "organization": "Department of Veterans Affairs and Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "bipolar-disorder"
+      ]
+    },
+    {
+      "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/MH/mdd/VADODMDDCPG_ProviderSummary_Final_508_updated.pdf",
+      "organization": "Department of Veterans Affairs and Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "major-depression"
+      ]
+    },
+    {
+      "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/MH/ptsd/VA-DOD-CPG-PTSD-Provider-Summary.pdf",
+      "organization": "Department of Veterans Affairs and Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "post-traumatic-stress-disorder"
+      ]
+    },
+    {
+      "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/MH/sud/VADODSUDCPGProviderSummary.pdf",
+      "organization": "Department of Veterans Affairs and Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "alcohol-use-disorder",
+        "opioid-use-disorder"
+      ]
+    },
+    {
+      "url": "https://kdigo.org/wp-content/uploads/2019/01/KDIGO-2012-AKI-Guideline-English.pdf",
+      "organization": "Kidney Disease: Improving Global Outcomes (international)",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "acute-kidney-injury"
+      ]
+    },
+    {
+      "url": "https://kdigo.org/wp-content/uploads/2026/04/KDIGO-2024-CKD-Guideline.pdf",
+      "organization": "Kidney Disease: Improving Global Outcomes (international)",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "chronic-kidney-disease"
+      ]
+    },
+    {
+      "url": "https://medconnection.ucsfbenioffchildrens.org/bronchiolitis-guidelines",
+      "organization": "UCSF Northern California Pediatric Hospital Medicine Consortium",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "bronchiolitis"
+      ]
+    },
+    {
+      "url": "https://medconnection.ucsfbenioffchildrens.org/croup-guidelines",
+      "organization": "UCSF Northern California Pediatric Hospital Medicine Consortium",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "croup"
+      ]
+    },
+    {
+      "url": "https://medconnection.ucsfbenioffchildrens.org/news/consensus-guidelines-for-management-of-pediatric-urinary-tract-infection-uti",
+      "organization": "UCSF Northern California Pediatric Hospital Medicine Consortium",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "pediatric-urinary-tract-infection"
+      ]
+    },
+    {
+      "url": "https://medlineplus.gov/delirium.html",
+      "organization": "National Library of Medicine, MedlinePlus",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "delirium"
+      ]
+    },
+    {
+      "url": "https://medlineplus.gov/epilepsy.html",
+      "organization": "National Library of Medicine, MedlinePlus",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "epilepsy"
+      ]
+    },
+    {
+      "url": "https://menopause.org/patient-education/menopause-topics/hormone-therapy",
+      "organization": "The Menopause Society",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "menopausal-symptoms"
+      ]
+    },
+    {
+      "url": "https://menopause.org/wp-content/uploads/professional/nams-2022-hormone-therapy-position-statement.pdf",
+      "organization": "The Menopause Society (formerly NAMS)",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "menopausal-symptoms"
+      ]
+    },
+    {
+      "url": "https://new.aaos.org/globalassets/quality-and-practice-resources/carpal-tunnel/carpal-tunnel-2024/cts-cpg.pdf",
+      "organization": "American Academy of Orthopaedic Surgeons",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "carpal-tunnel-syndrome"
+      ]
+    },
+    {
+      "url": "https://newsinhealth.nih.gov/2025/09/tension-headaches-migraine-more",
+      "organization": "National Institutes of Health",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "migraine",
+        "tension-headache"
+      ]
+    },
+    {
+      "url": "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/",
+      "organization": "NIH Office of Dietary Supplements",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "vitamin-b12-deficiency"
+      ]
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4739132/",
+      "organization": "American Thyroid Association; publisher-deposited full text in PubMed Central",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "thyroid-nodule"
+      ]
+    },
+    {
+      "url": "https://professional.heart.org/en/science-news/2017-acc-aha-hrs-guideline-for-the-evaluation-and-management-of-patients-with-syncope/top-things-to-know",
+      "organization": "American Heart Association / ACC / Heart Rhythm Society",
+      "kind": "official-recommendation",
+      "conditions": [
+        "syncope"
+      ]
+    },
+    {
+      "url": "https://professional.heart.org/en/science-news/2022-guideline-for-the-management-of%20heart-failure/top-things-to-know",
+      "organization": "American Heart Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "heart-failure"
+      ]
+    },
+    {
+      "url": "https://professional.heart.org/en/science-news/2023-guideline-for-the-management-of-patients-with-chronic-coronary-disease/top-things-to-know",
+      "organization": "American Heart Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "stable-coronary-artery-disease"
+      ]
+    },
+    {
+      "url": "https://professional.heart.org/en/science-news/2025-guideline-for-the-management-of-patients-with-acute-coronary-syndromes/top-things-to-know",
+      "organization": "American Heart Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "acute-coronary-syndrome"
+      ]
+    },
+    {
+      "url": "https://professional.heart.org/en/science-news/2025-high-blood-pressure-guideline/top-things-to-know",
+      "organization": "American Heart Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "hypertension",
+        "hypertensive-emergency"
+      ]
+    },
+    {
+      "url": "https://professional.heart.org/en/science-news/2026-guideline-for-the-early-management-of-patients-with-acute-ischemic-stroke/top-things-to-know",
+      "organization": "American Heart Association / American Stroke Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "ischemic-stroke"
+      ]
+    },
+    {
+      "url": "https://professional.heart.org/en/science-news/2026-guideline-for-the-evaluation-and-management-of-acute-pulmonary-embolism-in-adults/top-things-to-know",
+      "organization": "American Heart Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "pulmonary-embolism"
+      ]
+    },
+    {
+      "url": "https://professional.heart.org/en/science-news/2026-guideline-on-the-management-of-dyslipidemia",
+      "organization": "American Heart Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "dyslipidemia"
+      ]
+    },
+    {
+      "url": "https://professional.heart.org/en/science-news/2026-guideline-on-the-management-of-dyslipidemia/top-things-to-know",
+      "organization": "American Heart Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "dyslipidemia"
+      ]
+    },
+    {
+      "url": "https://professional.heart.org/en/science-news/diagnosis-workup-risk-reduction-of-transient-ischemic-attack-in-the-emergency-department-setting/top-things-to-know",
+      "organization": "American Heart Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "transient-ischemic-attack"
+      ]
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/23635706/",
+      "organization": "American College of Obstetricians and Gynecologists",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "abnormal-uterine-bleeding"
+      ]
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29470343/",
+      "organization": "American College of Obstetricians and Gynecologists",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "ectopic-pregnancy"
+      ]
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/32828801/",
+      "organization": "American Gastroenterological Association",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "iron-deficiency-anemia"
+      ]
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35337654/",
+      "organization": "American Gastroenterological Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "irritable-bowel-syndrome"
+      ]
+    },
+    {
+      "url": "https://rheumatology.org/patients/gout",
+      "organization": "American College of Rheumatology",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "gout"
+      ]
+    },
+    {
+      "url": "https://rheumatology.org/press-releases/american-college-of-rheumatology-updates-osteoarthritis-guidance-reinforcing-personalized-comprehensive-care",
+      "organization": "American College of Rheumatology",
+      "kind": "official-recommendation",
+      "conditions": [
+        "osteoarthritis"
+      ]
+    },
+    {
+      "url": "https://www.aaaai.org/Aaaai/media/Media-Library-PDFs/Allergist%20Resources/Statements%20and%20Practice%20Parameters/Anaphylaxis-in-Practice-2023.pdf",
+      "organization": "American Academy of Allergy, Asthma & Immunology / American College of Allergy, Asthma & Immunology",
+      "kind": "official-recommendation",
+      "conditions": [
+        "anaphylaxis"
+      ]
+    },
+    {
+      "url": "https://www.aaaai.org/Aaaai/media/Media-Library-PDFs/Allergist%20Resources/Statements%20and%20Practice%20Parameters/Rhinitis-2020-A-practice-parameter-update.pdf",
+      "organization": "Joint Task Force on Practice Parameters / AAAAI and ACAAI",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "allergic-rhinitis"
+      ]
+    },
+    {
+      "url": "https://www.aaaai.org/conditions-treatments/allergies/anaphylaxis",
+      "organization": "American Academy of Allergy, Asthma & Immunology",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "anaphylaxis"
+      ]
+    },
+    {
+      "url": "https://www.aad.org/member/clinical-quality/guidelines/atopic-dermatitis",
+      "organization": "American Academy of Dermatology",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "atopic-dermatitis"
+      ]
+    },
+    {
+      "url": "https://www.aad.org/member/clinical-quality/guidelines/psoriasis",
+      "organization": "American Academy of Dermatology",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "psoriasis"
+      ]
+    },
+    {
+      "url": "https://www.aad.org/news/aad-issues-first-pediatric-atopic-dermatitis-guidelines",
+      "organization": "American Academy of Dermatology",
+      "kind": "official-recommendation",
+      "conditions": [
+        "atopic-dermatitis"
+      ]
+    },
+    {
+      "url": "https://www.aad.org/news/updated-guidelines-acne-management",
+      "organization": "American Academy of Dermatology",
+      "kind": "official-recommendation",
+      "conditions": [
+        "acne-vulgaris"
+      ]
+    },
+    {
+      "url": "https://www.acc.org/About-ACC/Press-Releases/2025/08/13/20/03/New-high-blood-pressure-guideline-emphasizes-prevention-early-treatment-to-reduce-CVD-risk",
+      "organization": "American College of Cardiology",
+      "kind": "official-recommendation",
+      "conditions": [
+        "hypertension"
+      ]
+    },
+    {
+      "url": "https://www.acc.org/Latest-in-Cardiology/ten-points-to-remember/2023/11/27/19/46/2023-acc-guideline-for-af-gl-af",
+      "organization": "American College of Cardiology",
+      "kind": "official-recommendation",
+      "conditions": [
+        "atrial-fibrillation"
+      ]
+    },
+    {
+      "url": "https://www.ameriburn.org/burn-care-team/resources/guidelines-for-burn-patient-referral",
+      "organization": "American Burn Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "thermal-burns"
+      ]
+    },
+    {
+      "url": "https://www.asrm.org/practice-guidance/practice-committee-documents/recommendations-from-the-2023-international-evidence-based-guideline-for-the-assessment-and-management-of-polyendocrine-metabolic-ovarian-syndrome-2023/",
+      "organization": "American Society for Reproductive Medicine / international guideline partnership",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "polycystic-ovary-syndrome"
+      ]
+    },
+    {
+      "url": "https://www.cariguidelines.org/guidelines/kidney-stones/nutrition-therapy-for-the-prevention-of-kidney-stones/",
+      "organization": "CARI Guidelines; Australia and New Zealand",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "nephrolithiasis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/adhd/hcp/clinical-care/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "attention-deficit-hyperactivity-disorder"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/adult-outpatient.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "uncomplicated-cystitis",
+        "acute-bronchitis",
+        "bacterial-rhinosinusitis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/pediatric-outpatient.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "acute-otitis-media"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/covid/hcp/clinical-care/outpatient-treatment.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "covid-19"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/diabetes/about/diabetic-ketoacidosis.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "diabetic-ketoacidosis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/epilepsy/first-aid-for-seizures/",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "epilepsy"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/epilepsy/living-with/",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "epilepsy"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "influenza"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/fungal/hcp/clinical-care/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "tinea-corporis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "streptococcal-pharyngitis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/hepatitis-b/hcp/diagnosis-testing/",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "hepatitis-b"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/hepatitis-c/hcp/diagnosis-testing/",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "hepatitis-c"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/lice/hcp/clinical-care/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "pediculosis-capitis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/overdose-prevention/treatment/opioid-use-disorder.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "opioid-use-disorder"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/ringworm/hcp/clinical-overview/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "tinea-corporis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/scabies/hcp/clinical-care/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "scabies"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/shingles/hcp/clinical-overview/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "herpes-zoster"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/shingles/hcp/vaccine-considerations/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "herpes-zoster"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/bv.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "bacterial-vaginosis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "vulvovaginal-candidiasis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "chlamydia"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/epididymitis.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "epididymitis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "gonorrhea"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "genital-herpes"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/p-and-s-syphilis.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "syphilis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/pid.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "pelvic-inflammatory-disease"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/syphilis-pregnancy.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "syphilis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "trichomoniasis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/stroke/signs-symptoms/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "ischemic-stroke",
+        "transient-ischemic-attack"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/tb/hcp/clinical-overview/latent-tuberculosis-infection.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "tuberculosis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/tb/hcp/testing-diagnosis/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "tuberculosis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "thermal-burns"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/tobacco/hcp/patient-care-settings/clinical.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "tobacco-use-disorder"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/uti/hcp/clinical-overview/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "pyelonephritis"
+      ]
+    },
+    {
+      "url": "https://www.endocrine.org/clinical-practice-guidelines/high-risk-for-hypoglycemia",
+      "organization": "Endocrine Society",
+      "kind": "official-recommendation",
+      "conditions": [
+        "type-1-diabetes",
+        "hypoglycemia"
+      ]
+    },
+    {
+      "url": "https://www.endocrine.org/clinical-practice-guidelines/osteoporosis-in-postmenopausal-women",
+      "organization": "Endocrine Society",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "osteoporosis"
+      ]
+    },
+    {
+      "url": "https://www.healthquality.va.gov/guidelines/CD/diabetes/VADOD-Diabetes-CPG-Provider-Summary_final_508.pdf",
+      "organization": "Department of Veterans Affairs and Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "type-2-diabetes",
+        "prediabetes"
+      ]
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/CD/copd/COPD-CPG_2026-Provider-Summary_final_20261007.pdf",
+      "organization": "US Department of Veterans Affairs / Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "copd"
+      ]
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/CD/insomnia/I-OSA-CPG_2025-Provider-Summary_final_20250422.pdf",
+      "organization": "Department of Veterans Affairs and Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "chronic-insomnia",
+        "obstructive-sleep-apnea"
+      ]
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/pain/headache/VA-DOD-CPG-Headache-Provider-Summary.pdf",
+      "organization": "US Department of Veterans Affairs / Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "migraine",
+        "tension-headache"
+      ]
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/Pain/lbp/VADODLBPCPGProviderSummaryFinal508.pdf",
+      "organization": "Department of Veterans Affairs and Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "acute-low-back-pain"
+      ]
+    },
+    {
+      "url": "https://www.heart.org/en/health-topics/arrhythmia/symptoms-diagnosis--monitoring-of-arrhythmia/syncope-fainting",
+      "organization": "American Heart Association",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "syncope"
+      ]
+    },
+    {
+      "url": "https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings/when-to-call-911-for-high-blood-pressure",
+      "organization": "American Heart Association",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "hypertensive-emergency"
+      ]
+    },
+    {
+      "url": "https://www.hematology.org/-/media/hematology/files/clinicians/guidelines/vte/ash-teaching-slide-setvtediagnosispdffinal71923.pdf",
+      "organization": "American Society of Hematology",
+      "kind": "official-recommendation",
+      "conditions": [
+        "deep-vein-thrombosis"
+      ]
+    },
+    {
+      "url": "https://www.hematology.org/education/clinicians/guidelines-and-quality-care/clinical-practice-guidelines/-/media/3bf8a3b4e2f14571b81649863cec03ae.ashx",
+      "organization": "American Society of Hematology",
+      "kind": "official-recommendation",
+      "conditions": [
+        "deep-vein-thrombosis"
+      ]
+    },
+    {
+      "url": "https://www.idsociety.org/globalassets/idsa/practice-guidelines/community-acquired-pneumonia-in-adults/cap-clinical-pathway-final-online.pdf",
+      "organization": "Infectious Diseases Society of America",
+      "kind": "official-recommendation",
+      "conditions": [
+        "community-acquired-pneumonia"
+      ]
+    },
+    {
+      "url": "https://www.idsociety.org/practice-guideline/infectious-diarrhea",
+      "organization": "Infectious Diseases Society of America",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "acute-gastroenteritis"
+      ]
+    },
+    {
+      "url": "https://www.idsociety.org/practice-guideline/intra-abdominal-infections/",
+      "organization": "Infectious Diseases Society of America",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "appendicitis"
+      ]
+    },
+    {
+      "url": "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/",
+      "organization": "Infectious Diseases Society of America",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "cellulitis"
+      ]
+    },
+    {
+      "url": "https://www.internationalguideline.com/heels",
+      "organization": "National Pressure Injury Advisory Panel / EPUAP / PPPIA",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "pressure-injury"
+      ]
+    },
+    {
+      "url": "https://www.internationalguideline.com/repositioning",
+      "organization": "National Pressure Injury Advisory Panel / EPUAP / PPPIA",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "pressure-injury"
+      ]
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/sleep-apnea/treatment",
+      "organization": "National Heart, Lung, and Blood Institute",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "obstructive-sleep-apnea"
+      ]
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/sites/default/files/publications/Asthma%20Clinicians%20Guide%20508_02-03-21.pdf",
+      "organization": "NHLBI / National Asthma Education and Prevention Program",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "asthma"
+      ]
+    },
+    {
+      "url": "https://www.nichd.nih.gov/health/topics/endometri/conditioninfo/treatment",
+      "organization": "NIH National Institute of Child Health and Human Development",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "endometriosis"
+      ]
+    },
+    {
+      "url": "https://www.nidcd.nih.gov/health/balance-disorders",
+      "organization": "National Institute on Deafness and Other Communication Disorders",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "benign-positional-vertigo"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/low-blood-glucose-hypoglycemia",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "hypoglycemia"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/prediabetes-insulin-resistance",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "prediabetes"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/type-1-diabetes",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "type-1-diabetes"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/professionals/clinical-tools-patient-management/diabetes/diabetes-prediabetes",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "type-2-diabetes"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/diagnosis",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "uncomplicated-cystitis"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/treatment",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "uncomplicated-cystitis"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis/diagnosis",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "pyelonephritis"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis/treatment",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "pyelonephritis"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones/diagnosis",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "nephrolithiasis"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones/treatment",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "nephrolithiasis"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/prostate-problems/enlarged-prostate-benign-prostatic-hyperplasia",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "benign-prostatic-hyperplasia"
+      ]
+    },
+    {
+      "url": "https://www.nimh.nih.gov/health/publications/generalized-anxiety-disorder-gad",
+      "organization": "National Institute of Mental Health",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "generalized-anxiety-disorder"
+      ]
+    },
+    {
+      "url": "https://www.thyroid.org/hyperthyroidism/",
+      "organization": "American Thyroid Association",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "hyperthyroidism"
+      ]
+    },
+    {
+      "url": "https://www.thyroid.org/hypothyroidism/",
+      "organization": "American Thyroid Association",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "hypothyroidism"
+      ]
+    },
+    {
+      "url": "https://www.thyroid.org/new-hypothyroidism-treatment-guidelines-from-american-thyroid-association-published-in-thyroid-journal/",
+      "organization": "American Thyroid Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "hypothyroidism"
+      ]
+    },
+    {
+      "url": "https://www.thyroid.org/patient-thyroid-information/ct-for-patients/november-2016/vol-9-issue-11-p-3-7/",
+      "organization": "American Thyroid Association",
+      "kind": "official-recommendation",
+      "conditions": [
+        "hyperthyroidism"
+      ]
+    },
+    {
+      "url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/gestational-diabetes-screening",
+      "organization": "US Preventive Services Task Force",
+      "kind": "official-recommendation",
+      "conditions": [
+        "gestational-diabetes"
+      ]
+    },
+    {
+      "url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/hypertensive-disorders-pregnancy-screening",
+      "organization": "US Preventive Services Task Force",
+      "kind": "official-recommendation",
+      "conditions": [
+        "preeclampsia"
+      ]
+    },
+    {
+      "url": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/low-dose-aspirin-use-for-the-prevention-of-morbidity-and-mortality-from-preeclampsia-preventive-medication",
+      "organization": "US Preventive Services Task Force",
+      "kind": "official-recommendation",
+      "conditions": [
+        "preeclampsia"
+      ]
+    }
+  ]
+}

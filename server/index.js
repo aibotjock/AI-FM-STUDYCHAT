@@ -11,6 +11,7 @@ import { createAiProvider, AiProviderError } from './ai-provider.js';
 import { assertAllowedModel, createOpenAIModelCatalog, OpenAIModelError } from './openai-models.js';
 import { createIngeniumTelemetry, projectIngeniumMetadata } from './ingenium-telemetry.js';
 import { createVoiceService, sanitizeVoiceEvents, VoiceError } from './voice.js';
+import { loadStudyCurriculum, needsStudyEvidence, isStudyFollowup, STUDY_DISCLAIMER, STUDY_NO_EVIDENCE } from './study-curriculum.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, timeZone: 'America/New_York', voiceEnabled: true, competencyRatings: {} });
@@ -103,6 +104,22 @@ function restoreCard(input) {
   card.state = input.state;
   if (input.lastReviewedAt !== null && (!Number.isFinite(input.lastReviewedAt) || input.lastReviewedAt < 0 || input.lastReviewedAt > 8640000000000000)) fail(400, 'Invalid lastReviewedAt.');
   card.lastReviewedAt = input.lastReviewedAt;
+  if (input.curriculumConditionId !== undefined || input.curriculumQuestionId !== undefined) {
+    for (const key of ['curriculumConditionId', 'curriculumQuestionId']) {
+      const value = cleanText(input[key], key, 100);
+      if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(value)) fail(400, 'Invalid imported study-card identity.');
+      card[key] = value;
+    }
+    for (const key of ['sourceCheckedAt', 'sourceExpiresAt']) {
+      const value = cleanText(input[key], key, 10);
+      const parsed = /^\d{4}-\d{2}-\d{2}$/.test(value) ? Date.parse(`${value}T00:00:00Z`) : NaN;
+      if (!Number.isFinite(parsed) || new Date(parsed).toISOString().slice(0, 10) !== value) fail(400, 'Invalid imported study-card source date.');
+      card[key] = value;
+    }
+    card.sourceVerified = false;
+    card.humanReview = false;
+    card.importedSource = true;
+  }
   return card;
 }
 
@@ -158,6 +175,11 @@ function validateBackup(input) {
   const conversations = input.conversations.map(item => {
     if (!isObject(item) || !['coach', 'simulation', 'practice'].includes(item.mode) || !Array.isArray(item.messages) || item.messages.length > 1000 || !Number.isFinite(item.createdAt) || item.createdAt < 0 || item.createdAt > 8640000000000000) fail(400, 'Invalid conversation in backup.');
     const conversation = { id: cleanText(item.id, 'conversation id', 100), title: cleanText(item.title, 'conversation title', 160), mode: item.mode, createdAt: item.createdAt, messages: [] };
+    if (item.curriculumConditionId !== undefined) {
+      const conditionId = cleanText(item.curriculumConditionId, 'condition id', 100);
+      if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(conditionId)) fail(400, 'Invalid backup condition id.');
+      conversation.curriculumConditionId = conditionId;
+    }
     if (item.scenarioId) {
       if (!SCENARIOS.some(scenario => scenario.id === item.scenarioId)) fail(400, 'Unknown backup scenario.');
       conversation.scenarioId = item.scenarioId;
@@ -167,6 +189,14 @@ function validateBackup(input) {
       return { id: cleanText(message.id, 'message id', 100), role: message.role, content: cleanText(message.content, 'message content', 20000), createdAt: message.createdAt, ...(message.role === 'assistant' ? restoreMessageMetadata(message) : {}), ...(message.voiceTranscript === true ? { voiceTranscript: true } : {}), ...(message.offline === true ? { offline: true } : {}), ...(message.requestId !== undefined ? { requestId: cleanText(message.requestId, 'request id', 100) } : {}), ...(message.responseTo !== undefined ? { responseTo: cleanText(message.responseTo, 'response id', 100) } : {}) };
     });
     if (new Set(conversation.messages.map(message => message.id)).size !== conversation.messages.length) fail(400, 'Duplicate message IDs in backup.');
+    for (let index = 0; index < conversation.messages.length; index++) {
+      const inputMessage = item.messages[index];
+      for (const contextKey of ['studyConditionIds', 'studyRequestedConditionIds']) {
+        if (inputMessage[contextKey] === undefined) continue;
+        if (inputMessage.role !== 'user' || !Array.isArray(inputMessage[contextKey]) || inputMessage[contextKey].length > 3 || new Set(inputMessage[contextKey]).size !== inputMessage[contextKey].length || inputMessage[contextKey].some(conditionId => typeof conditionId !== 'string' || conditionId.length > 100 || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(conditionId))) fail(400, 'Invalid imported study-query context.');
+        conversation.messages[index][contextKey] = [...inputMessage[contextKey]];
+      }
+    }
     const requestIds = conversation.messages.filter(message => message.requestId !== undefined).map(message => message.requestId);
     if (new Set(requestIds).size !== requestIds.length) fail(400, 'Duplicate chat request IDs in backup.');
     const userIds = new Set(conversation.messages.filter(message => message.role === 'user').map(message => message.id));
@@ -203,11 +233,14 @@ function secureHeaders(res) {
 }
 
 /** A single-user, durable study app. Each deployment should have its own data directory. */
-export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = process.env, fetchImpl = globalThis.fetch, authenticateRequest, isActive = () => true, generateReply, generateDrafts } = {}) {
+export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = process.env, fetchImpl = globalThis.fetch, authenticateRequest, isActive = () => true, generateReply, generateDrafts, curriculum: suppliedCurriculum, curriculumDir = resolve(ROOT, 'content', 'conditions') } = {}) {
   const accessToken = (env.STUDY_ACCESS_TOKEN || '').trim();
   if (accessToken && accessToken.length < 24) throw new Error('STUDY_ACCESS_TOKEN must contain at least 24 characters.');
   const bindHost = env.HOST || '127.0.0.1';
   if (!isLoopback(bindHost) && !accessToken && !authenticateRequest) throw new Error('Set a strong STUDY_ACCESS_TOKEN before using a non-loopback HOST.');
+  // These unreviewed educational summaries never replace the approved commercial corpus.
+  const curriculumEnabled = !authenticateRequest && !generateReply;
+  const curriculum = curriculumEnabled ? suppliedCurriculum || loadStudyCurriculum({ contentDir: curriculumDir }) : null;
   const telemetry = createIngeniumTelemetry({ env, fetchImpl });
   let telemetryDrain = null;
   async function onCompletion(metadata) {
@@ -358,7 +391,11 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
         rateLimit(req, 'api', 240, 60000);
         guardOrigin(req);
         if (req.method === 'GET' && path === '/api/public-info') return json(res, 200, { mode: 'personal', privatePilot: true, publicRelease: false, operatorName: typeof env.PUBLIC_OPERATOR_NAME === 'string' ? env.PUBLIC_OPERATOR_NAME.trim().slice(0, 200) || null : null, operatorContact: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(env.PUBLIC_SUPPORT_EMAIL || '') ? env.PUBLIC_SUPPORT_EMAIL : null });
-        if (req.method === 'GET' && path === '/api/status') return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: modelSelectionEnabled || ai.configured ? ai.model : null, modelWarning: ai.unavailableReason || null, modelSelectionEnabled, voiceEnabled, voiceModel: voice?.model || null, prohibitedModels: ['Astra'] });
+        if (req.method === 'GET' && path === '/api/status') {
+          const studyList = curriculum?.list();
+          const curriculumSummary = studyList ? { conditions: studyList.total, questions: studyList.questionCount, currentConditions: studyList.currentCount, formalGuidelineConditions: studyList.conditions.filter(condition => condition.formalGuideline).length } : null;
+          return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: modelSelectionEnabled || ai.configured ? ai.model : null, modelWarning: ai.unavailableReason || null, modelSelectionEnabled, voiceEnabled, voiceModel: voice?.model || null, prohibitedModels: ['Astra'], curriculum: curriculumSummary });
+        }
         if (req.method === 'POST' && path === '/api/login') {
           rateLimit(req, 'login', 8, 15 * 60000);
           const input = await readJson(req);
@@ -375,6 +412,42 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           return json(res, 200, { authenticated: true }, { 'Set-Cookie': `studychat_session=${id}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${SESSION_MS / 1000}${secure ? '; Secure' : ''}` });
         }
         if (!session(req)) fail(401, 'Sign in to use your study workspace.');
+        if (path === '/api/curriculum' || path.startsWith('/api/curriculum/')) {
+          if (!curriculum) fail(403, 'This source-linked study library is available in the personal educational pilot. Commercial clinical review remains separate.');
+          if (req.method === 'GET' && path === '/api/curriculum') {
+            const q = cleanText(url.searchParams.get('q') || '', 'study search', 300, true);
+            const domain = cleanText(url.searchParams.get('domain') || '', 'blueprint domain', 40, true);
+            return json(res, 200, curriculum.list({ q, domain }));
+          }
+          const match = /^\/api\/curriculum\/([A-Za-z0-9][A-Za-z0-9._-]*)(?:\/(answer|card))?$/.exec(path);
+          const condition = match && curriculum.get(match[1]);
+          if (!condition) fail(404, 'Study condition not found.');
+          if (req.method === 'GET' && !match[2]) return json(res, 200, { condition, disclaimer: STUDY_DISCLAIMER });
+          if (req.method === 'POST' && ['answer', 'card'].includes(match[2])) {
+            if (!condition.current) fail(409, 'This condition is awaiting a current official-source check. Use the source links; grading and new cards are paused.');
+            const input = await readJson(req, 4096);
+            if (!isObject(input)) fail(400, 'Use a valid study question request.');
+            const questionId = cleanText(input.questionId, 'question id', 100);
+            if (match[2] === 'answer') {
+              const choiceId = cleanText(input.choiceId, 'choice id', 100);
+              const result = curriculum.answer(match[1], questionId, choiceId);
+              if (!result) fail(400, 'Choose an available question and answer choice.');
+              return json(res, 200, result);
+            }
+            const draft = curriculum.card(match[1], questionId);
+            if (!draft) fail(400, 'Choose an available study question.');
+            const prior = state.cards.find(card => card.id === draft.id);
+            if (prior) {
+              if (prior.front !== draft.front || prior.back !== draft.back || prior.sourceUrl !== draft.sourceUrl) fail(409, 'The previously saved card was edited. Review that card before saving the original again.');
+              return json(res, 200, { card: prior, cached: true });
+            }
+            if (state.cards.length >= 10000) fail(400, 'The card limit has been reached.');
+            const card = { ...createCard(draft, { id: draft.id }), sourceVerified: true, humanReview: false, curriculumConditionId: match[1], curriculumQuestionId: questionId, sourceCheckedAt: draft.checkedAt, sourceExpiresAt: draft.expiresAt };
+            state.cards.push(card); save();
+            return json(res, 201, { card, cached: false });
+          }
+          fail(405, 'Study route method not allowed.');
+        }
         if (req.method === 'POST' && path === '/api/voice/session') {
           if (!voice) fail(403, 'Voice is available only in the owner\'s OpenAI personal pilot.');
           if (voiceStopping || closed) fail(503, 'The study server is restarting. Try voice again afterward.');
@@ -386,7 +459,8 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           if (chatLocks.has(conversation.id)) fail(409, 'Finish the current reply or voice call before starting another.');
           chatLocks.add(conversation.id);
           try {
-            const result = await voice.createSession({ sdp: input.sdp, conversation, settings: state.settings, reviews: state.reviews, cards: state.cards });
+            const studyCondition = conversation.curriculumConditionId && curriculum?.get(conversation.curriculumConditionId);
+            const result = await voice.createSession({ sdp: input.sdp, conversation, settings: state.settings, reviews: state.reviews, cards: state.cards, studyContext: studyCondition?.current ? studyCondition : null });
             if (!session(req) || voiceStopping || closed) {
               await voice.closeSession(result.sessionId).catch(() => {});
               fail(!session(req) ? 401 : 503, !session(req) ? 'Sign in again before starting voice.' : 'The study server is restarting. Try voice again afterward.');
@@ -514,7 +588,8 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             state.cards.splice(index, 1); save();
             return json(res, 200, { deleted: true });
           }
-          state.cards[index] = { ...state.cards[index], ...fields };
+          const changedSourceText = ['front', 'back', 'topic', 'sourceTitle', 'sourceUrl'].some(key => fields[key] !== undefined && fields[key] !== state.cards[index][key]);
+          state.cards[index] = { ...state.cards[index], ...fields, ...(changedSourceText && state.cards[index].curriculumConditionId ? { sourceVerified: false, importedSource: true, humanReview: false } : {}) };
           save(); return json(res, 200, state.cards[index]);
         }
         if (req.method === 'POST' && path === '/api/reviews') {
@@ -543,7 +618,11 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           if (!isObject(input) || !['coach', 'simulation', 'practice'].includes(input.mode ?? 'coach')) fail(400, 'Choose a valid conversation mode.');
           const scenario = input.scenarioId && SCENARIOS.find(item => item.id === input.scenarioId);
           if (input.scenarioId && !scenario) fail(400, 'Choose a valid scenario.');
+          if (input.conditionId !== undefined && input.curriculumConditionId !== undefined && input.conditionId !== input.curriculumConditionId) fail(400, 'Use one consistent study condition.');
+          const conditionId = input.conditionId ?? input.curriculumConditionId;
+          if (conditionId !== undefined && (!curriculum || typeof conditionId !== 'string' || !curriculum.get(conditionId))) fail(400, 'Choose an available study condition.');
           const conversation = { id: randomUUID(), title: cleanText(input.title || scenario?.title || 'New coaching session', 'title', 160), mode: input.mode || 'coach', messages: [], createdAt: Date.now(), ...(scenario ? { scenarioId: scenario.id } : {}) };
+          if (conditionId !== undefined) conversation.curriculumConditionId = conditionId;
           state.conversations.push(conversation); save();
           return json(res, 201, conversation);
         }
@@ -560,26 +639,47 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           if (!isObject(input)) fail(400, 'Chat request must be an object.');
           const conversation = conversationFor(input.conversationId);
           const content = cleanText(input.content, 'message', 12000);
+          if (input.conditionIds !== undefined && (!Array.isArray(input.conditionIds) || input.conditionIds.length > 3 || new Set(input.conditionIds).size !== input.conditionIds.length || input.conditionIds.some(conditionId => typeof conditionId !== 'string' || !curriculum?.get(conditionId)))) fail(400, 'Choose at most three available study conditions.');
+          let conditionIds = input.conditionIds?.length ? input.conditionIds : conversation.curriculumConditionId ? [conversation.curriculumConditionId] : [];
           const requestId = input.requestId === undefined ? null : cleanText(input.requestId, 'request id', 100);
           if (requestId) {
             const priorUser = conversation.messages.find(message => message.role === 'user' && message.requestId === requestId);
             if (priorUser && priorUser.content !== content) fail(409, 'This request ID was already used for a different message.');
+            if (priorUser && JSON.stringify(priorUser.studyRequestedConditionIds || []) !== JSON.stringify(input.conditionIds || [])) fail(409, 'This request ID was already used with a different study condition.');
             const priorResponse = priorUser && conversation.messages.find(message => message.responseTo === priorUser.id);
             if (priorResponse) return json(res, 200, { message: priorResponse, conversation, offline: Boolean(priorResponse.offline) });
+            if (priorUser) conditionIds = priorUser.studyConditionIds || conditionIds;
           }
           if (chatLocks.has(conversation.id)) fail(409, 'A reply is already being generated for this conversation.');
           chatLocks.add(conversation.id);
           try {
             const last = conversation.messages.at(-1);
-            const user = last?.role === 'user' && last.content === content && (!requestId || last.requestId === requestId) ? last : { id: randomUUID(), role: 'user', content, createdAt: Date.now(), ...(requestId ? { requestId } : {}) };
+            const user = last?.role === 'user' && last.content === content && JSON.stringify(last.studyConditionIds || []) === JSON.stringify(conditionIds) && (!requestId || last.requestId === requestId) ? last : { id: randomUUID(), role: 'user', content, createdAt: Date.now(), ...(requestId ? { requestId } : {}), ...(conditionIds.length ? { studyConditionIds: [...conditionIds] } : {}), ...(input.conditionIds?.length ? { studyRequestedConditionIds: [...input.conditionIds] } : {}) };
             if (conversation.messages.length + (user === last ? 1 : 2) > 1000) fail(400, 'Start a new conversation to continue studying.');
             if (user !== last) { conversation.messages.push(user); save(); }
-            const generated = generateReply ? await generateReply({ conversation, settings: state.settings, reviews: state.reviews, cards: state.cards, requestId: requestId || user.id }) : null;
-            const completion = !generated && ai.configured ? await complete([{ role: 'system', content: buildSystemPrompt(conversation, state.settings, state.reviews, state.cards) }, ...conversation.messages.slice(-24).map(message => ({ role: message.role, content: message.content }))]) : null;
+            let generated = generateReply ? await generateReply({ conversation, settings: state.settings, reviews: state.reviews, cards: state.cards, requestId: requestId || user.id }) : null;
+            let completion = null;
+            const previousQueries = conversation.messages.filter(message => message.role === 'user' && message.id !== user.id).slice(-3).map(message => message.content);
+            const priorAssistant = conversation.messages.findLast(message => message.role === 'assistant');
+            const blockedFollowup = curriculum && isStudyFollowup(content) && priorAssistant?.unsupported === true;
+            if (!generated && blockedFollowup) generated = { content: STUDY_NO_EVIDENCE, citations: [], unsupported: true };
+            const evidence = !generated && curriculum ? curriculum.retrieve(content, { conditionIds, previousQueries }) : [];
+            if (!generated && evidence.length) {
+              if (ai.configured) {
+                completion = await complete([{ role: 'system', content: curriculum.prompt(evidence) }, { role: 'user', content }], { jsonMode: true });
+                try { generated = curriculum.render(JSON.parse(completion.content), evidence); }
+                catch { generated = { content: STUDY_NO_EVIDENCE, citations: [], unsupported: true }; }
+              } else generated = curriculum.render({ chunkIds: evidence.slice(0, 2).map(item => item.key), questionId: null, unsupported: false }, evidence);
+            } else if (!generated && curriculum && (conditionIds.length || needsStudyEvidence(content))) {
+              generated = { content: STUDY_NO_EVIDENCE, citations: [], unsupported: true };
+            }
+            if (!generated && ai.configured) completion = await complete([{ role: 'system', content: buildSystemPrompt(conversation, state.settings, state.reviews, state.cards) }, ...conversation.messages.slice(-24).map(message => ({ role: message.role, content: message.content }))]);
             const answer = generated ? generated.content : completion ? completion.content : offlineReply(conversation);
             if (typeof answer !== 'string' || !answer.trim() || answer.length > 20000) fail(502, 'The coach returned an unusable answer.');
-            const connected = Boolean(generateReply || ai.configured);
-            const message = { id: randomUUID(), role: 'assistant', content: answer, createdAt: Date.now(), responseTo: user.id, ...(completion?.metadata ? { ai: completion.metadata } : {}), ...(generated?.citations ? { citations: generated.citations } : {}), ...(generated?.unsupported ? { unsupported: true } : {}), ...(connected ? {} : { offline: true }) };
+            const connected = Boolean(generateReply || ai.configured || generated?.grounded || generated?.unsupported);
+            const studyMetadata = generated?.curriculum ? { grounded: true, curriculum: true, sourceVerified: true, humanReview: false, current: true, conditionIds: generated.conditionIds } : {};
+            if (generated?.curriculum && generated.conditionIds?.length === 1) conversation.curriculumConditionId = generated.conditionIds[0];
+            const message = { id: randomUUID(), role: 'assistant', content: answer, createdAt: Date.now(), responseTo: user.id, ...(completion?.metadata ? { ai: completion.metadata } : {}), ...(generated?.citations ? { citations: generated.citations } : {}), ...(generated?.unsupported ? { unsupported: true } : {}), ...studyMetadata, ...(connected ? {} : { offline: true }) };
             conversation.messages.push(message); save();
             return json(res, 200, { message, conversation, offline: !connected });
           } finally { chatLocks.delete(conversation.id); }
@@ -599,6 +699,16 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
               if (!Array.isArray(generated.cards) || generated.cards.length > 5) fail(502, 'The coach returned unusable card drafts.');
               return json(res, 200, { cards: generated.cards.map(item => ({ ...cardFields({ ...item, verified: false }), verified: false })), offline: false });
             } finally { chatLocks.delete(conversation.id); }
+          }
+          if (curriculum) {
+            const lastAssistant = conversation.messages.findLast(message => message.role === 'assistant' && message.curriculum && !message.importedEvidence);
+            const conditionIds = conversation.curriculumConditionId ? [conversation.curriculumConditionId] : lastAssistant?.conditionIds || [];
+            const currentConditions = conditionIds.slice(0, 3).map(conditionId => curriculum.get(conditionId)).filter(condition => condition?.current);
+            if (currentConditions.length) {
+              const cards = currentConditions.flatMap(condition => condition.questions.map(question => curriculum.card(condition.id, question.id))).slice(0, 5).map(({ id, current, checkedAt, expiresAt, ...draft }) => ({ ...draft, sourceCheckedAt: checkedAt, sourceExpiresAt: expiresAt }));
+              return json(res, 200, { cards, offline: false, sourceLinked: true, disclaimer: STUDY_DISCLAIMER });
+            }
+            if (conditionIds.length) return json(res, 200, { cards: [], offline: false, notice: 'This condition needs a current official-source check before creating cards.' });
           }
           if (!ai.configured) return json(res, 200, { cards: offlineDrafts(), offline: true });
           chatLocks.add(conversation.id);
