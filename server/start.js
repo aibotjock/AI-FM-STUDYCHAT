@@ -11,9 +11,7 @@ try {
     if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT must be from 1 to 65535.');
     const host = process.env.HOST || '127.0.0.1';
     const server = createApp();
-    const { createAiProvider } = await import('./ai-provider.js');
-    const provider = createAiProvider();
-    server.listen(port, host, () => console.log(`Family Medicine Study Coach ready on ${host}:${port}. ${provider.label} ${provider.configured ? `configured (${provider.model})` : 'not configured'}.`));
+    server.listen(port, host, () => console.log(`Family Medicine Study Coach ready on ${host}:${port}. Check Study preferences for the active AI model.`));
     const shutdown = () => server.close(() => process.exit(0));
     process.on('SIGTERM', shutdown);
     process.on('SIGINT', shutdown);

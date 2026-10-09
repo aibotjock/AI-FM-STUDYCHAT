@@ -1,0 +1,95 @@
+{
+  "runAt": "2026-10-09T04:58:18.543Z",
+  "scope": "New sign-in and model-selection mobile flows only; prior 16 passed checks not repeated",
+  "viewport": {
+    "width": 360,
+    "height": 800
+  },
+  "results": [
+    {
+      "name": "sign-in help, show/hide aria state and incorrect-code feedback",
+      "pass": true
+    },
+    {
+      "name": "pasted whitespace code signs in, session cookie survives reload",
+      "pass": true
+    },
+    {
+      "name": "model picker exposes account models, excludes Astra and closes cleanly",
+      "pass": true
+    },
+    {
+      "name": "model selection error is visible and successful selection updates status",
+      "pass": true
+    },
+    {
+      "name": "Coach sends selected model and displays returned model, usage and cost metadata",
+      "pass": true
+    },
+    {
+      "name": "model connection check records READY and reuses passed result without inference",
+      "pass": true
+    },
+    {
+      "name": "model results download contains provenance, token costs and nonclinical limits",
+      "pass": true
+    },
+    {
+      "name": "Responses-only Pro model is selected and tested with the Responses protocol",
+      "pass": true
+    },
+    {
+      "name": "failed model connection displays error and re-enables the button",
+      "pass": true
+    },
+    {
+      "name": "logout locks workspace, clears cookie and survives reload",
+      "pass": true
+    },
+    {
+      "name": "all new mobile views have no horizontal overflow or JavaScript errors",
+      "pass": true
+    }
+  ],
+  "pageErrors": [],
+  "overflows": [],
+  "mockProviderRequests": [
+    {
+      "method": "GET",
+      "endpoint": "models"
+    },
+    {
+      "method": "POST",
+      "endpoint": "chat",
+      "model": "gpt-6-luna",
+      "isTest": false,
+      "store": false,
+      "maxOutputTokens": 1200
+    },
+    {
+      "method": "POST",
+      "endpoint": "chat",
+      "model": "gpt-6-luna",
+      "isTest": true,
+      "store": false,
+      "maxOutputTokens": 512
+    },
+    {
+      "method": "POST",
+      "endpoint": "responses",
+      "model": "gpt-5.4-pro",
+      "isTest": true,
+      "store": false,
+      "maxOutputTokens": 512
+    },
+    {
+      "method": "POST",
+      "endpoint": "chat",
+      "model": "gpt-4.1-mini",
+      "isTest": true,
+      "store": false,
+      "maxOutputTokens": 512
+    }
+  ],
+  "paidProviderCalls": 0
+}

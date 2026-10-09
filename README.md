@@ -4,7 +4,7 @@
 
 The planned price is **US$4.99/month after a three-day trial for eligible new subscribers**. Google Play owns trial eligibility and billing; this app never starts a local trial timer or unlocks access from a client assertion. Clients use our server's AI integration without supplying their own API keys.
 
-See [release plan](docs/RELEASE_PLAN.md), [security status](docs/SECURITY.md), [clinical content requirements](docs/CLINICAL_CONTENT.md), [subscription economics](docs/ECONOMICS.md), [phone trial](docs/PHONE_TEST.md), and [Android preparation](docs/ANDROID_RELEASE.md).
+See [release plan](docs/RELEASE_PLAN.md), [security status](docs/SECURITY.md), [clinical content requirements](docs/CLINICAL_CONTENT.md), [subscription economics](docs/ECONOMICS.md), [phone trial](docs/PHONE_TEST.md), [validation status](docs/VALIDATION_STATUS.md), and [Android preparation](docs/ANDROID_RELEASE.md).
 
 ## Commercial private-pilot preparation
 
@@ -31,11 +31,11 @@ npm start
 
 Open `http://127.0.0.1:3000`. Without an API key, the app explicitly offers guided reasoning worksheets, card reviews, and manual cards. It does not pretend to generate AI answers.
 
-For the requested Claude pilot, set `AI_PROVIDER=anthropic`, `CLAUDE_MODEL=claude-haiku-5-5`, and `CLAUDE_API_KEY` in host secrets (or local `.env`), then restart. To use OpenAI, select `AI_PROVIDER=openai` and set `OPENAI_API_KEY`; `OPENAI_MODEL` controls personal mode and `COMMERCIAL_OPENAI_MODEL` controls commercial mode. The key stays on the server. Consumer ChatGPT or Claude access does not by itself configure this app's API credentials. Provider usage is billed to the operator's API account. There is no automatic cross-provider fallback or duplicate paid request.
+The current pilot uses **OpenAI only**; Claude remains inactive. Set `AI_PROVIDER=openai` and `OPENAI_API_KEY` in host secrets or local `.env`, then restart. `OPENAI_MODEL` sets the initial personal model; `COMMERCIAL_OPENAI_MODEL` controls commercial mode separately. The key stays on the server and is never used as the app's study access code. A ChatGPT subscription does not configure API credentials. Usage is billed to the operator's API account. There is no automatic retry or provider fallback. **Astra is prohibited at all times, with no exceptions.** See [AI setup and model controls](docs/AI_PROVIDERS.md).
 
 ## Use on your phone
 
-**Private phone pilot:** open https://family-medicine-phone-test-private-test.up.railway.app and sign in with the `STUDY_ACCESS_TOKEN` from the owner's Railway service Variables tab. Open **Coach**. Claude Haiku 5.5 is selected; add `CLAUDE_API_KEY` in host secrets for AI replies. On Android Chrome, choose **Add to Home screen** or **Install app**. On iPhone Safari, use **Share → Add to Home Screen**. See [provider setup](docs/AI_PROVIDERS.md) and [hosting status](docs/HOSTING.md).
+**Private phone pilot:** open https://family-medicine-phone-test-private-test.up.railway.app and paste the `STUDY_ACCESS_TOKEN` value from Railway → `private-test` → `family-medicine-phone-test` → **Variables** into **Study access code**. Open **Coach**. The owner has already configured `OPENAI_API_KEY` on Railway; live status confirms its presence, but successful live sign-in and inference remain unverified. Never enter that API key in the sign-in form. On Android Chrome, choose **Add to Home screen** or **Install app**. On iPhone Safari, use **Share → Add to Home Screen**. See [hosting status](docs/HOSTING.md) and the [phone checklist](docs/PHONE_TEST.md).
 
 **On your home Wi-Fi:** run the app on a computer on the same network, set `HOST=0.0.0.0` and a strong `STUDY_ACCESS_TOKEN` in `.env`, and open `http://<computer-LAN-IP>:3000` on your phone. Allow the port through the computer's firewall only on your private network. The computer must remain running. HTTPS is required for full home-screen installation and browser microphone support; phone keyboard dictation can still be used.
 
@@ -50,7 +50,7 @@ Keep the value in `.env` or host secrets and use it on the app's sign-in screen.
 ### Railway deployment
 
 1. Connect `aibotjock/AI-FM-STUDYCHAT` to a Railway service.
-2. Set `HOST=0.0.0.0`, `STUDY_ACCESS_TOKEN`, and the selected provider's key in service variables. For Claude use `AI_PROVIDER=anthropic` and `CLAUDE_API_KEY`. Leave `PORT` to the platform.
+2. Set `HOST=0.0.0.0`, `STUDY_ACCESS_TOKEN`, `AI_PROVIDER=openai`, and `OPENAI_API_KEY` in service variables. Keep the study access code and API key separate. Leave `PORT` to the platform.
 3. Attach a **persistent volume at `/app/data`** and set `DATA_DIR=/app/data`. The volume is necessary to preserve reviews and conversations across redeployments.
 4. Generate an HTTPS service domain, wait for a healthy deployment, and open that URL on your phone.
 5. Sign in and add the app to the home screen.
@@ -65,6 +65,8 @@ A private Railway test project, service and 500 MB volume are running. A bounded
 - **Cards:** create, search, edit, suspend, and delete cards. AI-generated cards appear as drafts for review and approval; they are never automatically treated as verified medical facts. Source titles and links are editable. You can create a card manually from a coach answer.
 - **Progress:** review counts, study activity, streaks based on actual reviews, difficult topics, and self-rated recall. Six competency ratings are learner reflections, not official ACGME milestone evaluations.
 - **Settings:** change focus, coaching style, session length, new-card limit, timezone, and voice controls. Export and restore JSON backups, or import a JSON card list with `front` and `back` fields.
+
+In the owner's personal workspace, **Study preferences → Choose or test a model** lets you select a supported OpenAI text model, save that choice, run a bounded paid connection check, and export model results. The catalog matches documented conversational models and verified snapshots to the account model list, excludes retired or unsupported IDs, and labels unconfirmed lists when account lookup is unavailable. Astra is blocked without exceptions. Completed connection checks are reused; their token usage, latency, model identity, and estimated cost do not establish clinical accuracy. Anyone with the shared study access code has these owner controls. Subscriber model selection is disabled; Ingenium routing is not connected. See [model controls and limits](docs/AI_PROVIDERS.md).
 
 Microphone dictation and reading answers aloud use supported browser speech APIs. Dictation is browser-dependent and may use the browser vendor's service. Text chat and your phone's keyboard remain available. There is no separate Realtime voice-model connection or audio-storage feature.
 
@@ -107,9 +109,9 @@ npm run check
 npm test
 ```
 
-Tests cover review timing and daily limits, timezone boundaries and DST streaks, auth and request guards, durable data, atomic backups, chat retries and concurrency, and mocked AI-provider success/failure. Live provider access requires a configured API key and is a separate verification step.
+Run the affected or previously unverified checks when changing the app. Avoid repeating a passing check unless a relevant change or failure gives a reason. Tests cover review timing and daily limits, timezone boundaries and DST streaks, auth and request guards, durable data, atomic backups, chat retries and concurrency, and mocked AI-provider success/failure. Live authenticated provider access is a separate verification step.
 
-JavaScript/asset, guideline-schema, billing-bridge and automated integration checks are included. Fresh mobile browser checks at 360 × 800 passed the personal study workflow and commercial account, pilot, subscription-details and deletion flows. Those checks use local test servers and synthetic data. The pre-provider baseline passed 57 tests with one environment-dependent privilege-drop test skipped; hosted UID/GID 1000 was subsequently observed. Claude support passed five new provider tests, three new commercial-provider tests and two affected personal OpenAI tests. Unchanged suites were not repeated for this provider addition. A physical phone, live provider connection, actual Play purchase, Kotlin compilation and signed AAB remain unverified. Test microphone permissions and home-screen installation on the real HTTPS URL.
+JavaScript/asset, guideline-schema, billing-bridge and automated integration checks are included. Earlier mobile browser checks at 360 × 800 passed the personal study workflow and commercial account, pilot, subscription-details and deletion flows using local servers and synthetic data. Hosted UID/GID 1000 and the configured OpenAI key were subsequently observed. Those checks do not prove a live authenticated conversation or clinical accuracy. See [VALIDATION_STATUS.md](docs/VALIDATION_STATUS.md) for current results and remaining checks, including the physical phone, real Play purchase, Kotlin compilation, and signed AAB. Test microphone permissions and home-screen installation on the real HTTPS URL.
 
 ## Files
 
@@ -119,4 +121,4 @@ JavaScript/asset, guideline-schema, billing-bridge and automated integration che
 - `tests/`: deterministic scheduler and integration tests
 - `Dockerfile`, `compose.yaml`, `railway.json`: deployment options
 
-Official API references: https://platform.claude.com/docs/en/api/messages/create, https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide, and https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create.
+Official API references: https://developers.openai.com/api/reference/resources/models/methods/list, https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create, and https://developers.openai.com/api/reference/resources/responses/methods/create.

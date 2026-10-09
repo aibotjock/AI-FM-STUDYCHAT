@@ -55,6 +55,9 @@ let draftCards = [];
 let draftsOffline = false;
 let formBusy = false;
 let isLoaded = false;
+let availableModels = [];
+let lastModelTest = null;
+let dialogRevision = 0;
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 function notify(message) {
@@ -81,6 +84,13 @@ async function refreshState() {
   state.reviews = Array.isArray(data.reviews) ? data.reviews : [];
   state.conversations = Array.isArray(data.conversations) ? data.conversations.sort((a,b) => (b.messages?.at(-1)?.createdAt || b.createdAt || 0) - (a.messages?.at(-1)?.createdAt || a.createdAt || 0)) : [];
   state.settings = { ...state.settings, ...data.settings };
+  if (reviewSession) {
+    const previousCardId = reviewSession.queue[0];
+    const activeCardIds = new Set(state.cards.filter(card => !card.suspended).map(card => card.id));
+    reviewSession.queue = reviewSession.queue.filter(id => activeCardIds.has(id));
+    reviewSession.total = reviewSession.completed + reviewSession.queue.length;
+    if (reviewSession.queue[0] !== previousCardId) answerVisible = false;
+  }
   if (!currentConversationId && state.conversations.length) currentConversationId = state.conversations[0].id;
   if (!state.conversations.some(item => item.id === currentConversationId)) currentConversationId = null;
   isLoaded = true;
@@ -171,7 +181,7 @@ function renderCoach() {
 
 function renderMessage(message) {
   const role = message.role === 'user' ? 'user' : 'assistant';
-  return `<div class="message ${role}" data-message-id="${esc(message.id)}"><div class="avatar">${role === 'user' ? 'YOU' : '✦'}</div><div class="message-body"><div class="message-label">${role === 'user' ? 'You' : 'Study coach'}</div><div class="message-text">${esc(message.content)}</div>${role === 'assistant' ? renderAnswerEvidence(message) : ''}${role === 'assistant' ? `<div class="message-actions">${'speechSynthesis' in window ? `<button data-action="read-message" data-id="${esc(message.id)}">Read aloud</button>` : ''}<button data-action="card-from-message" data-id="${esc(message.id)}">Save as a card</button><button data-action="copy-message" data-id="${esc(message.id)}">Copy</button>${status.mode === 'commercial' ? `<button data-action="report-message" data-id="${esc(message.id)}">Report answer</button>` : ''}</div>` : ''}</div></div>`;
+  return `<div class="message ${role}" data-message-id="${esc(message.id)}"><div class="avatar">${role === 'user' ? 'YOU' : '✦'}</div><div class="message-body"><div class="message-label">${role === 'user' ? 'You' : 'Study coach'}</div><div class="message-text">${esc(message.content)}</div>${role === 'assistant' ? renderAnswerEvidence(message) + renderModelMetadata(message) : ''}${role === 'assistant' ? `<div class="message-actions">${'speechSynthesis' in window ? `<button data-action="read-message" data-id="${esc(message.id)}">Read aloud</button>` : ''}<button data-action="card-from-message" data-id="${esc(message.id)}">Save as a card</button><button data-action="copy-message" data-id="${esc(message.id)}">Copy</button>${status.mode === 'commercial' ? `<button data-action="report-message" data-id="${esc(message.id)}">Report answer</button>` : ''}</div>` : ''}</div></div>`;
 }
 
 function beginReview() {
@@ -230,6 +240,7 @@ function renderProgress() {
 }
 
 function dialog(title, subtitle, body, footer = '') {
+  dialogRevision++;
   $('#dialog-content').innerHTML = `<div class="dialog-head"><div><h2 id="dialog-title">${esc(title)}</h2><p>${esc(subtitle)}</p></div><button class="icon-button" data-action="close-dialog" aria-label="Close dialog">${icon('close')}</button></div><div class="dialog-body">${body}</div>${footer ? `<div class="dialog-footer">${footer}</div>` : ''}`;
   if (!$('#app-dialog').open) $('#app-dialog').showModal();
 }
@@ -237,7 +248,54 @@ function closeDialog() { if (formBusy) return; $('#app-dialog').close(); }
 
 function settingsDialog() {
   const s = state.settings;
-  dialog('A study rhythm that fits.', 'Adjust your coach and your daily learning load.', `<form id="settings-form"><div class="form-field"><label for="study-focus">Study focus</label><select id="study-focus" name="focus">${[['clinical-reasoning','Clinical reasoning & synthesis'],['exam','Exam preparation'],['balanced','Balanced learning']].map(([value,label]) => `<option value="${value}" ${s.focus === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-field"><label for="coach-style">Coaching style</label><select id="coach-style" name="coachStyle">${[['socratic','Socratic: one question at a time'],['teach-quiz','Explain first, then quiz me'],['direct','Give clear, direct explanations']].map(([value,label]) => `<option value="${value}" ${s.coachStyle === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-row"><div class="form-field"><label for="daily-minutes">Minutes per day</label><input id="daily-minutes" name="dailyMinutes" type="number" min="5" max="120" required value="${s.dailyMinutes}"></div><div class="form-field"><label for="new-limit">New cards per day</label><input id="new-limit" name="newCardsPerDay" type="number" min="0" max="50" required value="${s.newCardsPerDay}"></div></div><div class="form-field"><label for="study-timezone">Study timezone</label><input id="study-timezone" name="timeZone" value="${esc(s.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone)}" required><small>Used for daily limits and streaks. Example: America/New_York.</small></div><div class="notice info">${status.aiConfigured ? `AI coaching is configured with ${esc(status.provider || 'your selected provider')}${status.model ? ` (${esc(status.model)})` : ''}. ${status.mode === 'commercial' ? 'Answer sources and review dates appear when available.' : 'Provider access is managed by the app owner.'}` : status.mode === 'commercial' ? 'AI coaching is being prepared by the app owner. Cards and reviews are available while the app is tested.' : 'Guided practice is available now. Configure an AI provider in your host settings to enable conversational coaching.'}</div><div id="settings-error" class="form-error" role="alert"></div></form><div class="form-section"><h3>Take your learning with you</h3><div class="inline-actions"><button class="button secondary" data-action="export">Export backup</button><button class="button secondary" data-action="import-backup">Restore backup</button></div><p class="footer-note" style="margin-bottom:0">Backups include your cards, review history, conversations, and preferences. Keep the file private.</p></div><div class="form-section"><h3>Use it from your phone</h3><p class="subtitle" style="font-size:12px">Open your hosted app’s HTTPS address. On Android, choose “Install app” or “Add to Home screen” in your browser menu. On iPhone, open Safari, tap Share, then “Add to Home Screen”.</p><p class="footer-note" style="margin:0">${voiceDictationSupported() ? 'The microphone button uses your browser’s speech recognition service. Review dictated text before sending.' : 'Use your phone keyboard’s microphone to dictate. Read-aloud is available where your browser supports it.'} Chat and saved progress require a connection.</p></div>${status.mode === 'commercial' ? commercialSettings() : ''}${status.authRequired ? '<div class="form-section"><button class="button secondary" data-action="logout">Lock study space</button></div>' : ''}`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button type="submit" form="settings-form" class="button">Save preferences</button>');
+  dialog('A study rhythm that fits.', 'Adjust your coach and your daily learning load.', `<form id="settings-form"><div class="form-field"><label for="study-focus">Study focus</label><select id="study-focus" name="focus">${[['clinical-reasoning','Clinical reasoning & synthesis'],['exam','Exam preparation'],['balanced','Balanced learning']].map(([value,label]) => `<option value="${value}" ${s.focus === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-field"><label for="coach-style">Coaching style</label><select id="coach-style" name="coachStyle">${[['socratic','Socratic: one question at a time'],['teach-quiz','Explain first, then quiz me'],['direct','Give clear, direct explanations']].map(([value,label]) => `<option value="${value}" ${s.coachStyle === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-row"><div class="form-field"><label for="daily-minutes">Minutes per day</label><input id="daily-minutes" name="dailyMinutes" type="number" min="5" max="120" required value="${s.dailyMinutes}"></div><div class="form-field"><label for="new-limit">New cards per day</label><input id="new-limit" name="newCardsPerDay" type="number" min="0" max="50" required value="${s.newCardsPerDay}"></div></div><div class="form-field"><label for="study-timezone">Study timezone</label><input id="study-timezone" name="timeZone" value="${esc(s.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone)}" required><small>Used for daily limits and streaks. Example: America/New_York.</small></div><div class="notice info">${status.aiConfigured ? `AI coaching is configured with ${esc(status.provider || 'your selected provider')}${status.model ? ` (${esc(status.model)})` : ''}. ${status.mode === 'commercial' ? 'Answer sources and review dates appear when available.' : 'Provider access is managed by the app owner.'}` : status.mode === 'commercial' ? 'AI coaching is being prepared by the app owner. Cards and reviews are available while the app is tested.' : 'Guided practice is available now. Configure an AI provider in your host settings to enable conversational coaching.'}</div><div id="settings-error" class="form-error" role="alert"></div></form>${status.modelSelectionEnabled ? modelSettingsHtml() : ''}<div class="form-section"><h3>Take your learning with you</h3><div class="inline-actions"><button class="button secondary" data-action="export">Export backup</button><button class="button secondary" data-action="import-backup">Restore backup</button></div><p class="footer-note" style="margin-bottom:0">Backups include your cards, review history, conversations, and preferences. Keep the file private.</p></div><div class="form-section"><h3>Use it from your phone</h3><p class="subtitle" style="font-size:12px">Open your hosted app’s HTTPS address. On Android, choose “Install app” or “Add to Home screen” in your browser menu. On iPhone, open Safari, tap Share, then “Add to Home Screen”.</p><p class="footer-note" style="margin:0">${voiceDictationSupported() ? 'The microphone button uses your browser’s speech recognition service. Review dictated text before sending.' : 'Use your phone keyboard’s microphone to dictate. Read-aloud is available where your browser supports it.'} Chat and saved progress require a connection.</p></div>${status.mode === 'commercial' ? commercialSettings() : ''}${status.authRequired ? '<div class="form-section"><button class="button secondary" data-action="logout">Lock study space</button></div>' : ''}`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button type="submit" form="settings-form" class="button">Save preferences</button>');
+}
+
+function modelSettingsHtml() {
+  return `<div class="form-section"><h3>Your OpenAI model</h3><p class="subtitle model-id">${esc(status.model || 'OpenAI is not connected yet')}</p>${status.modelWarning ? `<div class="notice error">${esc(status.modelWarning)}</div>` : ''}<button class="button secondary" data-action="models">Choose or test a model</button><p class="footer-note">Owner controls only. Astra is prohibited. Model checks do not validate clinical accuracy.</p></div>`;
+}
+function modelProfileHtml(id) {
+  const model=availableModels.find(item=>item.id===id);
+  if(!model) return '<p class="footer-note">No supported account models are available.</p>';
+  return `<p class="footer-note">${model.rates ? `Standard price per million tokens: $${esc(model.rates.inputUsdPerMillion)} input / $${esc(model.rates.outputUsdPerMillion)} output. Cache discounts are excluded from estimates.` : 'The verified price for this snapshot is unavailable; cost will be shown as unknown.'} ${model.api==='responses' ? 'This Pro model uses Responses and may take up to three minutes. A capped answer can be incomplete.' : 'This model uses text Chat Completions.'}${model.shutdownDate ? ` Announced shutdown: ${esc(new Date(model.shutdownDate).toLocaleDateString())}.` : ''}</p>`;
+}
+function modelTestHtml() {
+  if(!lastModelTest || lastModelTest.requestedModel!==status.model) return '';
+  return `<div class="notice info model-test-result"><strong>${lastModelTest.cached ? 'Saved connection result' : 'Connection result'}: ${lastModelTest.connectionPassed ? 'connected' : 'unconfirmed'}</strong><p>${lastModelTest.instructionPassed ? 'The model returned the expected READY response.' : 'The model responded, but did not follow the expected READY instruction.'}</p><p>${esc(lastModelTest.returnedModel || lastModelTest.requestedModel)} · ${Number(lastModelTest.latencyMs/1000).toFixed(2)} s · ${lastModelTest.estimatedCostUsd===null ? 'Cost unknown' : `Estimated $${Number(lastModelTest.estimatedCostUsd).toFixed(6)}`}</p><small>${esc(lastModelTest.usage?.prompt_tokens ?? '?')} input / ${esc(lastModelTest.usage?.completion_tokens ?? '?')} billed output tokens. Clinical accuracy was not evaluated.</small></div>`;
+}
+async function modelDialog() {
+  if(!status.modelSelectionEnabled || !isLoaded) return;
+  dialog('Choose your study model.', 'Compare supported OpenAI text models available to your API account.', '<div class="loading-line"><span class="spinner"></span>Loading model choices</div>');
+  const revision = dialogRevision;
+  try {
+    const catalog=await api('/api/models');
+    if(revision!==dialogRevision || !$('#app-dialog').open) return;
+    availableModels=catalog.models || [];
+    const selected=availableModels.some(item=>item.id===status.model) ? status.model : availableModels[0]?.id;
+    dialog('Choose your study model.', 'Use a model, then test its connection or study with it in Coach.', `${catalog.warning ? `<div class="notice info">${esc(catalog.warning)}</div>` : ''}<form id="model-form"><div class="form-field"><label for="openai-model">OpenAI text model</label><select id="openai-model" name="model" required>${availableModels.map(item=>`<option value="${esc(item.id)}" ${item.id===selected ? 'selected' : ''}>${esc(item.label)}${item.deprecated ? ' · retiring' : ''}</option>`).join('')}</select></div><div id="model-profile">${modelProfileHtml(selected)}</div><div id="model-error" class="form-error" role="alert"></div></form><div class="inline-actions"><button class="button secondary" id="test-model-button" data-action="model-test" ${!status.aiConfigured || selected!==status.model ? 'disabled' : ''}>Test model connection</button><button class="button secondary" data-action="model-results-export">Export model results</button></div><div id="model-test-result">${modelTestHtml()}</div><p class="footer-note">The connection check is a paid API call capped at 512 billed output tokens. Passed checks are reused; it does not test medicine. Coach conversations and card drafts make their own calls. Astra and unverified model aliases are blocked. Ingenium routing is not connected yet.</p>`, '<button class="button secondary" data-action="close-dialog">Close</button><button class="button" type="submit" form="model-form">Use selected model</button>');
+  } catch(error) { if(revision===dialogRevision && $('#app-dialog').open) dialog('Model choices could not load.', 'Your study data is still saved.', `<div class="notice error">${esc(error.message)}</div>`, '<button class="button secondary" data-action="close-dialog">Close</button>'); }
+}
+async function testSelectedModel(button) {
+  if($('#openai-model')?.value!==status.model) return notify('Use the selected model before testing it.');
+  button.disabled=true;
+  const revision=dialogRevision, errorField=$('#model-error'), resultField=$('#model-test-result');
+  errorField.textContent='';
+  try {
+    lastModelTest=await mutate('/api/model-test','POST',{requestId:crypto.randomUUID()});
+    if(revision===dialogRevision && resultField.isConnected && $('#app-dialog').open) resultField.innerHTML=modelTestHtml();
+  } catch(error) { if(revision===dialogRevision && errorField.isConnected && $('#app-dialog').open) errorField.textContent=error.message; }
+  finally { if(button.isConnected) button.disabled=false; }
+}
+async function exportModelResults() {
+  const results=await api('/api/model-results');
+  const url=URL.createObjectURL(new Blob([JSON.stringify(results,null,2)],{type:'application/json'}));
+  const link=document.createElement('a'); link.href=url; link.download='fm-study-model-results.json'; link.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000); notify('Your model test results are ready.');
+}
+function renderModelMetadata(message) {
+  const metadata=message.ai;
+  if(!metadata) return '';
+  return `<small class="model-metadata">${metadata.imported ? 'Imported model record · ' : ''}${esc(metadata.returnedModel || metadata.requestedModel)} · ${Number(metadata.latencyMs/1000).toFixed(1)} s · ${metadata.estimatedCostUsd===null ? 'Cost unknown' : `Estimated $${Number(metadata.estimatedCostUsd).toFixed(6)}`}${metadata.usage ? ` · ${esc(metadata.usage.prompt_tokens)} input / ${esc(metadata.usage.completion_tokens)} billed output tokens` : ''}</small>`;
 }
 
 function cardDialog(card = null, preset = {}) {
@@ -392,7 +450,7 @@ function importBackupDialog() {
 function renderLogin() {
   renderNav();
   if (status.mode === 'commercial') return renderAccountLogin();
-  $('#main').innerHTML = `<section class="card auth-card"><span class="eyebrow">YOUR PRIVATE STUDY SPACE</span><h1>Welcome back.</h1><p class="subtitle">Unlock your coach, recall cards, and learning history.</p><form id="login-form"><div class="form-field"><label for="access-token">App access token</label><input id="access-token" name="token" type="password" autocomplete="current-password" required placeholder="Enter your access token"></div><div id="login-error" class="form-error" role="alert"></div><button class="button full" type="submit">Open study space ${icon('arrow')}</button></form><p class="signin-note">Use the access token configured by your app’s owner. Your browser keeps a secure session after you unlock.</p></section>`;
+  $('#main').innerHTML = `<section class="card auth-card"><span class="eyebrow">YOUR PRIVATE STUDY SPACE</span><h1>Welcome back.</h1><p class="subtitle">Unlock your coach, recall cards, and learning history.</p><form id="login-form"><div class="form-field"><label for="access-token">Study access code</label><input id="access-token" name="token" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" required placeholder="Paste your STUDY_ACCESS_TOKEN value"><button type="button" class="text-button" data-action="show-access-code" aria-controls="access-token" aria-pressed="false">Show code</button></div><div id="login-error" class="form-error" role="alert"></div><button class="button full" type="submit">Open study space ${icon('arrow')}</button></form><p class="signin-note">Copy the value of STUDY_ACCESS_TOKEN from Railway → private-test → family-medicine-phone-test → Variables. This study code is separate from OPENAI_API_KEY. Your browser keeps a secure session after you unlock.</p></section>`;
 }
 
 function canChat() { return status.mode !== 'commercial' || (status.authenticated && status.entitlement?.active === true && status.aiConfigured === true); }
@@ -407,7 +465,7 @@ function renderAnswerEvidence(message) {
     const reviewed=source.reviewedAt ? new Date(source.reviewedAt).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}) : '';
     return `<li>${title}<small>${source.edition ? `Edition: ${esc(source.edition)}` : ''}${source.edition && reviewed ? ' · ' : ''}${reviewed ? `Reviewed ${esc(reviewed)}` : ''}</small></li>`;
   }).join('');
-  return `${message.unsupported === true ? '<div class="answer-abstention">Verification needed: reviewed teaching evidence did not support an answer to this question.</div>' : ''}${sourceList ? `<details class="answer-sources"><summary>${sources.length === 1 ? 'Reviewed teaching source' : `${sources.length} reviewed teaching sources`}</summary><ul>${sourceList}</ul><p>Reviewed excerpts support this teaching response; they are not a complete guideline or patient-specific advice.</p></details>` : ''}`;
+  return `${message.unsupported === true ? '<div class="answer-abstention">Verification needed: reviewed teaching evidence did not support an answer to this question.</div>' : ''}${sourceList ? `<details class="answer-sources"><summary>${sources.length === 1 ? message.importedEvidence ? 'Imported teaching reference' : 'Reviewed teaching source' : message.importedEvidence ? `${sources.length} imported teaching references` : `${sources.length} reviewed teaching sources`}</summary><ul>${sourceList}</ul><p>${message.importedEvidence ? 'These references came from an imported backup and have not been reverified against the current corpus.' : 'Reviewed excerpts support this teaching response; they are not a complete guideline or patient-specific advice.'}</p></details>` : ''}`;
 }
 
 function renderAccountLogin() {
@@ -529,6 +587,10 @@ async function handleAction(button) {
   switch(action) {
     case 'navigate': return navigate(button.dataset.screen);
     case 'settings': if (isLoaded) settingsDialog(); return;
+    case 'models': return modelDialog();
+    case 'model-test': return testSelectedModel(button);
+    case 'model-results-export': return exportModelResults();
+    case 'show-access-code': { const input=$('#access-token'); const visible=input.type==='password'; input.type=visible?'text':'password'; button.textContent=visible?'Hide code':'Show code'; button.setAttribute('aria-pressed',String(visible)); return; }
     case 'close-dialog': return closeDialog();
     case 'start-review': beginReview(); return navigate('review');
     case 'reload-review': await refreshState(); beginReview(); return render();
@@ -580,7 +642,12 @@ document.addEventListener('submit', async event => {
   if(submit) submit.disabled=true;
   let errorId;
   try {
-    if (form.id === 'account-form') {
+    if (form.id === 'model-form') {
+      errorId='model-error';
+      await mutate('/api/model','PUT',{model:data.get('model')});
+      status=await api('/api/status');
+      await modelDialog(); renderNav(); notify('Your OpenAI study model is selected.');
+    } else if (form.id === 'account-form') {
       errorId = 'account-error';
       await mutate(accountFormMode === 'register' ? '/api/register' : '/api/login', 'POST', { email: data.get('email').trim().toLowerCase(), password: data.get('password'), ...(accountFormMode === 'register' ? { inviteToken: data.get('inviteToken') || '' } : {}) });
       status = await api('/api/status'); currentConversationId = null; reviewSession = null;
@@ -597,7 +664,7 @@ document.addEventListener('submit', async event => {
       status=await api('/api/status'); accountFormMode='login';renderLogin();notify('Your account and saved study content were deleted.');
     } else if(form.id==='login-form') {
       errorId='login-error';
-      await mutate('/api/login','POST',{token:data.get('token')});
+      await mutate('/api/login','POST',{token:data.get('token').trim()});
       status=await api('/api/status');
       await refreshState();render();
     } else if(form.id==='settings-form') {
@@ -629,7 +696,7 @@ document.addEventListener('submit', async event => {
       errorId='restore-error';
       const file=data.get('backup');
       if(!file?.size) throw new Error('Choose a backup JSON file first.');
-      if(file.size>10*1024*1024) throw new Error('The backup is too large. The maximum is 10 MB.');
+      if(file.size>16*1024*1024) throw new Error('The backup is too large. The maximum is 16 MB.');
       const backup=JSON.parse(await file.text());
       await mutate('/api/import','POST',backup);
       currentConversationId=null;reviewSession=null;await refreshState();$('#app-dialog').close();render();notify('Your study backup is restored.');
@@ -648,6 +715,7 @@ document.addEventListener('input', event=>{
 document.addEventListener('change',async event=>{
   try {
     if(event.target.id==='topic-filter') {topicFilter=event.target.value;render();}
+    if(event.target.id==='openai-model') { $('#model-profile').innerHTML=modelProfileHtml(event.target.value); $('#test-model-button').disabled=!status.aiConfigured || event.target.value!==status.model; }
     if(event.target.id==='cards-file') {const file=event.target.files[0];if(file) {if(file.size>2*1024*1024) throw new Error('Card imports must be under 2 MB.');$('#import-json').value=await file.text();}}
     if(event.target.dataset.competency) { const ratings={...state.settings.competencyRatings};if(event.target.value) ratings[event.target.dataset.competency]=Number(event.target.value);else delete ratings[event.target.dataset.competency]; await mutate('/api/settings','PUT',{competencyRatings:ratings});await refreshState();notify('Your reflection is saved.'); }
   } catch(error) {notify(error.message);}
@@ -660,6 +728,7 @@ document.addEventListener('keydown',event=>{
   }
 });
 $('#app-dialog').addEventListener('cancel',event=>{if(formBusy) event.preventDefault();});
+$('#app-dialog').addEventListener('close',()=>{dialogRevision++;});
 $('#app-dialog').addEventListener('click',event=>{if(event.target===$('#app-dialog')) {const rect=$('#app-dialog').getBoundingClientRect();if(event.clientX<rect.left || event.clientX>rect.right || event.clientY<rect.top || event.clientY>rect.bottom) closeDialog();}});
 window.addEventListener('hashchange',()=>navigate(location.hash.slice(1)));
 window.addEventListener('online',()=>{renderNav();notify('Connected again. Your study space is ready.');});
