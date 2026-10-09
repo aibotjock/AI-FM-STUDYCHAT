@@ -8,8 +8,10 @@ live provider access or clinical accuracy.
 
 ## Version and scope
 
-- Current deployed implementation: release commit `45077ce7d2a0f400e8548322cbfcd2a52c8c0982`,
-  tree `390ecb02fd9fdd34ed71c4f53c7daf88440ebae8`.
+- Current hosted release: `1853f6e0dbd2aa0105f5c9240dfa98947919b992`,
+  tree `cbcd230fe24575e616072e60f59541b974367489`.
+- Voice, dictation, pan and telemetry implementation: `45077ce7d2a0f400e8548322cbfcd2a52c8c0982`,
+  tree `390ecb02fd9fdd34ed71c4f53c7daf88440ebae8`. The later release adds privacy disclosures and live evidence; functional source is unchanged.
 - Previous published baseline: `4cbf673ca36d3254a336a7f11527e96afb02e43c`.
 - Earlier secure sign-in, review/restore fixes and owner OpenAI model controls
   are deployed. Newly checked changes add continuous personal voice, dictation
@@ -54,6 +56,8 @@ live provider access or clinical accuracy.
 | MAT-01 | New one-off inventory/HTTPS/status consistency checks for `content/source-checks.json`: 12 cases, 12 cards, 6 competencies, 0 approved teaching records; audit documented in `docs/STUDY_MATERIAL.md` and `docs/CLINICAL_CONTENT.md` | 13 groups passed, reported by the source-audit agent; no checked-in runner | New dated source manifest; existing content tests were not repeated; this does not establish clinical approval |
 | LIVE-01 | Railway deployment `ecf8246b-a6f2-432d-ae07-02ee8f28e172`, deployed status and voice assets | Terminal SUCCESS at `2026-10-09T05:46:08.403Z`; `/api/status` 200; shell v4; voice module 200 with SHA-256 bytes matching local source | Changed implementation required deployment verification; no inference or phone audio in this check |
 | LIVE-02 | Operator-enabled local bootstrap: authenticate, send durable bounded READY check, flush registered metadata feed, read back the genuine Supabase event | Authentication and READY instruction passed; uncached `gpt-4.1-mini-2025-04-14` response; 20 input/1 output tokens; delivered 1, pending 0 | First genuine OpenAI request and Ingenium receipt; estimated cost `$0.0000096`, not an invoice measurement or medical accuracy test |
+| LIVE-03 | Processor-disclosure release `1853f6e0dbd2aa0105f5c9240dfa98947919b992`, deployment `bcc4534e-28dc-4143-9e96-7d05ab3ed3c4` | Terminal SUCCESS at `2026-10-09T05:56:16.585Z`; changed privacy HTML parsed and served HTTP 200 with OpenAI-only, voice and Ingenium disclosures; new startup logs show UID/GID 1000 and no bootstrap run | Changed public disclosure required publication verification; no model, voice or previously passed functional suite repeated |
+| PUB-01 | Native GitHub tree readback after publication | All 98 StudyChat and 240 Ingenium tracked blob hashes/modes match their staged local sources; Ingenium head `0b8b8a367cfa63f48de652bc99570853f07d3e1f` | Confirms published bytes rather than repeating functionality |
 
 
 
@@ -91,8 +95,8 @@ confirmed the deployed application UID/GID is 1000.
 
 | Item | Status and next concrete check |
 | --- | --- |
-| Railway HTTPS pilot | Implementation `45077ce7d2a0f400e8548322cbfcd2a52c8c0982` is live; `/api/status` 200, private access required, OpenAI configured with text model `gpt-4.1-mini`, model selection enabled, `voiceEnabled: true`, voice model `gpt-realtime-2.1-mini`. |
-| Updated deployment | Railway deployment `ecf8246b-a6f2-432d-ae07-02ee8f28e172` observed terminal SUCCESS at `2026-10-09T05:46:08.403Z`. `/sw.js` serves `fm-coach-shell-v4`; `/voice-chat.js` returned 200 and SHA-256 bytes matched the local implementation. |
+| Railway HTTPS pilot | Hosted release `1853f6e0dbd2aa0105f5c9240dfa98947919b992` contains implementation `45077ce7d2a0f400e8548322cbfcd2a52c8c0982` and current processor disclosures. The implementation status check returned 200: private access required, OpenAI text model `gpt-4.1-mini`, model selection enabled, `voiceEnabled: true`, voice model `gpt-realtime-2.1-mini`. |
+| Updated deployment | Latest disclosure deployment `bcc4534e-28dc-4143-9e96-7d05ab3ed3c4` observed terminal SUCCESS at `2026-10-09T05:56:16.585Z`; changed privacy page returned 200. Original implementation deployment `ecf8246b-a6f2-432d-ae07-02ee8f28e172` reached SUCCESS at `2026-10-09T05:46:08.403Z`; its shell v4 and voice module were checked, with module SHA-256 bytes matching the local source. Functional source is unchanged in the disclosure deployment. |
 | Correct live sign-in and inference | Owner confirmed successful phone sign-in at approximately 01:20 America/New_York on October 9. The operator bootstrap subsequently authenticated and passed one live READY instruction with `gpt-4.1-mini-2025-04-14`, uncached. This verifies backend provider connectivity, not clinical answer quality. `OPENAI_API_KEY` remains separate. |
 | Actual account model catalog and every eligible model | Only the selected `gpt-4.1-mini` READY request is verified live. Account catalog coverage and every other eligible model remain untested. Owner controls select only supported, account-confirmed text models. Connection checks are paid, capped and cached; they do not grade medicine. Media/embedding/fine-tuned models and unverified aliases are outside the study-chat contract. |
 | Continuous voice deployment | Personal-only continuous voice code is deployed and enabled; mock/browser checks passed. No real OpenAI voice session or audible phone conversation has been verified. |
