@@ -31,11 +31,11 @@ npm start
 
 Open `http://127.0.0.1:3000`. Without an API key, the app explicitly offers guided reasoning worksheets, card reviews, and manual cards. It does not pretend to generate AI answers.
 
-For conversational coaching, set `OPENAI_API_KEY` in `.env` or your host's secret settings and restart. The key stays on the server. `OPENAI_MODEL` is configurable; the default is `gpt-4.1-mini`. ChatGPT subscriptions do not supply an API key for this app. API usage is billed by the provider; this repository does not purchase subscriptions or provision paid services.
+For the requested Claude pilot, set `AI_PROVIDER=anthropic`, `CLAUDE_MODEL=claude-haiku-5-5`, and `CLAUDE_API_KEY` in host secrets (or local `.env`), then restart. To use OpenAI, select `AI_PROVIDER=openai` and set `OPENAI_API_KEY`; `OPENAI_MODEL` controls personal mode and `COMMERCIAL_OPENAI_MODEL` controls commercial mode. The key stays on the server. Consumer ChatGPT or Claude access does not by itself configure this app's API credentials. Provider usage is billed to the operator's API account. There is no automatic cross-provider fallback or duplicate paid request.
 
 ## Use on your phone
 
-**From anywhere:** deploy this repository to a Node/Docker host with HTTPS. A Dockerfile and Railway configuration are included. On the deployed URL, sign in with your study access token, then open **Coach**. On Android Chrome, choose **Add to Home screen** or **Install app**. On iPhone Safari, use **Share → Add to Home Screen**.
+**Private phone pilot:** open https://family-medicine-phone-test-private-test.up.railway.app and sign in with the `STUDY_ACCESS_TOKEN` from the owner's Railway service Variables tab. Open **Coach**. Claude Haiku 5.5 is selected; add `CLAUDE_API_KEY` in host secrets for AI replies. On Android Chrome, choose **Add to Home screen** or **Install app**. On iPhone Safari, use **Share → Add to Home Screen**. See [provider setup](docs/AI_PROVIDERS.md) and [hosting status](docs/HOSTING.md).
 
 **On your home Wi-Fi:** run the app on a computer on the same network, set `HOST=0.0.0.0` and a strong `STUDY_ACCESS_TOKEN` in `.env`, and open `http://<computer-LAN-IP>:3000` on your phone. Allow the port through the computer's firewall only on your private network. The computer must remain running. HTTPS is required for full home-screen installation and browser microphone support; phone keyboard dictation can still be used.
 
@@ -50,12 +50,12 @@ Keep the value in `.env` or host secrets and use it on the app's sign-in screen.
 ### Railway deployment
 
 1. Connect `aibotjock/AI-FM-STUDYCHAT` to a Railway service.
-2. Set `HOST=0.0.0.0`, `STUDY_ACCESS_TOKEN`, and `OPENAI_API_KEY` in service variables. Leave `PORT` to the platform.
+2. Set `HOST=0.0.0.0`, `STUDY_ACCESS_TOKEN`, and the selected provider's key in service variables. For Claude use `AI_PROVIDER=anthropic` and `CLAUDE_API_KEY`. Leave `PORT` to the platform.
 3. Attach a **persistent volume at `/app/data`** and set `DATA_DIR=/app/data`. The volume is necessary to preserve reviews and conversations across redeployments.
 4. Generate an HTTPS service domain, wait for a healthy deployment, and open that URL on your phone.
 5. Sign in and add the app to the home screen.
 
-A private Railway test project, service and 500 MB volume have been prepared. The public repository is accessible; the initial deployment exposed a volume ownership issue. A bounded container initializer fixes only the data mount, drops all root identities/capabilities, and starts the app as UID/GID 1000. Persistent root execution was rejected by automatic review and was not enabled. See [hosting status](docs/HOSTING.md) for live verification status.
+A private Railway test project, service and 500 MB volume are running. A bounded container initializer fixes only the data mount, drops all root identities/capabilities, and starts the app as UID/GID 1000; hosted logs confirmed this. See [hosting status](docs/HOSTING.md) for verification limits.
 
 ## Study workflow
 
@@ -109,7 +109,7 @@ npm test
 
 Tests cover review timing and daily limits, timezone boundaries and DST streaks, auth and request guards, durable data, atomic backups, chat retries and concurrency, and mocked AI-provider success/failure. Live provider access requires a configured API key and is a separate verification step.
 
-JavaScript/asset, guideline-schema, billing-bridge and automated integration checks are included. Fresh mobile browser checks at 360 × 800 passed the personal study workflow and commercial account, pilot, subscription-details and deletion flows. Those checks use local test servers and synthetic data. A physical phone, live OpenAI connection, actual Play purchase, Kotlin compilation and signed AAB remain unverified. Test microphone permissions and home-screen installation on the real HTTPS URL.
+JavaScript/asset, guideline-schema, billing-bridge and automated integration checks are included. Fresh mobile browser checks at 360 × 800 passed the personal study workflow and commercial account, pilot, subscription-details and deletion flows. Those checks use local test servers and synthetic data. The pre-provider baseline passed 57 tests with one environment-dependent privilege-drop test skipped; hosted UID/GID 1000 was subsequently observed. Claude support passed five new provider tests, three new commercial-provider tests and two affected personal OpenAI tests. Unchanged suites were not repeated for this provider addition. A physical phone, live provider connection, actual Play purchase, Kotlin compilation and signed AAB remain unverified. Test microphone permissions and home-screen installation on the real HTTPS URL.
 
 ## Files
 
@@ -119,4 +119,4 @@ JavaScript/asset, guideline-schema, billing-bridge and automated integration che
 - `tests/`: deterministic scheduler and integration tests
 - `Dockerfile`, `compose.yaml`, `railway.json`: deployment options
 
-Official API references: https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create and https://developers.openai.com/api/docs/models/gpt-4.1-mini.
+Official API references: https://platform.claude.com/docs/en/api/messages/create, https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide, and https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create.

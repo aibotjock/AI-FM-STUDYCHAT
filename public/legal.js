@@ -14,3 +14,14 @@ try {
     }
   }
 } catch { /* Static disclosures remain useful if the server is unavailable. */ }
+
+try {
+  const response=await fetch('/api/status',{cache:'no-store'});
+  if(response.ok) {
+    const status=await response.json();
+    const detail=document.getElementById('ai-provider-info');
+    if(detail) detail.textContent=status.aiConfigured
+      ? `This deployment is configured to use ${status.provider || 'the selected AI provider'}${status.model ? ` (${status.model})` : ''}. Provider records follow that provider’s current contract, retention policies, and account settings. Deleting your account here does not itself delete records held by the AI provider.`
+      : 'AI coaching is not configured for this deployment. When enabled, provider records follow the selected provider’s current contract, retention policies, and account settings. Deleting an app account does not itself delete records held by an AI provider.';
+  }
+} catch { /* The static processor disclosure remains available. */ }

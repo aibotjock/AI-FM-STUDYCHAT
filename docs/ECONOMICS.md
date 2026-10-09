@@ -4,54 +4,69 @@ Prepared October 9, 2026. This is a cost model, not a revenue or profit forecast
 
 ## Connect AI for subscribers
 
-Subscribers create an app account; they do not bring an OpenAI key or need a ChatGPT subscription. The Android app sends the purchase token to our authenticated server. The server verifies ownership, product, expiry, and subscription state with Google, then authorizes coaching. The server calls OpenAI using the operator's secret key. Keys and Google service-account credentials never enter the browser or Android bundle.
+Subscribers create an app account; they do not bring an AI-provider key or need a ChatGPT or Claude subscription. The Android app sends the purchase token to our authenticated server. The server verifies ownership, product, expiry, and subscription state with Google, then authorizes coaching. The server calls the selected provider using the operator's secret key. Keys and Google service-account credentials never enter the browser or Android bundle.
 
-The preparation uses the pinned `gpt-5.4-mini-2026-03-17` snapshot for bounded text requests. It is a candidate model, not a clinically validated selection. A model change requires a repeat of the clinical benchmark and a price update. Device keyboard dictation and browser read-aloud avoid a separate paid realtime audio connection; a conversational voice service would need its own budget and evaluation.
+The selected option is **Claude Haiku 5.5**, using `AI_PROVIDER=anthropic`, `CLAUDE_MODEL=claude-haiku-5-5`, and a server-held `CLAUDE_API_KEY`. Optional OpenAI uses `AI_PROVIDER=openai`, `OPENAI_API_KEY`, and the pinned commercial snapshot `gpt-5.4-mini-2026-03-17`. Provider selection changes the default cost rates; explicit price overrides must match the selected model. There is no automatic provider fallback.
+
+These are candidate models, not clinically validated selections. A model change requires a repeat of the clinical benchmark and a price update. **No live API key has been configured or live provider testing completed for this preparation.** Mocked integration tests verify request handling, source checks, and budgets. Device keyboard dictation and browser read-aloud avoid a separate paid realtime audio connection; a conversational voice service would need its own budget and evaluation.
 
 ## Per-member illustration
 
-OpenAI lists standard text prices of $0.75 per million input tokens and $4.50 per million output tokens. At an **assumed** 3,000 input tokens and 400 output tokens per completed turn:
+Standard text prices for the selected models are:
 
-`(3,000 × 0.75 + 400 × 4.50) / 1,000,000 = $0.00405 per turn`
+| Provider/model | Input per million tokens | Output per million tokens |
+| --- | ---: | ---: |
+| Claude Haiku 5.5, at most 100,000 input tokens | $0.10 | $0.50 |
+| OpenAI GPT-5.4 mini | $0.75 | $4.50 |
 
-Two hundred such turns cost **$0.81**. This excludes retries, moderation, embeddings, searches, and any separate audio service. There is no assumed cache discount. Real token usage must be measured; long conversations can cost more.
+At an **assumed** 3,000 input tokens and 400 **billed** output tokens per completed turn, including any thinking tokens:
 
-| Monthly amount per paying member | Illustrative US dollars |
-| --- | ---: |
-| Subscription price | 4.99 |
-| Google Play fees, 15% combined | −0.7485 |
-| Receipt before other expenses | 4.2415 |
-| AI at the assumed usage above | −0.81 |
-| Contribution before hosting and other expenses | **3.4315** |
+`Claude: (3,000 × 0.10 + 400 × 0.50) / 1,000,000 = $0.00050 per turn`
+
+`OpenAI: (3,000 × 0.75 + 400 × 4.50) / 1,000,000 = $0.00405 per turn`
+
+Two hundred such turns cost **$0.10 with Claude** or **$0.81 with OpenAI**. This excludes retries, moderation, embeddings, searches, and any separate audio service. There is no assumed cache discount. Real token usage must be measured; long conversations can cost more.
+
+| Monthly amount per paying member | Claude illustration | OpenAI illustration |
+| --- | ---: | ---: |
+| Subscription price | $4.99 | $4.99 |
+| Google Play fees, 15% combined | −$0.7485 | −$0.7485 |
+| Receipt before other expenses | $4.2415 | $4.2415 |
+| AI at the assumed usage above | −$0.10 | −$0.81 |
+| Contribution before hosting and other expenses | **$4.1415** | **$3.4315** |
 
 Google's current US subscription schedule is a 10% service fee plus a 5% Play Billing fee. This model uses normal Play Billing. Alternative billing adds operational requirements and payment-processor costs and is not part of this preparation.
 
-| Paying members | Gross sales | Play fees | Illustrative AI | Assumed hosting | Remaining contribution |
+| Paying members | Gross sales | Play fees | Claude AI | Assumed hosting | Remaining Claude contribution |
 | ---: | ---: | ---: | ---: | ---: | ---: |
-| 100 | $499.00 | $74.85 | $81.00 | $25.00 | **$318.15** |
-| 500 | $2,495.00 | $374.25 | $405.00 | $25.00 | **$1,690.75** |
-| 1,000 | $4,990.00 | $748.50 | $810.00 | $25.00 | **$3,406.50** |
+| 100 | $499.00 | $74.85 | $10.00 | $25.00 | **$389.15** |
+| 500 | $2,495.00 | $374.25 | $50.00 | $25.00 | **$2,045.75** |
+| 1,000 | $4,990.00 | $748.50 | $100.00 | $25.00 | **$4,116.50** |
+
+Under the same assumptions, optional OpenAI AI costs are $81, $405, and $810 respectively, leaving $318.15, $1,690.75, and $3,406.50 before the other expenses below.
 
 The $25 hosting line is an assumption, not a Railway quote or a scale guarantee. Remaining contribution is **not profit**: clinical editing, content licenses, support, acquisition, failed trials, refunds, taxes, and operating labor are still unpaid. In particular, licensed guideline content and clinician review could exceed infrastructure costs.
 
 ## Bound costs before charging customers
 
-The scaffold reserves a conservative request cost before a provider call and persists the reservation. It reconciles reported usage afterward; uncertain provider outcomes retain the reservation. Default ceilings are $1 per paid entitlement period, $0.15 lifetime trial spend, 200 turns per period, 20 per UTC day, and $20 globally per UTC month. The global limit is a private-pilot safety setting and must be deliberately increased with a funded operating budget before accepting a larger subscriber base.
+The scaffold reserves a conservative request cost before a provider call and persists the reservation. It reconciles reported usage afterward; uncertain provider outcomes retain the reservation. Default ceilings are $1 and 200 turns per paid entitlement period **and** per UTC calendar month, $0.15 lifetime trial spend, 20 turns per UTC day, and $20 globally per UTC month. The global limit is a private-pilot safety setting and must be deliberately increased with a funded operating budget before accepting a larger subscriber base.
 
 Cost and turn ceilings both apply, so **200 is an upper limit, not a promise of 200 long answers**. Show this clearly before purchase. Card scheduling, manually authored cards, account export, and deletion do not require an AI call. Request IDs, account isolation, and server-side entitlement checks prevent accidental duplicate charges and client-controlled access.
 
-At the default worst reservation (8,000 input and 600 output tokens), a turn reserves $0.0087, so a $1 budget supports at most 114 such reservations. Failed or uncertain requests can reduce available turns further. The operator must compare measured p50/p95 usage and successful-turn availability before choosing the final marketed allowance.
+At the default worst reservation (8,000 input and 600 billed output tokens), a Claude turn reserves **$0.0011**, while an OpenAI turn reserves **$0.0087**. Two hundred Claude reservations total $0.22; the turn ceiling still applies. With OpenAI, the $1 budget supports at most 114 such reservations. Failed or uncertain requests can reduce available turns further. The operator must compare measured p50/p95 usage and successful-turn availability before choosing the final marketed allowance.
 
 ## Test whether $4.99 can work
 
 Start with the owner's private phone test, then a small consented pilot after clinical content and account recovery are ready. Measure first-session completion, return for due reviews, trial conversion, paid retention, report rate, successful coaching turns, AI cost per active member, and support minutes. Collect aggregate product events without logging patient details or raw conversation text into analytics.
 
-An example planning assumption of 10% monthly paid churn implies an average ten-month paid lifetime and about $34.32 contribution before fixed/editorial expenses. This is not observed retention. Acquisition spending must fit below contribution after those expenses; do not buy ads on this assumption alone. If trials convert at 20% and cost the full $0.15 each, trial AI alone adds $0.75 per acquired paying member, before marketing.
+An example planning assumption of 10% monthly paid churn implies an average ten-month paid lifetime and about $41.42 Claude contribution or $34.32 OpenAI contribution before fixed/editorial expenses. This is not observed retention. Acquisition spending must fit below contribution after those expenses; do not buy ads on this assumption alone. If trials convert at 20% and cost the full $0.15 each, trial AI alone adds $0.75 per acquired paying member, before marketing.
 
 The value proposition is a short daily reasoning-and-recall session, rather than unlimited AI. Keep the launch scope focused: useful reviewed content, comfortable phone chat, editable active-recall cards, a transparent schedule, and visible source dates. Add paid realtime voice only if measured retention justifies its cost.
 
 Sources checked October 9, 2026:
 
+- Claude Haiku 5.5 pricing and availability: https://www.anthropic.com/claude-haiku-5-5
+- Claude Haiku 5.5 model and migration guidance: https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide
 - OpenAI model pricing and snapshot: https://developers.openai.com/api/docs/models/gpt-5.4-mini
 - Google Play fees: https://support.google.com/googleplay/android-developer/answer/112622?hl=en
 - Subscription and trial setup: https://support.google.com/googleplay/android-developer/answer/140504?hl=en

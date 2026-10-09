@@ -19,7 +19,7 @@ Security is an explicit product priority. This is a private-pilot preparation, n
 
 Conversations and study records are stored on the application server. They are not end-to-end encrypted; the operator and host may have technical access. Play tokens are encrypted separately, but study SQLite files are not application-encrypted. Establish host disk encryption, backup controls, scoped operator access, and documented retention before public launch.
 
-OpenAI requests explicitly disable application-level response storage, but that does not eliminate provider abuse-monitoring retention. The provider's current data policy permits default abuse-monitoring logs for up to 30 days, with legal/safety exceptions; approved retention controls have not been configured for this project. Do not claim zero retention or HIPAA compliance. Browser or keyboard dictation can process speech through device/vendor services according to their settings; this app does not store audio recordings.
+OpenAI requests explicitly disable application-level response storage, but that does not eliminate provider abuse-monitoring retention. Its current policy permits default abuse-monitoring logs for up to 30 days with legal/safety exceptions. Anthropic's API retention also follows the operator's contract and workspace controls, normally deletion within 30 days with exceptions; covered models may require retention. Approved retention controls have not been configured for this project. Claude responses expose only text; thinking blocks are not stored or returned to clients. Do not claim zero retention or HIPAA compliance. Browser or keyboard dictation can process speech through device/vendor services according to their settings; this app does not store audio recordings.
 
 Keep study cases fictional or de-identified. This app has no verified patient-identifier detection and is not an EHR. Do not enter patient names, dates of birth, record numbers, identifying images or other sensitive patient data. Backups downloaded by a learner remain under that learner's control.
 
@@ -37,3 +37,5 @@ Keep study cases fictional or de-identified. This app has no verified patient-id
 The current account-isolation, receipt-binding, budget, deletion and grounding tests provide regression checks. They do not replace a penetration test, legal/privacy review, or clinical review.
 
 Provider retention reference, checked October 9, 2026: https://developers.openai.com/api/docs/guides/your-data
+
+Anthropic retention: https://privacy.claude.com/en/articles/7996866-how-long-do-you-store-my-organization-s-data and https://platform.claude.com/docs/en/build-with-claude/api-and-data-retention

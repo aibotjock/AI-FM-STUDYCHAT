@@ -9,6 +9,7 @@ import { buildSystemPrompt } from '../prompts.js';
 import { createAccounts, sha256 } from './accounts.js';
 import { createUsage } from './usage.js';
 import { createPlayBilling } from './billing.js';
+import { createAiProvider, AiProviderError } from '../ai-provider.js';
 import { loadGuidelineCorpus, retrieveEvidence, buildEvidencePrompt, validateGroundedResponse, NO_EVIDENCE_ANSWER } from '../guidelines.js';
 
 const ROOT = resolve(import.meta.dirname, '../..');
@@ -52,16 +53,14 @@ export function createCommercialApp({ dataDir = resolve(process.cwd(), 'data/com
   if (!privatePilot && !billing.configured) throw new Error('Configure Google Play billing, or explicitly set PRIVATE_PILOT=true and PUBLIC_RELEASE=false for a free private test.');
   const key = env.BILLING_TOKEN_ENCRYPTION_KEY ? Buffer.from(env.BILLING_TOKEN_ENCRYPTION_KEY, 'base64') : null;
   if (billing.configured && key?.length !== 32) throw new Error('BILLING_TOKEN_ENCRYPTION_KEY must be a base64-encoded 32-byte secret.');
-  const apiKey = (env.OPENAI_API_KEY || '').trim();
-  const model = env.COMMERCIAL_OPENAI_MODEL || 'gpt-5.4-mini-2026-03-17';
-  if (model !== 'gpt-5.4-mini-2026-03-17' && (!env.AI_INPUT_USD_PER_MILLION || !env.AI_OUTPUT_USD_PER_MILLION)) throw new Error('A custom COMMERCIAL_OPENAI_MODEL requires explicit verified input and output prices.');
+  const ai = createAiProvider({ env, fetchImpl, commercial: true });
   const corpus = suppliedCorpus || (env.GUIDELINE_CORPUS_PATH ? loadGuidelineCorpus(env.GUIDELINE_CORPUS_PATH, { now: now() }) : { records: [], rejected: [], ready: false, version: 1 });
   mkdirSync(dataDir, { recursive: true, mode: 0o700 });
   const usersDir = resolve(dataDir, 'users'); mkdirSync(usersDir, { recursive: true, mode: 0o700 });
   const db = new DatabaseSync(resolve(dataDir, 'commercial.sqlite'));
   db.exec('PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA secure_delete=ON;');
   const accounts = createAccounts({ db, now });
-  const usage = createUsage({ db, env, now });
+  const usage = createUsage({ db, env, now, rates: ai.rates });
   db.exec(`CREATE TABLE IF NOT EXISTS play_purchases (token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL, encrypted_token TEXT, product_id TEXT NOT NULL, state TEXT NOT NULL, expires_at INTEGER NOT NULL, checked_at INTEGER NOT NULL, trial INTEGER NOT NULL, phase_known INTEGER NOT NULL, acknowledged INTEGER NOT NULL DEFAULT 0);
     CREATE TABLE IF NOT EXISTS content_reports (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, conversation_id TEXT NOT NULL, message_id TEXT NOT NULL, reason TEXT NOT NULL, created_at INTEGER NOT NULL);
     CREATE UNIQUE INDEX IF NOT EXISTS content_report_once ON content_reports(user_id,message_id);`);
@@ -115,26 +114,25 @@ export function createCommercialApp({ dataDir = resolve(process.cwd(), 'data/com
   async function requireEntitlement(userId) { const current = await entitlement(userId); if (!current.active) throw new HttpError(402, 'An active server-verified Google Play subscription is required for AI coaching.'); return current; }
 
   async function provider({ userId, requestId, messages, entitlement: current, purpose }) {
-    if (!apiKey) throw new HttpError(503, 'AI coaching is not connected for this private test.');
+    if (!ai.configured) throw new HttpError(503, 'AI coaching is not connected for this private test.');
     if (!accounts.isActive(userId)) throw new HttpError(410, 'This account has been deleted.');
     // UTF-8 bytes plus framing deliberately overestimate normal token counts.
     const inputTokens = Buffer.byteLength(JSON.stringify(messages), 'utf8') + 256;
     const period = current.source === 'private-pilot' ? new Date(now()).toISOString().slice(0, 7) : `play:${current.expiresAt}`;
-    const reservation = usage.reserve({ userId, requestId: `${purpose}:${requestId}`, fingerprint: sha256(JSON.stringify(messages)), isTrial: current.isTrial, period, inputTokens, outputTokens: 600 });
+    const reservation = usage.reserve({ userId, requestId: `${purpose}:${requestId}`, fingerprint: sha256(JSON.stringify({ provider: ai.providerId, model: ai.model, messages })), isTrial: current.isTrial, period, inputTokens, outputTokens: 600 });
     if (reservation.replay) return reservation.replay;
     try {
-      const response = await fetchImpl('https://api.openai.com/v1/chat/completions', { method: 'POST', redirect: 'error', signal: AbortSignal.timeout(45000), headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` }, body: JSON.stringify({ model, messages, store: false, max_completion_tokens: 600, response_format: { type: 'json_object' } }) });
-      if (!response.ok) throw new HttpError(response.status === 429 ? 503 : 502, 'The AI provider could not complete this study request.');
-      const payload = await response.json();
-      const content = payload?.choices?.[0]?.message?.content;
+      const payload = await ai.complete(messages, { jsonMode: true, maxOutputTokens: 600 });
+      const content = payload.content;
       if (typeof content !== 'string' || !content.trim() || content.length > 20000) throw new HttpError(502, 'The coach returned an unusable answer.');
       if (!accounts.isActive(userId)) throw new HttpError(410, 'This account has been deleted.');
-      const result = { content, usage: payload.usage || null };
+      const result = { content, usage: payload.usage || null, provider: ai.providerId, model: ai.model };
       usage.complete({ userId, requestId: `${purpose}:${requestId}`, usage: payload.usage, result });
       return result;
     } catch (error) {
       if (!closed && accounts.isActive(userId)) usage.failed(userId, `${purpose}:${requestId}`);
       if (error instanceof HttpError) throw error;
+      if (error instanceof AiProviderError) throw new HttpError(error.status, error.message);
       throw new HttpError(502, 'The AI provider is unavailable. Unknown request costs remain reserved.');
     }
   }
@@ -204,7 +202,7 @@ export function createCommercialApp({ dataDir = resolve(process.cwd(), 'data/com
       if (req.headers.origin) { let origin; try { origin = new URL(req.headers.origin); } catch { throw new HttpError(403, 'Invalid origin.'); } if (!['https:', 'http:'].includes(origin.protocol) || (appOrigin ? origin.origin !== appOrigin.origin : origin.host !== host)) throw new HttpError(403, 'Origin must match this app.'); }
       const account = accounts.authenticate(req);
       if (req.method === 'GET' && path === '/api/public-info') return json(res, 200, { mode: 'commercial', privatePilot, publicRelease: false, operatorName: typeof env.PUBLIC_OPERATOR_NAME === 'string' ? env.PUBLIC_OPERATOR_NAME.trim().slice(0, 200) || null : null, operatorContact: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(env.PUBLIC_SUPPORT_EMAIL || '') ? env.PUBLIC_SUPPORT_EMAIL : null });
-      if (req.method === 'GET' && path === '/api/status') return json(res, 200, { mode: 'commercial', authenticated: Boolean(account), authRequired: true, aiConfigured: Boolean(apiKey), provider: apiKey ? 'OpenAI' : 'offline', model: apiKey ? model : null, privatePilot, registrationRestricted, account, entitlement: account ? await entitlement(account.id) : null, usage: account ? usage.summary(account.id) : null, guidelines: { ready: corpus.ready, recordCount: corpus.records.length }, publicRelease: false });
+      if (req.method === 'GET' && path === '/api/status') return json(res, 200, { mode: 'commercial', authenticated: Boolean(account), authRequired: true, aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: ai.configured ? ai.model : null, privatePilot, registrationRestricted, account, entitlement: account ? await entitlement(account.id) : null, usage: account ? usage.summary(account.id) : null, guidelines: { ready: corpus.ready, recordCount: corpus.records.length }, publicRelease: false });
       if (req.method === 'POST' && ['/api/register', '/api/login'].includes(path)) {
         rateLimit(`auth:${req.socket.remoteAddress}`, 30, 15 * 60000);
         const input = await readJson(req); const canonicalEmail = typeof input.email === 'string' ? input.email.trim().toLowerCase() : '';

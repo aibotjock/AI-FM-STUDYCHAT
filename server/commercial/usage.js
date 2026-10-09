@@ -7,9 +7,9 @@ const number = (env, key, fallback, minimum = 0) => {
 };
 
 /** Costs are stored as integer millionths of a dollar; reservations survive restart. */
-export function createUsage({ db, env = {}, now = Date.now }) {
-  const inputRate = number(env, 'AI_INPUT_USD_PER_MILLION', 0.75);
-  const outputRate = number(env, 'AI_OUTPUT_USD_PER_MILLION', 4.50);
+export function createUsage({ db, env = {}, now = Date.now, rates = {} }) {
+  const inputRate = number(env, 'AI_INPUT_USD_PER_MILLION', rates.inputUsdPerMillion ?? 0.75);
+  const outputRate = number(env, 'AI_OUTPUT_USD_PER_MILLION', rates.outputUsdPerMillion ?? 4.50);
   const monthlyBudget = Math.floor(number(env, 'AI_MONTHLY_BUDGET_USD', 1) * 1e6);
   const trialBudget = Math.floor(number(env, 'AI_TRIAL_BUDGET_USD', 0.15) * 1e6);
   const globalBudget = Math.floor(number(env, 'AI_GLOBAL_MONTHLY_BUDGET_USD', 20) * 1e6);

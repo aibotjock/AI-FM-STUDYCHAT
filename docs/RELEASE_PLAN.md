@@ -1,6 +1,6 @@
 # Family Medicine Study Coach — release preparation
 
-**Store submission is on hold until the owner explicitly approves it.** No Play app, subscription or production release was created. A private host project, service and volume were prepared, but no deployment is live. The first milestone is a private test on the owner's phone.
+**Store submission is on hold until the owner explicitly approves it.** No Play app, subscription or production release was created. The personal phone pilot is live at https://family-medicine-phone-test-private-test.up.railway.app. The first milestone is the owner's physical phone test, including a live provider conversation after a server API key is configured.
 
 ## Product definition
 
@@ -14,7 +14,7 @@ The curriculum map follows the ABFM's public blueprint: acute care and diagnosis
 
 Keep the personal workspace available for the owner's first study session. It supports chat with a server-configured API key, or explicitly labeled worksheets without a key, plus editable cards and spaced reviews. It has no reviewed clinical guideline corpus. Do not infer clinical validation from a working chat.
 
-The test needs an HTTPS host with persistent storage and a private access token. Configure secrets in the host, then open the real app URL on the phone. Repository access is now available. The host's root-owned storage required the bounded ownership-and-privilege-drop initialization described in [HOSTING.md](HOSTING.md); deployment must be verified before a phone handoff. No live OpenAI key has been provided. Do not paste keys into chat or commit them.
+The HTTPS host has persistent storage and a private access token. Retrieve the access token from the host dashboard, then open the real app URL on the phone. The bounded ownership-and-privilege-drop initialization described in [HOSTING.md](HOSTING.md) was verified in a successful hosted deployment. The requested provider is Claude Haiku 5.5; OpenAI remains an option. No live provider key has been provided. Configure it in host secrets, never in chat or the repository.
 
 Use [PHONE_TEST.md](PHONE_TEST.md) to run chat, keyboard dictation, answer-to-card editing, review ratings, reload persistence, and home-screen installation. The Android source is preparation for a later native trial, not a substitute for the first browser test.
 
