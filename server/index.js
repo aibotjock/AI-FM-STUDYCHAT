@@ -805,7 +805,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             if (!generated && studyReferences) {
               if (ai.configured) {
                 try {
-                  const tutorContext = { references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending };
+                  const tutorContext = { references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending, requireVersion2: true };
                   const primaryPrompt = buildNaturalTutorPrompt(tutorContext);
                   const primarySchema = buildNaturalTutorSchema(tutorContext);
                   aiCalls++;

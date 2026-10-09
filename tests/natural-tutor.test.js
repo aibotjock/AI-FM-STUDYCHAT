@@ -98,10 +98,10 @@ test('a nonnative selected model receives complete privacy-safe author and revie
     assert.doesNotMatch(compiled, /PRIVATE_LEARNER_NAME_174|What would you like to chat about/);
     assert.equal(schema.additionalProperties, false);
     const reviewing = prompt.includes('NATURAL_REVIEW_DATA=');
-    assert.deepEqual(schema.required, reviewing ? ['approved', 'segments'] : ['segments']);
+    assert.deepEqual(schema.required, reviewing ? ['version', 'approved', 'segments'] : ['segments']);
     assert.deepEqual(schema.properties.segments.items.required, reviewing ? ['id', 'approved', 'externalFactCount', 'claims', 'flags'] : ['id', 'text', 'sourceChunkIds']);
     assert.equal(schema.properties.segments.items.additionalProperties, false);
-    const response = reviewing ? { approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 0, claims: [], flags: [] }] } : { segments: [{ id: 's1', text: authoredText, sourceChunkIds: [] }] };
+    const response = reviewing ? { version: 2, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 0, claims: [], flags: [] }] } : { segments: [{ id: 's1', text: authoredText, sourceChunkIds: [] }] };
     return Response.json({ model: 'gpt-6-luna', usage: { prompt_tokens: 30, completion_tokens: 10 }, choices: [{ message: { content: JSON.stringify(response) } }] });
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');

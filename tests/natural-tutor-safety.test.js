@@ -116,8 +116,10 @@ async function appFixture(t, responses) {
   const calls = [];
   const original = context();
   const server = createApp({ dataDir, curriculum: original.references, foundations: createStudyCurriculum({ records: [], now: () => STUDY_NOW }), env: { OPENAI_API_KEY: 'natural-safety-local-fixture-only', OPENAI_MODEL: 'gpt-4.1-mini' }, fetchImpl: async (_url, options) => {
-    calls.push(JSON.parse(options.body));
-    return Response.json({ model: 'gpt-4.1-mini', choices: [{ message: { content: JSON.stringify(responses[calls.length - 1]) } }], usage: { prompt_tokens: 6, completion_tokens: 4 } });
+    const input = JSON.parse(options.body); calls.push(input);
+    const response = structuredClone(responses[calls.length - 1]);
+    if (input.response_format?.json_schema?.name === 'family_medicine_natural_review_v2') response.version = 2;
+    return Response.json({ model: 'gpt-4.1-mini', choices: [{ message: { content: JSON.stringify(response) } }], usage: { prompt_tokens: 6, completion_tokens: 4 } });
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   const base = `http://127.0.0.1:${server.address().port}`;

@@ -17,6 +17,7 @@ test('only exact durable operator protocols are hidden; similarly named learner 
   assert.equal(isOperatorTitle(emptyOperator.title), true);
   assert.equal(isOperatorConversation({ ...emptyOperator, messages: [{ role: 'user', requestId: 'natural-dialogue-v1-context-gpt-4.1-mini' }] }), true);
   assert.equal(isOperatorConversation({ ...emptyOperator, messages: [{ role: 'user', requestId: 'natural-dialogue-v2-study-gpt-4.1-mini' }] }), true);
+  assert.equal(isOperatorConversation({ ...emptyOperator, messages: [{ role: 'user', requestId: 'natural-dialogue-v3-study-gpt-4.1-mini' }] }), true);
   assert.equal(isOperatorConversation({ ...legacy, messages: [{ role: 'user', requestId: 'study-dialogue-v3-plan-gpt-4.1-mini' }] }), false);
 });
 

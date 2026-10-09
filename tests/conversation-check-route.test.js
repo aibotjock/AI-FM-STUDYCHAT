@@ -12,7 +12,7 @@ import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
 test('natural operator check exercises authenticated three-turn generation and review, bounded history, and current cited rendering', async t => {
   const dir = mkdtempSync(join(tmpdir(), 'fm-natural-probe-route-'));
   const curriculum = createStudyCurriculum({ records: [studyCondition({ id: 'atrial-fibrillation', name: 'Atrial fibrillation', aliases: ['atrial fibrillation'] })], now: () => STUDY_NOW });
-  const env = { STUDY_ACCESS_TOKEN: 'local-new-conversation-test-token', OPENAI_API_KEY: 'local-mock-provider-key', OPENAI_MODEL: 'gpt-4.1-mini', AI_PROVIDER: 'openai', STUDY_INITIAL_CONVERSATION_CHECK: 'natural-v2' };
+  const env = { STUDY_ACCESS_TOKEN: 'local-new-conversation-test-token', OPENAI_API_KEY: 'local-mock-provider-key', OPENAI_MODEL: 'gpt-4.1-mini', AI_PROVIDER: 'openai', STUDY_INITIAL_CONVERSATION_CHECK: 'natural-v3' };
   const calls = [];
   const server = createApp({ dataDir: dir, curriculum, env, fetchImpl: async (url, options) => {
     assert.equal(url, 'https://api.openai.com/v1/chat/completions');
@@ -29,8 +29,8 @@ test('natural operator check exercises authenticated three-turn generation and r
       parsed = { segments: [{ id: 's1', text: turn === 0 ? 'Hi Morgan. What is on your mind?' : turn === 1 ? 'You asked me to call you Morgan. How has your day been?' : `${source.text} What does that source-backed point say?`, sourceChunkIds: turn === 2 ? [source.key] : [] }] };
     } else {
       const candidate = context.candidate[0], source = context.sources.find(item => candidate.sourceChunkIds.includes(item.key));
-      const claims = turn === 2 ? [{ quote: source.text, type: 'medical', sourceChunkIds: [source.key], supports: [{ chunkId: source.key, excerpt: source.text }] }] : [];
-      parsed = { approved: true, segments: [{ id: candidate.id, approved: true, externalFactCount: claims.length, claims, flags: [] }] };
+      const claims = turn === 2 ? [{ quote: source.text, type: 'medical', sourceChunkIds: [source.key], supports: [{ chunkId: source.key, spanId: context.sourceSpans.find(span => span.chunkId === source.key).spanId }] }] : [];
+      parsed = { version: 2, approved: true, segments: [{ id: candidate.id, approved: true, externalFactCount: claims.length, claims, flags: [] }] };
     }
     return Response.json({ model: 'gpt-4.1-mini-2025-04-14', choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(parsed) } }], usage: { prompt_tokens: 1000 + index, completion_tokens: 70 } });
   } });

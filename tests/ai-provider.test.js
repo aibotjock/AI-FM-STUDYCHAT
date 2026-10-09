@@ -8,6 +8,7 @@ import { createAiProvider, AiProviderError } from '../server/ai-provider.js';
 import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
+import { sourceSpanSupport } from './fixtures/natural-review-v2.js';
 
 const key = 'server-only-claude-test-key';
 const env = { AI_PROVIDER: 'anthropic', CLAUDE_API_KEY: key };
@@ -100,7 +101,7 @@ test('personal inactive Claude adapter preserves reviewed natural replies throug
     assert.match(body.system, /NATURAL_(?:TUTOR_CONTEXT|REVIEW_DATA)=/);
     const primary = body.system.includes('NATURAL_TUTOR_CONTEXT=');
     const payload = primary ? { segments: [{ id: 's1', text: factualText, sourceChunkIds: ['asthma:management'] }] }
-      : { approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: factualText, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [{ chunkId: 'asthma:management', excerpt: factualText }] }], flags: [] }] };
+      : { version: 2, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: factualText, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [sourceSpanSupport(body, 'asthma:management')] }], flags: [] }] };
     return Response.json(result({ content: [{ type: 'thinking', thinking: 'private thinking' }, { type: 'text', text: JSON.stringify(payload) }] }));
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');

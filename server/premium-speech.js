@@ -74,7 +74,7 @@ export function premiumSpeechText({ conversation, message, references, settings 
     if (message.reviewedDialogue === true && message.groundingReview?.version === 1 && message.groundingReview.status === 'passed' && message.sourceVerified === false && message.canonicalSpokenText === false) {
       const keys = [...new Set((message.naturalSegments || []).flatMap(segment => segment.sourceChunkIds || []))];
       const evidence = evidenceFor(references, keys);
-      reconstructed = renderReviewedTutor({ segments: message.naturalSegments }, { approved: true, segments: message.groundingReview.segments }, { references, evidence, conversation: { ...conversation, messages: conversation.messages.slice(0, index) }, settings, pendingQuestion: message.pendingStudyQuestion, now: message.groundingReview.reviewedAt });
+      reconstructed = renderReviewedTutor({ segments: message.naturalSegments }, { approved: true, segments: message.groundingReview.segments }, { references, evidence, conversation: { ...conversation, messages: conversation.messages.slice(0, index) }, settings, pendingQuestion: message.pendingStudyQuestion, now: message.groundingReview.reviewedAt, sourceSpanBindings: message.groundingReview.sourceSpanBindings });
       if (!same(reconstructed.groundingReview, message.groundingReview)) fail(409, 'The stored grounding review has changed.', 'speech_message_untrusted');
     } else if (message.curriculum === true && message.sourceVerified === true && message.current === true) {
       if (message.studyAnswer) reconstructed = references.gradeQuestion(message.studyAnswer, message.studyAnswer.choiceId);

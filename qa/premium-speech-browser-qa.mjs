@@ -16,7 +16,10 @@ const server=createApp({dataDir:dir,curriculum,foundations:createStudyCurriculum
  if(url==='https://api.openai.com/v1/audio/speech'){assert.equal(body.model,'gpt-4o-mini-tts');assert.equal(body.response_format,'mp3');return new Response('ID3mock-local-mp3',{headers:{'Content-Type':'audio/mpeg'}});}
  assert.equal(url,'https://api.openai.com/v1/chat/completions');let reply;
  if(body.messages.some(item=>item.content.includes('NATURAL_TUTOR_CONTEXT='))){const latest=body.messages.findLast(item=>item.role==='user')?.content || '';rejectNext=/reject mock/i.test(latest);lastDraft=/long mock/i.test(latest)?longText:[{id:'s1',text:'We can chat at your pace. What would you like to talk about?',sourceChunkIds:[]}];reply={segments:lastDraft};}
- else reply={approved:!rejectNext,segments:lastDraft.map(segment=>({id:segment.id,approved:!rejectNext,externalFactCount:0,claims:[],flags:[]}))};
+ else {
+  assert.equal(body.response_format.json_schema.name,'family_medicine_natural_review_v2');
+  reply={version:2,approved:!rejectNext,segments:lastDraft.map(segment=>({id:segment.id,approved:!rejectNext,externalFactCount:0,claims:[],flags:[]}))};
+ }
  return Response.json({model:'gpt-4.1-mini',usage:{prompt_tokens:20,completion_tokens:20},choices:[{message:{content:JSON.stringify(reply)}}]});
 }});
 server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${server.address().port}`;

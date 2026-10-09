@@ -47,7 +47,8 @@ const server=createApp({dataDir:dir,curriculum,foundations:createStudyCurriculum
     reply={segments:lastPrimary};providerRequests.push({kind,latest,context});
   }else{
     kind='review';context=dataFrom(body,'NATURAL_REVIEW_DATA=');
-    reply={approved:true,segments:lastPrimary.map(segment=>({id:segment.id,approved:true,externalFactCount:segment.sourceChunkIds.length?1:0,claims:segment.sourceChunkIds.length?[{quote:segment.text,type:'medical',sourceChunkIds:segment.sourceChunkIds,supports:[{chunkId:'asthma:management',excerpt:condition.sections.find(item=>item.id==='management').text}]}]:[],flags:[]}))};
+    assert.equal(body.response_format.json_schema.name,'family_medicine_natural_review_v2');
+    reply={version:2,approved:true,segments:lastPrimary.map(segment=>({id:segment.id,approved:true,externalFactCount:segment.sourceChunkIds.length?1:0,claims:segment.sourceChunkIds.length?[{quote:segment.text,type:'medical',sourceChunkIds:segment.sourceChunkIds,supports:segment.sourceChunkIds.map(chunkId=>{const span=context.sourceSpans.find(value=>value.chunkId===chunkId);assert(span);return{chunkId,spanId:span.spanId};})}]:[],flags:[]}))};
     providerRequests.push({kind,context});
   }
   return Response.json({model:'gpt-4.1-mini',usage:{prompt_tokens:30,completion_tokens:25},choices:[{message:{content:JSON.stringify(reply)}}]});

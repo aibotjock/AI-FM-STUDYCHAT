@@ -18,13 +18,13 @@ async function fixture(t, options = {}) {
   const env = { OPENAI_API_KEY: 'quiz-mock-only-not-a-real-api-key', OPENAI_MODEL: 'gpt-4.1-mini', ...options.env };
   const text = options.naturalText || 'Which part would you like to work through together?';
   const draft = { segments: [{ id: 's1', text, sourceChunkIds: [] }] };
-  const review = { approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 0, claims: [], flags: [] }] };
+  const review = { version: 2, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 0, claims: [], flags: [] }] };
   const fetchImpl = async (url, request) => {
     providerCalls++;
     const payload = JSON.parse(request.body);
     const schema = payload.response_format?.json_schema?.name;
-    assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review'].includes(schema), `Unexpected generated contract ${schema}`);
-    return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 7, completion_tokens: 3 }, choices: [{ message: { content: JSON.stringify(schema === 'family_medicine_natural_review' ? review : draft) } }] });
+    assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review_v2'].includes(schema), `Unexpected generated contract ${schema}`);
+    return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 7, completion_tokens: 3 }, choices: [{ message: { content: JSON.stringify(schema === 'family_medicine_natural_review_v2' ? review : draft) } }] });
   };
   let server;
   let base;

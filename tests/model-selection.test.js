@@ -8,6 +8,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
+import { sourceSpanSupport } from './fixtures/natural-review-v2.js';
 
 const ACCESS_TOKEN = 'owner-model-test-token-at-least-24-characters';
 const API_KEY = 'mock-provider-key-must-never-be-exported';
@@ -17,10 +18,10 @@ const MANAGEMENT_FACT = studyCondition().sections.find(section => section.id ===
 
 function naturalContent(body) {
   const schema = body.response_format?.json_schema?.name;
-  assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review'].includes(schema), `Unexpected generated contract ${schema}`);
-  assert.ok(body.messages.some(message => message.content.includes(schema === 'family_medicine_natural_review' ? 'NATURAL_REVIEW_DATA' : 'NATURAL_TUTOR_CONTEXT')));
-  const reply = schema === 'family_medicine_natural_review'
-    ? { approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: MANAGEMENT_FACT, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [{ chunkId: 'asthma:management', excerpt: MANAGEMENT_FACT }] }], flags: [] }] }
+  assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review_v2'].includes(schema), `Unexpected generated contract ${schema}`);
+  assert.ok(body.messages.some(message => message.content.includes(schema === 'family_medicine_natural_review_v2' ? 'NATURAL_REVIEW_DATA' : 'NATURAL_TUTOR_CONTEXT')));
+  const reply = schema === 'family_medicine_natural_review_v2'
+    ? { version: 2, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: MANAGEMENT_FACT, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [sourceSpanSupport(body, 'asthma:management')] }], flags: [] }] }
     : { segments: [{ id: 's1', text: MANAGEMENT_FACT, sourceChunkIds: ['asthma:management'] }] };
   return JSON.stringify(reply);
 }

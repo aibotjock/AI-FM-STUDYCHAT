@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { renderReviewedTutor } from '../server/natural-tutor.js';
-import { runNaturalConversationCheck, NATURAL_CHECK_TITLE, NATURAL_CHECK_TURNS, LEGACY_NATURAL_STUDY_TURN } from '../server/natural-conversation-check.js';
+import { runNaturalConversationCheck, NATURAL_CHECK_TITLE, NATURAL_CHECK_TURNS, LEGACY_NATURAL_STUDY_TURN, LEGACY_NATURAL_STUDY_V2_TURN } from '../server/natural-conversation-check.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
 
 const BASE = 'http://127.0.0.1:3000/';
-const ENV = { STUDY_INITIAL_CONVERSATION_CHECK: 'natural-v2', AI_PROVIDER: 'openai', APP_MODE: 'personal', STUDY_ACCESS_TOKEN: 'mock-owner-secret', OPENAI_API_KEY: 'mock-openai-secret' };
+const ENV = { STUDY_INITIAL_CONVERSATION_CHECK: 'natural-v3', AI_PROVIDER: 'openai', APP_MODE: 'personal', STUDY_ACCESS_TOKEN: 'mock-owner-secret', OPENAI_API_KEY: 'mock-openai-secret' };
 const STATUS = { aiConfigured: true, providerId: 'openai', model: 'gpt-4.1-mini' };
 function harness({ state = { conversations: [] }, status = STATUS, failChat, alterReply } = {}) {
   const curriculum = createStudyCurriculum({ records: [studyCondition({ id: 'atrial-fibrillation', name: 'Atrial fibrillation', aliases: ['atrial fibrillation'], domain: 'chronic' })], now: () => STUDY_NOW });
@@ -88,15 +88,33 @@ test('foreign durable identity blocks fresh natural checks and preserves learner
 });
 
 
-test('v2 correction reuses passed hello and nickname context and preserves the rejected v1 study identity', async () => {
+test('v3 correction reuses passed context and preserves both rejected v1 and v2 study identities', async () => {
   const mock = harness(); assert.equal((await invoke(mock)).naturalConversationPassed, true);
   const conversation = mock.state.conversations[0];
-  conversation.messages[4] = { ...conversation.messages[4], ...LEGACY_NATURAL_STUDY_TURN };
-  conversation.messages[5] = { id: 'rejected-v1-reply', role: 'assistant', responseTo: conversation.messages[4].id, content: 'A fixed source-check failure.', unsupported: true, studyRejection: { reasonId: 302 } };
+  conversation.messages[4] = { ...conversation.messages[4], id: 'old-v1-user', ...LEGACY_NATURAL_STUDY_TURN };
+  conversation.messages[5] = { id: 'rejected-v1-reply', role: 'assistant', responseTo: 'old-v1-user', content: 'A fixed source-check failure.', unsupported: true, studyRejection: { reasonId: 302 } };
+  conversation.messages.push({ id: 'old-v2-user', role: 'user', ...LEGACY_NATURAL_STUDY_V2_TURN }, { id: 'rejected-v2-reply', role: 'assistant', responseTo: 'old-v2-user', content: 'A fixed source-support failure.', unsupported: true, studyRejection: { reasonId: 305 } });
   const before = mock.requests.filter(item => item.path === '/api/chat').length;
   const receipt = await invoke(mock);
   assert.equal(receipt.naturalConversationPassed, true); assert.equal(receipt.submitted, 1); assert.equal(receipt.providerCalls, 2); assert.deepEqual(receipt.turns.map(turn => turn.cached), [true, true, false]);
   assert.equal(mock.requests.filter(item => item.path === '/api/chat').length, before + 1);
   assert.equal(conversation.messages[5].id, 'rejected-v1-reply');
+  assert.equal(conversation.messages[7].id, 'rejected-v2-reply');
   assert.equal(mock.requests.filter(item => item.path === '/api/chat' && item.body.requestId === LEGACY_NATURAL_STUDY_TURN.requestId).length, 0);
+  assert.equal(mock.requests.filter(item => item.path === '/api/chat' && item.body.requestId === LEGACY_NATURAL_STUDY_V2_TURN.requestId).length, 0);
+  const reused = await invoke(mock);
+  assert.equal(reused.naturalConversationPassed, true); assert.equal(reused.submitted, 0); assert.equal(reused.providerCalls, 0);
+});
+
+test('v3 operator support-rejection receipt retains bounded diagnostics without source IDs or private text', async () => {
+  const mock = harness({ alterReply: (message, index) => {
+    if (index !== 2) return;
+    message.unsupported = true;
+    message.studyRejection = { reasonId: 305, diagnostics: { subcode: 'support_span_unknown', claimIndex: 0, supportIndex: 0, supportCount: 99999, spanId: 'PRIVATE_SPAN', excerpt: 'PRIVATE_EXCERPT', error: 'PRIVATE_ERROR' } };
+  } });
+  const receipt = await invoke(mock);
+  assert.equal(receipt.stage, 'natural_reply_validation'); assert.equal(receipt.rejectionReasonId, 305);
+  assert.deepEqual(receipt.reviewDiagnostics, { version: 1, stage: 'review', subcode: 'support_span_unknown', claimIndex: 0, supportIndex: 0, supportCount: 100 });
+  assert.doesNotMatch(JSON.stringify(receipt), /PRIVATE_|atrial-fibrillation:risk/);
+  assert.equal(receipt.logoutAttempted, true);
 });

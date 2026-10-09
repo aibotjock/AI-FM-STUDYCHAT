@@ -19,9 +19,9 @@ async function fixture(t, options = {}) {
     requests.push(payload);
     let response;
     if (options.reply) response = options.reply;
-    else if (payload.response_format?.json_schema?.name === 'family_medicine_natural_review') {
+    else if (payload.response_format?.json_schema?.name === 'family_medicine_natural_review_v2') {
       const data = JSON.parse(payload.messages.find(message => message.content.includes('NATURAL_REVIEW_DATA=')).content.split('NATURAL_REVIEW_DATA=')[1]);
-      response = { approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: segment.sourceChunkIds.length ? 1 : 0, flags: [], claims: segment.sourceChunkIds.length ? [{ quote: segment.text, type: 'medical', sourceChunkIds: segment.sourceChunkIds, supports: segment.sourceChunkIds.map(chunkId => ({ chunkId, excerpt: data.sources.find(source => source.key === chunkId).text })) }] : [] })) };
+      response = { version: 2, approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: segment.sourceChunkIds.length ? 1 : 0, flags: [], claims: segment.sourceChunkIds.length ? [{ quote: segment.text, type: 'medical', sourceChunkIds: segment.sourceChunkIds, supports: segment.sourceChunkIds.map(chunkId => ({ chunkId, spanId: data.sourceSpans.find(source => source.chunkId === chunkId).spanId })) }] : [] })) };
     } else {
       const data = JSON.parse(payload.messages.find(message => message.content.includes('NATURAL_TUTOR_CONTEXT=')).content.split('NATURAL_TUTOR_CONTEXT=')[1]);
       const source = data.sources.find(source => source.key === 'asthma:management') || data.sources[0];
@@ -149,7 +149,7 @@ test('connected study chat releases source-reviewed natural text with canonical 
   assert.equal(result.body.message.citations[0].url, 'https://www.nhlbi.nih.gov/health/asthma');
   assert.equal(app.requests[0].response_format.type, 'json_schema');
   assert.equal(app.requests[0].response_format.json_schema.name, 'family_medicine_natural_tutor');
-  assert.equal(app.requests[1].response_format.json_schema.name, 'family_medicine_natural_review');
+  assert.equal(app.requests[1].response_format.json_schema.name, 'family_medicine_natural_review_v2');
   assert.ok(app.requests[0].messages.some(message => /not clinician approval/.test(message.content)));
   assert.equal((await app.request('/api/chat', 'POST', payload)).body.message.id, result.body.message.id);
   assert.equal(app.calls(), 2);

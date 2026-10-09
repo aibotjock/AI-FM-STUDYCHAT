@@ -8,6 +8,7 @@ import { request as httpRequest } from 'node:http';
 import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
+import { sourceSpanSupport } from './fixtures/natural-review-v2.js';
 
 const ACCESS_TOKEN = 'test-access-token-at-least-24-characters';
 const cardInput = { front: 'What should I recall?', back: 'One clear idea.', topic: 'Recall', sourceTitle: '', sourceUrl: '', verified: false };
@@ -15,11 +16,11 @@ const managementFact = studyCondition().sections.find(section => section.id === 
 
 function naturalReply(payload, { factual = true } = {}) {
   const schema = payload.response_format?.json_schema?.name;
-  assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review'].includes(schema), `Unexpected generated contract ${schema}`);
+  assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review_v2'].includes(schema), `Unexpected generated contract ${schema}`);
   const text = factual ? managementFact : 'Which study step would you like to work through together?';
   const sourceChunkIds = factual ? ['asthma:management'] : [];
-  const reply = schema === 'family_medicine_natural_review'
-    ? { approved: true, segments: [{ id: 's1', approved: true, externalFactCount: factual ? 1 : 0, claims: factual ? [{ quote: text, type: 'medical', sourceChunkIds, supports: [{ chunkId: 'asthma:management', excerpt: managementFact }] }] : [], flags: [] }] }
+  const reply = schema === 'family_medicine_natural_review_v2'
+    ? { version: 2, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: factual ? 1 : 0, claims: factual ? [{ quote: text, type: 'medical', sourceChunkIds, supports: [sourceSpanSupport(payload, 'asthma:management')] }] : [], flags: [] }] }
     : { segments: [{ id: 's1', text, sourceChunkIds }] };
   return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 7, completion_tokens: 3 }, choices: [{ message: { content: JSON.stringify(reply) } }] });
 }

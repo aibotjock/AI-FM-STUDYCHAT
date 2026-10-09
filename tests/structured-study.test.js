@@ -81,9 +81,9 @@ async function appFixture(t, completion) {
     assert.equal(body.response_format.type, 'json_schema');
     assert.equal(body.response_format.json_schema.strict, true);
     assert.ok(body.max_completion_tokens > 0 && body.max_completion_tokens <= 1800);
-    if (body.response_format.json_schema.name === 'family_medicine_natural_review') {
+    if (body.response_format.json_schema.name === 'family_medicine_natural_review_v2') {
       const data = JSON.parse(body.messages.find(message => message.content.includes('NATURAL_REVIEW_DATA=')).content.split('NATURAL_REVIEW_DATA=')[1]);
-      return reply(JSON.stringify({ approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: segment.sourceChunkIds.length ? 1 : 0, flags: [], claims: segment.sourceChunkIds.length ? [{ quote: segment.text, type: 'medical', sourceChunkIds: segment.sourceChunkIds, supports: segment.sourceChunkIds.map(chunkId => ({ chunkId, excerpt: data.sources.find(source => source.key === chunkId).text })) }] : [] })) }));
+      return reply(JSON.stringify({ version: 2, approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: segment.sourceChunkIds.length ? 1 : 0, flags: [], claims: segment.sourceChunkIds.length ? [{ quote: segment.text, type: 'medical', sourceChunkIds: segment.sourceChunkIds, supports: segment.sourceChunkIds.map(chunkId => ({ chunkId, spanId: data.sourceSpans.find(source => source.chunkId === chunkId).spanId })) }] : [] })) }));
     }
     assert.equal(body.response_format.json_schema.name, 'family_medicine_natural_tutor');
     return reply(completion);

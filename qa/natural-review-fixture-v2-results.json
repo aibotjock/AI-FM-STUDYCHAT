@@ -1,0 +1,16 @@
+{
+  "runAt": "2026-10-09T19:18:47.544Z",
+  "scope": "One new isolated fixture-contract check executes the migrated review branches directly against current v2 schemas/prompts/rendering; browser and player suites were not rerun.",
+  "paidProviderCalls": 0,
+  "results": [
+    {
+      "name": "Current premium nonfactual and natural factual mock review branches use v2 and canonical span IDs while accepted metadata remains version1",
+      "pass": true
+    }
+  ],
+  "readOnlySpeechReview": {
+    "sourceValidation409": "Stops authenticated premium operation; no branch to device synthesis.",
+    "productionInjection": true,
+    "frontendCodeChanged": false
+  }
+}

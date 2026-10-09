@@ -18,9 +18,9 @@ async function fixture(t, { reply, env = {} } = {}) {
     const payload = JSON.parse(request.body);
     requests.push(payload);
     let output;
-    if (payload.response_format?.json_schema?.name === 'family_medicine_natural_review') {
+    if (payload.response_format?.json_schema?.name === 'family_medicine_natural_review_v2') {
       const data = JSON.parse(payload.messages.find(message => message.content.includes('NATURAL_REVIEW_DATA=')).content.split('NATURAL_REVIEW_DATA=')[1]);
-      output = { approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: 0, flags: [], claims: [] })) };
+      output = { version: 2, approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: 0, flags: [], claims: [] })) };
     } else output = typeof reply === 'function' ? reply(payload, requests.length) : reply;
     return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 5, completion_tokens: 5 }, choices: [{ message: { content: JSON.stringify(output) } }] });
   };

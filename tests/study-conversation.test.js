@@ -22,7 +22,7 @@ async function fixture(t, respond) {
     const prompt = body.messages.find(message => /NATURAL_(?:TUTOR_CONTEXT|REVIEW_DATA)=/.test(message.content))?.content;
     const reviewing = prompt.includes('NATURAL_REVIEW_DATA=');
     const context = JSON.parse(prompt.split(reviewing ? 'NATURAL_REVIEW_DATA=' : 'NATURAL_TUTOR_CONTEXT=')[1]);
-    const reply = reviewing ? { approved: true, segments: context.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: 0, claims: [], flags: [] })) } : respond(context, calls.length);
+    const reply = reviewing ? { version: 2, approved: true, segments: context.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: 0, claims: [], flags: [] })) } : respond(context, calls.length);
     return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 20, completion_tokens: 10 }, choices: [{ message: { content: JSON.stringify(reply) } }] });
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
