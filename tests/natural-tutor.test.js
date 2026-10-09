@@ -98,6 +98,11 @@ test('a nonnative selected model receives complete privacy-safe author and revie
     assert.doesNotMatch(compiled, /PRIVATE_LEARNER_NAME_174|What would you like to chat about/);
     assert.equal(schema.additionalProperties, false);
     const reviewing = prompt.includes('NATURAL_REVIEW_DATA=');
+    if (!reviewing) {
+      assert.match(prompt, /within 80 words unless the learner asks for detail/);
+      assert.match(prompt, /answer a request for detail fully within the output limits/);
+      assert.match(prompt, /Preserve every clinically necessary qualifier and exception/);
+    }
     assert.deepEqual(schema.required, reviewing ? ['version', 'approved', 'segments'] : ['segments']);
     assert.deepEqual(schema.properties.segments.items.required, reviewing ? ['id', 'approved', 'externalFactCount', 'claims', 'flags'] : ['id', 'text', 'sourceChunkIds']);
     assert.equal(schema.properties.segments.items.additionalProperties, false);

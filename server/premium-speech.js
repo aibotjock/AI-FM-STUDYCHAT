@@ -5,7 +5,7 @@ import { STUDY_NO_EVIDENCE, STUDY_REAL_CARE_REDIRECT } from './study-curriculum.
 export const PREMIUM_SPEECH_MODEL = 'gpt-4o-mini-tts';
 export const PREMIUM_VOICES = Object.freeze(['marin', 'cedar', 'coral', 'sage', 'ash'].map(id => Object.freeze({ id, label: id[0].toUpperCase() + id.slice(1) })));
 export const PREMIUM_PREVIEW_TEXT = 'Hello. I am your AI study voice. We can work through one question at a time, at your pace.';
-export const PREMIUM_SPEECH_LIMITS = Object.freeze({ maxChunkChars: 4096, maxChunks: 8, maxTotalChars: 24000, maxAudioBytes: 3 * 1024 * 1024, cacheBytes: 16 * 1024 * 1024, cacheEntries: 16, cacheTtlMs: 5 * 60 * 1000, timeoutMs: 45000, maxLedgerEntries: 10000 });
+export const PREMIUM_SPEECH_LIMITS = Object.freeze({ maxChunkChars: 4096, maxChunks: 8, maxTotalChars: 24000, firstChunkThresholdChars: 1000, firstChunkMinChars: 360, firstChunkTargetChars: 420, firstChunkMaxChars: 640, maxAudioBytes: 3 * 1024 * 1024, cacheBytes: 16 * 1024 * 1024, cacheEntries: 16, cacheTtlMs: 5 * 60 * 1000, timeoutMs: 45000, maxLedgerEntries: 10000 });
 const endpoint = 'https://api.openai.com/v1/audio/speech';
 const digest = value => createHash('sha256').update(value).digest('hex');
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -24,14 +24,34 @@ export function speechRequestId(value) {
   return value.toLowerCase();
 }
 
+function firstSpeechBoundary(text) {
+  if (text.length <= PREMIUM_SPEECH_LIMITS.firstChunkThresholdChars) return null;
+  const prefix = text.slice(0, PREMIUM_SPEECH_LIMITS.firstChunkMaxChars);
+  const eligible = match => {
+    const end = match.index + match[0].length;
+    return end >= PREMIUM_SPEECH_LIMITS.firstChunkMinChars ? end : null;
+  };
+  const paragraph = [...prefix.matchAll(/\n{2,}/g)].map(eligible).find(end => end !== null);
+  if (paragraph !== undefined) return paragraph;
+  const sentenceEnd = match => {
+    const before = prefix.slice(0, match.index + 1);
+    if (match[0][0] === '.' && /(?:\b(?:vs|dr|mr|mrs|ms|prof|sr|jr|st|no|fig|etc)\.|\b[A-Za-z]\.|\b(?:[A-Za-z]\.){2,}|\b\d+\.)$/i.test(before)) return null;
+    return eligible(match);
+  };
+  const sentences = [...prefix.matchAll(/[.!?]\s+/g)].map(sentenceEnd).filter(end => end !== null);
+  return sentences.find(end => end >= PREMIUM_SPEECH_LIMITS.firstChunkTargetChars) || sentences.at(-1) || null;
+}
+
 /** Every character is retained. A long response is refused rather than silently clipped. */
 export function splitPremiumSpeech(text) {
   if (typeof text !== 'string' || !text.trim() || text.includes('\0') || text.length > PREMIUM_SPEECH_LIMITS.maxTotalChars) fail(409, 'This reply is too long or unavailable for speech. Choose a shorter study reply.', 'speech_text_limit');
   const chunks = [];
   let offset = 0;
+  const firstEnd = firstSpeechBoundary(text);
   while (offset < text.length) {
-    let end = Math.min(offset + PREMIUM_SPEECH_LIMITS.maxChunkChars, text.length);
-    if (end < text.length) {
+    const shortFirst = offset === 0 && firstEnd !== null;
+    let end = shortFirst ? firstEnd : Math.min(offset + PREMIUM_SPEECH_LIMITS.maxChunkChars, text.length);
+    if (!shortFirst && end < text.length) {
       const tailStart = Math.max(offset, end - 512);
       const tail = text.slice(tailStart, end);
       const sentences = [...tail.matchAll(/[.!?]\s+|\n+/g)];
@@ -155,7 +175,7 @@ export function createPremiumSpeechService({ env = process.env, fetchImpl = glob
     active.set(requestId, controller);
     const startedAt = now();
     try {
-      const response = await fetchImpl(endpoint, { method: 'POST', redirect: 'error', signal: requestSignal, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` }, body: JSON.stringify({ model: PREMIUM_SPEECH_MODEL, voice, input: text, response_format: 'mp3', instructions: 'Read the supplied words exactly in a clear, warm, conversational voice. Do not add introductions, explanations, facts or advice.' }) });
+      const response = await fetchImpl(endpoint, { method: 'POST', redirect: 'error', signal: requestSignal, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` }, body: JSON.stringify({ model: PREMIUM_SPEECH_MODEL, voice, input: text, response_format: 'mp3', instructions: 'Read the supplied words exactly in a clearly projected, articulate conversational voice at a steady, natural pace. Use consistent audible delivery; do not whisper or trail off at sentence endings. Do not add introductions, explanations, facts or advice.' }) });
       if (!response.ok) { await response.body?.cancel?.().catch(() => {}); fail(response.status === 429 ? 429 : 502, 'OpenAI could not prepare this voice. No automatic retry was made.', 'speech_provider_failed'); }
       const audio = await boundedAudio(response);
       if (requestSignal.aborted) fail(409, 'This speech request was stopped.', 'speech_request_inactive');

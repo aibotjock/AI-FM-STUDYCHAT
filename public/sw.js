@@ -1,4 +1,4 @@
-const VERSION = 'fm-coach-shell-v9';
+const VERSION = 'fm-coach-shell-v10';
 const SHELL = ['/', '/index.html', '/styles.css', '/app.js', '/sourced-voice.js', '/premium-speech.js', '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png', '/shared/scheduler.js', '/shared/content.js', '/shared/blueprint.js'];
 self.addEventListener('install', event => { event.waitUntil(caches.open(VERSION).then(cache => cache.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', event => { event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== VERSION).map(key => caches.delete(key)))).then(() => self.clients.claim())); });

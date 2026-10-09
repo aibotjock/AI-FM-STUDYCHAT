@@ -6,31 +6,45 @@ export const DEFAULT_COACH_VOICE = 'marin';
 const voices = new Set(COACH_VOICES.map(voice => voice.id));
 
 /** Audio is fetched only by authenticated message identity or a fixed preview. */
-export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = window, documentImpl = document, getVoice = () => DEFAULT_COACH_VOICE, onState = () => {}, onUnauthorized = () => {} } = {}) {
+export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = window, documentImpl = document, getVoice = () => DEFAULT_COACH_VOICE, onState = () => {}, onUnauthorized = () => {}, now = () => windowImpl.performance?.now?.() ?? Date.now(), playbackWatchdogMs = 12000 } = {}) {
   let generation = 0, operation = null, destroyed = false;
-  let snapshot = { phase: 'idle', active: false, kind: null, voice: DEFAULT_COACH_VOICE, audioBlocked: false, message: '' };
+  let snapshot = { phase: 'idle', active: false, kind: null, voice: DEFAULT_COACH_VOICE, audioBlocked: false, message: '', elapsedMs: 0, firstAudioMs: null, chunkIndex: 0, chunkCount: null, currentTime: 0, duration: null };
   const previews = new Map();
-  const now = () => Date.now();
+  const setTimer = windowImpl.setTimeout?.bind(windowImpl) || setTimeout;
+  const clearTimer = windowImpl.clearTimeout?.bind(windowImpl) || clearTimeout;
+  const watchdogMs = Math.max(1000, Math.min(30000, Number(playbackWatchdogMs) || 12000));
   const label = id => COACH_VOICES.find(voice => voice.id === id)?.label || id;
   const valid = current => !destroyed && operation === current && current.generation === generation && !current.controller.signal.aborted && !documentImpl.hidden;
   const update = change => { snapshot = { ...snapshot, ...change }; onState({ ...snapshot }); };
+  function measured(current) {
+    const audio = current.audio;
+    return { elapsedMs: Math.max(0, now() - current.startedAt), firstAudioMs: current.firstAudioMs, chunkIndex: current.chunkIndex, chunkCount: current.chunkCount,
+      currentTime: Number.isFinite(audio?.currentTime) ? Math.max(0, audio.currentTime) : 0, duration: Number.isFinite(audio?.duration) && audio.duration > 0 ? audio.duration : null };
+  }
+  function clock(current) {
+    if (!valid(current)) return;
+    update(measured(current));
+    current.clockTimer = setTimer(() => clock(current), 1000);
+  }
+  function clearWatchdog(current) { clearTimer(current?.watchdogTimer); if (current) current.watchdogTimer = null; }
   function disposeAudio(current) {
+    clearWatchdog(current);
     const audio = current?.audio;
     if (audio) {
-      audio.onended = null; audio.onerror = null; audio.onplaying = null;
+      audio.onended = null; audio.onerror = null; audio.onplaying = null; audio.onwaiting = null; audio.onstalled = null; audio.onpause = null; audio.ontimeupdate = null; audio.onloadedmetadata = null;
       try { audio.pause(); audio.removeAttribute?.('src'); audio.load?.(); } catch {}
     }
     if (current?.objectUrl) windowImpl.URL.revokeObjectURL(current.objectUrl);
-    if (current) { current.audio = null; current.objectUrl = null; current.blob = null; }
+    if (current) { current.audio = null; current.objectUrl = null; current.blob = null; current.playVersion++; }
   }
   function stop({ clearCache = false } = {}) {
     generation++;
     const previous = operation; operation = null;
-    previous?.controller.abort();
+    previous?.controller.abort(); clearTimer(previous?.clockTimer);
     if (previous?.externalSignal && previous.abortListener) previous.externalSignal.removeEventListener('abort', previous.abortListener);
     disposeAudio(previous);
     if (clearCache) previews.clear();
-    update({ phase: 'idle', active: false, audioBlocked: false, kind: null, message: '' });
+    update({ phase: 'idle', active: false, audioBlocked: false, kind: null, message: '', elapsedMs: 0, firstAudioMs: null, currentTime: 0, duration: null });
   }
   function fail(current, error) {
     if (!valid(current)) return;
@@ -44,42 +58,96 @@ export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = wind
     const callback = current.callbacks.onEnd;
     stop(); callback?.();
   }
+  function pausePrepared(current, message) {
+    if (!valid(current) || !current.audio) return;
+    clearWatchdog(current); current.playVersion++;
+    current.ignorePause = true;
+    try { current.audio.pause(); } catch {}
+    current.ignorePause = false;
+    update({ ...measured(current), phase: 'paused', active: true, audioBlocked: true, message });
+    current.callbacks.onBlocked?.(message);
+  }
+  function armWatchdog(current) {
+    clearWatchdog(current);
+    const audio = current.audio;
+    current.watchdogTimer = setTimer(() => {
+      if (!valid(current) || current.audio !== audio) return;
+      if (audio.ended === true) { completeChunk(current, audio); return; }
+      if (audio.paused === true) { pausePrepared(current, 'Audio was paused. Tap Play audio to continue the prepared recording.'); return; }
+      if (Number.isFinite(audio.currentTime) && audio.currentTime > current.lastTime) {
+        current.lastTime = audio.currentTime; current.progressAt = now();
+        if (snapshot.phase !== 'playing') playing(current, audio);
+        else { update(measured(current)); armWatchdog(current); }
+        return;
+      }
+      pausePrepared(current, 'Audio did not advance. Tap Play audio to resume the prepared recording; no new voice request is needed.');
+    }, Math.max(0, watchdogMs - Math.max(0, now() - current.progressAt)));
+  }
+  function playing(current, audio) {
+    if (!valid(current) || current.audio !== audio || snapshot.phase === 'paused') return;
+    if (audio.ended === true) { completeChunk(current, audio); return; }
+    if (audio.paused === true) return;
+    if (!current.audioStarted) { current.audioStarted = true; current.progressAt = now(); }
+    if (current.firstAudioMs === null) current.firstAudioMs = Math.max(0, now() - current.startedAt);
+    update({ ...measured(current), phase: 'playing', active: true, audioBlocked: false, message: `Playing ${label(current.voice)} AI voice…` });
+    armWatchdog(current); current.callbacks.onStart?.();
+  }
+  function completeChunk(current, audio) {
+    if (!valid(current) || current.audio !== audio) return;
+    disposeAudio(current);
+    if (current.kind === 'reply' && current.chunkIndex + 1 < current.chunkCount) {
+      current.chunkIndex++; void loadChunk(current);
+    } else finished(current);
+  }
   async function playBuffer(current) {
     if (!valid(current) || !current.audio) return;
-    update({ phase: 'playing', active: true, audioBlocked: false, message: `Playing ${label(current.voice)} AI voice…` });
-    try { await current.audio.play(); }
+    if (current.audio.ended === true) { completeChunk(current, current.audio); return; }
+    const audio = current.audio, attempt = ++current.playVersion;
+    current.progressAt = now();
+    update({ phase: 'starting', active: true, audioBlocked: false, message: `Starting ${label(current.voice)} AI voice…` });
+    armWatchdog(current);
+    try { await audio.play(); }
     catch (error) {
-      if (!valid(current)) return;
-      if (error?.name === 'NotAllowedError') {
-        update({ phase: 'paused', active: true, audioBlocked: true, message: 'Tap Play audio to continue the prepared AI voice.' });
-        current.callbacks.onBlocked?.();
-      } else fail(current, error);
+      if (!valid(current) || current.audio !== audio || current.playVersion !== attempt) return;
+      if (error?.name === 'NotAllowedError') pausePrepared(current, 'Your browser paused audio. Tap Play audio to start the prepared recording.');
+      else fail(current, error);
     }
   }
   async function attachAudio(current, blob) {
     if (!valid(current)) return;
-    disposeAudio(current); current.blob = blob;
+    disposeAudio(current); current.blob = blob; current.lastTime = 0; current.audioStarted = false;
     current.objectUrl = windowImpl.URL.createObjectURL(blob);
     const audio = new windowImpl.Audio(current.objectUrl); current.audio = audio;
     audio.preload = 'auto';
-    audio.onplaying = () => {
-      if (!valid(current) || current.audio !== audio) return;
-      update({ phase: 'playing', active: true, audioBlocked: false, message: `Playing ${label(current.voice)} AI voice…` });
-      current.callbacks.onStart?.();
+    audio.onplaying = () => playing(current, audio);
+    const buffering = () => {
+      if (!valid(current) || current.audio !== audio || snapshot.phase === 'paused') return;
+      update({ ...measured(current), phase: 'buffering', message: 'Audio is buffering. Your microphone remains off.' }); armWatchdog(current);
     };
+    audio.onwaiting = buffering; audio.onstalled = buffering;
+    audio.onpause = () => {
+      if (!valid(current) || current.audio !== audio || current.ignorePause || audio.ended === true || snapshot.phase === 'paused') return;
+      pausePrepared(current, 'Audio was paused. Tap Play audio to continue the prepared recording.');
+    };
+    audio.ontimeupdate = () => {
+      if (!valid(current) || current.audio !== audio) return;
+      if (audio.ended === true) { completeChunk(current, audio); return; }
+      if (Number.isFinite(audio.currentTime) && audio.currentTime > current.lastTime) {
+        current.lastTime = audio.currentTime;
+        current.progressAt = now();
+        if (snapshot.phase !== 'playing' && snapshot.phase !== 'paused') playing(current, audio);
+        else if (snapshot.phase === 'playing') { update(measured(current)); armWatchdog(current); }
+      }
+    };
+    audio.onloadedmetadata = () => { if (valid(current) && current.audio === audio) update(measured(current)); };
     audio.onerror = () => { if (valid(current) && current.audio === audio) fail(current, new Error('AI voice audio could not be played. No device voice was substituted.')); };
-    audio.onended = () => {
-      if (!valid(current) || current.audio !== audio) return;
-      disposeAudio(current);
-      if (current.kind === 'reply' && current.chunkIndex + 1 < current.chunkCount) {
-        current.chunkIndex++; void loadChunk(current);
-      } else finished(current);
-    };
+    audio.onended = () => completeChunk(current, audio);
     await playBuffer(current);
   }
   async function loadChunk(current) {
     if (!valid(current)) return;
-    update({ phase: 'loading', active: true, audioBlocked: false, message: `Preparing ${label(current.voice)} AI voice…` });
+    update({ ...measured(current), phase: 'loading', active: true, audioBlocked: false, message: current.chunkIndex ? `Preparing the next part of ${label(current.voice)} AI voice…` : `Preparing ${label(current.voice)} AI voice…` });
+    current.callbacks.onPreparing?.({ chunkIndex: current.chunkIndex, chunkCount: current.chunkCount });
     const cache = current.kind === 'preview' ? previews.get(current.voice) : null;
     if (cache && cache.expiresAt > now()) { current.chunkCount = 1; await attachAudio(current, cache.blob); return; }
     const requestId = current.requestIds.get(current.chunkIndex) || windowImpl.crypto.randomUUID();
@@ -113,12 +181,12 @@ export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = wind
     if (kind === 'reply' && (typeof options.conversationId !== 'string' || !options.conversationId || typeof options.messageId !== 'string' || !options.messageId)) throw new Error('AI voice needs a saved study reply.');
     stop();
     const Controller = windowImpl.AbortController || AbortController;
-    const current = { generation, kind, voice, conversationId: options.conversationId, messageId: options.messageId, chunkIndex: 0, chunkCount: null, requestIds: new Map(), controller: new Controller(), callbacks: options, externalSignal: options.signal, audio: null, objectUrl: null };
+    const current = { generation, kind, voice, conversationId: options.conversationId, messageId: options.messageId, chunkIndex: 0, chunkCount: null, requestIds: new Map(), controller: new Controller(), callbacks: options, externalSignal: options.signal, audio: null, objectUrl: null, playVersion: 0, startedAt: now(), firstAudioMs: null, clockTimer: null, watchdogTimer: null };
     operation = current;
     if (options.signal?.aborted) { stop(); return; }
     if (options.signal) { current.abortListener = () => { if (operation === current) stop(); }; options.signal.addEventListener('abort', current.abortListener, { once: true }); }
-    update({ phase: 'loading', active: true, kind, voice, audioBlocked: false });
-    await loadChunk(current);
+    update({ phase: 'loading', active: true, kind, voice, audioBlocked: false, elapsedMs: 0, firstAudioMs: null, chunkIndex: 0, chunkCount: null, currentTime: 0, duration: null });
+    clock(current); await loadChunk(current);
   }
   const onHidden = () => { if (documentImpl.hidden) stop({ clearCache: true }); };
   const onLeave = () => stop({ clearCache: true });

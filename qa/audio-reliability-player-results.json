@@ -1,0 +1,78 @@
+{
+  "attempts": [
+    {
+      "runAt": "2026-10-09T19:45:15.829Z",
+      "selectedScopes": "all-new-scopes",
+      "paidProviderCalls": 0,
+      "scope": "Only new premium media-event, progress-watchdog, same-buffer resume, completion and cancellation paths. Fake media and clock; no physical-phone sound quality or volume claim.",
+      "results": [
+        {
+          "scope": 0,
+          "name": "pending play promise times out safely; gesture resume retains the exact prepared buffer without another request",
+          "pass": true
+        },
+        {
+          "scope": 1,
+          "name": "real time progress resets the bounded stall watchdog; waiting and stalled events show buffering without false completion",
+          "pass": false,
+          "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0.4\n\n    at file:///workspace/scratch/6a873f63b964/AI-FM-STUDYCHAT/qa/audio-reliability-player-qa.mjs:145:45\n    at async check (file:///workspace/scratch/6a873f63b964/AI-FM-STUDYCHAT/qa/audio-reliability-player-qa.mjs:92:9)\n    at async file:///workspace/scratch/6a873f63b964/AI-FM-STUDYCHAT/qa/audio-reliability-player-qa.mjs:126:1"
+        },
+        {
+          "scope": 2,
+          "name": "external media pause offers same-buffer resume and preserves the user media volume",
+          "pass": false,
+          "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0.4\n\n    at file:///workspace/scratch/6a873f63b964/AI-FM-STUDYCHAT/qa/audio-reliability-player-qa.mjs:160:48\n    at async check (file:///workspace/scratch/6a873f63b964/AI-FM-STUDYCHAT/qa/audio-reliability-player-qa.mjs:92:9)\n    at async file:///workspace/scratch/6a873f63b964/AI-FM-STUDYCHAT/qa/audio-reliability-player-qa.mjs:149:1"
+        },
+        {
+          "scope": 3,
+          "name": "continuous mic resumes once after all confirmed chunks; missing ended event is handled only by the native ended flag",
+          "pass": true
+        },
+        {
+          "scope": 4,
+          "name": "stopwatch resets per operation; stop, abort and background discard stale media callbacks and watchdog timers",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "runAt": "2026-10-09T19:46:01.371Z",
+      "selectedScopes": [
+        1,
+        2
+      ],
+      "paidProviderCalls": 0,
+      "scope": "Only new premium media-event, progress-watchdog, same-buffer resume, completion and cancellation paths. Fake media and clock; no physical-phone sound quality or volume claim.",
+      "results": [
+        {
+          "scope": 1,
+          "name": "real time progress resets the bounded stall watchdog; waiting and stalled events show buffering without false completion",
+          "pass": true
+        },
+        {
+          "scope": 2,
+          "name": "external media pause offers same-buffer resume and preserves the user media volume",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "runAt": "2026-10-09T19:48:34.843Z",
+      "completedAt": "2026-10-09T19:48:34.852Z",
+      "durationMs": 9,
+      "reason": "Controller onPreparing callback now marks subsequent server audio preparation as preparing-audio; only materially affected controller scope 3 is repeated.",
+      "selectedScopes": [
+        3
+      ],
+      "paidProviderCalls": 0,
+      "scope": "Only new premium media-event, progress-watchdog, same-buffer resume, completion and cancellation paths. Fake media and clock; no physical-phone sound quality or volume claim.",
+      "results": [
+        {
+          "scope": 3,
+          "name": "continuous mic resumes once after all confirmed chunks; missing ended event is handled only by the native ended flag",
+          "pass": true
+        }
+      ]
+    }
+  ]
+}

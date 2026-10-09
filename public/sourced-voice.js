@@ -39,11 +39,12 @@ export function createSourcedVoiceCoach({ sendTurn, speechPlayer = null, onState
   const setTimer = windowImpl.setTimeout?.bind(windowImpl) || setTimeout;
   const clearTimer = windowImpl.clearTimeout?.bind(windowImpl) || clearTimeout;
   let generation = 0, turnVersion = 0, recognition = null, requestController = null;
-  let durationTimer = null, recognitionTimer = null, speechTimer = null;
+  let durationTimer = null, recognitionTimer = null, speechTimer = null, replyTimer = null;
   let conversationId = null, destroyed = false, speech = null;
   let spokenText = '', chunks = [], chunkIndex = 0;
-  let snapshot = { phase: 'idle', message: 'Talk with Coach about a study goal, learning point or question.', muted: false, audioBlocked: false, userCaption: '', assistantCaption: '', warning: '', model: null, setupPending: false };
-  const active = () => ['starting', 'listening', 'thinking', 'speaking', 'paused'].includes(snapshot.phase);
+  const now = () => windowImpl.performance?.now?.() ?? Date.now();
+  let snapshot = { phase: 'idle', message: 'Talk with Coach about a study goal, learning point or question.', muted: false, audioBlocked: false, userCaption: '', assistantCaption: '', warning: '', model: null, setupPending: false, replyWaitMs: 0 };
+  const active = () => ['starting', 'listening', 'thinking', 'preparing-audio', 'speaking', 'paused'].includes(snapshot.phase);
   const current = (attempt, turn) => !destroyed && attempt === generation && turn === turnVersion && active() && !documentImpl.hidden;
   function update(change) { snapshot = { ...snapshot, ...change }; onState({ ...snapshot, active: active() }); }
   function cancelSpeech() {
@@ -62,11 +63,12 @@ export function createSourcedVoiceCoach({ sendTurn, speechPlayer = null, onState
   }
   function stop(message = 'Sourced voice stopped. Your microphone is off.', failed = false) {
     generation++; turnVersion++;
+    clearTimer(replyTimer); replyTimer = null;
     clearTimer(durationTimer); durationTimer = null;
     requestController?.abort(); requestController = null;
     cancelRecognition(); cancelSpeech();
     spokenText = ''; chunks = []; chunkIndex = 0;
-    update({ phase: failed ? 'error' : 'idle', message, muted: false, audioBlocked: false, setupPending: false });
+    update({ phase: failed ? 'error' : 'idle', message, muted: false, audioBlocked: false, setupPending: false, replyWaitMs: 0 });
     return Promise.resolve();
   }
   function pauseForAudio(message) {
@@ -127,31 +129,37 @@ export function createSourcedVoiceCoach({ sendTurn, speechPlayer = null, onState
   }
   async function submit(content, attempt, turn) {
     if (!current(attempt, turn)) return;
-    update({ phase: 'thinking', message: 'Preparing your study coaching reply…', setupPending: false, userCaption: content });
+    const replyStartedAt = now();
+    update({ phase: 'thinking', message: 'Preparing and checking your reply. Your microphone is off.', setupPending: false, userCaption: content, replyWaitMs: 0 });
+    const tickReply = () => { if (current(attempt, turn) && snapshot.phase === 'thinking') { update({ replyWaitMs: Math.max(0, now() - replyStartedAt) }); replyTimer = setTimer(tickReply, 1000); } };
+    replyTimer = setTimer(tickReply, 1000);
     const Controller = windowImpl.AbortController || AbortController;
     const controller = new Controller(); requestController = controller;
     try {
       const id = windowImpl.crypto?.randomUUID?.() || `voice-${Date.now()}-${Math.random().toString(36).slice(2)}`;
       const reply = await sendTurn({ content, conversationId, requestId: id, signal: controller.signal });
       if (!current(attempt, turn) || controller.signal.aborted) return;
+      clearTimer(replyTimer); replyTimer = null;
       if (!reviewedSpokenReply(reply) && !canonicalSpokenReply(reply)) {
         stop('That reply did not pass the conversation or source checks for readout. Voice did not read it. Review the visible message or open a current study topic.', true);
         return;
       }
       spokenText = reply.content; chunks = speechPlayer ? [] : speechChunks(spokenText); chunkIndex = 0;
-      update({ assistantCaption: spokenText, warning: '' });
+      update({ assistantCaption: spokenText, warning: '', replyWaitMs: Math.max(0, now() - replyStartedAt) });
       if (speechPlayer) {
+        update({ phase: 'preparing-audio', message: 'Your reply is checked. Preparing AI audio; your microphone is off.' });
         await speechPlayer.play({ conversationId, messageId: reply.messageId, signal: controller.signal,
+          onPreparing: detail => { if (current(attempt, turn)) update({ phase: 'preparing-audio', message: detail.chunkIndex ? 'Preparing the next audio part. Your microphone remains off.' : 'Your reply is checked. Preparing AI audio; your microphone is off.' }); },
           onStart: () => { if (current(attempt, turn)) update({ phase: 'speaking', message: 'Coach is speaking. Your microphone is off until the reply finishes.', audioBlocked: false }); },
           onEnd: () => { if (current(attempt, turn)) { turnVersion++; listen(generation, turnVersion); } },
-          onBlocked: () => { if (current(attempt, turn)) update({ phase: 'paused', audioBlocked: true, message: 'Tap Play audio to continue the prepared AI voice.', warning: 'Your microphone remains off while audio is paused. Play audio resumes without another voice request.' }); },
+          onBlocked: message => { if (current(attempt, turn)) update({ phase: 'paused', audioBlocked: true, message: message || 'Tap Play audio to continue the prepared AI voice.', warning: 'Your microphone remains off while audio is paused. Play audio resumes without another voice request.' }); },
           onError: error => { if (current(attempt, turn)) stop(error?.message || 'AI voice failed. Your reply remains in chat; no device voice was substituted.', true); },
         });
       } else speakChunk(attempt, turn);
     } catch (error) {
       if (!current(attempt, turn) || controller.signal.aborted) return;
       stop(error?.message || 'The study request failed. No automatic retry was made; use the visible chat to retry.', true);
-    } finally { if (requestController === controller) requestController = null; }
+    } finally { if (requestController === controller) { clearTimer(replyTimer); replyTimer = null; requestController = null; } }
   }
   function speakChunk(attempt = generation, turn = turnVersion) {
     if (!current(attempt, turn)) return;
@@ -202,6 +210,7 @@ export function createSourcedVoiceCoach({ sendTurn, speechPlayer = null, onState
   function interrupt() {
     if (!active()) return;
     turnVersion++;
+    clearTimer(replyTimer); replyTimer = null;
     requestController?.abort(); requestController = null;
     cancelRecognition(); cancelSpeech();
     spokenText = ''; chunks = []; chunkIndex = 0;

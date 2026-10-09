@@ -77,7 +77,7 @@ const boardSavedCards = new Set();
 const chatSavedCards = new Set();
 let searchTerm = '';
 let topicFilter = '';
-let chatBusy = false;
+let chatBusy = false, chatStartedAt = 0, chatWaitTimer = null;
 let chatDraft = '';
 let chatError = '';
 let pendingChatRequest = null;
@@ -114,12 +114,12 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
 let voiceState = { phase: 'idle', active: false, message: 'Start voice for a spoken conversation.', muted: false, audioBlocked: false, userCaption: '', assistantCaption: '', warning: '' };
 const premiumSpeech = createPremiumSpeechPlayer({
   getVoice: () => selectedVoice(),
-  onState: next => { premiumState = next; updateVoiceUI(); },
+  onState: next => { const timingOnly=next.phase===premiumState.phase&&next.message===premiumState.message&&next.active===premiumState.active&&next.audioBlocked===premiumState.audioBlocked;premiumState=next;updateVoiceUI(timingOnly); },
   onUnauthorized: () => endStudySession(),
 });
 const voiceCoach = createSourcedVoiceCoach({
   speechPlayer: premiumSpeech,
-  onState: next => { voiceState = next; updateVoiceUI(); },
+  onState: next => { const timingOnly=next.phase===voiceState.phase&&next.message===voiceState.message&&next.muted===voiceState.muted&&next.audioBlocked===voiceState.audioBlocked&&next.userCaption===voiceState.userCaption&&next.assistantCaption===voiceState.assistantCaption;voiceState=next;updateVoiceUI(timingOnly); },
   sendTurn: async ({ content, conversationId, requestId, signal }) => {
     const linkedCondition=state.conversations.find(item=>item.id===conversationId)?.curriculumConditionId;
     const result=await api('/api/chat',{method:'POST',body:JSON.stringify({conversationId,content,requestId,...(linkedCondition?{conditionIds:[linkedCondition]}:{})}),signal});
@@ -287,7 +287,7 @@ function renderCoach() {
       ['Ask me a board-style question', 'Quiz me on hypertension for family medicine board study. Ask one original question and wait for my answer.'],
       ['Work through a learning point', 'I want to study atrial fibrillation. Help me work through the source-linked summary and ask which part I find unclear.'],
     ].map(([label,prompt]) => `<button class="prompt-chip" data-action="starter" data-prompt="${esc(prompt)}">${esc(label)}<span>↗</span></button>`).join('')}</div></div>`}
-    ${chatBusy ? '<div class="message assistant"><div class="avatar">✦</div><div class="message-body"><div class="message-label">Coach is thinking</div><div class="typing" role="status" aria-label="Coach is thinking"><i></i><i></i><i></i></div></div></div>' : ''}
+    ${chatBusy ? `<div class="message assistant"><div class="avatar">✦</div><div class="message-body"><div class="message-label">Preparing and checking your reply</div><div class="typing" role="status" aria-label="Preparing and checking your reply"><i></i><i></i><i></i></div><small class="chat-wait-time">${Math.max(0,(performance.now()-chatStartedAt)/1000).toFixed(0)} s elapsed</small></div></div>` : ''}
     </div><div class="chat-compose">${messages.length ? coachFollowupActionsHtml() : ''}<div id="voice-controls" class="voice-controls">${voiceControlsHtml()}</div>${chatError ? `<div class="notice error" style="margin-bottom:10px">${esc(chatError)} <button class="text-button" data-action="dismiss-chat-error">Dismiss</button></div>` : ''}<form id="chat-form"><div class="compose-row"><label class="screen-reader" for="chat-input">Message your study coach</label><textarea id="chat-input" name="content" rows="1" placeholder="${voiceState.active ? 'Stop voice to type a message…' : 'Say hello, talk it through, or ask a study question…'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''} maxlength="12000">${esc(chatDraft)}</textarea>${voiceDictationSupported() ? `<button type="button" class="icon-button mic-button ${recording ? 'recording' : ''}" data-action="dictate" aria-label="${recording ? 'Stop dictation' : 'Dictate a message'}" title="${recording ? 'Stop dictation' : 'Dictate text; review before sending'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('mic')}</button>` : ''}<button type="submit" class="icon-button send-button" aria-label="Send message" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('send')}</button></div><div class="composer-note"><span id="voice-status">${recording ? 'Dictating text… tap the mic to stop, then review and send.' : voiceDictationSupported() ? 'Type or dictate text. Review before sending.' : 'Type or use your phone keyboard’s microphone.'}</span><span>Enter to send · Shift + Enter for a new line</span></div></form></div></section>
     <div class="chat-under"><small>Study only. No medical advice or clinical use. Use fictional cases.</small><button class="text-button" data-action="draft-cards" ${!lastAssistant || chatBusy || !canChat() ? 'disabled' : ''}>Create recall cards ↗</button></div></div>`;
 }
@@ -300,15 +300,31 @@ function coachFollowupActionsHtml() {
   ].map(([label,prompt])=>`<button class="button secondary" data-action="coach-followup" data-prompt="${esc(prompt)}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${label}</button>`).join('')}</div>`;
 }
 
+function audioTimingText() {
+  if (!premiumState.active) return '';
+  const time = value => `${Math.floor(value/60)}:${String(Math.floor(value%60)).padStart(2,'0')}`;
+  const part = premiumState.chunkCount ? ` · Part ${premiumState.chunkIndex+1} of ${premiumState.chunkCount}` : '';
+  if (premiumState.firstAudioMs === null) return `${(Math.max(0,premiumState.elapsedMs || 0)/1000).toFixed(0)} s ${premiumState.phase==='loading'?'preparing audio':'waiting for playback'}${part}`;
+  return `Playback started after ${(premiumState.firstAudioMs/1000).toFixed(1)} s${part}${premiumState.duration ? ` · ${time(premiumState.currentTime || 0)} / ${time(premiumState.duration)}` : ''}`;
+}
+function replyTimingText() {
+  if(!voiceState.active)return '';
+  if(voiceState.phase==='thinking')return `${(Math.max(0,voiceState.replyWaitMs || 0)/1000).toFixed(0)} s preparing and checking reply`;
+  return premiumState.active&&voiceState.assistantCaption ? `Reply checked in ${(Math.max(0,voiceState.replyWaitMs || 0)/1000).toFixed(1)} s` : '';
+}
+function updateAudioTiming() {
+  for (const item of document.querySelectorAll('.audio-timing')) item.textContent=audioTimingText();
+  for (const item of document.querySelectorAll('.reply-timing')) item.textContent=replyTimingText();
+}
 function premiumAudioControlsHtml() {
-  if (voiceState.active) return '';
-  return `${premiumState.audioBlocked ? '<button class="button secondary" data-action="premium-resume">Play audio</button>' : ''}${premiumState.active ? '<button class="button secondary" data-action="premium-stop">Stop audio</button>' : ''}<p class="premium-audio-status" role="status" aria-live="polite">${esc(premiumState.message)}</p>`;
+  return `${!voiceState.active && premiumState.audioBlocked ? '<button class="button secondary" data-action="premium-resume">Play audio</button>' : ''}${!voiceState.active && premiumState.active ? '<button class="button secondary" data-action="premium-stop">Stop audio</button>' : ''}<p class="premium-audio-status" role="status" aria-live="polite">${esc(premiumState.message)}</p><p class="audio-timing">${esc(audioTimingText())}</p>`;
 }
 function voiceControlsHtml() {
   const active = voiceState.active, label = COACH_VOICES.find(voice=>voice.id===selectedVoice()).label;
-  return `<div class="coach-voice-picker"><div class="form-field">${voiceSelectHtml('coach-voice')}</div><button class="button secondary" data-action="voice-preview" ${active || !premiumVoiceAvailable() ? 'disabled' : ''}>Preview voice</button><span class="pill ai-voice-badge">AI voice · ${label}</span></div><div class="voice-actions">${active ? `<button class="button secondary" data-action="voice-mute" aria-pressed="${voiceState.muted}">${voiceState.muted ? 'Unmute microphone' : 'Mute microphone'}</button><button class="button secondary" data-action="voice-interrupt" ${voiceState.phase === 'starting' ? 'disabled' : ''}>Interrupt readout</button><button class="button" data-action="voice-stop">Stop voice</button>` : `<button class="button" data-action="voice-start" ${chatBusy || startVoiceBusy || !voiceSupported() ? 'disabled' : ''}>${icon('mic')} ${startVoiceBusy ? 'Preparing voice…' : 'Talk with Coach'}</button>`}${voiceState.audioBlocked ? '<button class="button secondary" data-action="voice-speaker">Play audio</button>' : ''}${premiumAudioControlsHtml()}</div><p class="voice-session-status" role="status" aria-live="polite">${esc(voiceState.message)}</p>${voiceState.userCaption ? `<div class="voice-caption"><strong>You</strong><span>${esc(voiceState.userCaption)}</span></div>` : ''}${voiceState.assistantCaption ? `<div class="voice-caption"><strong>Coach</strong><span>${esc(voiceState.assistantCaption)}</span></div>` : ''}${voiceState.warning ? `<div class="notice error" role="alert">${esc(voiceState.warning)}</div>` : ''}<p class="voice-note">These voices are AI-generated by OpenAI. ${voiceSupported() ? 'Coach speaks the checked chat reply, then listens for your next turn. The microphone stays off while audio is prepared or played. Up to 10 minutes.' : premiumVoiceAvailable() ? 'Use Read aloud for AI voice. Talk with Coach needs HTTPS and browser speech recognition; if unavailable, use your phone keyboard microphone.' : 'AI voice is not configured. Type or use your phone keyboard microphone.'} Source links stay visible. Your browser may send dictation to its speech service; checked reply text goes to OpenAI for speech. This app saves no audio files. Check transcription. Study only; no medical advice or clinical use.</p>`;
+  return `<div class="coach-voice-picker"><div class="form-field">${voiceSelectHtml('coach-voice')}</div><button class="button secondary" data-action="voice-preview" ${active || !premiumVoiceAvailable() ? 'disabled' : ''}>Preview voice</button><span class="pill ai-voice-badge">AI voice · ${label}</span></div><div class="voice-actions">${active ? `<button class="button secondary" data-action="voice-mute" aria-pressed="${voiceState.muted}">${voiceState.muted ? 'Unmute microphone' : 'Mute microphone'}</button><button class="button secondary" data-action="voice-interrupt" ${voiceState.phase === 'starting' ? 'disabled' : ''}>Interrupt readout</button><button class="button" data-action="voice-stop">Stop voice</button>` : `<button class="button" data-action="voice-start" ${chatBusy || startVoiceBusy || !voiceSupported() ? 'disabled' : ''}>${icon('mic')} ${startVoiceBusy ? 'Preparing voice…' : 'Talk with Coach'}</button>`}${voiceState.audioBlocked ? '<button class="button secondary" data-action="voice-speaker">Play audio</button>' : ''}${premiumAudioControlsHtml()}</div><p class="voice-session-status" role="status" aria-live="polite">${esc(voiceState.message)}</p><p class="reply-timing">${esc(replyTimingText())}</p><p class="audio-output-hint">Hard to hear? Check your phone’s media volume and whether sound is routed to Bluetooth or headphones.</p>${voiceState.userCaption ? `<div class="voice-caption"><strong>You</strong><span>${esc(voiceState.userCaption)}</span></div>` : ''}${voiceState.assistantCaption ? `<div class="voice-caption"><strong>Coach</strong><span>${esc(voiceState.assistantCaption)}</span></div>` : ''}${voiceState.warning ? `<div class="notice error" role="alert">${esc(voiceState.warning)}</div>` : ''}<p class="voice-note">These voices are AI-generated by OpenAI. ${voiceSupported() ? 'Coach speaks the checked chat reply, then listens for your next turn. The microphone stays off while audio is prepared or played. Up to 10 minutes.' : premiumVoiceAvailable() ? 'Use Read aloud for AI voice. Talk with Coach needs HTTPS and browser speech recognition; if unavailable, use your phone keyboard microphone.' : 'AI voice is not configured. Type or use your phone keyboard microphone.'} Source links stay visible. Your browser may send dictation to its speech service; checked reply text goes to OpenAI for speech. This app saves no audio files. Check transcription. Study only; no medical advice or clinical use.</p>`;
 }
-function updateVoiceUI() {
+function updateVoiceUI(timingOnly = false) {
+  if(timingOnly){updateAudioTiming();return;}
   const controls = $('#voice-controls'); if (controls) controls.innerHTML = voiceControlsHtml();
   const input = $('#chat-input'); if (input) input.disabled = chatBusy || voiceState.active || !canChat();
   for (const button of document.querySelectorAll('#chat-form button,.chat-study-choices button,.coach-followups button')) button.disabled = chatBusy || voiceState.active || !canChat() || (button.dataset.action==='dictate' && premiumState.active);
@@ -734,7 +750,7 @@ async function sendMessage(content) {
   if (!navigator.onLine) { notify('Reconnect to send a message. Your draft is still here.'); return; }
   stopDictation();
   const submitted = content.trim();
-  chatBusy = true;
+  chatBusy = true; chatStartedAt=performance.now();clearInterval(chatWaitTimer);chatWaitTimer=setInterval(()=>{const label=$('.chat-wait-time');if(label)label.textContent=`${Math.max(0,(performance.now()-chatStartedAt)/1000).toFixed(0)} s elapsed`;},1000);
   render();
   try {
     if (!conversation()) await createConversation({ title: submitted.length > 55 ? `${submitted.slice(0,52)}…` : submitted });
@@ -759,7 +775,7 @@ async function sendMessage(content) {
     chatDraft = submitted;
     await refreshState().catch(() => {});
   } finally {
-    chatBusy = false;
+    chatBusy = false;clearInterval(chatWaitTimer);chatWaitTimer=null;
     render();
     if (screen === 'coach') $('#chat-input')?.focus({ preventScroll:true });
   }
