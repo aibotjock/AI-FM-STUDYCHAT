@@ -13,7 +13,7 @@ import { createIngeniumTelemetry, projectIngeniumMetadata } from './ingenium-tel
 import { createVoiceService, sanitizeVoiceEvents, VoiceError } from './voice.js';
 import { loadStudyCurriculum, loadStudyFoundations, combineStudyCurricula, needsStudyEvidence, isStudyQuizRequest, isActualCareRequest, studyChoice, STUDY_DISCLAIMER, STUDY_REAL_CARE_REDIRECT } from './study-curriculum.js';
 import { createBoardPractice, BoardPracticeError } from './board-practice.js';
-import { buildStudyDialoguePrompt, buildStudyDialogueSchema, isCoachingTurn, isDialogueFollowup, conversationalEvidence, pendingStudyQuestion, renderStudyDialogue, safeStudyDialogueFallback } from './study-conversation.js';
+import { buildStudyDialoguePrompt, buildStudyDialogueSchema, isCoachingTurn, isDialogueFollowup, conversationalEvidence, pendingStudyQuestion, renderStudyDialogue, safeStudyDialogueFallback, studyDialogueRejection, projectStudyDialoguePlan } from './study-conversation.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, timeZone: 'America/New_York', voiceEnabled: true, competencyRatings: {} });
@@ -743,8 +743,9 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             if (!generated && studyReferences && (evidence.length || coachingRequested || pending)) {
               if (ai.configured) {
                 completion = await complete([{ role: 'system', content: buildStudyDialoguePrompt({ references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending }) }, { role: 'user', content }], { jsonMode: true, jsonSchema: buildStudyDialogueSchema({ references: studyReferences, evidence, conversation }), maxOutputTokens: 512 });
-                try { generated = renderStudyDialogue(JSON.parse(completion.content), { references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending, medicalRequested, coachingRequested }); }
-                catch (error) { generated = { ...safeStudyDialogueFallback(), studyRejection: { code: error instanceof SyntaxError ? 'invalid_json' : 'invalid_dialogue_plan' } }; }
+                let parsed = null;
+                try { parsed = JSON.parse(completion.content); generated = renderStudyDialogue(parsed, { references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending, medicalRequested, coachingRequested }); }
+                catch (error) { generated = { content: 'I could not validate that tutoring response. No medical answer from it has been used. Would you like a cited study section or an original practice question?', citations: [], unsupported: true, studyRejection: { ...studyDialogueRejection(error), plan: projectStudyDialoguePlan(parsed, { references: studyReferences, evidence }) } }; }
               } else if (evidence.length && !coachingRequested && !pending) generated = studyReferences.render({ chunkIds: evidence.slice(0, 2).map(item => item.key), questionId: null, unsupported: false }, evidence);
               else generated = { content: sourcedStudyNavigation(conversation), scripted: true };
             } else if (!generated && studyReferences && medicalRequested) {

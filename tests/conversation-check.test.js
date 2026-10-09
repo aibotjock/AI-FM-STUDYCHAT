@@ -2,14 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { renderStudyDialogue } from '../server/study-conversation.js';
-import { runConversationCheck, CONVERSATION_CHECK_TITLE, CONVERSATION_CHECK_TURNS, LEGACY_CONVERSATION_FOLLOWUP } from '../server/conversation-check.js';
+import { runConversationCheck, CONVERSATION_CHECK_TITLE, CONVERSATION_CHECK_TURNS, LEGACY_CONVERSATION_FOLLOWUP, SCHEMA_CONVERSATION_FOLLOWUP } from '../server/conversation-check.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
 
 const BASE = 'http://127.0.0.1:3000/';
-const ENV = { STUDY_INITIAL_CONVERSATION_CHECK: 'dialogue-v2', AI_PROVIDER: 'openai', APP_MODE: 'personal', STUDY_ACCESS_TOKEN: 'mock-secret-owner-code', OPENAI_API_KEY: 'mock-secret-openai-key' };
+const ENV = { STUDY_INITIAL_CONVERSATION_CHECK: 'dialogue-v3', AI_PROVIDER: 'openai', APP_MODE: 'personal', STUDY_ACCESS_TOKEN: 'mock-secret-owner-code', OPENAI_API_KEY: 'mock-secret-openai-key' };
 const SETTINGS = { dailyMinutes: 18, coachStyle: 'socratic', focus: 'exam' };
 const STATUS = { aiConfigured: true, providerId: 'openai', model: 'gpt-4.1-mini' };
-function harness({ state = { settings: SETTINGS, conversations: [] }, status = STATUS, failChat, alterReply } = {}) {
+function harness({ state = { settings: SETTINGS, conversations: [] }, status = STATUS, failChat, alterReply, selectQuestion = false } = {}) {
   const curriculum = createStudyCurriculum({ records: [studyCondition({ id: 'atrial-fibrillation', name: 'Atrial fibrillation', aliases: ['atrial fibrillation'], domain: 'chronic' })], now: () => STUDY_NOW });
   const requests = [];
   let flushes = 0;
@@ -40,7 +40,7 @@ function harness({ state = { settings: SETTINGS, conversations: [] }, status = S
       conversation.messages.push(user);
       if (failChat) return failChat(index);
       const evidence = index ? curriculum.retrieve(body.content, { conditionIds: ['atrial-fibrillation'] }) : [];
-      const parsed = { chunkIds: index ? [evidence[0].key] : [], questionId: null, unsupported: false,
+      const parsed = { chunkIds: index ? [evidence[0].key] : [], questionId: index && selectQuestion ? `atrial-fibrillation:${curriculum.get('atrial-fibrillation').questions[0].id}` : null, unsupported: false,
         dialogue: { intent: index ? 'explain' : 'planning', acknowledgment: 'time', followup: index ? 'attempt-recall' : 'choose-topic', focusChunkId: index ? evidence[0].key : null, learnerQuote: null, minutes: index ? null : 15 } };
       const rendered = renderStudyDialogue(parsed, { references: curriculum, evidence, conversation, settings: SETTINGS, medicalRequested: index === 1 });
       const message = { id: `reply-${index}`, role: 'assistant', responseTo: user.id, ...rendered, sourceVerified: true, ...(index ? {} : { canonicalStudyProcess: true }),
@@ -148,7 +148,7 @@ test('failed saved-reply diagnostics contain only allowlisted metadata and never
   assert.equal(mock.requests.filter(item => item.path === '/api/chat').length, 1);
 });
 
-test('schema correction checks only the failed followup while reusing the passed plan and preserving the prior failed response', async () => {
+test('v3 correction reuses the passed plan and preserves both prior failed followups without resubmitting them', async () => {
   const mock = harness();
   assert.equal((await invoke(mock)).conversationPassed, true);
   const conversation = mock.state.conversations[0];
@@ -156,6 +156,7 @@ test('schema correction checks only the failed followup while reusing the passed
   // never replace it or submit its paid identity again.
   conversation.messages[2] = { ...conversation.messages[2], ...LEGACY_CONVERSATION_FOLLOWUP };
   conversation.messages[3] = { id: 'failed-old-reply', role: 'assistant', responseTo: conversation.messages[2].id, content: 'A safe source-gap reply.', unsupported: true };
+  conversation.messages.push({ id: 'schema-old-user', role: 'user', ...SCHEMA_CONVERSATION_FOLLOWUP }, { id: 'schema-old-reply', role: 'assistant', responseTo: 'schema-old-user', content: 'A safe source-gap reply.', unsupported: true });
   const before = mock.requests.filter(item => item.path === '/api/chat').length;
   const receipt = await invoke(mock);
   assert.equal(receipt.conversationPassed, true);
@@ -163,5 +164,36 @@ test('schema correction checks only the failed followup while reusing the passed
   assert.deepEqual(receipt.turns.map(turn => turn.cached), [true, false]);
   assert.equal(mock.requests.filter(item => item.path === '/api/chat').length, before + 1);
   assert.equal(conversation.messages[3].id, 'failed-old-reply');
+  assert.equal(conversation.messages[5].id, 'schema-old-reply');
   assert.equal(mock.requests.filter(item => item.path === '/api/chat' && item.body.requestId === LEGACY_CONVERSATION_FOLLOWUP.requestId).length, 0);
+  assert.equal(mock.requests.filter(item => item.path === '/api/chat' && item.body.requestId === SCHEMA_CONVERSATION_FOLLOWUP.requestId).length, 0);
+});
+
+test('dual canonical fact and quiz proof reconstructs the actual question and complete source union', async () => {
+  const mock = harness({ selectQuestion: true });
+  const receipt = await invoke(mock);
+  assert.equal(receipt.conversationPassed, true, JSON.stringify(receipt));
+  assert.equal(receipt.submitted, 2);
+  assert.ok(mock.state.conversations[0].messages[3].studySelection.chunkIds.length);
+  assert.ok(mock.state.conversations[0].messages[3].studyQuestion.key);
+  assert.equal(mock.state.conversations[0].messages[3].studyDialogue.followup, 'none');
+});
+
+test('projected rejection receipts preserve fixed reasons and counts while stripping private and unknown fields', async () => {
+  const unsafe = 'private-model-or-learner-prose';
+  const mock = harness({ alterReply: (message, index) => {
+    if (index === 1) {
+      message.unsupported = true;
+      message.studyRejection = { code: 'invalid_dialogue_plan', reasonId: 303, plan: { parseableObject: true, chunkIds: ['atrial-fibrillation:management', unsafe], chunkCount: 2, unknownChunkCount: 1, questionId: unsafe, unknownQuestion: true, unsupported: true, raw: unsafe, dialogue: { intent: 'explain', acknowledgment: 'none', followup: 'attempt-recall', learnerQuotePosition: 1, learnerQuoteText: unsafe, focusChunkId: unsafe, minutes: 15 } } };
+    }
+  } });
+  const receipt = await invoke(mock);
+  assert.equal(receipt.failed, true);
+  assert.equal(receipt.checks.rejectionReasonId, 303);
+  assert.equal(receipt.checks.rejectedPlan.chunkCount, 2);
+  assert.equal(receipt.checks.rejectedPlan.unknownChunkCount, 1);
+  assert.equal(receipt.checks.rejectedPlan.unknownQuestion, true);
+  assert.equal(receipt.checks.rejectedPlan.dialogue.learnerQuotePosition, 1);
+  assert.equal(JSON.stringify(receipt).includes(unsafe), false);
+  assert.equal(mock.requests.filter(item => item.path === '/api/chat').length, 2);
 });

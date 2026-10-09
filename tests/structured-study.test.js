@@ -108,8 +108,10 @@ test('malformed JSON or invented dialogue fields produce safe rejection codes wi
   for (const [content, code] of [['{LEAK_RAW_RESPONSE_SECRET', 'invalid_json'], [JSON.stringify({ chunkIds: ['asthma:invented-key'], questionId: null, unsupported: false, dialogue: { intent: 'invented-act', acknowledgment: 'none', followup: 'none', coachText: 'LEAK_RAW_RESPONSE_SECRET' } }), 'invalid_dialogue_plan']]) {
     const app = await appFixture(t, content);
     const result = await app.chat(`bad-${code}`);
-    assert.deepEqual(result.message.studyRejection, { code });
+    assert.equal(result.message.studyRejection.code, code);
+    assert.equal(Number.isInteger(result.message.studyRejection.reasonId), true);
     assert.equal(result.message.unsupported, true);
+    assert.equal(result.message.content, 'I could not validate that tutoring response. No medical answer from it has been used. Would you like a cited study section or an original practice question?');
     assert.equal(result.message.studyDialogue, undefined);
     assert.deepEqual(result.message.citations, []);
     assert.doesNotMatch(JSON.stringify(await app.api('/api/state')), /LEAK_RAW_RESPONSE_SECRET|invented-key|invented-act/);

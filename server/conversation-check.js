@@ -1,15 +1,16 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadStudyCurriculum } from './study-curriculum.js';
-import { renderStudyDialogue, STUDY_DIALOGUE_ENUMS } from './study-conversation.js';
+import { renderStudyDialogue, projectStudyDialoguePlan, STUDY_DIALOGUE_ENUMS } from './study-conversation.js';
 
 export const CONVERSATION_CHECK_TITLE = 'Operator conversation check · synthetic study';
 export const LEGACY_CONVERSATION_FOLLOWUP = Object.freeze({ requestId: 'study-dialogue-v1-followup-gpt-4.1-mini', content: 'I would like to study atrial fibrillation. Start our plan with a brief cited study point, then ask one recall question.' });
+export const SCHEMA_CONVERSATION_FOLLOWUP = Object.freeze({ requestId: 'study-dialogue-v2-followup-gpt-4.1-mini', content: 'For board study, explain one cited point about atrial fibrillation from the current library, then ask one recall question about that point.' });
 export const CONVERSATION_CHECK_TURNS = Object.freeze([
   { requestId: 'study-dialogue-v1-plan-gpt-4.1-mini', content: 'Help me plan a 15-minute study session. Ask me just one question at a time.' },
-  { requestId: 'study-dialogue-v2-followup-gpt-4.1-mini', content: 'For board study, explain one cited point about atrial fibrillation from the current library, then ask one recall question about that point.' }
+  { requestId: 'study-dialogue-v3-followup-gpt-4.1-mini', content: SCHEMA_CONVERSATION_FOLLOWUP.content }
 ]);
-const KNOWN_TURNS = [...CONVERSATION_CHECK_TURNS, LEGACY_CONVERSATION_FOLLOWUP];
+const KNOWN_TURNS = [...CONVERSATION_CHECK_TURNS, LEGACY_CONVERSATION_FOLLOWUP, SCHEMA_CONVERSATION_FOLLOWUP];
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const validId = value => typeof value === 'string' && /^[A-Za-z0-9._-]{1,100}$/.test(value);
@@ -33,7 +34,7 @@ function validateTurn(message, index, curriculum, conversation, settings) {
   let rendered;
   try {
     const marker = message.studyDialogue;
-    rendered = renderStudyDialogue({ chunkIds: message.studySelection?.chunkIds || [], questionId: null, unsupported: false,
+    rendered = renderStudyDialogue({ chunkIds: message.studySelection?.chunkIds || [], questionId: message.studyQuestion?.key || null, unsupported: false,
       dialogue: { intent: marker.intent, acknowledgment: marker.acknowledgment, followup: marker.followup, focusChunkId: marker.focusChunkId, learnerQuote: null, minutes: marker.minutes } },
     { references: curriculum, evidence, conversation, settings, medicalRequested: index === 1 });
   } catch { return false; }
@@ -43,13 +44,20 @@ function validateTurn(message, index, curriculum, conversation, settings) {
   let canonical;
   try { canonical = curriculum.render({ chunkIds: message.studySelection.chunkIds, questionId: null, unsupported: false }, evidence); } catch { return false; }
   return canonical.curriculum === true && canonical.conditionIds.length === 1 && canonical.conditionIds[0] === 'atrial-fibrillation' &&
-    message.content.includes(canonical.content) && message.spokenText.includes(canonical.content) && JSON.stringify(message.citations) === JSON.stringify(canonical.citations) &&
-    message.studyDialogue.followup !== 'none';
+    message.content.includes(canonical.content) && message.spokenText.includes(canonical.content) && JSON.stringify(message.citations) === JSON.stringify(rendered.citations) &&
+    (message.studyDialogue.followup !== 'none' || object(message.studyQuestion));
 }
 function savedReplyDiagnostics(message, curriculum) {
   const marker = message?.studyDialogue;
   const evidence = curriculum.retrieve(CONVERSATION_CHECK_TURNS[1].content, { conditionIds: ['atrial-fibrillation'] });
   const eligibleKeys = new Set(evidence.map(item => item.key));
+  const rejected = message?.studyRejection?.plan;
+  const reasonId = message?.studyRejection?.reasonId;
+  const safePlan = rejected?.parseableObject === false ? { parseableObject: false } : object(rejected) ? projectStudyDialoguePlan({ ...rejected, dialogue: { ...rejected.dialogue, learnerQuote: rejected.dialogue?.learnerQuotePosition } }, { references: curriculum, evidence }) : null;
+  if (safePlan?.parseableObject) {
+    for (const field of ['chunkCount', 'unknownChunkCount']) if (Number.isInteger(rejected[field]) && rejected[field] >= 0 && rejected[field] <= 1000) safePlan[field] = rejected[field];
+    safePlan.unknownQuestion = rejected.unknownQuestion === true;
+  }
   return { validDialogue: Boolean(validDialogue(message)), curriculum: message?.curriculum === true, current: message?.current === true,
     unsupported: message?.unsupported === true, selectionPresent: Array.isArray(message?.studySelection?.chunkIds),
     selectedChunks: (message?.studySelection?.chunkIds || []).filter(key => eligibleKeys.has(key)).slice(0, 4),
@@ -57,12 +65,14 @@ function savedReplyDiagnostics(message, curriculum) {
     intent: STUDY_DIALOGUE_ENUMS.intent.includes(marker?.intent) ? marker.intent : null,
     followup: STUDY_DIALOGUE_ENUMS.followup.includes(marker?.followup) ? marker.followup : null,
     learnerQuotePresent: marker?.learnerQuotePresent === true,
-    rejectionCode: ['invalid_json', 'invalid_dialogue_plan'].includes(message?.studyRejection?.code) ? message.studyRejection.code : null };
+    rejectionCode: ['invalid_json', 'invalid_dialogue_plan'].includes(message?.studyRejection?.code) ? message.studyRejection.code : null,
+    rejectionReasonId: [100,201,202,203,204,205,206,207,208,301,302,303,304,305,306,307,399].includes(reasonId) ? reasonId : null,
+    rejectedPlan: safePlan };
 }
 
 /** A new feature check only: two fixed turns, durable identities, no paid retry. */
 export async function runConversationCheck({ baseUrl, env = process.env, fetchImpl = globalThis.fetch, flushTelemetry = async () => {}, curriculum: suppliedCurriculum } = {}) {
-  if (env.STUDY_INITIAL_CONVERSATION_CHECK !== 'dialogue-v2') return { skipped: true };
+  if (env.STUDY_INITIAL_CONVERSATION_CHECK !== 'dialogue-v3') return { skipped: true };
   if ((env.APP_MODE || 'personal') !== 'personal' || (env.AI_PROVIDER || 'openai').trim().toLowerCase() !== 'openai') return { skipped: true, reason: 'personal_openai_only' };
   const base = new URL(baseUrl);
   if (base.protocol !== 'http:' || base.hostname !== '127.0.0.1' || base.pathname !== '/' || base.search || base.hash || base.username || base.password) throw new Error('Conversation checks require the local app listener.');

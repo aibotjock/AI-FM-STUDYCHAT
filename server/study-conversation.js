@@ -10,7 +10,9 @@ export const STUDY_DIALOGUE_ENUMS = Object.freeze({
 /** Strict provider constraints supplement, rather than replace, canonical runtime validation. */
 export function buildStudyDialogueSchema({ references, evidence, conversation = { messages: [] } }) {
   const chunkKeys = [...new Set(evidence.map(item => item.key))];
-  const questionKeys = [...new Set(evidence.map(item => item.conditionId))].flatMap(conditionId => {
+  const latest = conversation.messages.findLast(message => message.role === 'user')?.content || '';
+  const pointThenRecall = /\b(?:cited|source[- ]linked|source[- ]backed)\b[\s\S]*\bpoint\b[\s\S]*\brecall\b/i.test(latest) && !/\b(?:multiple[- ]choice|board[- ]style question|original board question)\b/i.test(latest);
+  const questionKeys = pointThenRecall ? [] : [...new Set(evidence.map(item => item.conditionId))].flatMap(conditionId => {
     const condition = references.get(conditionId);
     return condition?.current ? condition.questions.map(question => `${conditionId}:${question.id}`) : [];
   });
@@ -24,6 +26,35 @@ export function buildStudyDialogueSchema({ references, evidence, conversation = 
     chunkIds: { type: 'array', maxItems: chunkKeys.length ? 4 : 0, items: chunkKeys.length ? { type: 'string', enum: chunkKeys } : { type: 'string' } },
     questionId: nullableKey(questionKeys), unsupported: { type: 'boolean' }, dialogue: { type: 'object', additionalProperties: false, required: Object.keys(dialogueProperties), properties: dialogueProperties },
   } } };
+}
+
+const REJECTION_REASONS = new Map([
+  ['Invalid conversation selection.', 201], ['Invalid dialogue plan.', 202], ['Unknown dialogue act.', 203], ['Unknown dialogue focus.', 204], ['Invalid study time.', 205],
+  ['Invalid learner statement position.', 206], ['Unknown learner statement position.', 207], ['A learner quote must match recent learner words exactly.', 208],
+  ['Invalid study selection.', 301], ['Unknown selected study reference.', 302], ['Evidence-gap dialogue cannot claim cited facts.', 303],
+  ['Unknown, expired or conflicting study selection.', 304], ['Unknown or expired practice question.', 305], ['Selected evidence exceeds the bounded conversation reference limit.', 306], ['Study answers require selected evidence.', 307],
+]);
+
+/** Numeric reasons come only from fixed server messages; raw model/error text is never retained. */
+export function studyDialogueRejection(error) {
+  return { code: error instanceof SyntaxError ? 'invalid_json' : 'invalid_dialogue_plan', reasonId: error instanceof SyntaxError ? 100 : REJECTION_REASONS.get(error?.message) || 399 };
+}
+
+/** A failed plan can be debugged without storing private prose or unknown identifiers. */
+export function projectStudyDialoguePlan(parsed, { references, evidence }) {
+  if (!object(parsed)) return { parseableObject: false };
+  const chunks = new Set(evidence.map(item => item.key));
+  const questions = new Set([...new Set(evidence.map(item => item.conditionId))].flatMap(conditionId => {
+    const condition = references.get(conditionId);
+    return condition?.current ? condition.questions.map(question => `${conditionId}:${question.id}`) : [];
+  }));
+  const dialogue = object(parsed.dialogue) ? parsed.dialogue : {};
+  const acts = Object.fromEntries(['intent', 'acknowledgment', 'followup'].map(key => [key, STUDY_DIALOGUE_ENUMS[key].includes(dialogue[key]) ? dialogue[key] : null]));
+  const rawChunks = Array.isArray(parsed.chunkIds) ? parsed.chunkIds : [];
+  return { parseableObject: true, chunkIds: rawChunks.slice(0, 4).filter(key => chunks.has(key)), chunkCount: Math.min(rawChunks.length, 1000), unknownChunkCount: Math.min(rawChunks.filter(key => !chunks.has(key)).length, 1000),
+    questionId: questions.has(parsed.questionId) ? parsed.questionId : null, unknownQuestion: parsed.questionId !== null && parsed.questionId !== undefined && !questions.has(parsed.questionId), unsupported: typeof parsed.unsupported === 'boolean' ? parsed.unsupported : null,
+    dialogue: { ...acts, focusChunkId: chunks.has(dialogue.focusChunkId) ? dialogue.focusChunkId : null, learnerQuotePosition: Number.isInteger(dialogue.learnerQuote) && dialogue.learnerQuote >= 0 && dialogue.learnerQuote <= 7 ? dialogue.learnerQuote : null, minutes: Number.isInteger(dialogue.minutes) && dialogue.minutes >= 5 && dialogue.minutes <= 120 ? dialogue.minutes : null },
+  };
 }
 
 /** This classifier separates study-process requests from source requests; it never validates medical facts. */
@@ -152,11 +183,19 @@ export function renderStudyDialogue(parsed, { references, evidence, conversation
   let { dialogue, ...selection } = parsed;
   const latest = conversation.messages.findLast(message => message.role === 'user')?.content || '';
   const explicitReveal = !/\b(?:not|don't|don’t|never|without|avoid)\b[\s\S]{0,60}\b(?:reveal|show|give|tell|answer)\b/i.test(latest) && /^(?:(?:please|can you|could you|i want you to|i would like you to)\s+)*(?:(?:reveal|show|give|tell)\b[\s\S]*\b(?:answer|rationale|explanation)\b|explain (?:the )?answer\b)/i.test(latest.trim());
+  if (typeof selection.unsupported !== 'boolean' || !Array.isArray(selection.chunkIds) || selection.chunkIds.length > 4 || selection.chunkIds.some(key => typeof key !== 'string') || !(selection.questionId === null || typeof selection.questionId === 'string')) throw new Error('Invalid study selection.');
+  if (selection.chunkIds.some(key => !evidence.some(item => item.key === key))) throw new Error('Unknown selected study reference.');
+  selection.chunkIds = [...new Set(selection.chunkIds)];
+  if (selection.unsupported && (selection.chunkIds.length || selection.questionId)) throw new Error('Evidence-gap dialogue cannot claim cited facts.');
+  if (selection.questionId) {
+    const [conditionId, questionId, extra] = selection.questionId.split(':');
+    const condition = references.get(conditionId);
+    if (extra !== undefined || !condition?.current || !condition.questions.some(question => question.id === questionId) || !evidence.some(item => item.conditionId === conditionId)) throw new Error('Unknown or expired practice question.');
+  }
   // Existing operator checks and older selector clients retain their exact canonical rendering.
-  if (dialogue === undefined && (!pendingQuestion || explicitReveal || isStudyQuizRequest(latest))) return references.render(selection, evidence);
-  if (dialogue === undefined) dialogue = { intent: 'socratic', acknowledgment: 'uncertain', followup: 'explain-reasoning' };
+  if (dialogue === undefined && (!pendingQuestion || explicitReveal || isStudyQuizRequest(latest)) && !(selection.chunkIds.length && selection.questionId)) return references.render(selection, evidence);
+  if (dialogue === undefined) dialogue = pendingQuestion ? { intent: 'socratic', acknowledgment: 'uncertain', followup: 'explain-reasoning' } : { intent: 'explain', acknowledgment: 'none', followup: 'none' };
   const plan = validateDialogue(dialogue, evidence, conversation);
-  if (typeof selection.unsupported !== 'boolean' || !Array.isArray(selection.chunkIds) || selection.chunkIds.length > 4 || new Set(selection.chunkIds).size !== selection.chunkIds.length || selection.chunkIds.some(key => typeof key !== 'string' || !evidence.some(item => item.key === key)) || !(selection.questionId === null || typeof selection.questionId === 'string') || (selection.questionId && selection.chunkIds.length)) throw new Error('Invalid study selection.');
   if (coachingRequested) { selection.chunkIds = []; selection.questionId = null; selection.unsupported = false; }
   if (pendingQuestion && !explicitReveal && !isStudyQuizRequest(latest)) {
     selection.chunkIds = []; selection.questionId = null; selection.unsupported = false;
@@ -165,7 +204,16 @@ export function renderStudyDialogue(parsed, { references, evidence, conversation
   const hasFacts = Boolean(selection.chunkIds.length || selection.questionId);
   if (!hasFacts && medicalRequested && !pendingQuestion) selection.unsupported = true;
   if (selection.unsupported && hasFacts) throw new Error('Evidence-gap dialogue cannot claim cited facts.');
-  const canonical = hasFacts || selection.unsupported ? references.render(selection, evidence) : null;
+  let canonical;
+  if (selection.chunkIds.length && selection.questionId) {
+    const point = references.render({ ...selection, questionId: null }, evidence);
+    const question = references.render({ ...selection, chunkIds: [] }, evidence);
+    const citations = [...new Map([...point.citations, ...question.citations].map(source => [`${source.id}|${source.url}`, source])).values()];
+    if (citations.length > 10) throw new Error('Selected evidence exceeds the bounded conversation reference limit.');
+    canonical = { ...point, content: `${point.content}\n\n${question.content}`, citations, conditionIds: [...new Set([...point.conditionIds, ...question.conditionIds])], studyQuestion: question.studyQuestion };
+  } else canonical = hasFacts || selection.unsupported ? references.render(selection, evidence) : null;
+  // The canonical multiple-choice prompt already ends with its own response instruction.
+  if (canonical?.studyQuestion) plan.followup = 'none';
   const coaching = dialogueText(plan, { evidence, settings, hasFacts, pendingQuestion });
   const spokenText = [coaching.intro, canonical?.content, coaching.followup].filter(Boolean).join('\n\n') || 'What would you like to study next?';
   const quote = plan.learnerQuote === null ? '' : `Your words (unverified learner statement): “${plan.learnerQuote}”`;
