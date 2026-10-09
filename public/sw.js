@@ -1,5 +1,5 @@
-const VERSION = 'fm-coach-shell-v10';
-const SHELL = ['/', '/index.html', '/styles.css', '/app.js', '/sourced-voice.js', '/premium-speech.js', '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png', '/shared/scheduler.js', '/shared/content.js', '/shared/blueprint.js'];
+const VERSION = 'fm-coach-shell-v11';
+const SHELL = ['/', '/index.html', '/styles.css', '/app.js', '/sourced-voice.js', '/premium-speech.js', '/conversation-agent-adapter.js', '/vendor/conversation-agent/index.js', '/vendor/conversation-agent/voice-circle.css', '/vendor/conversation-agent/src/conversation-core.js', '/vendor/conversation-agent/src/browser-audio.js', '/vendor/conversation-agent/src/voice-circle.js', '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png', '/shared/scheduler.js', '/shared/content.js', '/shared/blueprint.js'];
 self.addEventListener('install', event => { event.waitUntil(caches.open(VERSION).then(cache => cache.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', event => { event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== VERSION).map(key => caches.delete(key)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', event => {

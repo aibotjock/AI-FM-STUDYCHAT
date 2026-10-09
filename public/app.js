@@ -1,9 +1,9 @@
 import { getDueCards, previewIntervals, studyStats } from '/shared/scheduler.js';
 import { ABFM_BLUEPRINT } from '/shared/blueprint.js';
 import { SCENARIOS, COMPETENCIES } from '/shared/content.js';
-import { createSourcedVoiceCoach, sourcedVoiceSupported } from '/sourced-voice.js';
+import { createStudyConversationAgent, conversationAudioSupported, mountVoiceCircle } from '/conversation-agent-adapter.js';
 import { COACH_VOICES, DEFAULT_COACH_VOICE, createPremiumSpeechPlayer } from '/premium-speech.js';
-const voiceSupported = () => sourcedVoiceSupported(window, { premium: true }) && premiumVoiceAvailable() && !window.FMNativeBilling;
+const voiceSupported = () => conversationAudioSupported() && voiceOptions?.conversationAgent?.enabled === true && premiumVoiceAvailable() && !window.FMNativeBilling;
 
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -108,6 +108,7 @@ let availableModels = [];
 let lastModelTest = null;
 let dialogRevision = 0;
 let startVoiceBusy = false;
+let voiceCircle = null, voiceCircleContainer = null;
 let voiceOptions = null, voiceOptionsLoading = null, voiceOptionsGeneration = 0;
 let premiumState = { phase: 'idle', active: false, kind: null, voice: DEFAULT_COACH_VOICE, audioBlocked: false, message: '' };
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -117,25 +118,25 @@ const premiumSpeech = createPremiumSpeechPlayer({
   onState: next => { const timingOnly=next.phase===premiumState.phase&&next.message===premiumState.message&&next.active===premiumState.active&&next.audioBlocked===premiumState.audioBlocked;premiumState=next;updateVoiceUI(timingOnly); },
   onUnauthorized: () => endStudySession(),
 });
-const voiceCoach = createSourcedVoiceCoach({
+const voiceCoach = createStudyConversationAgent({
+  api,
   speechPlayer: premiumSpeech,
-  onState: next => { const timingOnly=next.phase===voiceState.phase&&next.message===voiceState.message&&next.muted===voiceState.muted&&next.audioBlocked===voiceState.audioBlocked&&next.userCaption===voiceState.userCaption&&next.assistantCaption===voiceState.assistantCaption;voiceState=next;updateVoiceUI(timingOnly); },
-  sendTurn: async ({ content, conversationId, requestId, signal }) => {
+  onState: next => { const timingOnly=next.phase===voiceState.phase&&next.active===voiceState.active&&next.inputState===voiceState.inputState&&next.outputState===voiceState.outputState&&next.message===voiceState.message&&next.muted===voiceState.muted&&next.audioBlocked===voiceState.audioBlocked&&next.userCaption===voiceState.userCaption&&next.assistantCaption===voiceState.assistantCaption&&next.warning===voiceState.warning;voiceState=next;updateVoiceUI(timingOnly); },
+  sendTurn: async ({ content, conversationId, sessionId, requestId, signal }) => {
     const linkedCondition=state.conversations.find(item=>item.id===conversationId)?.curriculumConditionId;
-    const result=await api('/api/chat',{method:'POST',body:JSON.stringify({conversationId,content,requestId,...(linkedCondition?{conditionIds:[linkedCondition]}:{})}),signal});
+    const result=await api('/api/chat',{method:'POST',body:JSON.stringify({conversationId,content,requestId,...(sessionId?{voiceSessionId:sessionId}:{}),...(linkedCondition?{conditionIds:[linkedCondition]}:{})}),signal});
     if(signal.aborted || currentConversationId!==conversationId) return {content:'',sourceVerified:false};
     const item=result.conversation;
     if(item){const index=state.conversations.findIndex(value=>value.id===item.id);if(index>=0)state.conversations[index]=item;}
     const message=result.message || item?.messages?.findLast(value=>value.role==='assistant');
     if(screen==='coach')render();
-    return message?.reviewedDialogue===true
-      ? {messageId:message.id,content:studySpokenText(message),readoutAllowed:readoutMessageAllowed(message)}
-      : {messageId:message?.id,content:studySpokenText(message),sourceVerified:readoutMessageAllowed(message)};
+    return {conversationId,messageId:message?.id,content:message?.content || '',spokenText:studySpokenText(message),readoutAllowed:readoutMessageAllowed(message)};
   },
 });
 
 function selectedVoice() { return COACH_VOICES.some(voice => voice.id === state.settings.voiceId) ? state.settings.voiceId : DEFAULT_COACH_VOICE; }
 function premiumVoiceAvailable() { return voiceOptions?.enabled === true && Boolean(window.Audio); }
+function voiceTextBlocked() { return voiceState.active && !voiceState.muted && !['off','unavailable'].includes(voiceState.inputState); }
 function voiceSelectHtml(id, value = selectedVoice()) {
   return `<label for="${id}">Coach voice</label><select id="${id}" name="voiceId">${COACH_VOICES.map(voice=>`<option value="${voice.id}" ${voice.id===value?'selected':''}>${voice.label}</option>`).join('')}</select>`;
 }
@@ -143,7 +144,7 @@ async function loadVoiceOptions() {
   if (voiceOptions) return;
   if (!voiceOptionsLoading) {
     const generation = voiceOptionsGeneration;
-    const pending = api('/api/voice/options').then(data=>{if(generation===voiceOptionsGeneration)voiceOptions=data;}).catch(()=>{}).finally(()=>{if(generation===voiceOptionsGeneration && voiceOptionsLoading===pending){voiceOptionsLoading=null;updateVoiceUI();}});
+    const pending = Promise.all([api('/api/voice/options'),api('/api/conversation-agent/options').catch(()=>({enabled:false}))]).then(([data,conversationAgent])=>{if(generation===voiceOptionsGeneration)voiceOptions={...data,conversationAgent};}).catch(()=>{}).finally(()=>{if(generation===voiceOptionsGeneration && voiceOptionsLoading===pending){voiceOptionsLoading=null;updateVoiceUI();}});
     voiceOptionsLoading = pending;
   }
   await voiceOptionsLoading;
@@ -243,7 +244,8 @@ function render() {
   if (status.authRequired && !status.authenticated) return renderLogin();
   if (!isLoaded) return;
   $('#main').innerHTML = ({ today: renderToday, coach: renderCoach, review: renderReview, library: renderLibrary, progress: renderProgress, board: renderBoard })[screen]();
-  if (screen === 'coach') { scrollChat(); resizeComposer(); }
+  if (screen === 'coach') { scrollChat(); resizeComposer(); updateVoiceCircle(); }
+  else { voiceCircle?.destroy(); voiceCircle=null;voiceCircleContainer=null; }
   if (screen === 'board' && !boardCatalog && !boardLoading && !boardError) loadBoard();
   if (screen === 'library' && libraryTab === 'guidelines' && !curriculumCatalog && !curriculumLoading && !curriculumError) loadCurriculum();
 }
@@ -288,7 +290,7 @@ function renderCoach() {
       ['Work through a learning point', 'I want to study atrial fibrillation. Help me work through the source-linked summary and ask which part I find unclear.'],
     ].map(([label,prompt]) => `<button class="prompt-chip" data-action="starter" data-prompt="${esc(prompt)}">${esc(label)}<span>↗</span></button>`).join('')}</div></div>`}
     ${chatBusy ? `<div class="message assistant"><div class="avatar">✦</div><div class="message-body"><div class="message-label">Preparing and checking your reply</div><div class="typing" role="status" aria-label="Preparing and checking your reply"><i></i><i></i><i></i></div><small class="chat-wait-time">${Math.max(0,(performance.now()-chatStartedAt)/1000).toFixed(0)} s elapsed</small></div></div>` : ''}
-    </div><div class="chat-compose">${messages.length ? coachFollowupActionsHtml() : ''}<div id="voice-controls" class="voice-controls">${voiceControlsHtml()}</div>${chatError ? `<div class="notice error" style="margin-bottom:10px">${esc(chatError)} <button class="text-button" data-action="dismiss-chat-error">Dismiss</button></div>` : ''}<form id="chat-form"><div class="compose-row"><label class="screen-reader" for="chat-input">Message your study coach</label><textarea id="chat-input" name="content" rows="1" placeholder="${voiceState.active ? 'Stop voice to type a message…' : 'Say hello, talk it through, or ask a study question…'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''} maxlength="12000">${esc(chatDraft)}</textarea>${voiceDictationSupported() ? `<button type="button" class="icon-button mic-button ${recording ? 'recording' : ''}" data-action="dictate" aria-label="${recording ? 'Stop dictation' : 'Dictate a message'}" title="${recording ? 'Stop dictation' : 'Dictate text; review before sending'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('mic')}</button>` : ''}<button type="submit" class="icon-button send-button" aria-label="Send message" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('send')}</button></div><div class="composer-note"><span id="voice-status">${recording ? 'Dictating text… tap the mic to stop, then review and send.' : voiceDictationSupported() ? 'Type or dictate text. Review before sending.' : 'Type or use your phone keyboard’s microphone.'}</span><span>Enter to send · Shift + Enter for a new line</span></div></form></div></section>
+    </div><div class="chat-compose">${messages.length ? coachFollowupActionsHtml() : ''}<div id="voice-controls" class="voice-controls">${voiceControlsHtml()}</div>${chatError ? `<div class="notice error" style="margin-bottom:10px">${esc(chatError)} <button class="text-button" data-action="dismiss-chat-error">Dismiss</button></div>` : ''}<form id="chat-form"><div class="compose-row"><label class="screen-reader" for="chat-input">Message your study coach</label><textarea id="chat-input" name="content" rows="1" placeholder="${voiceTextBlocked() ? 'Mute voice to type a message…' : 'Say hello, talk it through, or ask a study question…'}" ${chatBusy || voiceTextBlocked() || !canChat() ? 'disabled' : ''} maxlength="12000">${esc(chatDraft)}</textarea>${voiceDictationSupported() ? `<button type="button" class="icon-button mic-button ${recording ? 'recording' : ''}" data-action="dictate" aria-label="${recording ? 'Stop dictation' : 'Dictate a message'}" title="${recording ? 'Stop dictation' : 'Dictate text; review before sending'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('mic')}</button>` : ''}<button type="submit" class="icon-button send-button" aria-label="Send message" ${chatBusy || voiceTextBlocked() || !canChat() ? 'disabled' : ''}>${icon('send')}</button></div><div class="composer-note"><span id="voice-status">${recording ? 'Dictating text… tap the mic to stop, then review and send.' : voiceDictationSupported() ? 'Type or dictate text. Review before sending.' : 'Type or use your phone keyboard’s microphone.'}</span><span>Enter to send · Shift + Enter for a new line</span></div></form></div></section>
     <div class="chat-under"><small>Study only. No medical advice or clinical use. Use fictional cases.</small><button class="text-button" data-action="draft-cards" ${!lastAssistant || chatBusy || !canChat() ? 'disabled' : ''}>Create recall cards ↗</button></div></div>`;
 }
 
@@ -297,7 +299,7 @@ function coachFollowupActionsHtml() {
     ['Explain this', 'Explain this.'],
     ['Ask me a question', 'Ask me an original board-style question.'],
     ['Help me plan', 'Help me plan a study session based on my goals and available time. Ask me one question at a time.'],
-  ].map(([label,prompt])=>`<button class="button secondary" data-action="coach-followup" data-prompt="${esc(prompt)}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${label}</button>`).join('')}</div>`;
+  ].map(([label,prompt])=>`<button class="button secondary" data-action="coach-followup" data-prompt="${esc(prompt)}" ${chatBusy || voiceTextBlocked() || !canChat() ? 'disabled' : ''}>${label}</button>`).join('')}</div>`;
 }
 
 function audioTimingText() {
@@ -321,18 +323,40 @@ function premiumAudioControlsHtml() {
 }
 function voiceControlsHtml() {
   const active = voiceState.active, label = COACH_VOICES.find(voice=>voice.id===selectedVoice()).label;
-  return `<div class="coach-voice-picker"><div class="form-field">${voiceSelectHtml('coach-voice')}</div><button class="button secondary" data-action="voice-preview" ${active || !premiumVoiceAvailable() ? 'disabled' : ''}>Preview voice</button><span class="pill ai-voice-badge">AI voice · ${label}</span></div><div class="voice-actions">${active ? `<button class="button secondary" data-action="voice-mute" aria-pressed="${voiceState.muted}">${voiceState.muted ? 'Unmute microphone' : 'Mute microphone'}</button><button class="button secondary" data-action="voice-interrupt" ${voiceState.phase === 'starting' ? 'disabled' : ''}>Interrupt readout</button><button class="button" data-action="voice-stop">Stop voice</button>` : `<button class="button" data-action="voice-start" ${chatBusy || startVoiceBusy || !voiceSupported() ? 'disabled' : ''}>${icon('mic')} ${startVoiceBusy ? 'Preparing voice…' : 'Talk with Coach'}</button>`}${voiceState.audioBlocked ? '<button class="button secondary" data-action="voice-speaker">Play audio</button>' : ''}${premiumAudioControlsHtml()}</div><p class="voice-session-status" role="status" aria-live="polite">${esc(voiceState.message)}</p><p class="reply-timing">${esc(replyTimingText())}</p><p class="audio-output-hint">Hard to hear? Check your phone’s media volume and whether sound is routed to Bluetooth or headphones.</p>${voiceState.userCaption ? `<div class="voice-caption"><strong>You</strong><span>${esc(voiceState.userCaption)}</span></div>` : ''}${voiceState.assistantCaption ? `<div class="voice-caption"><strong>Coach</strong><span>${esc(voiceState.assistantCaption)}</span></div>` : ''}${voiceState.warning ? `<div class="notice error" role="alert">${esc(voiceState.warning)}</div>` : ''}<p class="voice-note">These voices are AI-generated by OpenAI. ${voiceSupported() ? 'Coach speaks the checked chat reply, then listens for your next turn. The microphone stays off while audio is prepared or played. Up to 10 minutes.' : premiumVoiceAvailable() ? 'Use Read aloud for AI voice. Talk with Coach needs HTTPS and browser speech recognition; if unavailable, use your phone keyboard microphone.' : 'AI voice is not configured. Type or use your phone keyboard microphone.'} Source links stay visible. Your browser may send dictation to its speech service; checked reply text goes to OpenAI for speech. This app saves no audio files. Check transcription. Study only; no medical advice or clinical use.</p>`;
+  return `<div class="conversation-voice-panel"><div id="conversation-circle" class="conversation-circle-host"></div><div class="conversation-voice-guidance"><strong>${active ? 'Speak naturally. You can interrupt Coach.' : 'Tap the circle to talk with Coach.'}</strong><span>${active ? voiceState.muted ? 'Microphone muted. Unmute to speak.' : voiceState.inputState === 'unavailable' ? 'Microphone unavailable. Type below, or end voice and try again.' : ['starting','off'].includes(voiceState.inputState) ? 'Microphone is off while the session starts.' : 'Microphone on. Speak when you are ready.' : 'One tap starts a conversation, with source links kept in chat.'}</span></div></div><div class="coach-voice-picker"><div class="form-field">${voiceSelectHtml('coach-voice')}</div><button class="button secondary" data-action="voice-preview" ${active || !premiumVoiceAvailable() ? 'disabled' : ''}>Preview voice</button><span class="pill ai-voice-badge">AI voice · ${label}</span></div><div class="voice-actions">${active ? `<button class="button secondary" data-action="voice-mute" aria-pressed="${voiceState.muted}">${voiceState.muted ? 'Unmute microphone' : 'Mute microphone'}</button><button class="button" data-action="voice-stop">End conversation</button><details class="voice-recovery"><summary>Audio controls</summary><button class="button secondary" data-action="voice-interrupt" ${voiceState.phase === 'starting' ? 'disabled' : ''}>Interrupt audio</button></details>` : ''}${voiceState.audioBlocked ? '<button class="button secondary" data-action="voice-speaker">Play prepared audio</button>' : ''}${premiumAudioControlsHtml()}</div><p class="reply-timing">${esc(replyTimingText())}</p><details class="voice-details"><summary>Voice, privacy and audio help</summary><p class="audio-output-hint">Hard to hear? Check your phone’s media volume and whether sound is routed to Bluetooth or headphones.</p><p class="voice-note">These five voices are AI-generated by OpenAI. ${voiceSupported() ? 'While unmuted, your microphone captures short turns, including interruptions. Each completed turn is sent through this app’s authenticated server to OpenAI for transcription. Keep this page visible; sessions end after 10 minutes.' : premiumVoiceAvailable() ? 'Hands-free voice needs HTTPS, microphone permission and supported browser audio. Use typing, dictation or Read aloud if unavailable.' : 'AI voice is not configured. Type or use your phone keyboard microphone.'} Only server-authorized replies can be spoken. The app keeps short audio buffers in memory, saves no microphone recordings, and does not use them for model training. OpenAI’s own processing and retention settings apply separately. Check transcription, especially medical terms and numbers. <a href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy details</a>.</p></details>`;
+}
+function updateVoiceCircle() {
+  const container = $('#conversation-circle');
+  if (!container) return;
+  if (voiceCircleContainer !== container) {
+    voiceCircle?.destroy();
+    voiceCircleContainer = container;
+    voiceCircle = mountVoiceCircle({ container, agent: { active: () => voiceCoach.active(), state: () => voiceCoach.state(), start: () => startVoice(), stop: () => voiceCoach.stop() }, getStartOptions: () => ({ conversationId: currentConversationId }), showComposer: false });
+  }
+  voiceCircle.update(voiceState);
+  voiceCircle.button.disabled = startVoiceBusy || chatBusy || (!voiceState.active && (!voiceSupported() || !canChat()));
+  const select = $('#coach-voice'); if (select) select.disabled = voiceState.active || startVoiceBusy;
 }
 function updateVoiceUI(timingOnly = false) {
-  if(timingOnly){updateAudioTiming();return;}
-  const controls = $('#voice-controls'); if (controls) controls.innerHTML = voiceControlsHtml();
-  const input = $('#chat-input'); if (input) input.disabled = chatBusy || voiceState.active || !canChat();
-  for (const button of document.querySelectorAll('#chat-form button,.chat-study-choices button,.coach-followups button')) button.disabled = chatBusy || voiceState.active || !canChat() || (button.dataset.action==='dictate' && premiumState.active);
+  if(timingOnly){updateAudioTiming();updateVoiceCircle();return;}
+  const controls = $('#voice-controls');
+  if (controls) {
+    const focus = controls.contains(document.activeElement) ? { id:document.activeElement.id, action:document.activeElement.dataset?.action, circle:voiceCircle?.element?.contains(document.activeElement) } : null;
+    const existingCircle = $('#conversation-circle');
+    controls.innerHTML = voiceControlsHtml();
+    if (existingCircle && voiceCircleContainer === existingCircle) $('#conversation-circle').replaceWith(existingCircle);
+    updateVoiceCircle();
+    const target = focus?.circle ? voiceCircle?.button : focus?.id ? document.getElementById(focus.id) : focus?.action ? controls.querySelector(`[data-action="${focus.action}"]`) : null;
+    if (target && !target.disabled) target.focus({preventScroll:true});
+  }
+  const input = $('#chat-input'); if (input) input.disabled = chatBusy || voiceTextBlocked() || !canChat();
+  for (const button of document.querySelectorAll('#chat-form button,.chat-study-choices button,.coach-followups button')) button.disabled = chatBusy || voiceTextBlocked() || !canChat() || (button.dataset.action==='dictate' && (premiumState.active || voiceState.active));
   const settingsAudio = $('#settings-audio-controls'); if (settingsAudio) settingsAudio.innerHTML = premiumAudioControlsHtml();
 }
 async function startVoice() {
   if (chatBusy || startVoiceBusy || voiceCoach.active()) return;
-  if (!voiceSupported()) return notify('Talk with Coach needs browser speech recognition and configured AI voice. Use your keyboard microphone and Read aloud.');
+  if (!voiceSupported()) return notify('Hands-free Coach needs configured OpenAI voice, HTTPS and browser microphone audio. Use typing, dictation or Read aloud.');
+  if (!canChat()) return subscriptionDialog();
   if (!navigator.onLine) return notify('Reconnect before starting voice.');
   startVoiceBusy = true; updateVoiceUI();
   try {
@@ -340,7 +364,9 @@ async function startVoice() {
     if ($('#chat-input')) chatDraft = $('#chat-input').value;
     if (!conversation()) await createConversation({ title: 'Voice study conversation' });
     await voiceCoach.start({ conversationId: currentConversationId });
-  } finally { startVoiceBusy = false; updateVoiceUI(); }
+    if (voiceCoach.state().inputState === 'unavailable') await voiceCoach.stop('Microphone unavailable. Type a message below, or check permission and start voice again.', true);
+  } catch (error) { await voiceCoach.stop(error.message, true); notify(error.message); }
+  finally { startVoiceBusy = false; updateVoiceUI(); }
 }
 
 function trustedStudySpeech(message) {
@@ -376,7 +402,7 @@ function renderStudyQuestionControls(message) {
   if (!question || question.imported || !trustedStudySpeech(message) || !stillPending) return '';
   const answered = conversation()?.messages?.some(item=>item.studyAnswer?.key === question.key && item.studyAnswer?.fingerprint === question.fingerprint);
   if (answered) return '';
-  return `<div class="chat-study-choices" role="group" aria-label="Answer this original board-style question">${['A','B','C','D','E'].map(choice=>`<button class="button secondary" data-action="chat-study-answer" data-id="${esc(message.id)}" data-choice="${choice}" ${chatBusy || voiceState.active ? 'disabled' : ''}>${choice}</button>`).join('')}</div><small class="curriculum-limits">Choose A–E or type your answer. Feedback comes from the source-linked question bank.</small>`;
+  return `<div class="chat-study-choices" role="group" aria-label="Answer this original board-style question">${['A','B','C','D','E'].map(choice=>`<button class="button secondary" data-action="chat-study-answer" data-id="${esc(message.id)}" data-choice="${choice}" ${chatBusy || voiceTextBlocked() ? 'disabled' : ''}>${choice}</button>`).join('')}</div><small class="curriculum-limits">Choose A–E or type your answer. Feedback comes from the source-linked question bank.</small>`;
 }
 async function saveChatStudyCard(id) {
   const message = conversation()?.messages?.find(item=>item.id === id);
@@ -745,7 +771,11 @@ async function createConversation(options = {}) {
 
 async function sendMessage(content) {
   if (!content.trim() || chatBusy) return;
-  if (voiceCoach.active()) return notify('Stop voice before sending a typed message.');
+  if (voiceCoach.active()) {
+    if (!canChat()) return subscriptionDialog();
+    chatDraft = ''; const input = $('#chat-input'); if (input) input.value = '';
+    return voiceCoach.sendText(content.trim());
+  }
   if (!canChat()) return status.entitlement?.active && !status.aiConfigured ? notify('AI coaching is not configured for this pilot. Your cards and reviews are ready.') : subscriptionDialog();
   if (!navigator.onLine) { notify('Reconnect to send a message. Your draft is still here.'); return; }
   stopDictation();
@@ -904,6 +934,7 @@ function importBackupDialog() {
 }
 
 function renderLogin() {
+  voiceCircle?.destroy(); voiceCircle=null; voiceCircleContainer=null;
   renderNav();
   if (status.mode === 'commercial') return renderAccountLogin();
   $('#main').innerHTML = `<section class="card auth-card"><span class="eyebrow">YOUR PRIVATE STUDY SPACE</span><h1>Welcome back.</h1><p class="subtitle">Unlock your coach, recall cards, and learning history.</p><form id="login-form"><div class="form-field"><label for="access-token">Study access code</label><input id="access-token" name="token" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" required placeholder="Paste your STUDY_ACCESS_TOKEN value"><button type="button" class="text-button" data-action="show-access-code" aria-controls="access-token" aria-pressed="false">Show code</button></div><div id="login-error" class="form-error" role="alert"></div><button class="button full" type="submit">Open study space ${icon('arrow')}</button></form><p class="signin-note">Copy the value of STUDY_ACCESS_TOKEN from Railway → private-test → family-medicine-phone-test → Variables. This study code is separate from OPENAI_API_KEY. Your browser keeps a secure session after you unlock.</p></section>`;
@@ -1114,7 +1145,6 @@ async function handleAction(button) {
     case 'voice-mute': return voiceCoach.toggleMute();
     case 'voice-interrupt': return voiceCoach.interrupt();
     case 'voice-speaker': return voiceCoach.playAudio();
-    case 'voice-save': return voiceCoach.retrySave();
     case 'voice-preview': return previewVoice();
     case 'premium-stop': return stopPremiumAudio(false);
     case 'premium-resume': return premiumSpeech.resume();
@@ -1252,7 +1282,9 @@ $('#app-dialog').addEventListener('close',()=>{dialogRevision++;if(premiumState.
 $('#app-dialog').addEventListener('click',event=>{if(event.target===$('#app-dialog')) {const rect=$('#app-dialog').getBoundingClientRect();if(event.clientX<rect.left || event.clientX>rect.right || event.clientY<rect.top || event.clientY>rect.bottom) closeDialog();}});
 window.addEventListener('hashchange',()=>navigate(location.hash.slice(1)));
 window.addEventListener('online',()=>{renderNav();notify('Connected again. Your study space is ready.');});
-window.addEventListener('offline',()=>{renderNav();notify('You’re offline. Reconnect to chat or save progress.');});
+window.addEventListener('offline',()=>{stopDictation();voiceCoach.stop('Connection lost. Your microphone is off; reconnect before starting another conversation.');stopPremiumAudio();renderNav();notify('You’re offline. Reconnect to chat or save progress.');});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopDictation();});
+window.addEventListener('pagehide',()=>{stopDictation();voiceCoach.stop('Voice stopped. Your microphone is off.');stopPremiumAudio();});
 
 async function initialize() {
   renderNav();

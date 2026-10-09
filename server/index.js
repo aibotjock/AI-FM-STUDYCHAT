@@ -1,4 +1,5 @@
 import http from 'node:http';
+import { once } from 'node:events';
 import { DatabaseSync } from 'node:sqlite';
 import { randomBytes, randomUUID, timingSafeEqual, createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, existsSync, realpathSync, statSync } from 'node:fs';
@@ -17,6 +18,7 @@ import { isCoachingTurn, isDialogueFollowup, conversationalEvidence, pendingStud
 import { buildNaturalTutorPrompt, buildNaturalTutorSchema, validateNaturalDraft, buildNaturalReviewPrompt, buildNaturalReviewSchema, renderReviewedTutor, aggregateTutorUsage, naturalTutorFailure } from './natural-tutor.js';
 import { isOperatorTitle, learnerState, preserveOperatorConversations } from './operator-conversations.js';
 import { createPremiumSpeechService, premiumSpeechText, splitPremiumSpeech, premiumVoice, PREMIUM_PREVIEW_TEXT, PremiumSpeechError } from './premium-speech.js';
+import { createConversationAudioService, conversationAudioId, CONVERSATION_AUDIO_LIMITS, ConversationAudioError } from './conversation-audio.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, timeZone: 'America/New_York', voiceEnabled: true, voiceId: 'marin', competencyRatings: {} });
@@ -333,9 +335,14 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
   const sessions = new Map();
   const rateBuckets = new Map();
   const chatLocks = new Set();
+  const conversationRequests = new Map();
   let voiceWorkspaceEpoch = 0;
   let voiceStopping = false;
   const speech = curriculumEnabled && ai.providerId === 'openai' ? createPremiumSpeechService({ env, fetchImpl, db }) : null;
+  const conversationAudio = curriculumEnabled && ai.providerId === 'openai' ? createConversationAudioService({ env, fetchImpl, db, onSessionEnded: ({ sessionId }) => {
+    for (const item of conversationRequests.values()) if (item.sessionId === sessionId) item.controller.abort();
+    speech?.invalidate();
+  } }) : null;
   const voiceEpochs = new Map();
   // Spoken study reads canonical /api/chat text; model-generated Realtime speech
   // cannot be validated against these sources and remains disabled.
@@ -387,6 +394,11 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
     }
   }
 
+  function voiceOwnerKey(req) {
+    const match = /(?:^|;\s*)studychat_session=([^;]*)/.exec(req.headers.cookie || '');
+    return match ? hash(match[1]) : 'local-workspace';
+  }
+
   function json(res, status, value, extraHeaders = {}) {
     res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...extraHeaders });
     res.end(JSON.stringify(value));
@@ -398,10 +410,10 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
     return conversation;
   }
 
-  async function complete(messages, { jsonMode = false, jsonSchema = null, maxOutputTokens } = {}) {
+  async function complete(messages, { jsonMode = false, jsonSchema = null, maxOutputTokens, signal } = {}) {
     const provider = ai; // Configuration changes cannot replace an in-flight request.
     try {
-      return await provider.complete(messages, { jsonMode, jsonSchema, maxOutputTokens: maxOutputTokens ?? (provider.model.includes('pro') ? 4096 : jsonMode ? 1800 : 1200), includeMetadata: true });
+      return await provider.complete(messages, { jsonMode, jsonSchema, signal, maxOutputTokens: maxOutputTokens ?? (provider.model.includes('pro') ? 4096 : jsonMode ? 1800 : 1200), includeMetadata: true });
     } catch (error) {
       if (error instanceof AiProviderError) fail(error.status, error.message);
       throw error;
@@ -425,7 +437,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           const studyList = curriculum?.list();
           const curriculumSummary = studyList ? { conditions: studyList.total, questions: studyList.questionCount, currentConditions: studyList.currentCount, formalGuidelineConditions: studyList.conditions.filter(condition => condition.formalGuideline).length } : null;
           const boardCatalog = boardPractice?.catalog();
-          return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: modelSelectionEnabled || ai.configured ? ai.model : null, modelWarning: ai.unavailableReason || null, modelSelectionEnabled, voiceEnabled, voiceModel: null, sourcedVoiceEnabled: curriculumEnabled, voiceMode: curriculumEnabled ? speech?.configured ? 'validated-openai-speech' : 'canonical-browser' : null, premiumSpeechEnabled: Boolean(speech?.configured), prohibitedModels: ['Astra'], curriculum: curriculumSummary, boardPractice: boardCatalog ? { questions: boardCatalog.questionCount, availableMixedSizes: boardCatalog.availableSizes } : null });
+          return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: modelSelectionEnabled || ai.configured ? ai.model : null, modelWarning: ai.unavailableReason || null, modelSelectionEnabled, voiceEnabled, voiceModel: null, sourcedVoiceEnabled: curriculumEnabled, voiceMode: curriculumEnabled ? speech?.configured ? 'validated-openai-speech' : 'canonical-browser' : null, premiumSpeechEnabled: Boolean(speech?.configured), conversationAgentEnabled: Boolean(conversationAudio?.options().enabled), prohibitedModels: ['Astra'], curriculum: curriculumSummary, boardPractice: boardCatalog ? { questions: boardCatalog.questionCount, availableMixedSizes: boardCatalog.availableSizes } : null });
         }
         if (req.method === 'POST' && path === '/api/login') {
           rateLimit(req, 'login', 8, 15 * 60000);
@@ -443,6 +455,52 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           return json(res, 200, { authenticated: true }, { 'Set-Cookie': `studychat_session=${id}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${SESSION_MS / 1000}${secure ? '; Secure' : ''}` });
         }
         if (!session(req)) fail(401, 'Sign in to use your study workspace.');
+        if (path.startsWith('/api/conversation-agent/')) {
+          if (!conversationAudio || !speech || voiceStopping || closed || !isActive()) fail(403, 'Hands-free voice is available only in the active personal OpenAI study workspace.');
+          if (req.method === 'GET' && path === '/api/conversation-agent/options') return json(res, 200, conversationAudio.options());
+          const names = {
+            '/api/conversation-agent/session/start': ['conversationId'],
+            '/api/conversation-agent/session/end': ['sessionId', 'conversationId'],
+            '/api/conversation-agent/transcribe': ['sessionId', 'conversationId', 'requestId', 'audioBase64'],
+            '/api/conversation-agent/cancel': ['sessionId', 'conversationId', 'requestId'],
+            '/api/conversation-agent/checkpoint': ['sessionId', 'conversationId', 'messageId', 'completedChunks', 'complete'],
+          };
+          const keys = names[path];
+          if (!keys || req.method !== 'POST') fail(404, 'Conversation-agent route not found.');
+          rateLimit(req, 'conversation-agent', 100, 60000);
+          const input = await readJson(req, path.endsWith('/transcribe') ? CONVERSATION_AUDIO_LIMITS.maxJsonBytes : 4096);
+          const optional = path.endsWith('/checkpoint') ? ['turnId'] : [];
+          if (!isObject(input) || !keys.every(key => Object.hasOwn(input, key)) || Object.keys(input).some(key => !keys.includes(key) && !optional.includes(key))) fail(400, 'Use the supported conversation audio fields only.');
+          const conversation = conversationFor(cleanText(input.conversationId, 'conversation id', 100));
+          if (conversation.internalCheck) fail(403, 'Hands-free voice is for learner conversations.');
+          const scoped = { ...input, ownerKey: voiceOwnerKey(req) };
+          if (path.endsWith('/session/start')) return json(res, 200, conversationAudio.start(scoped));
+          conversationAudio.requireSession(scoped);
+          if (path.endsWith('/session/end')) return json(res, 200, conversationAudio.end(scoped));
+          if (path.endsWith('/cancel')) {
+            const result = conversationAudio.cancel(scoped);
+            const item = conversationRequests.get(`${conversationAudioId(input.sessionId)}:${conversationAudioId(input.requestId)}`);
+            if (item?.conversationId === conversation.id) item.controller.abort();
+            speech.invalidate();
+            return json(res, 200, { ...result, cancelled: result.cancelled || Boolean(item?.conversationId === conversation.id) });
+          }
+          if (path.endsWith('/checkpoint')) {
+            const message = conversation.messages.find(item => item.id === cleanText(input.messageId, 'message id', 100));
+            if (!message) fail(404, 'Study message not found.');
+            const user = conversation.messages.find(item => item.id === message.responseTo);
+            if (input.turnId !== undefined && (typeof input.turnId !== 'string' || user?.requestId !== input.turnId)) fail(409, 'This playback checkpoint does not match its study turn.');
+            const chunks = splitPremiumSpeech(premiumSpeechText({ conversation, message, references: studyReferences, settings: state.settings }));
+            if (!Number.isInteger(input.completedChunks) || input.completedChunks < 0 || input.completedChunks > chunks.length || typeof input.complete !== 'boolean' || (input.complete && input.completedChunks !== chunks.length)) fail(400, 'Report only complete approved audio chunks.');
+            const playback = { status: input.complete ? 'completed' : 'interrupted', completedChunks: input.completedChunks, chunkCount: chunks.length, presentedText: chunks.slice(0, input.completedChunks).join(''), clientReported: true, recordedAt: Date.now() };
+            message.voicePlayback = playback; save();
+            return json(res, 200, { messageId: message.id, playback });
+          }
+          const controller = new AbortController(), abort = () => controller.abort(), disconnect = () => { if (!res.writableEnded) abort(); };
+          req.on('aborted', abort); res.on('close', disconnect);
+          const authorize = () => !controller.signal.aborted && !req.aborted && !res.destroyed && session(req) && isActive() && !closed && !voiceStopping && state.conversations.includes(conversation);
+          try { return json(res, 200, await conversationAudio.transcribe({ ...scoped, signal: controller.signal, authorize })); }
+          finally { req.off('aborted', abort); res.off('close', disconnect); }
+        }
         if (path === '/api/voice/options' || path.startsWith('/api/voice/check/') || ['/api/voice/preview', '/api/voice/speech'].includes(path)) {
           if (!speech || !curriculumEnabled || ai.providerId !== 'openai') fail(403, 'These AI voices are available only in the personal OpenAI study pilot.');
           if (voiceStopping || closed || !isActive()) fail(409, 'This speech workspace is no longer active.');
@@ -480,9 +538,17 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             return true;
           };
           try {
-            const result = await speech.synthesize({ text: chunks[chunkIndex], voice: input.voice, requestId: input.requestId, scope: preview ? 'preview' : `${conversation.id}:${message.id}:${chunkIndex}`, signal: controller.signal, authorize: authorized });
+            const streaming = req.headers['x-study-speech-stream'] === '1';
+            const audioHeaders = metadata => ({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-store', 'X-Study-Speech-Chunks': chunks.length, 'X-Study-Speech-Chunk': chunkIndex, 'X-Study-Speech-Voice': input.voice, 'X-Study-Speech-Model': metadata.model, 'X-Study-Speech-Usage': 'unknown', 'X-Study-Speech-Cost': 'unknown', ...(metadata.providerRequestId ? { 'X-Study-Speech-Provider-Request-Id': metadata.providerRequestId } : {}) });
+            const onAudio = streaming ? async (bytes, { cached, metadata }) => {
+              if (!authorized()) fail(409, 'This speech request is no longer active.');
+              if (!res.headersSent) { res.writeHead(200, { ...audioHeaders(metadata), 'X-Study-Speech-Cached': String(cached), 'X-Study-Speech-Streaming': '1' }); res.flushHeaders(); }
+              if (!res.write(bytes)) await once(res, 'drain', { signal: controller.signal });
+            } : undefined;
+            const result = await speech.synthesize({ text: chunks[chunkIndex], voice: input.voice, requestId: input.requestId, scope: preview ? 'preview' : `${conversation.id}:${message.id}:${chunkIndex}`, signal: controller.signal, authorize: authorized, onAudio });
             if (!authorized()) fail(409, 'This speech request is no longer active.');
-            res.writeHead(200, { 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-store', 'Content-Length': result.audio.length, 'X-Study-Speech-Chunks': chunks.length, 'X-Study-Speech-Chunk': chunkIndex, 'X-Study-Speech-Voice': input.voice, 'X-Study-Speech-Model': result.metadata.model, 'X-Study-Speech-Cached': String(result.cached), 'X-Study-Speech-Usage': 'unknown', 'X-Study-Speech-Cost': 'unknown', ...(result.metadata.providerRequestId ? { 'X-Study-Speech-Provider-Request-Id': result.metadata.providerRequestId } : {}) });
+            if (streaming) { res.end(); return; }
+            res.writeHead(200, { ...audioHeaders(result.metadata), 'Content-Length': result.audio.length, 'X-Study-Speech-Cached': String(result.cached) });
             res.end(result.audio); return;
           } finally { req.off('aborted', abort); res.off('close', disconnect); }
         }
@@ -664,7 +730,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
         }
         if (req.method === 'POST' && path === '/api/logout') {
           await readJson(req);
-          voiceWorkspaceEpoch++; speech?.invalidate();
+          voiceWorkspaceEpoch++; speech?.invalidate(); conversationAudio?.invalidate();
           if (voice) await voice.closeAll();
           const match = /(?:^|;\s*)studychat_session=([^;]*)/.exec(req.headers.cookie || '');
           if (match) sessions.delete(hash(match[1]));
@@ -729,7 +795,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           if (boardPractice) boardPractice.sanitizeImport(next, input.boardPractice);
           if (chatLocks.size) fail(409, 'Wait for coaching replies to finish before restoring a backup.');
           state = next; save(); voiceWorkspaceEpoch++;
-          speech?.invalidate();
+          speech?.invalidate(); conversationAudio?.invalidate();
           return json(res, 200, { restored: true, cards: state.cards.length, conversations: state.conversations.length });
         }
         if (req.method === 'POST' && ['/api/conversations', '/api/operator/conversations'].includes(path)) {
@@ -755,7 +821,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           if (chatLocks.has(conversationMatch[1])) fail(409, 'Wait for the current reply before deleting this conversation.');
           conversationFor(conversationMatch[1]);
           state.conversations = state.conversations.filter(item => item.id !== conversationMatch[1]); save();
-          voiceWorkspaceEpoch++; speech?.invalidate();
+          voiceWorkspaceEpoch++; speech?.invalidate(); conversationAudio?.invalidate();
           return json(res, 200, { deleted: true });
         }
         if (req.method === 'POST' && path === '/api/chat') {
@@ -767,21 +833,44 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           if (input.conditionIds !== undefined && (!Array.isArray(input.conditionIds) || input.conditionIds.length > 3 || new Set(input.conditionIds).size !== input.conditionIds.length || input.conditionIds.some(conditionId => typeof conditionId !== 'string' || !studyReferences?.get(conditionId)))) fail(400, 'Choose at most three available study topics.');
           let conditionIds = input.conditionIds?.length ? input.conditionIds : conversation.curriculumConditionId ? [conversation.curriculumConditionId] : [];
           const requestId = input.requestId === undefined ? null : cleanText(input.requestId, 'request id', 100);
+          const voiceSessionId = input.voiceSessionId === undefined ? null : conversationAudioId(input.voiceSessionId);
+          const voiceScope = voiceSessionId ? { sessionId: voiceSessionId, conversationId: conversation.id, ownerKey: voiceOwnerKey(req) } : null;
+          if (voiceScope) {
+            if (!conversationAudio || conversation.internalCheck) fail(403, 'Use an active learner voice session.');
+            conversationAudio.requireSession(voiceScope);
+            conversationAudioId(requestId);
+          }
           if (requestId) {
             const priorUser = conversation.messages.find(message => message.role === 'user' && message.requestId === requestId);
             if (priorUser && priorUser.content !== content) fail(409, 'This request ID was already used for a different message.');
             if (priorUser && JSON.stringify(priorUser.studyRequestedConditionIds || []) !== JSON.stringify(input.conditionIds || [])) fail(409, 'This request ID was already used with a different study condition.');
             const priorResponse = priorUser && conversation.messages.find(message => message.responseTo === priorUser.id);
             if (priorResponse) return json(res, 200, { message: priorResponse, conversation, offline: Boolean(priorResponse.offline) });
+            if (priorUser?.voiceRequestStatus) fail(409, 'The earlier voice turn has an uncertain outcome. Start an explicit new turn; it will not be automatically repeated.');
             if (priorUser) conditionIds = priorUser.studyConditionIds || conditionIds;
           }
           if (chatLocks.has(conversation.id)) fail(409, 'A reply is already being generated for this conversation.');
           chatLocks.add(conversation.id);
+          const controller = voiceScope ? new AbortController() : null;
+          const abort = () => controller?.abort(), disconnect = () => { if (!res.writableEnded) abort(); };
+          const ensureVoiceActive = () => {
+            if (!voiceScope) return;
+            if (controller.signal.aborted || req.aborted || res.destroyed || !session(req) || !isActive() || closed || voiceStopping || !state.conversations.includes(conversation)) fail(409, 'This voice turn was stopped.');
+            conversationAudio.requireSession(voiceScope);
+          };
+          if (controller) {
+            req.on('aborted', abort); res.on('close', disconnect);
+            conversationRequests.set(`${voiceSessionId}:${requestId}`, { controller, sessionId: voiceSessionId, conversationId: conversation.id });
+          }
+          let voiceUser;
           try {
+            ensureVoiceActive();
             const last = conversation.messages.at(-1);
             const user = last?.role === 'user' && last.content === content && JSON.stringify(last.studyConditionIds || []) === JSON.stringify(conditionIds) && (!requestId || last.requestId === requestId) ? last : { id: randomUUID(), role: 'user', content, createdAt: Date.now(), ...(requestId ? { requestId } : {}), ...(conditionIds.length ? { studyConditionIds: [...conditionIds] } : {}), ...(input.conditionIds?.length ? { studyRequestedConditionIds: [...input.conditionIds] } : {}) };
             if (conversation.messages.length + (user === last ? 1 : 2) > 1000) fail(400, 'Start a new conversation to continue studying.');
+            if (voiceScope) { voiceUser = user; user.voiceSessionId = voiceSessionId; user.voiceRequestStatus = 'pending'; user.voiceTranscript = true; }
             if (user !== last) { conversation.messages.push(user); save(); }
+            else if (voiceScope) save();
             let generated = generateReply ? await generateReply({ conversation, settings: state.settings, reviews: state.reviews, cards: state.cards, requestId: requestId || user.id }) : null;
             let completion = null;
             let reviewCompletion = null;
@@ -809,12 +898,14 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
                   const primaryPrompt = buildNaturalTutorPrompt(tutorContext);
                   const primarySchema = buildNaturalTutorSchema(tutorContext);
                   aiCalls++;
-                  completion = await complete([{ role: 'system', content: primaryPrompt }, { role: 'user', content }], { jsonMode: true, jsonSchema: primarySchema, maxOutputTokens: 800 });
+                  completion = await complete([{ role: 'system', content: primaryPrompt }, { role: 'user', content }], { jsonMode: true, jsonSchema: primarySchema, maxOutputTokens: 800, signal: controller?.signal });
+                  ensureVoiceActive();
                   const draft = validateNaturalDraft(JSON.parse(completion.content), tutorContext);
                   const reviewPrompt = buildNaturalReviewPrompt(draft, tutorContext);
                   const reviewSchema = buildNaturalReviewSchema(draft, tutorContext);
                   aiCalls++;
-                  reviewCompletion = await complete([{ role: 'system', content: reviewPrompt }, { role: 'user', content: 'Review the complete candidate in NATURAL_REVIEW_DATA. Return the required review JSON.' }], { jsonMode: true, jsonSchema: reviewSchema, maxOutputTokens: 600 });
+                  reviewCompletion = await complete([{ role: 'system', content: reviewPrompt }, { role: 'user', content: 'Review the complete candidate in NATURAL_REVIEW_DATA. Return the required review JSON.' }], { jsonMode: true, jsonSchema: reviewSchema, maxOutputTokens: 600, signal: controller?.signal });
+                  ensureVoiceActive();
                   generated = renderReviewedTutor(draft, JSON.parse(reviewCompletion.content), tutorContext);
                 } catch (error) { generated = naturalTutorFailure(error); }
               } else if (evidence.length && !coachingRequested && !pending) generated = studyReferences.render({ chunkIds: evidence.slice(0, 2).map(item => item.key), questionId: null, unsupported: false }, evidence);
@@ -822,7 +913,8 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
               else generated = { content: sourcedStudyNavigation(conversation), scripted: true };
             }
             if (!generated && studyReferences) generated = { content: sourcedStudyNavigation(conversation), scripted: true };
-            if (!generated && ai.configured) completion = await complete([{ role: 'system', content: buildSystemPrompt(conversation, state.settings, state.reviews, state.cards) }, ...conversation.messages.slice(-24).map(message => ({ role: message.role, content: message.content }))]);
+            if (!generated && ai.configured) completion = await complete([{ role: 'system', content: buildSystemPrompt(conversation, state.settings, state.reviews, state.cards) }, ...conversation.messages.slice(-24).map(message => ({ role: message.role, content: message.content }))], { signal: controller?.signal });
+            ensureVoiceActive();
             const answer = generated ? generated.content : completion ? completion.content : offlineReply(conversation);
             if (typeof answer !== 'string' || !answer.trim() || answer.length > 20000) fail(502, 'The coach returned an unusable answer.');
             const connected = Boolean(generateReply || completion || generated?.grounded || generated?.unsupported || generated?.scripted);
@@ -831,9 +923,23 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             if ((generated?.curriculum || generated?.reviewedDialogue) && generated.conditionIds?.length === 1) conversation.curriculumConditionId = generated.conditionIds[0];
             const naturalMetadata = generated?.reviewedDialogue ? { reviewedDialogue: true, groundingReview: generated.groundingReview, naturalSegments: generated.naturalSegments, spokenText: generated.spokenText, canonicalSpokenText: false, sourceVerified: false, humanReview: false, pendingStudyQuestion: generated.pendingStudyQuestion, ...(generated.current ? { current: true, grounded: true, conditionIds: generated.conditionIds } : {}) } : {};
             const message = { id: randomUUID(), role: 'assistant', content: answer, createdAt: Date.now(), responseTo: user.id, ...(completion?.metadata ? { ai: completion.metadata } : {}), ...(reviewCompletion?.metadata ? { aiReview: reviewCompletion.metadata } : {}), ...(aiCalls ? { aiTotal: aggregateTutorUsage(completion?.metadata, reviewCompletion?.metadata, aiCalls) } : {}), ...(generated?.citations ? { citations: generated.citations } : {}), ...(generated?.unsupported ? { unsupported: true } : {}), ...(generated?.scripted ? { scripted: true } : {}), ...(generated?.studyRejection ? { studyRejection: generated.studyRejection } : {}), ...processMetadata, ...studyMetadata, ...naturalMetadata, ...(connected ? {} : { offline: true }) };
-            conversation.messages.push(message); save();
+            if (voiceUser) voiceUser.voiceRequestStatus = 'completed';
+            conversation.messages.push(message);
+            if (voiceScope) {
+              let chunkCount = 0;
+              try { chunkCount = splitPremiumSpeech(premiumSpeechText({ conversation, message, references: studyReferences, settings: state.settings })).length; } catch {}
+              message.voicePlayback = { status: 'pending', completedChunks: 0, chunkCount, presentedText: '', clientReported: false, recordedAt: Date.now() };
+            }
+            save();
             return json(res, 200, { message, conversation, offline: !connected });
-          } finally { chatLocks.delete(conversation.id); }
+          } finally {
+            chatLocks.delete(conversation.id);
+            if (controller) {
+              req.off('aborted', abort); res.off('close', disconnect);
+              conversationRequests.delete(`${voiceSessionId}:${requestId}`);
+              if (voiceUser?.voiceRequestStatus === 'pending' && !closed && isActive()) { voiceUser.voiceRequestStatus = 'uncertain'; save(); }
+            }
+          }
         }
         if (req.method === 'POST' && path === '/api/chat/cards') {
           rateLimit(req, 'cards-ai', 10, 60000);
@@ -894,20 +1000,20 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
       res.end(req.method === 'HEAD' ? undefined : body);
     } catch (error) {
       if (res.destroyed || req.aborted) return;
-      if (res.headersSent) { res.end(); return; }
-      const expected = error instanceof HttpError || error instanceof AiProviderError || error instanceof OpenAIModelError || error instanceof VoiceError || error instanceof BoardPracticeError || error instanceof PremiumSpeechError;
-      json(res, expected ? error.status : 500, { error: expected ? error.message : 'The server could not complete this request.', ...(error instanceof BoardPracticeError ? { code: error.code, details: error.details } : {}), ...(error instanceof PremiumSpeechError ? { code: error.code } : {}) });
+      if (res.headersSent) { res.destroy(); return; }
+      const expected = error instanceof HttpError || error instanceof AiProviderError || error instanceof OpenAIModelError || error instanceof VoiceError || error instanceof BoardPracticeError || error instanceof PremiumSpeechError || error instanceof ConversationAudioError;
+      json(res, expected ? error.status : 500, { error: expected ? error.message : 'The server could not complete this request.', ...(error instanceof BoardPracticeError ? { code: error.code, details: error.details } : {}), ...(error instanceof PremiumSpeechError || error instanceof ConversationAudioError ? { code: error.code } : {}) });
       // Never log submitted messages, authentication tokens, or provider response bodies.
       if (!expected) console.error('StudyChat request failed:', error.name);
     }
   });
   server.requestTimeout = 60000;
   server.headersTimeout = 10000;
-  server.on('close', () => { if (!closed) { speech?.close(); closed = true; if (telemetryTimer) clearInterval(telemetryTimer); db.close(); } });
-  server.closeStore = () => { if (!closed) { speech?.close(); closed = true; if (telemetryTimer) clearInterval(telemetryTimer); db.close(); } };
+  server.on('close', () => { if (!closed) { conversationAudio?.close(); speech?.close(); closed = true; if (telemetryTimer) clearInterval(telemetryTimer); db.close(); } });
+  server.closeStore = () => { if (!closed) { conversationAudio?.close(); speech?.close(); closed = true; if (telemetryTimer) clearInterval(telemetryTimer); db.close(); } };
   server.flushIngeniumTelemetry = () => drainTelemetry();
-  server.closeVoiceSessions = async () => { voiceStopping = true; voiceWorkspaceEpoch++; speech?.close(); await voice?.closeAll(); };
-  server.hasActiveRequests = () => chatLocks.size > 0 || (speech?.active || 0) > 0;
+  server.closeVoiceSessions = async () => { voiceStopping = true; voiceWorkspaceEpoch++; conversationAudio?.close(); speech?.close(); await voice?.closeAll(); };
+  server.hasActiveRequests = () => chatLocks.size > 0 || (speech?.active || 0) > 0 || (conversationAudio?.active || 0) > 0;
   // Constructor-injected gateway access only; never an HTTP route.
   server.readOnlySnapshot = () => structuredClone(state);
   return server;

@@ -113,21 +113,41 @@ export function premiumSpeechText({ conversation, message, references, settings 
   return reconstructed.spokenText || reconstructed.content;
 }
 
-async function boundedAudio(response) {
+async function boundedAudio(response, { signal, allowed = () => {}, onAudio } = {}) {
   if (!/^audio\/(?:mpeg|mp3)(?:;|$)/i.test(response.headers.get('content-type') || '')) { await response.body?.cancel?.().catch(() => {}); fail(502, 'The speech provider returned an unexpected audio format.', 'speech_provider_format'); }
   if (Number(response.headers.get('content-length')) > PREMIUM_SPEECH_LIMITS.maxAudioBytes) { await response.body?.cancel?.().catch(() => {}); fail(502, 'The speech audio exceeded its size limit.', 'speech_audio_limit'); }
-  const chunks = []; let bytes = 0;
+  const chunks = []; let bytes = 0, validated = false;
   if (!response.body?.getReader) fail(502, 'The speech provider returned no readable audio.', 'speech_provider_format');
   const reader = response.body.getReader();
-  while (true) {
-    const { done, value } = await reader.read(); if (done) break;
-    bytes += value.byteLength;
-    if (bytes > PREMIUM_SPEECH_LIMITS.maxAudioBytes) { await reader.cancel(); fail(502, 'The speech audio exceeded its size limit.', 'speech_audio_limit'); }
-    chunks.push(value);
+  const onAbort = () => { void reader.cancel().catch(() => {}); };
+  signal?.addEventListener('abort', onAbort, { once: true });
+  try {
+    while (true) {
+      allowed();
+      if (signal?.aborted) fail(409, 'This speech request was stopped.', 'speech_request_inactive');
+      const { done, value } = await reader.read(); if (done) break;
+      bytes += value.byteLength;
+      if (bytes > PREMIUM_SPEECH_LIMITS.maxAudioBytes) fail(502, 'The speech audio exceeded its size limit.', 'speech_audio_limit');
+      chunks.push(value);
+      allowed();
+      if (!validated && bytes >= 4) {
+        const prefix = Buffer.concat(chunks, bytes);
+        if (!(prefix.subarray(0, 3).toString('ascii') === 'ID3' || (prefix[0] === 0xff && (prefix[1] & 0xe0) === 0xe0))) fail(502, 'The speech provider returned invalid MP3 audio.', 'speech_provider_format');
+        validated = true;
+        if (onAudio) await onAudio(prefix);
+      } else if (validated && onAudio) await onAudio(value);
+    }
+    allowed();
+    if (signal?.aborted) fail(409, 'This speech request was stopped.', 'speech_request_inactive');
+    if (!validated) fail(502, 'The speech provider returned invalid MP3 audio.', 'speech_provider_format');
+    return Buffer.concat(chunks, bytes);
+  } catch (error) {
+    await reader.cancel().catch(() => {});
+    throw error;
+  } finally {
+    signal?.removeEventListener('abort', onAbort);
+    reader.releaseLock();
   }
-  const audio = Buffer.concat(chunks);
-  if (audio.length < 4 || !(audio.subarray(0, 3).toString('ascii') === 'ID3' || (audio[0] === 0xff && (audio[1] & 0xe0) === 0xe0))) fail(502, 'The speech provider returned invalid MP3 audio.', 'speech_provider_format');
-  return audio;
 }
 
 export function createPremiumSpeechService({ env = process.env, fetchImpl = globalThis.fetch, db, now = Date.now, setTimer = setTimeout, clearTimer = clearTimeout } = {}) {
@@ -145,7 +165,7 @@ export function createPremiumSpeechService({ env = process.env, fetchImpl = glob
     cache.delete(fingerprint); cache.set(fingerprint, { audio, metadata, expiresAt: now() + PREMIUM_SPEECH_LIMITS.cacheTtlMs }); bytes += audio.length;
     while (cache.size > PREMIUM_SPEECH_LIMITS.cacheEntries || bytes > PREMIUM_SPEECH_LIMITS.cacheBytes) { const [id, item] = cache.entries().next().value; bytes -= item.audio.length; cache.delete(id); }
   }
-  async function synthesize({ text, voice, requestId, scope = 'preview', signal, authorize = () => true }) {
+  async function synthesize({ text, voice, requestId, scope = 'preview', signal, authorize = () => true, onAudio }) {
     premiumVoice(voice); requestId = speechRequestId(requestId);
     if (typeof text !== 'string' || !text.trim() || text.length > PREMIUM_SPEECH_LIMITS.maxChunkChars || text.includes('\0')) fail(400, 'Use a bounded server-owned speech chunk.', 'speech_text_limit');
     const allowed = () => { if (stopped || signal?.aborted || authorize() !== true) fail(409, 'This speech request is no longer active.', 'speech_request_inactive'); };
@@ -163,6 +183,7 @@ export function createPremiumSpeechService({ env = process.env, fetchImpl = glob
         if (db.prepare('SELECT COUNT(*) AS count FROM premium_speech_requests').get().count >= PREMIUM_SPEECH_LIMITS.maxLedgerEntries) fail(429, 'The speech request history is full.', 'speech_ledger_limit');
         db.prepare('INSERT INTO premium_speech_requests VALUES(?,?,?,?,?)').run(requestId, fingerprint, 'complete', now(), JSON.stringify({ ...cached.metadata, paidRequest: false }));
       }
+      if (onAudio) { await onAudio(cached.audio, { cached: true, metadata: { ...cached.metadata, paidRequest: false } }); allowed(); }
       return { audio: cached.audio, cached: true, metadata: { ...cached.metadata, paidRequest: false } };
     }
     if (prior) fail(409, 'That audio is no longer in memory. Start an explicit new speech request to generate it again.', 'speech_audio_expired');
@@ -171,22 +192,28 @@ export function createPremiumSpeechService({ env = process.env, fetchImpl = glob
     const controller = new AbortController(), timer = setTimer(() => controller.abort(), PREMIUM_SPEECH_LIMITS.timeoutMs);
     timer.unref?.();
     const requestSignal = signal ? AbortSignal.any([signal, controller.signal]) : controller.signal;
-    db.prepare('INSERT INTO premium_speech_requests VALUES(?,?,?,?,?)').run(requestId, fingerprint, 'pending', now(), null);
+    let metadata = { provider: 'openai', endpoint: 'audio/speech', model: PREMIUM_SPEECH_MODEL, voice, providerRequestId: null, inputCharacters: text.length, audioBytes: null, latencyMs: null, firstAudioMs: null, usage: null, estimatedCostUsd: null, pricingBasis: 'Token usage and exact cost are unavailable in the binary speech response.', paidRequest: true, delivery: onAudio ? 'streaming' : 'buffered' };
+    db.prepare('INSERT INTO premium_speech_requests VALUES(?,?,?,?,?)').run(requestId, fingerprint, 'pending', now(), JSON.stringify(metadata));
     active.set(requestId, controller);
     const startedAt = now();
     try {
       const response = await fetchImpl(endpoint, { method: 'POST', redirect: 'error', signal: requestSignal, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` }, body: JSON.stringify({ model: PREMIUM_SPEECH_MODEL, voice, input: text, response_format: 'mp3', instructions: 'Read the supplied words exactly in a clearly projected, articulate conversational voice at a steady, natural pace. Use consistent audible delivery; do not whisper or trail off at sentence endings. Do not add introductions, explanations, facts or advice.' }) });
       if (!response.ok) { await response.body?.cancel?.().catch(() => {}); fail(response.status === 429 ? 429 : 502, 'OpenAI could not prepare this voice. No automatic retry was made.', 'speech_provider_failed'); }
-      const audio = await boundedAudio(response);
+      const providerId = response.headers.get('x-request-id');
+      metadata.providerRequestId = typeof providerId === 'string' && /^[A-Za-z0-9_-]{1,180}$/.test(providerId) ? providerId : null;
+      const audio = await boundedAudio(response, { signal: requestSignal, allowed, onAudio: onAudio ? async chunk => {
+        allowed();
+        if (metadata.firstAudioMs === null) metadata.firstAudioMs = Math.max(0, now() - startedAt);
+        await onAudio(chunk, { cached: false, metadata: { ...metadata } });
+      } : undefined });
       if (requestSignal.aborted) fail(409, 'This speech request was stopped.', 'speech_request_inactive');
       allowed();
-      const providerId = response.headers.get('x-request-id');
-      const metadata = { provider: 'openai', endpoint: 'audio/speech', model: PREMIUM_SPEECH_MODEL, voice, providerRequestId: typeof providerId === 'string' && /^[A-Za-z0-9_-]{1,180}$/.test(providerId) ? providerId : null, inputCharacters: text.length, audioBytes: audio.length, latencyMs: Math.max(0, now() - startedAt), usage: null, estimatedCostUsd: null, pricingBasis: 'Token usage and exact cost are unavailable in the binary speech response.', paidRequest: true };
+      metadata = { ...metadata, audioBytes: audio.length, latencyMs: Math.max(0, now() - startedAt) };
       db.prepare("UPDATE premium_speech_requests SET status='complete',metadata=? WHERE request_id=?").run(JSON.stringify(metadata), requestId);
       put(fingerprint, audio, metadata);
       return { audio, cached: false, metadata };
     } catch (error) {
-      if (!stopped) db.prepare("UPDATE premium_speech_requests SET status='uncertain' WHERE request_id=?").run(requestId);
+      if (!stopped) db.prepare("UPDATE premium_speech_requests SET status='uncertain',metadata=? WHERE request_id=?").run(JSON.stringify({ ...metadata, latencyMs: Math.max(0, now() - startedAt), cancelled: requestSignal.aborted, billingOutcome: 'unknown' }), requestId);
       if (error instanceof PremiumSpeechError) throw error;
       fail(requestSignal.aborted ? 409 : 502, requestSignal.aborted ? 'This speech request was stopped.' : 'Speech could not be prepared. No automatic retry was made.', requestSignal.aborted ? 'speech_request_inactive' : 'speech_provider_failed');
     } finally { clearTimer(timer); active.delete(requestId); }

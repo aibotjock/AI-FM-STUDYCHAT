@@ -1,0 +1,64 @@
+{
+  "runAt": "2026-10-09T23:27:57.897Z",
+  "status": "blocked_before_execution",
+  "browserScopes": 9,
+  "executed": 0,
+  "passed": 0,
+  "failedApplicationChecks": 0,
+  "paidProviderCalls": 0,
+  "setupEvidence": {
+    "defaultLaunch": "Playwright chromium_headless_shell-1234 executable absent",
+    "explicitLaunch": "Recorded chromium-1234/chrome-linux64/chrome executable absent",
+    "inventory": "No Chromium or headless-shell binary in /usr, /opt, /home or /root caches",
+    "runtimeInstall": "One official Playwright install command failed: returned invalid ZIP/0 MiB; installer internal attempts exhausted",
+    "downloadHeader": "HTTP200 text/html content-length195 instead of browser ZIP; no cause asserted"
+  },
+  "results": [
+    {
+      "scope": 0,
+      "name": "original central circle supports keyboard start, five preserved voices, reduced motion and explicit echo-cancel capture",
+      "status": "blocked_before_execution"
+    },
+    {
+      "scope": 1,
+      "name": "complete utterance uses authenticated OpenAI transcription once; approved premium playback leaves capture active",
+      "status": "blocked_before_execution"
+    },
+    {
+      "scope": 2,
+      "name": "hands-free speech onset stops playback locally before another transcript is uploaded; duplicate frame completion does not submit twice",
+      "status": "blocked_before_execution"
+    },
+    {
+      "scope": 3,
+      "name": "mute stops capture and unmute reacquires it; navigation and backgrounding shut microphone down",
+      "status": "blocked_before_execution"
+    },
+    {
+      "scope": 4,
+      "name": "microphone permission denial and offline transcription show actionable failure with typed recovery and no speech",
+      "status": "blocked_before_execution"
+    },
+    {
+      "scope": 5,
+      "name": "a rejected whole-reply review is displayed as withheld and never reaches speech synthesis",
+      "status": "blocked_before_execution"
+    },
+    {
+      "scope": 6,
+      "name": "interruption while an answer is preparing cancels obsolete work; a late author completion cannot start audio",
+      "status": "blocked_before_execution"
+    },
+    {
+      "scope": 7,
+      "name": "a delayed interruption checkpoint never makes the next tutor assume unplayed content was presented",
+      "status": "blocked_before_execution"
+    },
+    {
+      "scope": 8,
+      "name": "unexpected microphone disconnection never advertises listening and exposes typed recovery",
+      "status": "blocked_before_execution"
+    }
+  ],
+  "scope": "Planned Playwright mobile-emulation checks with synthetic capture, media and provider. None ran. Physical Android/Bluetooth audibility, noise, echo and latency remain unverified."
+}

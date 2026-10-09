@@ -1,0 +1,22 @@
+{
+  "runAt": "2026-10-09T23:15:33.208Z",
+  "scope": "Novel premium player and injected continuous-controller paths only. Mocked authenticated fetch, MP3 and media; no physical phone audio or quality result claimed.",
+  "paidProviderCalls": 0,
+  "results": [
+    {
+      "scope": 1,
+      "name": "every server chunk is requested by saved identity and played to completion without client text or truncation",
+      "pass": true
+    },
+    {
+      "scope": 2,
+      "name": "mobile autoplay resumes the same prepared buffer without another API request",
+      "pass": true
+    },
+    {
+      "scope": 3,
+      "name": "stop, replacement, background and page departure discard delayed or stale audio",
+      "pass": true
+    }
+  ]
+}

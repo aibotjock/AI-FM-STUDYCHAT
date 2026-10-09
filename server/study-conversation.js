@@ -130,10 +130,14 @@ export function studyDialogueHistory(conversation) {
   const history = [];
   for (const message of conversation.messages.slice(-16).reverse()) {
     if (remaining <= 0) break;
-    const historyContent = trusted(message) && message.canonicalSpokenText === true && typeof message.spokenText === 'string' ? message.spokenText : message.content;
+    const presentation = message.voicePlayback;
+    const playback = message.role === 'assistant' && !message.importedEvidence && presentation && ((presentation.status === 'interrupted' && presentation.clientReported === true) || (presentation.status === 'pending' && presentation.clientReported === false)) && typeof presentation.presentedText === 'string' ? presentation : null;
+    // This prefix is reconstructed by the authenticated checkpoint route from
+    // approved server text. It records presentation, never evidence of hearing.
+    const historyContent = playback ? playback.presentedText || '[Assistant audio interrupted before a complete segment was presented.]' : trusted(message) && message.canonicalSpokenText === true && typeof message.spokenText === 'string' ? message.spokenText : message.content;
     const content = historyContent.slice(0, Math.min(message.role === 'user' ? 3000 : 2000, remaining));
     remaining -= content.length;
-    history.unshift({ role: message.role, content, trust: message.role === 'user' ? 'learner-statement-unverified' : trusted(message) ? 'server-rendered-study' : 'untrusted-history', ...(trusted(message) && message.studyDialogue ? { dialogue: { intent: message.studyDialogue.intent, followup: message.studyDialogue.followup, minutes: message.studyDialogue.minutes } } : {}) });
+    history.unshift({ role: message.role, content, trust: message.role === 'user' ? 'learner-statement-unverified' : trusted(message) ? 'server-rendered-study' : 'untrusted-history', ...(playback ? { presentation: { status: playback.status, completedChunks: playback.completedChunks, clientReported: playback.clientReported, heard: 'unknown', unplayedContentExcluded: true } } : {}), ...(trusted(message) && message.studyDialogue ? { dialogue: { intent: message.studyDialogue.intent, followup: message.studyDialogue.followup, minutes: message.studyDialogue.minutes } } : {}) });
   }
   return history;
 }
