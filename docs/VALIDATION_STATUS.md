@@ -6,6 +6,14 @@ failure, changed deployment/configuration, or an unresolved concern. A new
 scenario is not a repeat of an older scenario. Mocked checks never establish
 live provider access or clinical accuracy.
 
+## Current conversational release disposition
+
+Conversation correction code is published on `release/google-play-preparation` at `b3174d38e6b89d4f17c3a9d893350ecb31ee8580`, tree `4268af66bfdcc9fa319b7c6d1073bebbdf876de6`. All **160** published blob hashes/modes match the staged snapshot. Local new/affected conversational, source, quiz and mock phone checks pass as detailed below.
+
+The final correction is **not live yet**. Railway private-test has exactly one staged, nondestructive change: the phone-test service commit moves from `241809016d512dd74d433cd895e1198fecd3e062` to `b3174d38e6b89d4f17c3a9d893350ecb31ee8580` (patch `81c8cce0-8cfc-4d8a-9277-0f62c5a64c8b`). Automatic review rejected the initial service-wide source command because it could affect other environments. The safer private-environment staging succeeded, but Railway `accept-deploy` reported “Cancelled — the user did not approve this action. No changes were made.” Deployment confirmation is required before applying this patch. No workaround or further deployment retry was attempted.
+
+The live pilot remains at strict-schema commit `241809016d512dd74d433cd895e1198fecd3e062`; its cited conversational follow-up failed runtime validation. The later dual-selection correction has local proof only. `STUDY_INITIAL_CONVERSATION_CHECK` was blanked with deploys skipped. After private-deployment approval, explicitly arm `dialogue-v3`, apply only the reviewed patch, observe terminal SUCCESS and check the new failed follow-up once while reusing the saved successful plan. Then blank the flag again. Store submission remains on hold.
+
 ## Historical baseline references
 
 - Earlier hosted source-linked curriculum release: `c42e8f6b923b2aaa7225931cb0cda95eea1ac550`,
@@ -256,3 +264,5 @@ A local reproduction using the actual disease/foundations corpus found that ever
 The explicit next operator gate is `dialogue-v3`; it retains the original successful plan and both failed replies and submits only the new failed-turn identity. No final hosted pass is claimed yet. Unchanged UI assets, source checks, passing unrelated suites, and old READY/source/bootstrap checks were not repeated.
 
 The affected malformed-output regression passed after its diagnostic contract changed, and again after the invalid-plan message was corrected to say the tutoring response could not be validated. A formatting/plan failure no longer implies that the source library lacks an answer. The cold unsupported-source response is unchanged. No other passing structured-output groups were repeated.
+
+Ingenium independently confirms the v2 request metadata event `6a0f27c6-2249-49c8-b36a-4ff6bf162b87` at `2026-10-09T16:12:34.588Z`: OpenAI `gpt-4.1-mini-2025-04-14`, `/v1/chat/completions`, status 200, 1,828 ms, 2,185 input/79 output tokens, estimated USD 0.0010004. The single bounded read covered only this previously unchecked time window. API success is not dialogue acceptance; that reply was rejected. No v3 model call occurred because the private deployment was not approved.
