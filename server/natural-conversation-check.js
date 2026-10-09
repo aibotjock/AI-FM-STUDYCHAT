@@ -1,14 +1,16 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadStudyCurriculum } from './study-curriculum.js';
-import { renderReviewedTutor } from './natural-tutor.js';
+import { renderReviewedTutor, NaturalTutorError } from './natural-tutor.js';
 
 export const NATURAL_CHECK_TITLE = 'Operator natural conversation check · synthetic study';
+export const LEGACY_NATURAL_STUDY_TURN = Object.freeze({ requestId: 'natural-dialogue-v1-study-gpt-4.1-mini', content: 'Ready to study. For the family medicine board exam, explain one source-linked point about atrial fibrillation in your own words, then ask one recall question.' });
 export const NATURAL_CHECK_TURNS = Object.freeze([
   { requestId: 'natural-dialogue-v1-hello-gpt-4.1-mini', content: 'Hi. For this synthetic study session, call me Morgan. I’m not ready to study yet; can we just chat for a minute?' },
   { requestId: 'natural-dialogue-v1-context-gpt-4.1-mini', content: 'What name did I ask you to call me? Please answer naturally and then ask me how my day has been.' },
-  { requestId: 'natural-dialogue-v1-study-gpt-4.1-mini', content: 'Ready to study. For the family medicine board exam, explain one source-linked point about atrial fibrillation in your own words, then ask one recall question.' }
+  { requestId: 'natural-dialogue-v2-study-gpt-4.1-mini', content: 'For family medicine board study, explain just one directly supported point about atrial fibrillation in a short paragraph with its source IDs. Then ask a neutral recall question about what the paragraph said, without adding a new clinical premise.' }
 ]);
+const KNOWN_TURNS = [...NATURAL_CHECK_TURNS, LEGACY_NATURAL_STUDY_TURN];
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const validId = value => typeof value === 'string' && /^[A-Za-z0-9._-]{1,100}$/.test(value);
@@ -33,9 +35,9 @@ function validateReply(message, index, references, conversation) {
   return message.current === true && message.grounded === true && rendered.groundingReview.medicalClaimCount > 0 && rendered.citations.length > 0 && rendered.conditionIds.length === 1 && rendered.conditionIds[0] === 'atrial-fibrillation' && rendered.spokenText.includes('?');
 }
 
-/** Three new, durable turns; at most six provider completions, no automatic retry. */
+/** Reuse passed context turns; one new corrected study identity, no automatic retry. */
 export async function runNaturalConversationCheck({ baseUrl, env = process.env, fetchImpl = globalThis.fetch, flushTelemetry = async () => {}, curriculum: suppliedCurriculum } = {}) {
-  if (env.STUDY_INITIAL_CONVERSATION_CHECK !== 'natural-v1') return { skipped: true };
+  if (env.STUDY_INITIAL_CONVERSATION_CHECK !== 'natural-v2') return { skipped: true };
   if ((env.APP_MODE || 'personal') !== 'personal' || (env.AI_PROVIDER || 'openai').trim().toLowerCase() !== 'openai') return { skipped: true, reason: 'personal_openai_only' };
   const base = new URL(baseUrl);
   if (base.protocol !== 'http:' || base.hostname !== '127.0.0.1' || base.pathname !== '/' || base.search || base.hash || base.username || base.password) throw new Error('Natural conversation checks require the local app listener.');
@@ -60,10 +62,10 @@ export async function runNaturalConversationCheck({ baseUrl, env = process.env, 
     const state = await saved.json();
     if (!object(state) || !Array.isArray(state.conversations) || state.conversations.length > 500 || state.conversations.some(item => !object(item) || !Array.isArray(item.messages) || item.messages.length > 1000)) return receipt = { failed: true, stage: 'saved_state' };
     const candidates = state.conversations.filter(item => item.title === NATURAL_CHECK_TITLE);
-    const identities = state.conversations.flatMap(item => item.messages.filter(message => message.role === 'user' && NATURAL_CHECK_TURNS.some(turn => turn.requestId === message.requestId)).map(message => ({ conversation: item, message })));
+    const identities = state.conversations.flatMap(item => item.messages.filter(message => message.role === 'user' && KNOWN_TURNS.some(turn => turn.requestId === message.requestId)).map(message => ({ conversation: item, message })));
     if (candidates.length > 1 || identities.some(item => item.conversation !== candidates[0])) return receipt = { failed: true, uncertain: true, stage: 'saved_request_conflict' };
     let conversation = candidates[0];
-    if (conversation && (conversation.internalCheck !== true || conversation.mode !== 'coach' || !validId(conversation.id) || conversation.messages.some(message => message.role === 'user' && !NATURAL_CHECK_TURNS.some(turn => turn.requestId === message.requestId && turn.content === message.content)))) return receipt = { failed: true, uncertain: true, stage: 'saved_conversation_conflict' };
+    if (conversation && (conversation.internalCheck !== true || conversation.mode !== 'coach' || !validId(conversation.id) || conversation.messages.some(message => message.role === 'user' && !KNOWN_TURNS.some(turn => turn.requestId === message.requestId && turn.content === message.content)))) return receipt = { failed: true, uncertain: true, stage: 'saved_conversation_conflict' };
     if (!conversation) {
       const created = await request('/api/operator/conversations', { title: NATURAL_CHECK_TITLE, mode: 'coach' });
       if (!created.ok) return receipt = { failed: true, stage: 'create_conversation' };
@@ -92,7 +94,7 @@ export async function runNaturalConversationCheck({ baseUrl, env = process.env, 
       const context = { ...conversation, messages: conversation.messages.slice(0, userIndex + 1) };
       const passed = validateReply(message, index, curriculum, context);
       turns.push({ turn: index + 1, passed, cached, generation: usage(message?.ai), review: usage(message?.aiReview), externalClaimCount: count(message?.groundingReview?.externalClaimCount) ? message.groundingReview.externalClaimCount : null });
-      if (!passed) return receipt = { failed: true, stage: 'natural_reply_validation', turn: index + 1, submitted, turns, rejectionReasonId: [101,201,202,203,301,302,303,304,305,306,307,400,499].includes(message?.studyRejection?.reasonId) ? message.studyRejection.reasonId : null };
+      if (!passed) return receipt = { failed: true, stage: 'natural_reply_validation', turn: index + 1, submitted, turns, rejectionReasonId: [101,201,202,203,301,302,303,304,305,306,307,400,499].includes(message?.studyRejection?.reasonId) ? message.studyRejection.reasonId : null, ...(message?.studyRejection?.reasonId === 302 ? { reviewDiagnostics: new NaturalTutorError(302, message.studyRejection.diagnostics).diagnostics || null } : {}) };
     }
     return receipt = { naturalConversationPassed: true, contextRecallPassed: true, citedStudyTransitionPassed: true, submitted, providerCalls: submitted * 2, turns };
   } catch {

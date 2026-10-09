@@ -1,8 +1,8 @@
 // Study voice reads checked AI conversations or canonical study material.
 // The chat callback applies the separate grounding-review and source trust guards.
-// Recognition and speech synthesis are optional browser services, not an audio AI model.
-export function sourcedVoiceSupported(windowImpl = window) {
-  return Boolean(windowImpl.isSecureContext && (windowImpl.SpeechRecognition || windowImpl.webkitSpeechRecognition) && windowImpl.speechSynthesis && windowImpl.SpeechSynthesisUtterance);
+// Production injects authenticated AI speech; the optional legacy adapter supports device speech.
+export function sourcedVoiceSupported(windowImpl = window, { premium = false } = {}) {
+  return Boolean(windowImpl.isSecureContext && (windowImpl.SpeechRecognition || windowImpl.webkitSpeechRecognition) && (premium ? windowImpl.Audio : windowImpl.speechSynthesis && windowImpl.SpeechSynthesisUtterance));
 }
 
 export function speechChunks(text, limit = 700) {
@@ -32,7 +32,7 @@ export function reviewedSpokenReply(reply) {
   return Boolean(reply && reply.readoutAllowed === true && typeof reply.content === 'string' && reply.content.trim() && reply.content.length <= 24000);
 }
 
-export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowImpl = window, documentImpl = document, navigatorImpl = navigator, maxDurationMs = 600000 } = {}) {
+export function createSourcedVoiceCoach({ sendTurn, speechPlayer = null, onState = () => {}, windowImpl = window, documentImpl = document, navigatorImpl = navigator, maxDurationMs = 600000 } = {}) {
   if (typeof sendTurn !== 'function') throw new TypeError('Sourced voice requires a canonical chat callback.');
   const Recognition = windowImpl.SpeechRecognition || windowImpl.webkitSpeechRecognition;
   const synthesis = windowImpl.speechSynthesis;
@@ -47,6 +47,7 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
   const current = (attempt, turn) => !destroyed && attempt === generation && turn === turnVersion && active() && !documentImpl.hidden;
   function update(change) { snapshot = { ...snapshot, ...change }; onState({ ...snapshot, active: active() }); }
   function cancelSpeech() {
+    speechPlayer?.stop();
     clearTimer(speechTimer); speechTimer = null;
     if (speech) { speech.onend = null; speech.onerror = null; speech.onstart = null; }
     speech = null; synthesis?.cancel();
@@ -137,9 +138,16 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
         stop('That reply did not pass the conversation or source checks for readout. Voice did not read it. Review the visible message or open a current study topic.', true);
         return;
       }
-      spokenText = reply.content; chunks = speechChunks(spokenText); chunkIndex = 0;
+      spokenText = reply.content; chunks = speechPlayer ? [] : speechChunks(spokenText); chunkIndex = 0;
       update({ assistantCaption: spokenText, warning: '' });
-      speakChunk(attempt, turn);
+      if (speechPlayer) {
+        await speechPlayer.play({ conversationId, messageId: reply.messageId, signal: controller.signal,
+          onStart: () => { if (current(attempt, turn)) update({ phase: 'speaking', message: 'Coach is speaking. Your microphone is off until the reply finishes.', audioBlocked: false }); },
+          onEnd: () => { if (current(attempt, turn)) { turnVersion++; listen(generation, turnVersion); } },
+          onBlocked: () => { if (current(attempt, turn)) update({ phase: 'paused', audioBlocked: true, message: 'Tap Play audio to continue the prepared AI voice.', warning: 'Your microphone remains off while audio is paused. Play audio resumes without another voice request.' }); },
+          onError: error => { if (current(attempt, turn)) stop(error?.message || 'AI voice failed. Your reply remains in chat; no device voice was substituted.', true); },
+        });
+      } else speakChunk(attempt, turn);
     } catch (error) {
       if (!current(attempt, turn) || controller.signal.aborted) return;
       stop(error?.message || 'The study request failed. No automatic retry was made; use the visible chat to retry.', true);
@@ -174,7 +182,7 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
   }
   async function start(options = {}) {
     if (destroyed || active()) return;
-    if (!sourcedVoiceSupported(windowImpl)) throw new Error('Sourced voice needs HTTPS and browser speech recognition plus read-aloud. Use keyboard dictation and the visible cited text on unsupported browsers.');
+    if (!sourcedVoiceSupported(windowImpl, { premium: Boolean(speechPlayer) })) throw new Error('Talk with Coach needs HTTPS and browser speech recognition. Use your keyboard microphone and AI Read aloud on unsupported browsers.');
     if (documentImpl.hidden) throw new Error('Keep the study app visible while starting sourced voice.');
     generation++; turnVersion++;
     conversationId = options.conversationId || null;
@@ -201,7 +209,9 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
     listen(generation, turnVersion);
   }
   function playAudio() {
-    if (!active() || !snapshot.audioBlocked || !spokenText || !chunks.length) return;
+    if (!active() || !snapshot.audioBlocked || !spokenText) return;
+    if (speechPlayer) { update({ warning: '', audioBlocked: false }); return speechPlayer.resume(); }
+    if (!chunks.length) return;
     cancelSpeech();
     update({ warning: '', audioBlocked: false });
     speakChunk(generation, turnVersion);
@@ -212,6 +222,7 @@ export function createSourcedVoiceCoach({ sendTurn, onState = () => {}, windowIm
   windowImpl.addEventListener?.('pagehide', onLeave);
   return {
     start, stop, toggleMute, interrupt, playAudio,
+    clearCaptions: () => update({ userCaption: '', assistantCaption: '', warning: '' }),
     retrySave: () => Promise.resolve(),
     active, state: () => ({ ...snapshot, active: active() }),
     destroy() { stop(); destroyed = true; documentImpl.removeEventListener?.('visibilitychange', onHidden); windowImpl.removeEventListener?.('pagehide', onLeave); },

@@ -2,7 +2,8 @@ import { getDueCards, previewIntervals, studyStats } from '/shared/scheduler.js'
 import { ABFM_BLUEPRINT } from '/shared/blueprint.js';
 import { SCENARIOS, COMPETENCIES } from '/shared/content.js';
 import { createSourcedVoiceCoach, sourcedVoiceSupported } from '/sourced-voice.js';
-const voiceSupported = () => sourcedVoiceSupported() && !window.FMNativeBilling;
+import { COACH_VOICES, DEFAULT_COACH_VOICE, createPremiumSpeechPlayer } from '/premium-speech.js';
+const voiceSupported = () => sourcedVoiceSupported(window, { premium: true }) && premiumVoiceAvailable() && !window.FMNativeBilling;
 
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -29,7 +30,7 @@ const icons = {
 };
 const icon = name => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.coach}</svg>`;
 const navItems = [['today', 'Today'], ['coach', 'Coach'], ['review', 'Review'], ['library', 'Library'], ['progress', 'Progress']];
-const state = { cards: [], reviews: [], conversations: [], settings: { focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, competencyRatings: {} } };
+const state = { cards: [], reviews: [], conversations: [], settings: { focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, competencyRatings: {}, voiceId: DEFAULT_COACH_VOICE } };
 let status = { authenticated: false, aiConfigured: false, authRequired: false };
 let screen = ['today','coach','review','library','progress','board'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'coach';
 let currentConversationId = null;
@@ -107,9 +108,17 @@ let availableModels = [];
 let lastModelTest = null;
 let dialogRevision = 0;
 let startVoiceBusy = false;
+let voiceOptions = null, voiceOptionsLoading = null, voiceOptionsGeneration = 0;
+let premiumState = { phase: 'idle', active: false, kind: null, voice: DEFAULT_COACH_VOICE, audioBlocked: false, message: '' };
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let voiceState = { phase: 'idle', active: false, message: 'Start voice for a spoken conversation.', muted: false, audioBlocked: false, userCaption: '', assistantCaption: '', warning: '' };
+const premiumSpeech = createPremiumSpeechPlayer({
+  getVoice: () => selectedVoice(),
+  onState: next => { premiumState = next; updateVoiceUI(); },
+  onUnauthorized: () => endStudySession(),
+});
 const voiceCoach = createSourcedVoiceCoach({
+  speechPlayer: premiumSpeech,
   onState: next => { voiceState = next; updateVoiceUI(); },
   sendTurn: async ({ content, conversationId, requestId, signal }) => {
     const linkedCondition=state.conversations.find(item=>item.id===conversationId)?.curriculumConditionId;
@@ -120,10 +129,32 @@ const voiceCoach = createSourcedVoiceCoach({
     const message=result.message || item?.messages?.findLast(value=>value.role==='assistant');
     if(screen==='coach')render();
     return message?.reviewedDialogue===true
-      ? {content:studySpokenText(message),readoutAllowed:reviewedConversationSpeech(message)}
-      : {content:studySpokenText(message),sourceVerified:trustedStudySpeech(message)};
+      ? {messageId:message.id,content:studySpokenText(message),readoutAllowed:readoutMessageAllowed(message)}
+      : {messageId:message?.id,content:studySpokenText(message),sourceVerified:readoutMessageAllowed(message)};
   },
 });
+
+function selectedVoice() { return COACH_VOICES.some(voice => voice.id === state.settings.voiceId) ? state.settings.voiceId : DEFAULT_COACH_VOICE; }
+function premiumVoiceAvailable() { return voiceOptions?.enabled === true && Boolean(window.Audio); }
+function voiceSelectHtml(id, value = selectedVoice()) {
+  return `<label for="${id}">Coach voice</label><select id="${id}" name="voiceId">${COACH_VOICES.map(voice=>`<option value="${voice.id}" ${voice.id===value?'selected':''}>${voice.label}</option>`).join('')}</select>`;
+}
+async function loadVoiceOptions() {
+  if (voiceOptions) return;
+  if (!voiceOptionsLoading) {
+    const generation = voiceOptionsGeneration;
+    const pending = api('/api/voice/options').then(data=>{if(generation===voiceOptionsGeneration)voiceOptions=data;}).catch(()=>{}).finally(()=>{if(generation===voiceOptionsGeneration && voiceOptionsLoading===pending){voiceOptionsLoading=null;updateVoiceUI();}});
+    voiceOptionsLoading = pending;
+  }
+  await voiceOptionsLoading;
+}
+function resetVoiceOptions() { voiceOptionsGeneration++; voiceOptions=null; voiceOptionsLoading=null; }
+function stopPremiumAudio(clearCache = true) { premiumSpeech.stop({ clearCache }); if (clearCache) voiceCoach.clearCaptions(); }
+function endStudySession() {
+  status.authenticated = false; resetVoiceOptions();
+  stopDictation(); voiceCoach.stop('Voice stopped because your study session ended. Sign in again to continue.');
+  stopPremiumAudio(); resetCurriculumState(); resetBoardState(); renderLogin();
+}
 
 function notify(message) {
   clearTimeout(toastTimer);
@@ -136,7 +167,7 @@ async function api(path, options = {}) {
   const response = await fetch(path, { ...options, headers: { 'Content-Type': 'application/json', ...options.headers } });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    if (response.status === 401 && path !== '/api/login') { status.authenticated = false; resetCurriculumState(); resetBoardState(); if (voiceCoach.active()) voiceCoach.stop('Voice stopped because your study session ended. Sign in again to continue.'); renderLogin(); }
+    if (response.status === 401 && path !== '/api/login') endStudySession();
     const error = new Error(payload.error || payload.message || `The request failed (${response.status}). Please try again.`); error.details=payload; throw error;
   }
   return payload;
@@ -149,6 +180,7 @@ async function refreshState() {
   state.reviews = Array.isArray(data.reviews) ? data.reviews : [];
   state.conversations = Array.isArray(data.conversations) ? data.conversations.filter(item=>item.internalCheck!==true).sort((a,b) => (b.messages?.at(-1)?.createdAt || b.createdAt || 0) - (a.messages?.at(-1)?.createdAt || a.createdAt || 0)) : [];
   state.settings = { ...state.settings, ...data.settings };
+  await loadVoiceOptions();
   if (reviewSession) {
     const previousCardId = reviewSession.queue[0];
     const activeCardIds = new Set(state.cards.filter(card => !card.suspended).map(card => card.id));
@@ -196,6 +228,7 @@ function renderNav() {
 function navigate(next) {
   if (next !== 'board' && !navItems.some(([id]) => id === next)) return;
   if (recording) stopDictation();
+  if (next !== 'coach') stopPremiumAudio();
   if (next !== 'coach' && voiceCoach.active()) voiceCoach.stop('Voice stopped when you left Coach. Your microphone is off.');
   if ($('#chat-input')) chatDraft = $('#chat-input').value;
   screen = next;
@@ -255,7 +288,7 @@ function renderCoach() {
       ['Work through a learning point', 'I want to study atrial fibrillation. Help me work through the source-linked summary and ask which part I find unclear.'],
     ].map(([label,prompt]) => `<button class="prompt-chip" data-action="starter" data-prompt="${esc(prompt)}">${esc(label)}<span>↗</span></button>`).join('')}</div></div>`}
     ${chatBusy ? '<div class="message assistant"><div class="avatar">✦</div><div class="message-body"><div class="message-label">Coach is thinking</div><div class="typing" role="status" aria-label="Coach is thinking"><i></i><i></i><i></i></div></div></div>' : ''}
-    </div><div class="chat-compose">${messages.length ? coachFollowupActionsHtml() : ''}${status.mode !== 'commercial' ? `<div id="voice-controls" class="voice-controls">${voiceControlsHtml()}</div>` : ''}${chatError ? `<div class="notice error" style="margin-bottom:10px">${esc(chatError)} <button class="text-button" data-action="dismiss-chat-error">Dismiss</button></div>` : ''}<form id="chat-form"><div class="compose-row"><label class="screen-reader" for="chat-input">Message your study coach</label><textarea id="chat-input" name="content" rows="1" placeholder="${voiceState.active ? 'Stop voice to type a message…' : 'Say hello, talk it through, or ask a study question…'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''} maxlength="12000">${esc(chatDraft)}</textarea>${voiceDictationSupported() ? `<button type="button" class="icon-button mic-button ${recording ? 'recording' : ''}" data-action="dictate" aria-label="${recording ? 'Stop dictation' : 'Dictate a message'}" title="${recording ? 'Stop dictation' : 'Dictate text; review before sending'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('mic')}</button>` : ''}<button type="submit" class="icon-button send-button" aria-label="Send message" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('send')}</button></div><div class="composer-note"><span id="voice-status">${recording ? 'Dictating text… tap the mic to stop, then review and send.' : voiceDictationSupported() ? 'Type or dictate text. Review before sending.' : 'Type or use your phone keyboard’s microphone.'}</span><span>Enter to send · Shift + Enter for a new line</span></div></form></div></section>
+    </div><div class="chat-compose">${messages.length ? coachFollowupActionsHtml() : ''}<div id="voice-controls" class="voice-controls">${voiceControlsHtml()}</div>${chatError ? `<div class="notice error" style="margin-bottom:10px">${esc(chatError)} <button class="text-button" data-action="dismiss-chat-error">Dismiss</button></div>` : ''}<form id="chat-form"><div class="compose-row"><label class="screen-reader" for="chat-input">Message your study coach</label><textarea id="chat-input" name="content" rows="1" placeholder="${voiceState.active ? 'Stop voice to type a message…' : 'Say hello, talk it through, or ask a study question…'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''} maxlength="12000">${esc(chatDraft)}</textarea>${voiceDictationSupported() ? `<button type="button" class="icon-button mic-button ${recording ? 'recording' : ''}" data-action="dictate" aria-label="${recording ? 'Stop dictation' : 'Dictate a message'}" title="${recording ? 'Stop dictation' : 'Dictate text; review before sending'}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('mic')}</button>` : ''}<button type="submit" class="icon-button send-button" aria-label="Send message" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${icon('send')}</button></div><div class="composer-note"><span id="voice-status">${recording ? 'Dictating text… tap the mic to stop, then review and send.' : voiceDictationSupported() ? 'Type or dictate text. Review before sending.' : 'Type or use your phone keyboard’s microphone.'}</span><span>Enter to send · Shift + Enter for a new line</span></div></form></div></section>
     <div class="chat-under"><small>Study only. No medical advice or clinical use. Use fictional cases.</small><button class="text-button" data-action="draft-cards" ${!lastAssistant || chatBusy || !canChat() ? 'disabled' : ''}>Create recall cards ↗</button></div></div>`;
 }
 
@@ -267,22 +300,27 @@ function coachFollowupActionsHtml() {
   ].map(([label,prompt])=>`<button class="button secondary" data-action="coach-followup" data-prompt="${esc(prompt)}" ${chatBusy || voiceState.active || !canChat() ? 'disabled' : ''}>${label}</button>`).join('')}</div>`;
 }
 
+function premiumAudioControlsHtml() {
+  if (voiceState.active) return '';
+  return `${premiumState.audioBlocked ? '<button class="button secondary" data-action="premium-resume">Play audio</button>' : ''}${premiumState.active ? '<button class="button secondary" data-action="premium-stop">Stop audio</button>' : ''}<p class="premium-audio-status" role="status" aria-live="polite">${esc(premiumState.message)}</p>`;
+}
 function voiceControlsHtml() {
-  const active = voiceState.active;
-  return `<div class="voice-actions">${active ? `<button class="button secondary" data-action="voice-mute" aria-pressed="${voiceState.muted}">${voiceState.muted ? 'Unmute microphone' : 'Mute microphone'}</button><button class="button secondary" data-action="voice-interrupt" ${voiceState.phase === 'starting' ? 'disabled' : ''}>Interrupt readout</button><button class="button" data-action="voice-stop">Stop voice</button>` : `<button class="button" data-action="voice-start" ${chatBusy || startVoiceBusy || !voiceSupported() ? 'disabled' : ''}>${icon('mic')} ${startVoiceBusy ? 'Preparing voice…' : 'Talk with Coach'}</button>`}${voiceState.audioBlocked ? '<button class="button secondary" data-action="voice-speaker">Read reply</button>' : ''}</div><p class="voice-session-status" role="status" aria-live="polite">${esc(voiceState.message)}</p>${voiceState.userCaption ? `<div class="voice-caption"><strong>You</strong><span>${esc(voiceState.userCaption)}</span></div>` : ''}${voiceState.assistantCaption ? `<div class="voice-caption"><strong>Coach</strong><span>${esc(voiceState.assistantCaption)}</span></div>` : ''}${voiceState.warning ? `<div class="notice error" role="alert">${esc(voiceState.warning)}</div>` : ''}<p class="voice-note">${voiceSupported() ? 'Talk through a study goal, ask follow-ups, or answer a question. Device readout speaks the checked conversation reply, then listens for your next turn. Study explanations keep their source links visible. Up to 10 minutes.' : 'Spoken conversations need HTTPS, browser speech recognition and device readout. If unavailable, dictate with your phone keyboard and use Read aloud.'} Your browser may send dictation to its speech service. Recognized text goes through the same study chat; this app saves no audio files. Check transcription. Study only, no medical advice or clinical use.</p>`;
+  const active = voiceState.active, label = COACH_VOICES.find(voice=>voice.id===selectedVoice()).label;
+  return `<div class="coach-voice-picker"><div class="form-field">${voiceSelectHtml('coach-voice')}</div><button class="button secondary" data-action="voice-preview" ${active || !premiumVoiceAvailable() ? 'disabled' : ''}>Preview voice</button><span class="pill ai-voice-badge">AI voice · ${label}</span></div><div class="voice-actions">${active ? `<button class="button secondary" data-action="voice-mute" aria-pressed="${voiceState.muted}">${voiceState.muted ? 'Unmute microphone' : 'Mute microphone'}</button><button class="button secondary" data-action="voice-interrupt" ${voiceState.phase === 'starting' ? 'disabled' : ''}>Interrupt readout</button><button class="button" data-action="voice-stop">Stop voice</button>` : `<button class="button" data-action="voice-start" ${chatBusy || startVoiceBusy || !voiceSupported() ? 'disabled' : ''}>${icon('mic')} ${startVoiceBusy ? 'Preparing voice…' : 'Talk with Coach'}</button>`}${voiceState.audioBlocked ? '<button class="button secondary" data-action="voice-speaker">Play audio</button>' : ''}${premiumAudioControlsHtml()}</div><p class="voice-session-status" role="status" aria-live="polite">${esc(voiceState.message)}</p>${voiceState.userCaption ? `<div class="voice-caption"><strong>You</strong><span>${esc(voiceState.userCaption)}</span></div>` : ''}${voiceState.assistantCaption ? `<div class="voice-caption"><strong>Coach</strong><span>${esc(voiceState.assistantCaption)}</span></div>` : ''}${voiceState.warning ? `<div class="notice error" role="alert">${esc(voiceState.warning)}</div>` : ''}<p class="voice-note">These voices are AI-generated by OpenAI. ${voiceSupported() ? 'Coach speaks the checked chat reply, then listens for your next turn. The microphone stays off while audio is prepared or played. Up to 10 minutes.' : premiumVoiceAvailable() ? 'Use Read aloud for AI voice. Talk with Coach needs HTTPS and browser speech recognition; if unavailable, use your phone keyboard microphone.' : 'AI voice is not configured. Type or use your phone keyboard microphone.'} Source links stay visible. Your browser may send dictation to its speech service; checked reply text goes to OpenAI for speech. This app saves no audio files. Check transcription. Study only; no medical advice or clinical use.</p>`;
 }
 function updateVoiceUI() {
   const controls = $('#voice-controls'); if (controls) controls.innerHTML = voiceControlsHtml();
   const input = $('#chat-input'); if (input) input.disabled = chatBusy || voiceState.active || !canChat();
-  for (const button of document.querySelectorAll('#chat-form button,.chat-study-choices button,.coach-followups button')) button.disabled = chatBusy || voiceState.active || !canChat();
+  for (const button of document.querySelectorAll('#chat-form button,.chat-study-choices button,.coach-followups button')) button.disabled = chatBusy || voiceState.active || !canChat() || (button.dataset.action==='dictate' && premiumState.active);
+  const settingsAudio = $('#settings-audio-controls'); if (settingsAudio) settingsAudio.innerHTML = premiumAudioControlsHtml();
 }
 async function startVoice() {
   if (chatBusy || startVoiceBusy || voiceCoach.active()) return;
-  if (status.mode === 'commercial' || !voiceSupported()) return notify('Use your phone keyboard microphone and Read aloud where sourced voice is unsupported.');
+  if (!voiceSupported()) return notify('Talk with Coach needs browser speech recognition and configured AI voice. Use your keyboard microphone and Read aloud.');
   if (!navigator.onLine) return notify('Reconnect before starting voice.');
   startVoiceBusy = true; updateVoiceUI();
   try {
-    stopDictation(); if ('speechSynthesis' in window) speechSynthesis.cancel();
+    stopDictation(); stopPremiumAudio(false); if ('speechSynthesis' in window) speechSynthesis.cancel();
     if ($('#chat-input')) chatDraft = $('#chat-input').value;
     if (!conversation()) await createConversation({ title: 'Voice study conversation' });
     await voiceCoach.start({ conversationId: currentConversationId });
@@ -303,14 +341,14 @@ function reviewedConversationSpeech(message) {
   if(review.externalClaimCount===0) return review.medicalClaimCount===0;
   return message.current===true && Array.isArray(review.sourceChunkIds) && review.sourceChunkIds.length>0 && Array.isArray(message.citations) && message.citations.length>0 && message.citations.every(source=>typeof source.expiresAt==='string' && Date.parse(`${source.expiresAt.slice(0,10)}T00:00:00Z`)>Date.now());
 }
-function readoutMessageAllowed(message) { return reviewedConversationSpeech(message) || trustedStudySpeech(message); }
+function readoutMessageAllowed(message) { return !message?.studyRejection && !message?.internalCheck && (reviewedConversationSpeech(message) || trustedStudySpeech(message)); }
 function studySpokenText(message) {
   if (!readoutMessageAllowed(message)) return '';
   return typeof message.spokenText === 'string' ? message.spokenText : message.content || '';
 }
 function renderMessage(message) {
   const role = message.role === 'user' ? 'user' : 'assistant';
-  return `<div class="message ${role}" data-message-id="${esc(message.id)}"><div class="avatar">${role === 'user' ? 'YOU' : '✦'}</div><div class="message-body"><div class="message-label">${role === 'user' ? 'You' : 'Study coach'}</div><div class="message-text">${esc(message.content)}</div>${message.voiceTranscript ? '<small class="model-metadata">Voice caption · check transcription; interrupted replies may include unplayed words.</small>' : ''}${role === 'assistant' ? renderStudyQuestionControls(message) + renderAnswerEvidence(message) + renderModelMetadata(message) : ''}${role === 'assistant' ? `<div class="message-actions">${'speechSynthesis' in window && readoutMessageAllowed(message) ? `<button data-action="read-message" data-id="${esc(message.id)}">Read aloud</button>` : ''}${message.studyAnswer && !message.studyAnswer.imported && trustedStudySpeech(message) ? `<button data-action="chat-study-card" data-id="${esc(message.id)}" ${chatSavedCards.has(message.studyAnswer.key) ? 'disabled' : ''}>${chatSavedCards.has(message.studyAnswer.key) ? 'Added to recall cards' : 'Save sourced recall card'}</button>` : `<button data-action="card-from-message" data-id="${esc(message.id)}">Save as a card</button>`}<button data-action="copy-message" data-id="${esc(message.id)}">Copy</button>${status.mode === 'commercial' ? `<button data-action="report-message" data-id="${esc(message.id)}">Report answer</button>` : ''}</div>` : ''}</div></div>`;
+  return `<div class="message ${role}" data-message-id="${esc(message.id)}"><div class="avatar">${role === 'user' ? 'YOU' : '✦'}</div><div class="message-body"><div class="message-label">${role === 'user' ? 'You' : 'Study coach'}</div><div class="message-text">${esc(message.content)}</div>${message.voiceTranscript ? '<small class="model-metadata">Voice caption · check transcription; interrupted replies may include unplayed words.</small>' : ''}${role === 'assistant' ? renderStudyQuestionControls(message) + renderAnswerEvidence(message) + renderModelMetadata(message) : ''}${role === 'assistant' ? `<div class="message-actions">${premiumVoiceAvailable() && readoutMessageAllowed(message) ? `<button data-action="read-message" data-id="${esc(message.id)}">Read aloud</button>` : ''}${message.studyAnswer && !message.studyAnswer.imported && trustedStudySpeech(message) ? `<button data-action="chat-study-card" data-id="${esc(message.id)}" ${chatSavedCards.has(message.studyAnswer.key) ? 'disabled' : ''}>${chatSavedCards.has(message.studyAnswer.key) ? 'Added to recall cards' : 'Save sourced recall card'}</button>` : `<button data-action="card-from-message" data-id="${esc(message.id)}">Save as a card</button>`}<button data-action="copy-message" data-id="${esc(message.id)}">Copy</button>${status.mode === 'commercial' ? `<button data-action="report-message" data-id="${esc(message.id)}">Report answer</button>` : ''}</div>` : ''}</div></div>`;
 }
 
 function renderStudyQuestionControls(message) {
@@ -613,7 +651,7 @@ function closeDialog() { if (formBusy) return; $('#app-dialog').close(); }
 
 function settingsDialog() {
   const s = state.settings;
-  dialog('A study rhythm that fits.', 'Save your study goals and daily learning load.', `<form id="settings-form"><div class="form-field"><label for="study-focus">Saved study goal</label><select id="study-focus" name="focus">${[['clinical-reasoning','Clinical reasoning & synthesis'],['exam','Exam preparation'],['balanced','Balanced learning']].map(([value,label]) => `<option value="${value}" ${s.focus === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-field"><label for="coach-style">Saved study approach</label><select id="coach-style" name="coachStyle">${[['socratic','Question-first study goal'],['teach-quiz','Read, then practice goal'],['direct','Reference-first study goal']].map(([value,label]) => `<option value="${value}" ${s.coachStyle === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><p class="curriculum-limits">These preferences guide the study conversation and daily learning load. Medical teaching stays tied to cited summaries. Answer choices are checked against the original question bank; free-text reasoning is discussed, not scored as clinical competence.</p><div class="form-row"><div class="form-field"><label for="daily-minutes">Minutes per day</label><input id="daily-minutes" name="dailyMinutes" type="number" min="5" max="120" required value="${s.dailyMinutes}"></div><div class="form-field"><label for="new-limit">New cards per day</label><input id="new-limit" name="newCardsPerDay" type="number" min="0" max="50" required value="${s.newCardsPerDay}"></div></div><div class="form-field"><label for="study-timezone">Study timezone</label><input id="study-timezone" name="timeZone" value="${esc(s.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone)}" required><small>Used for daily limits and streaks. Example: America/New_York.</small></div><div class="notice info">${status.aiConfigured ? `Study coaching is configured with ${esc(status.provider || 'your selected provider')}${status.model ? ` (${esc(status.model)})` : ''}. ${status.mode === 'commercial' ? 'Answer sources and review dates appear when available.' : 'The coach uses conversation context to guide your study; cited learning points remain source-linked. Provider access is managed by the app owner.'}` : status.mode === 'commercial' ? 'AI coaching is being prepared by the app owner. Cards and reviews are available while the app is tested.' : 'Source-linked questions and study guidance are available now. Connecting OpenAI enables context-aware coaching around the cited learning material.'}</div><div id="settings-error" class="form-error" role="alert"></div></form>${status.modelSelectionEnabled ? modelSettingsHtml() : ''}<div class="form-section"><h3>Take your learning with you</h3><div class="inline-actions"><button class="button secondary" data-action="export">Export backup</button><button class="button secondary" data-action="import-backup">Restore backup</button></div><p class="footer-note" style="margin-bottom:0">Backups include your cards, review history, conversations, preferences and practice history. Keep the file private.</p></div><div class="form-section"><h3>Use it from your phone</h3><p class="subtitle" style="font-size:12px">Open your hosted app’s HTTPS address. On Android, choose “Install app” or “Add to Home screen” in your browser menu. On iPhone, open Safari, tap Share, then “Add to Home Screen”.</p><p class="footer-note" style="margin:0">Talk with Coach reads the checked AI conversation, then listens for your next turn. Study explanations keep their source links visible. Use Interrupt readout, Mute or Stop; hiding the app stops recognition. Browser speech support varies. Use your phone keyboard microphone and Read aloud if unavailable. The composer mic dictates text for review before sending. Chat and saved progress require a connection.</p></div>${status.mode === 'commercial' ? commercialSettings() : ''}${status.authRequired ? '<div class="form-section"><button class="button secondary" data-action="logout">Lock study space</button></div>' : ''}`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button type="submit" form="settings-form" class="button">Save preferences</button>');
+  dialog('A study rhythm that fits.', 'Save your study goals and daily learning load.', `<form id="settings-form"><div class="form-field"><label for="study-focus">Saved study goal</label><select id="study-focus" name="focus">${[['clinical-reasoning','Clinical reasoning & synthesis'],['exam','Exam preparation'],['balanced','Balanced learning']].map(([value,label]) => `<option value="${value}" ${s.focus === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-field"><label for="coach-style">Saved study approach</label><select id="coach-style" name="coachStyle">${[['socratic','Question-first study goal'],['teach-quiz','Read, then practice goal'],['direct','Reference-first study goal']].map(([value,label]) => `<option value="${value}" ${s.coachStyle === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><p class="curriculum-limits">These preferences guide the study conversation and daily learning load. Medical teaching stays tied to cited summaries. Answer choices are checked against the original question bank; free-text reasoning is discussed, not scored as clinical competence.</p><div class="form-field coach-voice-preference">${voiceSelectHtml('settings-voice', s.voiceId || DEFAULT_COACH_VOICE)}<small>These five Coach voices are AI-generated by OpenAI. Your choice applies to Talk with Coach and Read aloud.</small><button type="button" class="button secondary" data-action="voice-preview" ${!premiumVoiceAvailable() ? 'disabled' : ''}>Preview voice</button><div id="settings-audio-controls">${premiumAudioControlsHtml()}</div></div><div class="form-row"><div class="form-field"><label for="daily-minutes">Minutes per day</label><input id="daily-minutes" name="dailyMinutes" type="number" min="5" max="120" required value="${s.dailyMinutes}"></div><div class="form-field"><label for="new-limit">New cards per day</label><input id="new-limit" name="newCardsPerDay" type="number" min="0" max="50" required value="${s.newCardsPerDay}"></div></div><div class="form-field"><label for="study-timezone">Study timezone</label><input id="study-timezone" name="timeZone" value="${esc(s.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone)}" required><small>Used for daily limits and streaks. Example: America/New_York.</small></div><div class="notice info">${status.aiConfigured ? `Study coaching is configured with ${esc(status.provider || 'your selected provider')}${status.model ? ` (${esc(status.model)})` : ''}. ${status.mode === 'commercial' ? 'Answer sources and review dates appear when available.' : 'The coach uses conversation context to guide your study; cited learning points remain source-linked. Provider access is managed by the app owner.'}` : status.mode === 'commercial' ? 'AI coaching is being prepared by the app owner. Cards and reviews are available while the app is tested.' : 'Source-linked questions and study guidance are available now. Connecting OpenAI enables context-aware coaching around the cited learning material.'}</div><div id="settings-error" class="form-error" role="alert"></div></form>${status.modelSelectionEnabled ? modelSettingsHtml() : ''}<div class="form-section"><h3>Take your learning with you</h3><div class="inline-actions"><button class="button secondary" data-action="export">Export backup</button><button class="button secondary" data-action="import-backup">Restore backup</button></div><p class="footer-note" style="margin-bottom:0">Backups include your cards, review history, conversations, preferences and practice history. Keep the file private.</p></div><div class="form-section"><h3>Use it from your phone</h3><p class="subtitle" style="font-size:12px">Open your hosted app’s HTTPS address. On Android, choose “Install app” or “Add to Home screen” in your browser menu. On iPhone, open Safari, tap Share, then “Add to Home Screen”.</p><p class="footer-note" style="margin:0">Talk with Coach uses your selected AI voice for the checked conversation, then listens for your next turn. The microphone stays off during audio generation and playback. Source links stay visible. Use Interrupt readout, Mute or Stop; hiding the app stops recognition and audio. Browser speech recognition support varies. Use your phone keyboard microphone and AI Read aloud if unavailable. The composer mic dictates text for review before sending. Chat and saved progress require a connection.</p></div>${status.mode === 'commercial' ? commercialSettings() : ''}${status.authRequired ? '<div class="form-section"><button class="button secondary" data-action="logout">Lock study space</button></div>' : ''}`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button type="submit" form="settings-form" class="button">Save preferences</button>');
 }
 
 function modelSettingsHtml() {
@@ -731,7 +769,7 @@ function scrollChat() { const log = $('#chat-messages'); if (log) log.scrollTop 
 function resizeComposer() { const input = $('#chat-input'); if (!input) return; input.style.height = 'auto'; input.style.height = `${Math.min(140, Math.max(38,input.scrollHeight))}px`; }
 
 function startDictation() {
-  if (voiceCoach.active()) return notify('Stop voice before dictating a typed message.');
+  if (voiceCoach.active() || premiumState.active) return notify('Stop audio and voice before dictating a typed message.');
   if (!voiceDictationSupported()) { notify('Use the microphone on your phone’s keyboard to dictate.'); return; }
   if (!window.isSecureContext) { notify('Dictation needs HTTPS. You can also use your phone keyboard’s microphone.'); return; }
   if (recording) return stopDictation();
@@ -783,16 +821,19 @@ function preserveDictationEdits(value) {
   // a later cumulative browser event cannot overwrite the learner's correction.
   recognitionBase = value; recognitionLastWritten = value; stopDictation();
 }
-function readMessage(id) {
+async function previewVoice() {
+  if (!premiumVoiceAvailable()) return notify('AI voice is not configured yet.');
+  if (voiceCoach.active()) await voiceCoach.stop();
+  stopDictation();
+  const voice = $('#settings-voice')?.value || selectedVoice();
+  await premiumSpeech.preview({ voice, onError: error=>notify(error.message) });
+}
+async function readMessage(id) {
   const message = conversation()?.messages?.find(item => item.id === id);
-  if (!message || !('speechSynthesis' in window)) return;
-  if(!readoutMessageAllowed(message)) return notify('Readout is available for checked AI conversations and current source-linked learning points. Open the current condition summary.');
-  if (speechSynthesis.speaking) { speechSynthesis.cancel(); notify('Read-aloud stopped.'); return; }
-  const speech = new SpeechSynthesisUtterance(studySpokenText(message));
-  speech.lang = navigator.language || 'en-US';
-  speech.rate = .95;
-  speech.onerror = () => notify('Read-aloud is unavailable on this browser.');
-  speechSynthesis.speak(speech);
+  if (!message || !premiumVoiceAvailable()) return;
+  if (!readoutMessageAllowed(message)) return notify('AI readout requires a checked conversation or current source-linked learning point.');
+  stopDictation();
+  await premiumSpeech.play({ conversationId: currentConversationId, messageId: message.id, onError: error=>notify(error.message) });
 }
 
 async function ratingAction(rating) {
@@ -990,10 +1031,11 @@ async function handleAction(button) {
   if (action === 'native-purchase') return purchaseOffer(Number(button.dataset.product), Number(button.dataset.offer));
   if (action === 'native-restore') return restorePurchases();
   if (action === 'manage-subscription') return manageSubscriptions();
-  if (action === 'account-mode') { accountFormMode = button.dataset.mode; return renderLogin(); }
+  if (action === 'account-mode') { stopPremiumAudio(); accountFormMode = button.dataset.mode; return renderLogin(); }
   if (action === 'report-message') return reportDialog(id);
-  if (action === 'delete-account') return accountDeletionDialog();
-  if (voiceCoach.active() && ['new-chat','history','select-conversation','start-case','practice-prompt','starter','topic-coach','curriculum-coach','confirm-delete-conversation','logout','import-backup','draft-cards','read-message'].includes(action)) await voiceCoach.stop('Voice stopped. Your microphone is off.');
+  if (action === 'delete-account') { await voiceCoach.stop(); stopPremiumAudio(); return accountDeletionDialog(); }
+  if (voiceCoach.active() && ['new-chat','history','select-conversation','start-case','practice-prompt','starter','topic-coach','curriculum-coach','confirm-delete-conversation','logout','import-backup','draft-cards','read-message','settings','voice-preview'].includes(action)) await voiceCoach.stop('Voice stopped. Your microphone is off.');
+  if (['new-chat','history','select-conversation','start-case','practice-prompt','starter','topic-coach','curriculum-coach','confirm-delete-conversation','logout','import-backup','draft-cards','read-message','settings'].includes(action)) stopPremiumAudio();
   if (chatBusy && ['new-chat','history','select-conversation','start-case','practice-prompt','starter','topic-coach','curriculum-coach'].includes(action)) return notify('Wait for your coach’s reply before starting another conversation.');
   switch(action) {
     case 'navigate': return navigate(button.dataset.screen);
@@ -1057,6 +1099,9 @@ async function handleAction(button) {
     case 'voice-interrupt': return voiceCoach.interrupt();
     case 'voice-speaker': return voiceCoach.playAudio();
     case 'voice-save': return voiceCoach.retrySave();
+    case 'voice-preview': return previewVoice();
+    case 'premium-stop': return stopPremiumAudio(false);
+    case 'premium-resume': return premiumSpeech.resume();
     case 'dismiss-chat-error': chatError=''; return render();
     case 'read-message': return readMessage(id);
     case 'copy-message': { const message=conversation()?.messages?.find(item=>item.id===id); if(message) { try { await navigator.clipboard.writeText(message.content); notify('Learning point copied.'); } catch { notify('Copy is unavailable on this browser. Select the message text to copy it.'); } } return; }
@@ -1065,7 +1110,7 @@ async function handleAction(button) {
     case 'import-cards': return importCardsDialog();
     case 'export': return exportBackup();
     case 'import-backup': return importBackupDialog();
-    case 'logout': await mutate('/api/logout','POST'); closeDialog(); status.authenticated=false; isLoaded=false; state.cards=[];state.conversations=[];state.reviews=[];resetCurriculumState(); resetBoardState(); return renderLogin();
+    case 'logout': resetVoiceOptions(); await mutate('/api/logout','POST'); closeDialog(); status.authenticated=false; isLoaded=false; state.cards=[];state.conversations=[];state.reviews=[];resetCurriculumState(); resetBoardState(); return renderLogin();
   }
 }
 
@@ -1105,6 +1150,7 @@ document.addEventListener('submit', async event => {
     } else if (form.id === 'delete-account-form') {
       errorId = 'delete-account-error';
       if (data.get('confirmation') !== 'DELETE') throw new Error('Type DELETE exactly to confirm account deletion.');
+      await voiceCoach.stop(); stopPremiumAudio(); resetVoiceOptions();
       await mutate('/api/account/delete', 'POST', { confirmation: 'DELETE' });
       $('#app-dialog').close(); state.cards=[];state.reviews=[];state.conversations=[];state.settings={};isLoaded=false;currentConversationId=null;resetCurriculumState();resetBoardState();
       status=await api('/api/status'); accountFormMode='login';renderLogin();notify('Your account and saved study content were deleted.');
@@ -1115,7 +1161,8 @@ document.addEventListener('submit', async event => {
       await refreshState();render();
     } else if(form.id==='settings-form') {
       errorId='settings-error';
-      await mutate('/api/settings','PUT',{focus:data.get('focus'),coachStyle:data.get('coachStyle'),dailyMinutes:Number(data.get('dailyMinutes')),newCardsPerDay:Number(data.get('newCardsPerDay')),timeZone:data.get('timeZone').trim()});
+      if(data.get('voiceId')!==selectedVoice()) { await voiceCoach.stop(); stopPremiumAudio(); }
+      await mutate('/api/settings','PUT',{focus:data.get('focus'),coachStyle:data.get('coachStyle'),voiceId:data.get('voiceId'),dailyMinutes:Number(data.get('dailyMinutes')),newCardsPerDay:Number(data.get('newCardsPerDay')),timeZone:data.get('timeZone').trim()});
       await refreshState();reviewSession=null;$('#app-dialog').close();render();notify('Your study preferences are saved.');
     } else if(form.id==='card-form') {
       errorId='card-error';
@@ -1151,7 +1198,7 @@ document.addEventListener('submit', async event => {
       if(file.size>16*1024*1024) throw new Error('The backup is too large. The maximum is 16 MB.');
       const backup=JSON.parse(await file.text());
       await mutate('/api/import','POST',backup);
-      currentConversationId=null;reviewSession=null;resetBoardState();resetCurriculumState();await refreshState();$('#app-dialog').close();render();notify('Your study backup is restored.');
+      await voiceCoach.stop(); stopPremiumAudio(); resetVoiceOptions();currentConversationId=null;reviewSession=null;resetBoardState();resetCurriculumState();await refreshState();$('#app-dialog').close();render();notify('Your study backup is restored.');
     }
   } catch(error) {
     const target=errorId && document.getElementById(errorId);
@@ -1168,6 +1215,8 @@ document.addEventListener('input', event=>{
 document.addEventListener('change',async event=>{
   try {
     if(['board-mode','board-count','board-domain','board-feedback','board-timed'].includes(event.target.id)){const form=$('#board-start-form');const data=new FormData(form);boardMode=data.get('mode');boardCount=Number(data.get('count'));boardDomain=data.get('domain') || boardDomain;boardFeedback=data.get('feedback');boardTimed=data.get('timed')==='on';boardMinutes=Number(data.get('minutes') || boardMinutes);render();}
+    if(event.target.id==='coach-voice') { const voiceId=event.target.value;await voiceCoach.stop();stopPremiumAudio();await mutate('/api/settings','PUT',{voiceId});state.settings.voiceId=voiceId;updateVoiceUI();notify('Your Coach voice is saved.'); }
+    if(event.target.id==='settings-voice') { await voiceCoach.stop();stopPremiumAudio(); }
     if(event.target.id==='condition-domain') {curriculumDomain=event.target.value;await loadCurriculum();}
     if(event.target.id==='topic-filter') {topicFilter=event.target.value;render();}
     if(event.target.id==='openai-model') { $('#model-profile').innerHTML=modelProfileHtml(event.target.value); $('#test-model-button').disabled=!status.aiConfigured || event.target.value!==status.model; }
@@ -1183,7 +1232,7 @@ document.addEventListener('keydown',event=>{
   }
 });
 $('#app-dialog').addEventListener('cancel',event=>{if(formBusy) event.preventDefault();});
-$('#app-dialog').addEventListener('close',()=>{dialogRevision++;});
+$('#app-dialog').addEventListener('close',()=>{dialogRevision++;if(premiumState.kind==='preview')stopPremiumAudio(false);});
 $('#app-dialog').addEventListener('click',event=>{if(event.target===$('#app-dialog')) {const rect=$('#app-dialog').getBoundingClientRect();if(event.clientX<rect.left || event.clientX>rect.right || event.clientY<rect.top || event.clientY>rect.bottom) closeDialog();}});
 window.addEventListener('hashchange',()=>navigate(location.hash.slice(1)));
 window.addEventListener('online',()=>{renderNav();notify('Connected again. Your study space is ready.');});

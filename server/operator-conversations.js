@@ -3,7 +3,7 @@
 const protocols = new Map([
   ['Operator source check · synthetic board study', new Set(['study-source-selector-source-v1-gpt-4.1-mini'])],
   ['Operator conversation check · synthetic study', new Set(['study-dialogue-v1-plan-gpt-4.1-mini', 'study-dialogue-v1-followup-gpt-4.1-mini', 'study-dialogue-v2-followup-gpt-4.1-mini', 'study-dialogue-v3-followup-gpt-4.1-mini'])],
-  ['Operator natural conversation check · synthetic study', new Set(['natural-dialogue-v1-hello-gpt-4.1-mini', 'natural-dialogue-v1-context-gpt-4.1-mini', 'natural-dialogue-v1-study-gpt-4.1-mini'])],
+  ['Operator natural conversation check · synthetic study', new Set(['natural-dialogue-v1-hello-gpt-4.1-mini', 'natural-dialogue-v1-context-gpt-4.1-mini', 'natural-dialogue-v1-study-gpt-4.1-mini', 'natural-dialogue-v2-study-gpt-4.1-mini'])],
 ]);
 
 export function isOperatorTitle(title) { return protocols.has(title); }

@@ -23,10 +23,15 @@ try {
         const result = await runStudySourceCheck({ baseUrl: `http://127.0.0.1:${port}/`, flushTelemetry: () => server.flushIngeniumTelemetry() });
         console.log('Study source selector check:', JSON.stringify(result));
       }
-      if (process.env.STUDY_INITIAL_CONVERSATION_CHECK === 'natural-v1') {
+      if (process.env.STUDY_INITIAL_CONVERSATION_CHECK === 'natural-v2') {
         const { runNaturalConversationCheck } = await import('./natural-conversation-check.js');
         const result = await runNaturalConversationCheck({ baseUrl: `http://127.0.0.1:${port}/`, flushTelemetry: () => server.flushIngeniumTelemetry() });
         console.log('Study natural conversation check:', JSON.stringify(result));
+      }
+      if (process.env.STUDY_INITIAL_PREMIUM_VOICE_CHECK === 'premium-v1') {
+        const { runPremiumVoiceCheck } = await import('./premium-voice-check.js');
+        const result = await runPremiumVoiceCheck({ baseUrl: `http://127.0.0.1:${port}/` });
+        console.log('Study premium voice check:', JSON.stringify(result));
       }
     });
     const shutdown = async () => { await server.closeVoiceSessions(); server.close(() => process.exit(0)); };

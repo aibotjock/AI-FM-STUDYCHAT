@@ -16,9 +16,10 @@ import { createBoardPractice, BoardPracticeError } from './board-practice.js';
 import { isCoachingTurn, isDialogueFollowup, conversationalEvidence, pendingStudyQuestion } from './study-conversation.js';
 import { buildNaturalTutorPrompt, buildNaturalTutorSchema, validateNaturalDraft, buildNaturalReviewPrompt, buildNaturalReviewSchema, renderReviewedTutor, aggregateTutorUsage, naturalTutorFailure } from './natural-tutor.js';
 import { isOperatorTitle, learnerState, preserveOperatorConversations } from './operator-conversations.js';
+import { createPremiumSpeechService, premiumSpeechText, splitPremiumSpeech, premiumVoice, PREMIUM_PREVIEW_TEXT, PremiumSpeechError } from './premium-speech.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, timeZone: 'America/New_York', voiceEnabled: true, competencyRatings: {} });
+const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, timeZone: 'America/New_York', voiceEnabled: true, voiceId: 'marin', competencyRatings: {} });
 const SESSION_MS = 7 * 24 * 60 * 60 * 1000;
 const MAX_BACKUP_BYTES = 16 * 1024 * 1024;
 const MAX_STATE_BYTES = MAX_BACKUP_BYTES - 4096; // Reserve room for the backup envelope.
@@ -82,6 +83,7 @@ function validateSettings(input, base = DEFAULT_SETTINGS) {
     if (typeof input.voiceEnabled !== 'boolean') fail(400, 'voiceEnabled must be true or false.');
     result.voiceEnabled = input.voiceEnabled;
   }
+  if (input.voiceId !== undefined) result.voiceId = premiumVoice(input.voiceId);
   if (input.competencyRatings !== undefined) {
     if (!isObject(input.competencyRatings)) fail(400, 'Competency ratings must be an object.');
     const ratings = {};
@@ -333,6 +335,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
   const chatLocks = new Set();
   let voiceWorkspaceEpoch = 0;
   let voiceStopping = false;
+  const speech = curriculumEnabled && ai.providerId === 'openai' ? createPremiumSpeechService({ env, fetchImpl, db }) : null;
   const voiceEpochs = new Map();
   // Spoken study reads canonical /api/chat text; model-generated Realtime speech
   // cannot be validated against these sources and remains disabled.
@@ -422,7 +425,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           const studyList = curriculum?.list();
           const curriculumSummary = studyList ? { conditions: studyList.total, questions: studyList.questionCount, currentConditions: studyList.currentCount, formalGuidelineConditions: studyList.conditions.filter(condition => condition.formalGuideline).length } : null;
           const boardCatalog = boardPractice?.catalog();
-          return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: modelSelectionEnabled || ai.configured ? ai.model : null, modelWarning: ai.unavailableReason || null, modelSelectionEnabled, voiceEnabled, voiceModel: null, sourcedVoiceEnabled: curriculumEnabled, voiceMode: curriculumEnabled ? 'canonical-browser' : null, prohibitedModels: ['Astra'], curriculum: curriculumSummary, boardPractice: boardCatalog ? { questions: boardCatalog.questionCount, availableMixedSizes: boardCatalog.availableSizes } : null });
+          return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: modelSelectionEnabled || ai.configured ? ai.model : null, modelWarning: ai.unavailableReason || null, modelSelectionEnabled, voiceEnabled, voiceModel: null, sourcedVoiceEnabled: curriculumEnabled, voiceMode: curriculumEnabled ? speech?.configured ? 'validated-openai-speech' : 'canonical-browser' : null, premiumSpeechEnabled: Boolean(speech?.configured), prohibitedModels: ['Astra'], curriculum: curriculumSummary, boardPractice: boardCatalog ? { questions: boardCatalog.questionCount, availableMixedSizes: boardCatalog.availableSizes } : null });
         }
         if (req.method === 'POST' && path === '/api/login') {
           rateLimit(req, 'login', 8, 15 * 60000);
@@ -440,6 +443,49 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           return json(res, 200, { authenticated: true }, { 'Set-Cookie': `studychat_session=${id}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${SESSION_MS / 1000}${secure ? '; Secure' : ''}` });
         }
         if (!session(req)) fail(401, 'Sign in to use your study workspace.');
+        if (path === '/api/voice/options' || path.startsWith('/api/voice/check/') || ['/api/voice/preview', '/api/voice/speech'].includes(path)) {
+          if (!speech || !curriculumEnabled || ai.providerId !== 'openai') fail(403, 'These AI voices are available only in the personal OpenAI study pilot.');
+          if (voiceStopping || closed || !isActive()) fail(409, 'This speech workspace is no longer active.');
+          if (req.method === 'GET' && path === '/api/voice/options') return json(res, 200, speech.options());
+          if (req.method === 'GET' && path.startsWith('/api/voice/check/')) return json(res, 200, speech.inspect(path.slice('/api/voice/check/'.length)));
+          if (req.method !== 'POST' || !['/api/voice/preview', '/api/voice/speech'].includes(path)) fail(405, 'Use the supported AI voice route.');
+          rateLimit(req, 'premium-speech', 40, 60000);
+          const input = await readJson(req, 4096);
+          const preview = path === '/api/voice/preview';
+          const keys = preview ? ['voice', 'requestId'] : ['conversationId', 'messageId', 'voice', 'chunkIndex', 'requestId'];
+          if (!isObject(input) || Object.keys(input).length !== keys.length || !keys.every(key => Object.hasOwn(input, key))) fail(400, 'Use server message IDs and a voice choice only; arbitrary speech text is not accepted.');
+          premiumVoice(input.voice);
+          const epoch = voiceWorkspaceEpoch;
+          let conversation, message, chunks, originalText;
+          if (preview) chunks = [PREMIUM_PREVIEW_TEXT];
+          else {
+            conversation = conversationFor(cleanText(input.conversationId, 'conversation id', 100));
+            message = conversation.messages.find(item => item.id === cleanText(input.messageId, 'message id', 100));
+            if (!message) fail(404, 'Study message not found.');
+            originalText = premiumSpeechText({ conversation, message, references: studyReferences, settings: state.settings });
+            chunks = splitPremiumSpeech(originalText);
+            if (!Number.isInteger(input.chunkIndex) || input.chunkIndex < 0 || input.chunkIndex >= chunks.length) fail(400, 'Choose an available speech chunk.');
+          }
+          const chunkIndex = preview ? 0 : input.chunkIndex;
+          const controller = new AbortController();
+          const abort = () => controller.abort();
+          const disconnect = () => { if (!res.writableEnded) abort(); };
+          req.on('aborted', abort); res.on('close', disconnect);
+          const authorized = () => {
+            if (controller.signal.aborted || req.aborted || res.destroyed || !session(req) || !isActive() || closed || voiceStopping || epoch !== voiceWorkspaceEpoch) return false;
+            if (!preview) {
+              if (!state.conversations.includes(conversation) || !conversation.messages.includes(message)) return false;
+              return premiumSpeechText({ conversation, message, references: studyReferences, settings: state.settings }) === originalText;
+            }
+            return true;
+          };
+          try {
+            const result = await speech.synthesize({ text: chunks[chunkIndex], voice: input.voice, requestId: input.requestId, scope: preview ? 'preview' : `${conversation.id}:${message.id}:${chunkIndex}`, signal: controller.signal, authorize: authorized });
+            if (!authorized()) fail(409, 'This speech request is no longer active.');
+            res.writeHead(200, { 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-store', 'Content-Length': result.audio.length, 'X-Study-Speech-Chunks': chunks.length, 'X-Study-Speech-Chunk': chunkIndex, 'X-Study-Speech-Voice': input.voice, 'X-Study-Speech-Model': result.metadata.model, 'X-Study-Speech-Cached': String(result.cached), 'X-Study-Speech-Usage': 'unknown', 'X-Study-Speech-Cost': 'unknown', ...(result.metadata.providerRequestId ? { 'X-Study-Speech-Provider-Request-Id': result.metadata.providerRequestId } : {}) });
+            res.end(result.audio); return;
+          } finally { req.off('aborted', abort); res.off('close', disconnect); }
+        }
         if (['/api/voice/session', '/api/voice/transcript', '/api/voice/stop'].includes(path)) fail(403, 'Unvalidated model-generated speech is disabled. Use sourced voice to hear the canonical study text returned by Coach; this app is for study only.');
         if (path === '/api/board-practice' || path.startsWith('/api/board-practice/')) {
           if (!boardPractice) fail(403, 'Original board practice is available in the personal study pilot. Commercial clinical review remains separate.');
@@ -618,6 +664,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
         }
         if (req.method === 'POST' && path === '/api/logout') {
           await readJson(req);
+          voiceWorkspaceEpoch++; speech?.invalidate();
           if (voice) await voice.closeAll();
           const match = /(?:^|;\s*)studychat_session=([^;]*)/.exec(req.headers.cookie || '');
           if (match) sessions.delete(hash(match[1]));
@@ -682,6 +729,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           if (boardPractice) boardPractice.sanitizeImport(next, input.boardPractice);
           if (chatLocks.size) fail(409, 'Wait for coaching replies to finish before restoring a backup.');
           state = next; save(); voiceWorkspaceEpoch++;
+          speech?.invalidate();
           return json(res, 200, { restored: true, cards: state.cards.length, conversations: state.conversations.length });
         }
         if (req.method === 'POST' && ['/api/conversations', '/api/operator/conversations'].includes(path)) {
@@ -707,6 +755,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           if (chatLocks.has(conversationMatch[1])) fail(409, 'Wait for the current reply before deleting this conversation.');
           conversationFor(conversationMatch[1]);
           state.conversations = state.conversations.filter(item => item.id !== conversationMatch[1]); save();
+          voiceWorkspaceEpoch++; speech?.invalidate();
           return json(res, 200, { deleted: true });
         }
         if (req.method === 'POST' && path === '/api/chat') {
@@ -844,20 +893,21 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
       res.writeHead(200, { 'Content-Type': MIME[extname(file)], 'Cache-Control': 'no-cache', 'Content-Length': body.length });
       res.end(req.method === 'HEAD' ? undefined : body);
     } catch (error) {
+      if (res.destroyed || req.aborted) return;
       if (res.headersSent) { res.end(); return; }
-      const expected = error instanceof HttpError || error instanceof AiProviderError || error instanceof OpenAIModelError || error instanceof VoiceError || error instanceof BoardPracticeError;
-      json(res, expected ? error.status : 500, { error: expected ? error.message : 'The server could not complete this request.', ...(error instanceof BoardPracticeError ? { code: error.code, details: error.details } : {}) });
+      const expected = error instanceof HttpError || error instanceof AiProviderError || error instanceof OpenAIModelError || error instanceof VoiceError || error instanceof BoardPracticeError || error instanceof PremiumSpeechError;
+      json(res, expected ? error.status : 500, { error: expected ? error.message : 'The server could not complete this request.', ...(error instanceof BoardPracticeError ? { code: error.code, details: error.details } : {}), ...(error instanceof PremiumSpeechError ? { code: error.code } : {}) });
       // Never log submitted messages, authentication tokens, or provider response bodies.
       if (!expected) console.error('StudyChat request failed:', error.name);
     }
   });
   server.requestTimeout = 60000;
   server.headersTimeout = 10000;
-  server.on('close', () => { if (!closed) { closed = true; if (telemetryTimer) clearInterval(telemetryTimer); db.close(); } });
-  server.closeStore = () => { if (!closed) { closed = true; if (telemetryTimer) clearInterval(telemetryTimer); db.close(); } };
+  server.on('close', () => { if (!closed) { speech?.close(); closed = true; if (telemetryTimer) clearInterval(telemetryTimer); db.close(); } });
+  server.closeStore = () => { if (!closed) { speech?.close(); closed = true; if (telemetryTimer) clearInterval(telemetryTimer); db.close(); } };
   server.flushIngeniumTelemetry = () => drainTelemetry();
-  server.closeVoiceSessions = async () => { voiceStopping = true; await voice?.closeAll(); };
-  server.hasActiveRequests = () => chatLocks.size > 0;
+  server.closeVoiceSessions = async () => { voiceStopping = true; voiceWorkspaceEpoch++; speech?.close(); await voice?.closeAll(); };
+  server.hasActiveRequests = () => chatLocks.size > 0 || (speech?.active || 0) > 0;
   // Constructor-injected gateway access only; never an HTTP route.
   server.readOnlySnapshot = () => structuredClone(state);
   return server;
@@ -870,7 +920,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT must be from 1 to 65535.');
     const host = process.env.HOST || '127.0.0.1';
     server.listen(port, host, () => console.log(`StudyChat is ready on ${host}:${port}.`));
-    const shutdown = () => server.close(() => process.exit(0));
+    const shutdown = async () => { await server.closeVoiceSessions(); server.close(() => process.exit(0)); };
     process.on('SIGTERM', shutdown); process.on('SIGINT', shutdown);
   } catch (error) { console.error(error.message); process.exit(1); }
 }

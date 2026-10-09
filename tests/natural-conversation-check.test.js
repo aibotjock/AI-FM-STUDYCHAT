@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { renderReviewedTutor } from '../server/natural-tutor.js';
-import { runNaturalConversationCheck, NATURAL_CHECK_TITLE, NATURAL_CHECK_TURNS } from '../server/natural-conversation-check.js';
+import { runNaturalConversationCheck, NATURAL_CHECK_TITLE, NATURAL_CHECK_TURNS, LEGACY_NATURAL_STUDY_TURN } from '../server/natural-conversation-check.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
 
 const BASE = 'http://127.0.0.1:3000/';
-const ENV = { STUDY_INITIAL_CONVERSATION_CHECK: 'natural-v1', AI_PROVIDER: 'openai', APP_MODE: 'personal', STUDY_ACCESS_TOKEN: 'mock-owner-secret', OPENAI_API_KEY: 'mock-openai-secret' };
+const ENV = { STUDY_INITIAL_CONVERSATION_CHECK: 'natural-v2', AI_PROVIDER: 'openai', APP_MODE: 'personal', STUDY_ACCESS_TOKEN: 'mock-owner-secret', OPENAI_API_KEY: 'mock-openai-secret' };
 const STATUS = { aiConfigured: true, providerId: 'openai', model: 'gpt-4.1-mini' };
 function harness({ state = { conversations: [] }, status = STATUS, failChat, alterReply } = {}) {
   const curriculum = createStudyCurriculum({ records: [studyCondition({ id: 'atrial-fibrillation', name: 'Atrial fibrillation', aliases: ['atrial fibrillation'], domain: 'chronic' })], now: () => STUDY_NOW });
@@ -85,4 +85,18 @@ test('foreign durable identity blocks fresh natural checks and preserves learner
   const mock = harness({ state: { conversations: [{ id: 'learner', title: 'My session', mode: 'coach', messages: [{ id: 'user-old', role: 'user', ...NATURAL_CHECK_TURNS[0] }] }] } });
   const receipt = await invoke(mock); assert.equal(receipt.stage, 'saved_request_conflict'); assert.equal(receipt.uncertain, true);
   assert.equal(mock.requests.some(item => item.path === '/api/chat' || item.path === '/api/operator/conversations'), false);
+});
+
+
+test('v2 correction reuses passed hello and nickname context and preserves the rejected v1 study identity', async () => {
+  const mock = harness(); assert.equal((await invoke(mock)).naturalConversationPassed, true);
+  const conversation = mock.state.conversations[0];
+  conversation.messages[4] = { ...conversation.messages[4], ...LEGACY_NATURAL_STUDY_TURN };
+  conversation.messages[5] = { id: 'rejected-v1-reply', role: 'assistant', responseTo: conversation.messages[4].id, content: 'A fixed source-check failure.', unsupported: true, studyRejection: { reasonId: 302 } };
+  const before = mock.requests.filter(item => item.path === '/api/chat').length;
+  const receipt = await invoke(mock);
+  assert.equal(receipt.naturalConversationPassed, true); assert.equal(receipt.submitted, 1); assert.equal(receipt.providerCalls, 2); assert.deepEqual(receipt.turns.map(turn => turn.cached), [true, true, false]);
+  assert.equal(mock.requests.filter(item => item.path === '/api/chat').length, before + 1);
+  assert.equal(conversation.messages[5].id, 'rejected-v1-reply');
+  assert.equal(mock.requests.filter(item => item.path === '/api/chat' && item.body.requestId === LEGACY_NATURAL_STUDY_TURN.requestId).length, 0);
 });

@@ -52,13 +52,14 @@ async function fixture(t, { commercial = false } = {}) {
 }
 
 // The former Realtime session/transcript lifecycle cases were retired when the
-// public app switched to canonical browser speech. These test the new contract.
-test('public status exposes canonical browser voice and all Realtime routes require authentication', async t => {
+// public app switched to checked text and independently synthesized speech.
+test('public status exposes validated OpenAI speech and all Realtime routes require authentication', async t => {
   const app = await fixture(t);
   const status = (await app.request('/api/status')).body;
   assert.equal(status.voiceEnabled, false);
   assert.equal(status.sourcedVoiceEnabled, true);
-  assert.equal(status.voiceMode, 'canonical-browser');
+  assert.equal(status.voiceMode, 'validated-openai-speech');
+  assert.equal(status.premiumSpeechEnabled, true);
   assert.equal(status.voiceModel, null);
   assert.equal(JSON.stringify(status).includes(API_KEY), false);
   for (const [path, body] of VOICE_REQUESTS) assert.equal((await app.request(path, 'POST', body)).status, 401);
