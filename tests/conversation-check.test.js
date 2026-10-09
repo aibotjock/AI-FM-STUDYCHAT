@@ -128,3 +128,22 @@ test('conflicting durable identities cannot create a fresh paid conversation', a
   assert.equal(receipt.uncertain, true);
   assert.equal(mock.requests.some(item => item.path === '/api/chat' || item.path === '/api/conversations'), false);
 });
+
+test('failed saved-reply diagnostics contain only allowlisted metadata and never unverified model or learner wording', async () => {
+  const unsafe = 'private-unverified-learner-text';
+  const mock = harness({ alterReply: (message, index) => {
+    if (index === 0) {
+      message.studyDialogue.intent = unsafe;
+      message.studyDialogue.followup = unsafe;
+      message.studySelection = { chunkIds: [unsafe] };
+      message.spokenText = unsafe;
+    }
+  } });
+  const receipt = await invoke(mock);
+  assert.equal(receipt.failed, true);
+  assert.equal(receipt.checks.intent, null);
+  assert.equal(receipt.checks.followup, null);
+  assert.deepEqual(receipt.checks.selectedChunks, []);
+  assert.equal(JSON.stringify(receipt).includes(unsafe), false);
+  assert.equal(mock.requests.filter(item => item.path === '/api/chat').length, 1);
+});

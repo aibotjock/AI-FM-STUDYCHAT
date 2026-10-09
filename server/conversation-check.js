@@ -1,7 +1,7 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadStudyCurriculum } from './study-curriculum.js';
-import { renderStudyDialogue } from './study-conversation.js';
+import { renderStudyDialogue, STUDY_DIALOGUE_ENUMS } from './study-conversation.js';
 
 export const CONVERSATION_CHECK_TITLE = 'Operator conversation check · synthetic study';
 export const CONVERSATION_CHECK_TURNS = Object.freeze([
@@ -43,6 +43,18 @@ function validateTurn(message, index, curriculum, conversation, settings) {
   return canonical.curriculum === true && canonical.conditionIds.length === 1 && canonical.conditionIds[0] === 'atrial-fibrillation' &&
     message.content.includes(canonical.content) && message.spokenText.includes(canonical.content) && JSON.stringify(message.citations) === JSON.stringify(canonical.citations) &&
     message.studyDialogue.followup !== 'none';
+}
+function savedReplyDiagnostics(message, curriculum) {
+  const marker = message?.studyDialogue;
+  const evidence = curriculum.retrieve(CONVERSATION_CHECK_TURNS[1].content, { conditionIds: ['atrial-fibrillation'] });
+  const eligibleKeys = new Set(evidence.map(item => item.key));
+  return { validDialogue: Boolean(validDialogue(message)), curriculum: message?.curriculum === true, current: message?.current === true,
+    unsupported: message?.unsupported === true, selectionPresent: Array.isArray(message?.studySelection?.chunkIds),
+    selectedChunks: (message?.studySelection?.chunkIds || []).filter(key => eligibleKeys.has(key)).slice(0, 4),
+    quizPresent: object(message?.studyQuestion), citationsPresent: Array.isArray(message?.citations) && message.citations.length > 0,
+    intent: STUDY_DIALOGUE_ENUMS.intent.includes(marker?.intent) ? marker.intent : null,
+    followup: STUDY_DIALOGUE_ENUMS.followup.includes(marker?.followup) ? marker.followup : null,
+    learnerQuotePresent: marker?.learnerQuotePresent === true };
 }
 
 /** A new feature check only: two fixed turns, durable identities, no paid retry. */
@@ -102,7 +114,7 @@ export async function runConversationCheck({ baseUrl, env = process.env, fetchIm
       const context = { ...conversation, messages: conversation.messages.filter(item => item.role !== 'assistant' || item.id !== message?.id) };
       const passed = validateTurn(message, index, curriculum, context, state.settings || { dailyMinutes: 18, coachStyle: 'socratic', focus: 'exam' });
       turns.push({ turn: index + 1, passed, cached, ...safeUsage(message) });
-      if (!passed) return receipt = { failed: true, stage: 'dialogue_validation', turn: index + 1, submitted, turns };
+      if (!passed) return receipt = { failed: true, stage: 'dialogue_validation', turn: index + 1, submitted, turns, checks: savedReplyDiagnostics(message, curriculum) };
     }
     return receipt = { conversationPassed: true, planPassed: true, citedFollowupPassed: true, submitted, turns };
   } catch {
