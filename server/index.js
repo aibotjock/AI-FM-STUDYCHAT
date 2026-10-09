@@ -13,7 +13,7 @@ import { createIngeniumTelemetry, projectIngeniumMetadata } from './ingenium-tel
 import { createVoiceService, sanitizeVoiceEvents, VoiceError } from './voice.js';
 import { loadStudyCurriculum, loadStudyFoundations, combineStudyCurricula, needsStudyEvidence, isStudyQuizRequest, isActualCareRequest, studyChoice, STUDY_DISCLAIMER, STUDY_REAL_CARE_REDIRECT } from './study-curriculum.js';
 import { createBoardPractice, BoardPracticeError } from './board-practice.js';
-import { buildStudyDialoguePrompt, isCoachingTurn, isDialogueFollowup, conversationalEvidence, pendingStudyQuestion, renderStudyDialogue, safeStudyDialogueFallback } from './study-conversation.js';
+import { buildStudyDialoguePrompt, buildStudyDialogueSchema, isCoachingTurn, isDialogueFollowup, conversationalEvidence, pendingStudyQuestion, renderStudyDialogue, safeStudyDialogueFallback } from './study-conversation.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, timeZone: 'America/New_York', voiceEnabled: true, competencyRatings: {} });
@@ -393,10 +393,10 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
     return conversation;
   }
 
-  async function complete(messages, { jsonMode = false, maxOutputTokens } = {}) {
+  async function complete(messages, { jsonMode = false, jsonSchema = null, maxOutputTokens } = {}) {
     const provider = ai; // Configuration changes cannot replace an in-flight request.
     try {
-      return await provider.complete(messages, { jsonMode, maxOutputTokens: maxOutputTokens ?? (provider.model.includes('pro') ? 4096 : jsonMode ? 1800 : 1200), includeMetadata: true });
+      return await provider.complete(messages, { jsonMode, jsonSchema, maxOutputTokens: maxOutputTokens ?? (provider.model.includes('pro') ? 4096 : jsonMode ? 1800 : 1200), includeMetadata: true });
     } catch (error) {
       if (error instanceof AiProviderError) fail(error.status, error.message);
       throw error;
@@ -742,9 +742,9 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             if (!generated && evidence.length && isStudyQuizRequest(content)) generated = studyReferences.quiz(evidence, { previousQuestionKeys: conversation.messages.filter(message => message.role === 'assistant' && message.studyQuestion && !message.importedEvidence && !message.studyQuestion.imported).map(message => message.studyQuestion.key) });
             if (!generated && studyReferences && (evidence.length || coachingRequested || pending)) {
               if (ai.configured) {
-                completion = await complete([{ role: 'system', content: buildStudyDialoguePrompt({ references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending }) }, { role: 'user', content }], { jsonMode: true, maxOutputTokens: 512 });
+                completion = await complete([{ role: 'system', content: buildStudyDialoguePrompt({ references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending }) }, { role: 'user', content }], { jsonMode: true, jsonSchema: buildStudyDialogueSchema({ references: studyReferences, evidence, conversation }), maxOutputTokens: 512 });
                 try { generated = renderStudyDialogue(JSON.parse(completion.content), { references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending, medicalRequested, coachingRequested }); }
-                catch { generated = safeStudyDialogueFallback(); }
+                catch (error) { generated = { ...safeStudyDialogueFallback(), studyRejection: { code: error instanceof SyntaxError ? 'invalid_json' : 'invalid_dialogue_plan' } }; }
               } else if (evidence.length && !coachingRequested && !pending) generated = studyReferences.render({ chunkIds: evidence.slice(0, 2).map(item => item.key), questionId: null, unsupported: false }, evidence);
               else generated = { content: sourcedStudyNavigation(conversation), scripted: true };
             } else if (!generated && studyReferences && medicalRequested) {
@@ -758,7 +758,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             const processMetadata = studyReferences && (generated?.unsupported || generated?.scripted) ? { sourceVerified: true, canonicalStudyProcess: true } : {};
             const studyMetadata = generated?.curriculum ? { grounded: true, curriculum: true, sourceVerified: true, humanReview: false, current: true, conditionIds: generated.conditionIds, ...(generated.studyQuestion ? { studyQuestion: generated.studyQuestion } : {}), ...(generated.studyAnswer ? { studyAnswer: generated.studyAnswer } : {}), ...(generated.studySelection ? { studySelection: generated.studySelection } : {}) } : {};
             if (generated?.curriculum && generated.conditionIds?.length === 1) conversation.curriculumConditionId = generated.conditionIds[0];
-            const message = { id: randomUUID(), role: 'assistant', content: answer, createdAt: Date.now(), responseTo: user.id, ...(completion?.metadata ? { ai: completion.metadata } : {}), ...(generated?.citations ? { citations: generated.citations } : {}), ...(generated?.unsupported ? { unsupported: true } : {}), ...(generated?.scripted ? { scripted: true } : {}), ...(generated?.studyDialogue ? { studyDialogue: generated.studyDialogue, spokenText: generated.spokenText, canonicalSpokenText: true } : {}), ...processMetadata, ...studyMetadata, ...(connected ? {} : { offline: true }) };
+            const message = { id: randomUUID(), role: 'assistant', content: answer, createdAt: Date.now(), responseTo: user.id, ...(completion?.metadata ? { ai: completion.metadata } : {}), ...(generated?.citations ? { citations: generated.citations } : {}), ...(generated?.unsupported ? { unsupported: true } : {}), ...(generated?.scripted ? { scripted: true } : {}), ...(generated?.studyRejection ? { studyRejection: generated.studyRejection } : {}), ...(generated?.studyDialogue ? { studyDialogue: generated.studyDialogue, spokenText: generated.spokenText, canonicalSpokenText: true } : {}), ...processMetadata, ...studyMetadata, ...(connected ? {} : { offline: true }) };
             conversation.messages.push(message); save();
             return json(res, 200, { message, conversation, offline: !connected });
           } finally { chatLocks.delete(conversation.id); }

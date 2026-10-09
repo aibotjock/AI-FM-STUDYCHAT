@@ -23,7 +23,7 @@ try {
         const result = await runStudySourceCheck({ baseUrl: `http://127.0.0.1:${port}/`, flushTelemetry: () => server.flushIngeniumTelemetry() });
         console.log('Study source selector check:', JSON.stringify(result));
       }
-      if (process.env.STUDY_INITIAL_CONVERSATION_CHECK === 'dialogue-v1') {
+      if (process.env.STUDY_INITIAL_CONVERSATION_CHECK === 'dialogue-v2') {
         const { runConversationCheck } = await import('./conversation-check.js');
         const result = await runConversationCheck({ baseUrl: `http://127.0.0.1:${port}/`, flushTelemetry: () => server.flushIngeniumTelemetry() });
         console.log('Study conversational tutor check:', JSON.stringify(result));

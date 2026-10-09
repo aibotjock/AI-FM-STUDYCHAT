@@ -48,12 +48,15 @@ export function createAiProvider({ env = process.env, fetchImpl = globalThis.fet
   const rates = Object.freeze({ inputUsdPerMillion: rate(env.AI_INPUT_USD_PER_MILLION, defaults[0]), outputUsdPerMillion: rate(env.AI_OUTPUT_USD_PER_MILLION, defaults[1]) });
   const configured = Boolean(key) && !unavailableReason;
 
-  async function complete(messages, { jsonMode = false, maxOutputTokens = commercial ? 600 : profile?.defaultMaxOutputTokens || 1200, signal, includeMetadata = false } = {}) {
+  async function complete(messages, { jsonMode = false, jsonSchema = null, maxOutputTokens = commercial ? 600 : profile?.defaultMaxOutputTokens || 1200, signal, includeMetadata = false } = {}) {
     assertAllowedModel(model);
     if (profile?.shutdownDate && Date.parse(profile.shutdownDate) <= Date.now()) fail(503, 'This OpenAI model has reached its announced shutdown date. Choose another model in Study preferences.');
     if (!configured) fail(503, 'The selected AI provider is not configured on the server.');
     if (!Array.isArray(messages) || !messages.length || messages.length > 100 || messages.some(message => !message || !['system', 'user', 'assistant'].includes(message.role) || typeof message.content !== 'string' || !message.content.trim() || message.content.length > 120000)) fail(400, 'Use a bounded text study conversation.');
     if (!Number.isInteger(maxOutputTokens) || maxOutputTokens < 1 || maxOutputTokens > 4096) fail(400, 'Use a supported AI output limit.');
+    if (jsonSchema !== null && (!jsonSchema || typeof jsonSchema !== 'object' || Array.isArray(jsonSchema) || !/^[A-Za-z0-9_-]{1,64}$/.test(jsonSchema.name || '') || !jsonSchema.schema || jsonSchema.schema.type !== 'object')) fail(400, 'Use a named object schema for structured AI output.');
+    const strictSchema = jsonSchema && providerId === 'openai' && ['gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano'].includes(profile?.canonicalId) ? { name: jsonSchema.name, strict: true, schema: jsonSchema.schema } : null;
+    jsonMode = jsonMode || jsonSchema !== null;
     const cleaned = messages.map(({ role, content }) => ({ role, content }));
     if (providerId === 'anthropic' && model === CLAUDE_DEFAULT && Buffer.byteLength(JSON.stringify(cleaned), 'utf8') + 512 > 100000) fail(400, 'Shorten this study conversation before asking another question.');
     let url, body, headers;
@@ -72,12 +75,12 @@ export function createAiProvider({ env = process.env, fetchImpl = globalThis.fet
       headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` };
       const systems = cleaned.filter(message => message.role === 'system').map(message => message.content);
       if (jsonMode) systems.push(JSON_INSTRUCTION);
-      body = { model, input: cleaned.filter(message => message.role !== 'system'), ...(systems.length ? { instructions: systems.join('\n\n') } : {}), store: false, max_output_tokens: maxOutputTokens, ...(jsonMode && profile.jsonMode ? { text: { format: { type: 'json_object' } } } : {}), ...(profile.reasoningEffort ? { reasoning: { effort: profile.reasoningEffort } } : {}) };
+      body = { model, input: cleaned.filter(message => message.role !== 'system'), ...(systems.length ? { instructions: systems.join('\n\n') } : {}), store: false, max_output_tokens: maxOutputTokens, ...(strictSchema ? { text: { format: { type: 'json_schema', ...strictSchema } } } : jsonMode && profile.jsonMode ? { text: { format: { type: 'json_object' } } } : {}), ...(profile.reasoningEffort ? { reasoning: { effort: profile.reasoningEffort } } : {}) };
     } else {
       url = 'https://api.openai.com/v1/chat/completions';
       headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` };
       const limitField = profile.tokenParameter;
-      body = { model, messages: jsonMode ? [{ role: 'system', content: JSON_INSTRUCTION }, ...cleaned] : cleaned, store: false, [limitField]: maxOutputTokens, ...(jsonMode && profile.jsonMode ? { response_format: { type: 'json_object' } } : {}), ...(profile.reasoningEffort ? { reasoning_effort: profile.reasoningEffort } : {}) };
+      body = { model, messages: jsonMode ? [{ role: 'system', content: JSON_INSTRUCTION }, ...cleaned] : cleaned, store: false, [limitField]: maxOutputTokens, ...(strictSchema ? { response_format: { type: 'json_schema', json_schema: strictSchema } } : jsonMode && profile.jsonMode ? { response_format: { type: 'json_object' } } : {}), ...(profile.reasoningEffort ? { reasoning_effort: profile.reasoningEffort } : {}) };
     }
     if (profile?.contextWindowTokens && Buffer.byteLength(JSON.stringify(body), 'utf8') + maxOutputTokens > profile.contextWindowTokens) fail(400, 'This model has a smaller context window. Start a shorter conversation.');
     const controller = new AbortController();

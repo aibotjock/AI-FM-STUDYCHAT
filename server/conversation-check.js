@@ -4,10 +4,12 @@ import { loadStudyCurriculum } from './study-curriculum.js';
 import { renderStudyDialogue, STUDY_DIALOGUE_ENUMS } from './study-conversation.js';
 
 export const CONVERSATION_CHECK_TITLE = 'Operator conversation check · synthetic study';
+export const LEGACY_CONVERSATION_FOLLOWUP = Object.freeze({ requestId: 'study-dialogue-v1-followup-gpt-4.1-mini', content: 'I would like to study atrial fibrillation. Start our plan with a brief cited study point, then ask one recall question.' });
 export const CONVERSATION_CHECK_TURNS = Object.freeze([
   { requestId: 'study-dialogue-v1-plan-gpt-4.1-mini', content: 'Help me plan a 15-minute study session. Ask me just one question at a time.' },
-  { requestId: 'study-dialogue-v1-followup-gpt-4.1-mini', content: 'I would like to study atrial fibrillation. Start our plan with a brief cited study point, then ask one recall question.' }
+  { requestId: 'study-dialogue-v2-followup-gpt-4.1-mini', content: 'For board study, explain one cited point about atrial fibrillation from the current library, then ask one recall question about that point.' }
 ]);
+const KNOWN_TURNS = [...CONVERSATION_CHECK_TURNS, LEGACY_CONVERSATION_FOLLOWUP];
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const validId = value => typeof value === 'string' && /^[A-Za-z0-9._-]{1,100}$/.test(value);
@@ -54,12 +56,13 @@ function savedReplyDiagnostics(message, curriculum) {
     quizPresent: object(message?.studyQuestion), citationsPresent: Array.isArray(message?.citations) && message.citations.length > 0,
     intent: STUDY_DIALOGUE_ENUMS.intent.includes(marker?.intent) ? marker.intent : null,
     followup: STUDY_DIALOGUE_ENUMS.followup.includes(marker?.followup) ? marker.followup : null,
-    learnerQuotePresent: marker?.learnerQuotePresent === true };
+    learnerQuotePresent: marker?.learnerQuotePresent === true,
+    rejectionCode: ['invalid_json', 'invalid_dialogue_plan'].includes(message?.studyRejection?.code) ? message.studyRejection.code : null };
 }
 
 /** A new feature check only: two fixed turns, durable identities, no paid retry. */
 export async function runConversationCheck({ baseUrl, env = process.env, fetchImpl = globalThis.fetch, flushTelemetry = async () => {}, curriculum: suppliedCurriculum } = {}) {
-  if (env.STUDY_INITIAL_CONVERSATION_CHECK !== 'dialogue-v1') return { skipped: true };
+  if (env.STUDY_INITIAL_CONVERSATION_CHECK !== 'dialogue-v2') return { skipped: true };
   if ((env.APP_MODE || 'personal') !== 'personal' || (env.AI_PROVIDER || 'openai').trim().toLowerCase() !== 'openai') return { skipped: true, reason: 'personal_openai_only' };
   const base = new URL(baseUrl);
   if (base.protocol !== 'http:' || base.hostname !== '127.0.0.1' || base.pathname !== '/' || base.search || base.hash || base.username || base.password) throw new Error('Conversation checks require the local app listener.');
@@ -84,10 +87,10 @@ export async function runConversationCheck({ baseUrl, env = process.env, fetchIm
     const state = await response.json();
     if (!object(state) || !Array.isArray(state.conversations) || state.conversations.length > 500 || state.conversations.some(item => !object(item) || !Array.isArray(item.messages) || item.messages.length > 1000)) return receipt = { failed: true, stage: 'saved_state' };
     const candidates = state.conversations.filter(item => item.title === CONVERSATION_CHECK_TITLE);
-    const identities = state.conversations.flatMap(item => item.messages.filter(message => message.role === 'user' && CONVERSATION_CHECK_TURNS.some(turn => turn.requestId === message.requestId)).map(message => ({ conversation: item, message })));
+    const identities = state.conversations.flatMap(item => item.messages.filter(message => message.role === 'user' && KNOWN_TURNS.some(turn => turn.requestId === message.requestId)).map(message => ({ conversation: item, message })));
     if (candidates.length > 1 || identities.some(item => item.conversation !== candidates[0])) return receipt = { failed: true, uncertain: true, stage: 'saved_request_conflict' };
     let conversation = candidates[0];
-    if (conversation && (conversation.mode !== 'coach' || !validId(conversation.id) || conversation.messages.some(message => message.role === 'user' && !CONVERSATION_CHECK_TURNS.some(turn => turn.requestId === message.requestId && turn.content === message.content)))) return receipt = { failed: true, uncertain: true, stage: 'saved_conversation_conflict' };
+    if (conversation && (conversation.mode !== 'coach' || !validId(conversation.id) || conversation.messages.some(message => message.role === 'user' && !KNOWN_TURNS.some(turn => turn.requestId === message.requestId && turn.content === message.content)))) return receipt = { failed: true, uncertain: true, stage: 'saved_conversation_conflict' };
     if (!conversation) {
       const created = await request('/api/conversations', { title: CONVERSATION_CHECK_TITLE, mode: 'coach' });
       if (!created.ok) return receipt = { failed: true, stage: 'create_conversation' };

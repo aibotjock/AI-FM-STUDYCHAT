@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { renderStudyDialogue } from '../server/study-conversation.js';
-import { runConversationCheck, CONVERSATION_CHECK_TITLE, CONVERSATION_CHECK_TURNS } from '../server/conversation-check.js';
+import { runConversationCheck, CONVERSATION_CHECK_TITLE, CONVERSATION_CHECK_TURNS, LEGACY_CONVERSATION_FOLLOWUP } from '../server/conversation-check.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
 
 const BASE = 'http://127.0.0.1:3000/';
-const ENV = { STUDY_INITIAL_CONVERSATION_CHECK: 'dialogue-v1', AI_PROVIDER: 'openai', APP_MODE: 'personal', STUDY_ACCESS_TOKEN: 'mock-secret-owner-code', OPENAI_API_KEY: 'mock-secret-openai-key' };
+const ENV = { STUDY_INITIAL_CONVERSATION_CHECK: 'dialogue-v2', AI_PROVIDER: 'openai', APP_MODE: 'personal', STUDY_ACCESS_TOKEN: 'mock-secret-owner-code', OPENAI_API_KEY: 'mock-secret-openai-key' };
 const SETTINGS = { dailyMinutes: 18, coachStyle: 'socratic', focus: 'exam' };
 const STATUS = { aiConfigured: true, providerId: 'openai', model: 'gpt-4.1-mini' };
 function harness({ state = { settings: SETTINGS, conversations: [] }, status = STATUS, failChat, alterReply } = {}) {
@@ -146,4 +146,22 @@ test('failed saved-reply diagnostics contain only allowlisted metadata and never
   assert.deepEqual(receipt.checks.selectedChunks, []);
   assert.equal(JSON.stringify(receipt).includes(unsafe), false);
   assert.equal(mock.requests.filter(item => item.path === '/api/chat').length, 1);
+});
+
+test('schema correction checks only the failed followup while reusing the passed plan and preserving the prior failed response', async () => {
+  const mock = harness();
+  assert.equal((await invoke(mock)).conversationPassed, true);
+  const conversation = mock.state.conversations[0];
+  // Represent the original, genuinely failed v1 followup: retain it as history,
+  // never replace it or submit its paid identity again.
+  conversation.messages[2] = { ...conversation.messages[2], ...LEGACY_CONVERSATION_FOLLOWUP };
+  conversation.messages[3] = { id: 'failed-old-reply', role: 'assistant', responseTo: conversation.messages[2].id, content: 'A safe source-gap reply.', unsupported: true };
+  const before = mock.requests.filter(item => item.path === '/api/chat').length;
+  const receipt = await invoke(mock);
+  assert.equal(receipt.conversationPassed, true);
+  assert.equal(receipt.submitted, 1);
+  assert.deepEqual(receipt.turns.map(turn => turn.cached), [true, false]);
+  assert.equal(mock.requests.filter(item => item.path === '/api/chat').length, before + 1);
+  assert.equal(conversation.messages[3].id, 'failed-old-reply');
+  assert.equal(mock.requests.filter(item => item.path === '/api/chat' && item.body.requestId === LEGACY_CONVERSATION_FOLLOWUP.requestId).length, 0);
 });

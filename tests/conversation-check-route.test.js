@@ -12,7 +12,7 @@ import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
 test('operator feature check exercises actual authenticated two-turn chat, conversation history and cited rendering with two bounded mock completions', async t => {
   const dir = mkdtempSync(join(tmpdir(), 'fm-conversation-probe-route-'));
   const curriculum = createStudyCurriculum({ records: [studyCondition({ id: 'atrial-fibrillation', name: 'Atrial fibrillation', aliases: ['atrial fibrillation'] })], now: () => STUDY_NOW });
-  const env = { STUDY_ACCESS_TOKEN: 'local-new-conversation-test-token', OPENAI_API_KEY: 'local-mock-provider-key', OPENAI_MODEL: 'gpt-4.1-mini', AI_PROVIDER: 'openai', STUDY_INITIAL_CONVERSATION_CHECK: 'dialogue-v1' };
+  const env = { STUDY_ACCESS_TOKEN: 'local-new-conversation-test-token', OPENAI_API_KEY: 'local-mock-provider-key', OPENAI_MODEL: 'gpt-4.1-mini', AI_PROVIDER: 'openai', STUDY_INITIAL_CONVERSATION_CHECK: 'dialogue-v2' };
   const calls = [];
   const server = createApp({ dataDir: dir, curriculum, env, fetchImpl: async (url, options) => {
     assert.equal(url, 'https://api.openai.com/v1/chat/completions');

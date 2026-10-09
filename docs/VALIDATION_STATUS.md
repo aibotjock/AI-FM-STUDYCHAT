@@ -6,19 +6,19 @@ failure, changed deployment/configuration, or an unresolved concern. A new
 scenario is not a repeat of an older scenario. Mocked checks never establish
 live provider access or clinical accuracy.
 
-## Version and scope
+## Historical baseline references
 
-- Current hosted source-linked curriculum release: `c42e8f6b923b2aaa7225931cb0cda95eea1ac550`,
+- Earlier hosted source-linked curriculum release: `c42e8f6b923b2aaa7225931cb0cda95eea1ac550`,
   tree `c965d315bebc16bf6e37953e11a078f1b67308d6`.
 - Voice, dictation, pan and telemetry implementation: `45077ce7d2a0f400e8548322cbfcd2a52c8c0982`,
-  tree `390ecb02fd9fdd34ed71c4f53c7daf88440ebae8`. The prior disclosure release added privacy/live evidence; the current release adds educational source retrieval, original board questions and study-only notices.
+  tree `390ecb02fd9fdd34ed71c4f53c7daf88440ebae8`. That disclosure release added privacy/live evidence; later releases added educational source retrieval, original board questions and study-only notices.
 - Previous published baseline: `4cbf673ca36d3254a336a7f11527e96afb02e43c`.
 - Earlier secure sign-in, review/restore fixes and owner OpenAI model controls
   are deployed. Newly checked changes add continuous personal voice, dictation
   reconciliation, mobile zoom/pan and a durable metadata-only Ingenium feed.
-- Voice uses the fixed `gpt-realtime-2.1-mini` model, is personal-only, starts
-  only through an explicit action and has a ten-minute session limit. Text model
-  selection does not change the voice model.
+- The earlier voice workflow used `gpt-realtime-2.1-mini`. It is now disabled;
+  current spoken study uses browser recognition and trusted chat readout, with
+  no audio model. See the later board/conversation release observations below.
 - Active provider: OpenAI. Claude support is retained but inactive. Astra is
   rejected during configuration, catalog filtering, selection, restored
   provenance and returned-model validation. No Astra inference was performed.
@@ -226,3 +226,15 @@ The previous source selector received only the latest user question; coaching fe
 Review identified and fixed a false care-intent match for “I have 20 minutes to study,” unsupported new-topic quiz boundaries, answer leakage through a legacy selector during hints, and user quotations being echoed into trusted assistant history. These are software and provenance checks, not clinical adjudication. All local feature and regression checks used synthetic credentials/responses and made zero paid calls. No unchanged source documents or content validators were rerun because no medical corpus facts changed. The old live READY and AF selector checks remain historical and inactive. A separately gated two-turn hosted feature check is the next publication verification; no live pass is claimed here yet.
 
 App-store submission and paid release remain on hold. This is a study tool only, with independent clinician review and exhaustive board-syllabus coverage still unfinished.
+
+### Hosted conversation verification and schema correction
+
+Implementation commit `4e5d164fb400a0ad39fe0e54a5a8d8c12e9011f5` was published after 156 blob hashes/modes matched the staged snapshot. Deployment `ec3cc18a-4feb-4b8a-8db5-36b0ef29cff0` reached terminal SUCCESS at `2026-10-09T15:56:39.962Z`. The new operator check made two genuine bounded OpenAI calls: the 15-minute study plan passed; the next cited-point request was safely rejected by JSON/plan validation, displaying an evidence-gap reply. The raw rejected body was not retained, so the exact invalid field or parsing cause is unknown. Neither the successful planning call nor earlier source/READY calls were repeated.
+
+Safe diagnostics commit `a87fc85be02376f58e4875204a013e25ab9f2d65`, deployment `828a840c-63ae-4a23-9eb4-54c1b9175e9a`, read the saved responses and submitted **zero** new model calls. It confirmed the failed reply had no dialogue, selection, quiz or citation marker. One new redaction test passed; diagnostic output contains only allowlisted enums/booleans/source IDs, never rejected prose or learner text. Six changed public assets returned HTTP 200 and matched the staged sources; app SHA-256 `37d4089093d9091dc5f3504f8aa38aa4df25af4fe43bbf44106c9f3f4632a135`, sourced-voice SHA-256 `52fbfc887a5a13c1d705caa150f577ebbb339de827cbb0b495045e3649d3914d`, shell v7 SHA-256 `d0bc2d6c2ee509f438f6490ae9b8f7d6fe5e2c6447234cf07028c2822f1e294f`. Public status retained private access, OpenAI `gpt-4.1-mini`, browser sourced voice and disabled Realtime. UI assets are unchanged in the schema correction, so these checks will not be repeated.
+
+The correction adds optional native strict Structured Outputs for the verified GPT-4.1 family, with exact eligible source/question IDs and valid dialogue-act enums. Other selectable models retain validated JSON behavior. Runtime source eligibility, selection consistency and quote checks remain. Future rejections store only `invalid_json` or `invalid_dialogue_plan`, without raw rejected content. Compiled provider schemas contain public source IDs and numeric learner-message positions; private learner text remains ordinary bounded conversation input. The server resolves permitted positions to exact short learner statements and excludes them from speech.
+
+Six new `tests/structured-study.test.js` groups and three independent `tests/conversation-schema-safety.test.js` groups passed. One schema/quote test was repeated because its private-text enum was replaced with numeric positions; unchanged native adapter groups were not repeated. One new operator migration group verifies a saved passed plan is reused, the original failed reply remains, and only the corrected follow-up is submitted. The actual authenticated route integration group was repeated after its schema transport and operator revision changed, and passed. All these checks used mocks with zero paid calls. The revised operator gate is `dialogue-v2`; its new follow-up identity is separate from the failed v1 request.
+
+Ingenium independently returned two genuine events from the initial hosted check: `d83c3d14-0fc9-454d-801c-32c8c33fc63c` at `2026-10-09T15:56:39.223Z` (780 input/67 output tokens, 2,496 ms, estimated USD 0.0004192) and `c5b34129-67d5-4830-9277-0d2826448e6a` at `2026-10-09T15:56:40.643Z` (1,500 input/79 output tokens, 1,400 ms, estimated USD 0.0007264). Both returned `gpt-4.1-mini-2025-04-14`, route `/v1/chat/completions`, status 200. Successful API transport is distinct from the failed response-validation result. The metadata feed carries no study prompts, answers, audio, learner identities or credentials.
