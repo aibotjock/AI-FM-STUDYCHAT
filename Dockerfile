@@ -1,14 +1,23 @@
-FROM public.ecr.aws/docker/library/node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1
+FROM node:24-bookworm-slim
+
 WORKDIR /app
+ENV NODE_ENV=production \
+    HOST=0.0.0.0 \
+    DATA_DIR=/app/data \
+    NPM_CONFIG_UPDATE_NOTIFIER=false \
+    NPM_CONFIG_FUND=false
+
+# No third-party runtime packages or frontend build are required.
 COPY package.json ./
 COPY server ./server
-COPY shared ./shared
 COPY public ./public
+COPY packages ./packages
 COPY content ./content
-RUN mkdir -p /app/data && chown node:node /app/data
-# Only the fixed ownership initializer runs as root. It drops all identities
-# before importing application code. Source stays root-owned and unwritable.
-USER root
-ENV NODE_ENV=production HOST=0.0.0.0 PORT=3000 DATA_DIR=/app/data
+
+# Fail the image build if this Node image cannot supply the SQLite API.
+RUN node --input-type=module -e "import { DatabaseSync } from 'node:sqlite'; const db = new DatabaseSync(':memory:'); db.exec('CREATE TABLE smoke (id INTEGER PRIMARY KEY)'); db.close();"
+
+# Railway mounts the private SQLite volume here at container start.
+# The default root UID matches Railway volume ownership.
 EXPOSE 3000
-CMD ["node", "server/container-start.js"]
+CMD ["npm", "start"]

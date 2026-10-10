@@ -1,122 +1,147 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createVoiceService, sanitizeVoiceEvents, VoiceError, VOICE_MODEL } from '../server/voice.js';
+import { DatabaseSync } from 'node:sqlite';
+import { randomUUID } from 'node:crypto';
+import { createChatService } from '../server/chat.js';
+import { createVoiceService } from '../server/voice.js';
+import { encodePcmWav } from '../packages/conversation-agent/src/browser-audio.js';
 
-const offer = 'v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=sendrecv\r\n';
-const conversation = { id: 'study-voice-test', mode: 'coach', messages: [{ role: 'user', content: 'Help me practice fictional family medicine cases.' }] };
-const config = { env: { OPENAI_API_KEY: 'server-test-key', AI_PROVIDER: 'openai' } };
-const answer = () => new Response(offer, { status: 201, headers: { Location: '/v1/realtime/calls/rtc_test' } });
+const tick = () => new Promise(resolve => setImmediate(resolve));
+const mp3 = () => new Response(Buffer.from('ID3mock-audio'), { headers: { 'Content-Type': 'audio/mpeg' } });
+const wav = async () => Buffer.from(await encodePcmWav(new Float32Array(8000).fill(0.1), 16000).arrayBuffer()).toString('base64');
 
-test('voice creates one fixed GA WebRTC session with bounded output and private server authorization', async () => {
-  const calls = [];
-  const service = createVoiceService({ ...config, fetchImpl: async (url, options) => { calls.push({ url, options }); return url.endsWith('/hangup') ? new Response(null, { status: 200 }) : answer(); } });
-  const result = await service.createSession({ sdp: offer, conversation, settings: {}, ownerKey: 'test-owner' });
-  assert.equal(calls.length, 1);
-  assert.equal(calls[0].url, 'https://api.openai.com/v1/realtime/calls');
-  assert.equal(calls[0].options.headers.Authorization, 'Bearer server-test-key');
-  assert.match(calls[0].options.headers['OpenAI-Safety-Identifier'], /^[a-f0-9]{64}$/);
-  assert.equal(calls[0].options.redirect, 'error');
-  assert.equal(calls[0].options.body.get('sdp'), offer);
-  const body = JSON.parse(calls[0].options.body.get('session'));
-  assert.equal(body.model, VOICE_MODEL);
-  assert.equal(body.type, 'realtime');
-  assert.equal(body.max_output_tokens, 1024);
-  assert.deepEqual(body.output_modalities, ['audio']);
-  assert.equal(body.audio.input.turn_detection.interrupt_response, true);
-  assert.equal(body.audio.input.turn_detection.create_response, true);
-  assert.equal(body.audio.input.transcription.model, 'gpt-transcribe');
-  assert.equal(body.truncation.token_limits.post_instructions, 8000);
-  assert.deepEqual(body.tools, []);
-  assert.equal(result.maxDurationSeconds, 600);
-  assert.equal(result.model, VOICE_MODEL);
-  assert(!JSON.stringify(result).includes('server-test-key'));
-  assert(!JSON.stringify(result).includes('Bearer'));
-  await service.closeAll();
+async function setup(t, { content = 'Saved reply.', fetchImpl = async () => mp3(), config = {}, now } = {}) {
+  const db = new DatabaseSync(':memory:'); db.exec('PRAGMA foreign_keys=ON');
+  let textCalls = 0;
+  const chat = createChatService({ db, provider: { async generate() { textCalls++; return { content }; } } });
+  await chat.submit({ conversationId: 'c1', turnId: 't1', attemptId: 'a1', input: 'Hello' });
+  let voice = createVoiceService({ db, chat, config: { apiKey: 'test-secret', audioBytes: 2 * 1024 * 1024, ...config }, fetchImpl, now });
+  t.after(() => { voice.close(); chat.close(); db.close(); });
+  const request = (extra = {}) => ({ conversationId: 'c1', messageId: 'a1', requestId: randomUUID(), ownerKey: 'owner', ...extra });
+  return { db, chat, get voice() { return voice; }, request, textCalls: () => textCalls,
+    restartVoice() { voice.close(); voice = createVoiceService({ db, chat, config: { apiKey: 'test-secret', audioBytes: 2 * 1024 * 1024, ...config }, fetchImpl, now }); } };
+}
+
+test('speech reads only a completed saved reply and makes no second text call', async t => {
+  let body, calls = 0;
+  const { voice, request, textCalls } = await setup(t, { fetchImpl: async (url, options) => { calls++; assert.equal(url, 'https://api.openai.com/v1/audio/speech'); body = JSON.parse(options.body); return mp3(); } });
+  const result = await voice.speech(request({ input: 'Browser-supplied false answer', voice: 'cedar' }));
+  assert.equal(body.input, 'Saved reply.'); assert.equal(body.model, 'gpt-4o-mini-tts'); assert.equal(body.voice, 'cedar');
+  assert.equal(result.contentType, 'audio/mpeg'); assert.equal(result.audio.toString(), 'ID3mock-audio');
+  assert.equal(calls, 1); assert.equal(textCalls(), 1);
+  await assert.rejects(voice.speech(request({ messageId: 'unknown' })), error => error.code === 'voice_reply_unavailable');
+  await assert.rejects(voice.speech(request({ voice: 'unknown' })), error => error.code === 'invalid_voice');
+  assert.equal(calls, 1);
 });
 
-test('voice rejects prohibited models, bad offers, missing key and invalid owners before any upstream call', async () => {
-  let requests = 0;
-  const fetchImpl = async () => { requests++; return answer(); };
-  assert.throws(() => createVoiceService({ env: { OPENAI_VOICE_MODEL: 'blocked-astra-test' }, fetchImpl }), /Astra is prohibited/);
-  assert.throws(() => createVoiceService({ env: { OPENAI_VOICE_MODEL: 'unverified-model' }, fetchImpl }), /supports only/);
-  await assert.rejects(createVoiceService({ env: {}, fetchImpl }).createSession({ sdp: offer, conversation }), error => error instanceof VoiceError && error.status === 503);
-  const service = createVoiceService({ ...config, fetchImpl });
-  await assert.rejects(service.createSession({ sdp: 'not sdp', conversation }), /Invalid voice connection offer/);
-  await assert.rejects(service.createSession({ sdp: offer + 'x'.repeat(65536), conversation }), /Invalid voice connection offer/);
-  await assert.rejects(service.createSession({ sdp: offer, conversation, ownerKey: '../another-owner' }), /Invalid voice owner/);
-  assert.equal(requests, 0);
+test('speech rejects incomplete, imported and long replies before a provider call', async t => {
+  let calls = 0;
+  const { voice, db, chat, request } = await setup(t, { fetchImpl: async () => { calls++; return mp3(); } });
+  db.prepare("UPDATE chat_attempts SET status='interrupted' WHERE attempt_id='a1'").run();
+  await assert.rejects(voice.speech(request()), error => error.code === 'voice_reply_unavailable');
+  db.prepare("UPDATE chat_attempts SET status='completed',imported=1 WHERE attempt_id='a1'").run();
+  await assert.rejects(voice.speech(request()), error => error.code === 'voice_reply_unavailable');
+  db.prepare("UPDATE chat_attempts SET imported=0,content=? WHERE attempt_id='a1'").run('x'.repeat(4097));
+  await assert.rejects(voice.speech(request()), error => error.code === 'speech_too_long');
+  assert.equal(chat.history('c1').turns[0].content.length, 4097); assert.equal(calls, 0);
 });
 
-test('voice blocks concurrent creation and scopes session lookup to its owner', async () => {
-  let release;
-  let requests = 0;
-  const service = createVoiceService({ ...config, fetchImpl: async url => { requests++; if (url.endsWith('/hangup')) return new Response(null, { status: 200 }); await new Promise(resolve => { release = resolve; }); return answer(); } });
-  const first = service.createSession({ sdp: offer, conversation, ownerKey: 'first' });
-  await assert.rejects(service.createSession({ sdp: offer, conversation, ownerKey: 'first' }), error => error.status === 409);
-  assert.equal(requests, 1);
-  release(); const result = await first;
-  assert.equal(service.validateSession(result.sessionId, 'first').conversationId, conversation.id);
-  assert.throws(() => service.validateSession(result.sessionId, 'second'), error => error.status === 404);
-  await assert.rejects(service.createSession({ sdp: offer, conversation, ownerKey: 'first' }), error => error.status === 409);
-  await service.closeSession(result.sessionId, 'first');
+test('durable speech IDs suppress duplicates and expired or restarted cache never repays automatically', async t => {
+  let calls = 0, clock = Date.now();
+  const env = await setup(t, { now: () => clock, fetchImpl: async () => { calls++; return mp3(); } });
+  const request = env.request();
+  assert.equal((await env.voice.speech(request)).cached, false);
+  assert.equal((await env.voice.speech(request)).cached, true); assert.equal(calls, 1);
+  await assert.rejects(env.voice.speech({ ...request, voice: 'ash' }), error => error.code === 'speech_request_conflict');
+  await assert.rejects(env.voice.speech({ ...request, ownerKey: 'another-sign-in' }), error => error.code === 'speech_request_conflict');
+  clock += 60001;
+  await assert.rejects(env.voice.speech(request), error => error.code === 'speech_cache_expired');
+  env.restartVoice();
+  await assert.rejects(env.voice.speech(request), error => error.code === 'speech_cache_expired');
+  assert.equal(calls, 1);
 });
 
-test('voice provider failures are sanitized and never retry call creation', async () => {
-  for (const status of [401, 403, 429, 500]) {
-    let requests = 0;
-    const service = createVoiceService({ ...config, fetchImpl: async () => { requests++; return new Response('sensitive upstream server-test-key error', { status }); } });
-    await assert.rejects(service.createSession({ sdp: offer, conversation }), error => {
-      assert(!error.message.includes('server-test-key')); assert(!error.message.includes('sensitive'));
-      return error instanceof VoiceError && error.status === (status === 429 ? 429 : [401, 403].includes(status) ? 503 : 502);
-    });
-    assert.equal(requests, 1);
+test('obsolete speech rejects ignored cancellation and late callbacks cannot complete its ledger', async t => {
+  let release, calls = 0;
+  const { voice, db, request } = await setup(t, { fetchImpl: async () => { calls++; return new Promise(resolve => { release = resolve; }); } });
+  const input = request(), pending = voice.speech(input); await tick();
+  voice.invalidate({ conversationId: 'c1', speechOnly: true });
+  await assert.rejects(pending, error => error.code === 'voice_cancelled');
+  release(mp3()); await tick();
+  assert.equal(db.prepare('SELECT status FROM speech_requests WHERE request_id=?').get(input.requestId).status, 'uncertain');
+  await assert.rejects(voice.speech(input), error => error.code === 'speech_request_uncertain');
+  assert.equal(calls, 1);
+});
+
+test('speech timeout during a stalled body is visible, bounded, and leaves text usable', async t => {
+  const { voice, chat, request } = await setup(t, { config: { audioTimeoutMs: 20 }, fetchImpl: async () => new Response(new ReadableStream({ start() {} }), { headers: { 'Content-Type': 'audio/mpeg' } }) });
+  const started = Date.now();
+  await assert.rejects(voice.speech(request()), error => error.code === 'voice_timeout');
+  assert.ok(Date.now() - started < 1000); assert.equal(chat.history('c1').turns[0].content, 'Saved reply.');
+});
+
+test('transcription reuses pinned WAV service with utterance IDs and independent owner sessions', async t => {
+  let calls = 0;
+  const { voice } = await setup(t, { fetchImpl: async (url, options) => {
+    calls++; assert.equal(url, 'https://api.openai.com/v1/audio/transcriptions');
+    assert.equal(options.body.get('model'), 'gpt-4o-mini-transcribe');
+    return Response.json({ text: 'Hello again', model: 'gpt-4o-mini-transcribe' });
+  } });
+  const session = voice.start({ conversationId: 'new-conversation', ownerKey: 'owner' });
+  const input = { conversationId: session.conversationId, sessionId: session.sessionId, ownerKey: 'owner', requestId: randomUUID(), audioBase64: await wav() };
+  assert.equal((await voice.transcribe(input)).text, 'Hello again');
+  assert.equal((await voice.transcribe(input)).cached, true); assert.equal(calls, 1);
+  await assert.rejects(voice.transcribe({ ...input, ownerKey: 'another-sign-in' }), error => error.code === 'conversation_audio_session_inactive');
+  voice.invalidate({ conversationId: input.conversationId, speechOnly: true });
+  assert.equal((await voice.transcribe({ ...input, requestId: randomUUID() })).text, 'Hello again');
+  voice.invalidate();
+  await assert.rejects(voice.transcribe({ ...input, requestId: randomUUID() }), error => error.code === 'conversation_audio_session_inactive');
+});
+
+test('empty and oversized recordings fail visibly without repeat paid transcription', async t => {
+  let calls = 0;
+  const { voice } = await setup(t, { fetchImpl: async () => { calls++; return Response.json({ text: '  ' }); } });
+  const session = voice.start({ conversationId: 'c1', ownerKey: 'owner' });
+  const input = { conversationId: 'c1', sessionId: session.sessionId, ownerKey: 'owner', requestId: randomUUID(), audioBase64: await wav() };
+  await assert.rejects(voice.transcribe(input), error => error.code === 'voice_empty_transcript');
+  await assert.rejects(voice.transcribe(input), error => error.code === 'voice_empty_transcript');
+  assert.equal(calls, 1);
+  await assert.rejects(voice.transcribe({ ...input, requestId: randomUUID(), audioBase64: Buffer.alloc(2 * 1024 * 1024 + 1).toString('base64') }), error => error.code === 'voice_audio_limit');
+  assert.equal(calls, 1);
+});
+
+test('no-key voice and provider audio failures preserve the completed text', async t => {
+  const missing = await setup(t, { config: { apiKey: '' }, fetchImpl: async () => { throw new Error('Must not request without a key'); } });
+  assert.equal(missing.voice.options().enabled, false);
+  assert.throws(() => missing.voice.start({ conversationId: 'c1', ownerKey: 'owner' }), error => error.code === 'voice_unavailable');
+  await assert.rejects(missing.voice.speech(missing.request()), error => error.code === 'voice_unavailable');
+  assert.equal(missing.chat.history('c1').turns[0].status, 'completed');
+  let calls = 0;
+  const failed = await setup(t, { fetchImpl: async () => { calls++; return Response.json({ error: 'secret-provider-error' }, { status: 500 }); } });
+  const input = failed.request();
+  await assert.rejects(failed.voice.speech(input), error => error.code === 'speech_provider_failed' && !error.message.includes('secret'));
+  await assert.rejects(failed.voice.speech(input), error => error.code === 'speech_request_uncertain');
+  assert.equal(calls, 1); assert.equal(failed.chat.history('c1').turns[0].content, 'Saved reply.');
+});
+
+test('cancelled transcription cannot complete later or repurchase the same utterance', async t => {
+  let release, calls = 0;
+  const { voice, db } = await setup(t, { fetchImpl: async () => { calls++; return new Promise(resolve => { release = resolve; }); } });
+  const session = voice.start({ conversationId: 'c1', ownerKey: 'owner' });
+  const input = { conversationId: 'c1', sessionId: session.sessionId, ownerKey: 'owner', requestId: randomUUID(), audioBase64: await wav() };
+  const pending = voice.transcribe(input); await tick();
+  assert.equal(voice.cancel(input).cancelled, true);
+  await assert.rejects(pending, error => error.code === 'conversation_audio_request_inactive');
+  release(Response.json({ text: 'Obsolete transcript' })); await tick();
+  assert.equal(db.prepare('SELECT status FROM conversation_audio_requests WHERE request_id=?').get(input.requestId).status, 'uncertain');
+  await assert.rejects(voice.transcribe(input), error => error.code === 'conversation_audio_request_uncertain');
+  assert.equal(calls, 1);
+});
+
+test('empty, malformed and oversized speech responses remain explicit failures', async t => {
+  for (const response of [new Response(null, { headers: { 'Content-Type': 'audio/mpeg' } }), Response.json({ text: 'Not audio' }), new Response(Buffer.alloc(65), { headers: { 'Content-Type': 'audio/mpeg' } })]) {
+    const { voice, chat, request } = await setup(t, { config: { audioBytes: 64 }, fetchImpl: async () => response });
+    await assert.rejects(voice.speech(request()), error => ['speech_provider_format', 'speech_audio_limit'].includes(error.code));
+    assert.equal(chat.history('c1').turns[0].status, 'completed');
   }
-});
-
-test('voice validates SDP answers and never follows a provider-controlled hangup origin', async () => {
-  const locations = ['https://attacker.example/v1/realtime/calls/rtc_test', '/v1/realtime/calls/../secret', '/v1/realtime/calls/rtc_test?key=hidden'];
-  for (const location of locations) {
-    const calls = [];
-    const service = createVoiceService({ ...config, fetchImpl: async url => { calls.push(url); return new Response(offer, { status: 201, headers: { Location: location } }); } });
-    await assert.rejects(service.createSession({ sdp: offer, conversation }), /invalid voice connection/);
-    assert.deepEqual(calls, ['https://api.openai.com/v1/realtime/calls']);
-  }
-  const calls = [];
-  const service = createVoiceService({ ...config, fetchImpl: async url => { calls.push(url); return url.endsWith('/hangup') ? new Response(null, { status: 200 }) : new Response('bad answer', { status: 201, headers: { Location: '/v1/realtime/calls/rtc_test' } }); } });
-  await assert.rejects(service.createSession({ sdp: offer, conversation }), /invalid voice connection/);
-  assert.equal(calls.length, 2); assert(calls[1].endsWith('/rtc_test/hangup'));
-});
-
-test('voice stop is idempotent while final caption grace is limited to five seconds', async () => {
-  let clock = 10000;
-  let hangups = 0, closed = 0;
-  const service = createVoiceService({ ...config, now: () => clock, onSessionClosed: () => { closed++; }, fetchImpl: async url => { if (url.endsWith('/hangup')) { hangups++; return new Response(null, { status: 200 }); } return answer(); } });
-  const result = await service.createSession({ sdp: offer, conversation });
-  await service.closeSession(result.sessionId);
-  assert.throws(() => service.validateSession(result.sessionId), error => error.status === 409);
-  assert.equal(service.validateSession(result.sessionId, 'personal', { allowClosed: true }).closedAt, clock);
-  clock += 5001;
-  assert.throws(() => service.validateSession(result.sessionId, 'personal', { allowClosed: true }), /saving window has ended/);
-  assert.equal((await service.closeSession(result.sessionId)).serverConfirmed, true);
-  assert.equal(hangups, 1); assert.equal(closed, 1);
-});
-
-test('automatic expiry makes two bounded shutdown attempts and releases a failed shutdown lock', async () => {
-  let timer, hangups = 0, closed = 0;
-  const service = createVoiceService({ ...config, setTimer: callback => { timer = callback; return { unref() {} }; }, clearTimer() {}, onSessionClosed: () => { closed++; }, fetchImpl: async url => { if (url.endsWith('/hangup')) { hangups++; return new Response(null, { status: 500 }); } return answer(); } });
-  const first = await service.createSession({ sdp: offer, conversation });
-  timer(); await new Promise(resolve => setImmediate(resolve));
-  assert.equal(hangups, 2); assert.equal(closed, 1);
-  assert(service.validateSession(first.sessionId, 'personal', { allowClosed: true }).closedAt);
-  // An upstream shutdown problem does not deadlock this owner's local workspace.
-  const second = await service.createSession({ sdp: offer, conversation });
-  assert.notEqual(second.sessionId, first.sessionId);
-  await service.closeAll();
-});
-
-test('voice transcript validation accepts only bounded text turns and strips untrusted metadata', () => {
-  const output = sanitizeVoiceEvents([{ id: 'user_msg-one', role: 'user', content: '  My attempted answer.  ', usage: { total: 999 }, apiKey: 'never persisted' }, { id: 'assistant_msg-two', role: 'assistant', content: 'Consider one alternative.', interrupted: true }]);
-  assert.deepEqual(output[0], { id: 'user_msg-one', role: 'user', content: 'My attempted answer.', interrupted: false });
-  assert.equal(output[1].interrupted, true);
-  for (const invalid of [[], new Array(21).fill({ id: 'x', role: 'user', content: 'x' }), [{ id: 'x', role: 'system', content: 'x' }], [{ id: 'x', role: 'user', content: '' }], [{ id: 'x', role: 'user', content: 'x'.repeat(12001) }], [{ id: 'same', role: 'user', content: 'x' }, { id: 'same', role: 'assistant', content: 'y' }]]) assert.throws(() => sanitizeVoiceEvents(invalid), VoiceError);
 });

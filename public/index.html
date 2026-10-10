@@ -1,38 +1,18 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <meta name="theme-color" content="#19384c">
-  <meta name="description" content="Family medicine study and exam preparation with conversational study coaching, source-linked guideline summaries, original board-style questions and spaced repetition. Study use only, not medical advice.">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>Family Medicine Board Study</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#122a3a">
+  <meta name="description" content="A private family medicine study workspace.">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/icon-192.png">
-  <link rel="stylesheet" href="/vendor/conversation-agent/voice-circle.css">
   <link rel="stylesheet" href="/styles.css">
-  <script type="module" src="/app.js"></script>
+  <title>StudyChat · Family medicine</title>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to study content</a>
-  <div class="app-shell">
-    <aside class="sidebar" aria-label="Study navigation">
-      <a class="brand" href="#coach" aria-label="Family Medicine Board Study home"><span class="brand-mark" aria-hidden="true">FM<span>✦</span></span><span>Family Medicine Board Study<small>Think clearly. Learn for keeps.</small></span></a>
-      <div class="sidebar-label">YOUR STUDY SPACE</div>
-      <nav class="desktop-nav" id="desktop-nav"></nav>
-      <div class="sidebar-foot"><span class="small-label">A LITTLE, EVERY DAY</span><p>Build exam knowledge<br>through deliberate practice.</p><div class="sidebar-line"></div><button class="sidebar-settings" data-action="settings">Study preferences <span>↗</span></button><small>Board study only. No medical advice or clinical use.</small></div>
-    </aside>
-    <div class="workspace">
-      <header class="topbar"><div class="mobile-brand"><span class="mini-mark">FM</span><strong>Board Study</strong></div><span class="desktop-greeting">FAMILY MEDICINE · BOARD EXAM STUDY</span><div class="topbar-actions"><span class="connection-badge" id="connection-badge">Connecting</span><button class="icon-button" data-action="settings" aria-label="Open study preferences" title="Study preferences"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h16M4 17h16M8 3v8m8 2v8"/></svg></button></div></header>
-      <div class="study-use-banner" role="note"><strong>Study use only</strong><span>Not medical advice or for clinical use. Original practice questions; not affiliated with ABFM.</span></div>
-      <div id="network-notice" class="network-notice" hidden>You’re offline. Saved pages are available; reconnect to chat or save study progress.</div>
-      <main id="main" tabindex="-1"><div class="boot-state"><span class="spinner"></span><h1>Opening your study space</h1><p>One thoughtful question at a time.</p></div></main>
-    </div>
-    <nav class="bottom-nav" id="bottom-nav" aria-label="Study navigation"></nav>
-  </div>
-  <dialog id="app-dialog" aria-labelledby="dialog-title"><div id="dialog-content"></div></dialog>
-  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div id="app"></div>
+  <script type="module" src="/app.js"></script>
 </body>
 </html>

@@ -1,0 +1,172 @@
+{
+  "repository": "aibotjock/Chat-app-medical-questions",
+  "commit": "f4ae87acd60d3afa0b6741a16dfb60a75fd6d4e3",
+  "component": "reference-library",
+  "copiedFiles": 22,
+  "counts": {
+    "uniqueUrls": 429,
+    "catalogRecords": 75,
+    "metadataRecords": 523
+  },
+  "files": [
+    {
+      "sourcePath": "reference-library/README.md",
+      "localPath": "content/reference-library/README.md",
+      "gitBlobSha": "9e9f7d725c74f7ef7d13e8b5ea4747753bed87f2",
+      "bytes": 4075,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/SOURCE_AUDIT.md",
+      "localPath": "content/reference-library/SOURCE_AUDIT.md",
+      "gitBlobSha": "d3d5c0d813c2d3282a1ddf7938fe6c2654a36ed6",
+      "bytes": 6415,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/references/catalogue.json",
+      "localPath": "content/reference-library/references/catalogue.json",
+      "gitBlobSha": "0beee1119c6bcbe812204a06f50f9a1682cb6174",
+      "bytes": 896050,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/references/source-registry.json",
+      "localPath": "content/reference-library/references/source-registry.json",
+      "gitBlobSha": "7ae7830c798ab4afcdfb12b31e2889fd5d4a6c2b",
+      "bytes": 98789,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/references/document-reuse-policy.json",
+      "localPath": "content/reference-library/references/document-reuse-policy.json",
+      "gitBlobSha": "236ab79e0469c47700c4e967f197c58d3d194301",
+      "bytes": 183582,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/source-audit/COMMERCIAL_REFERENCE_RESEARCH.md",
+      "localPath": "content/reference-library/research/docs/source-audit/COMMERCIAL_REFERENCE_RESEARCH.md",
+      "gitBlobSha": "e9f2b5c45641bac54dfa596d4f21cbedeab369ad",
+      "bytes": 22116,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/source-audit/RESOURCE_INCORPORATION_STATUS.md",
+      "localPath": "content/reference-library/research/docs/source-audit/RESOURCE_INCORPORATION_STATUS.md",
+      "gitBlobSha": "b7c27bfac695ee883172ff1db31de19ce78c657c",
+      "bytes": 39518,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/source-audit/TREATMENT_EXPANSION.md",
+      "localPath": "content/reference-library/research/docs/source-audit/TREATMENT_EXPANSION.md",
+      "gitBlobSha": "3ff67820e336d8508ba70b9bd0758287c4c15f08",
+      "bytes": 12578,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/source-audit/LICENSED_GUIDELINE_EXPANSION.md",
+      "localPath": "content/reference-library/research/docs/source-audit/LICENSED_GUIDELINE_EXPANSION.md",
+      "gitBlobSha": "0afc18d871223fa7ace6ad98689997655ad1a9d1",
+      "bytes": 11739,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/EDUCATIONAL_DESIGN.md",
+      "localPath": "content/reference-library/research/docs/EDUCATIONAL_DESIGN.md",
+      "gitBlobSha": "fc9d903bf9428600d63cdb55c0720acbdfc1d330",
+      "bytes": 14974,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/BOARD_ALIGNMENT.md",
+      "localPath": "content/reference-library/research/docs/BOARD_ALIGNMENT.md",
+      "gitBlobSha": "905f5275e0805bc6f820301a7dbd5ef58bce21c6",
+      "bytes": 4361,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/CONDITION_COVERAGE.md",
+      "localPath": "content/reference-library/research/docs/CONDITION_COVERAGE.md",
+      "gitBlobSha": "5bb55b8286319f46a61b994b9c46a908e98294d3",
+      "bytes": 17222,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/CURRICULUM_GAPS.md",
+      "localPath": "content/reference-library/research/docs/CURRICULUM_GAPS.md",
+      "gitBlobSha": "c31be1c328859fb2ede383a34e12952d6a0e14d6",
+      "bytes": 23667,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/source-audit/JOINT_BENZO_LICENSED_PASSAGES.md",
+      "localPath": "content/reference-library/research/docs/source-audit/JOINT_BENZO_LICENSED_PASSAGES.md",
+      "gitBlobSha": "f23a2118ec9d0efb5b54d49f2079f26870fdec5f",
+      "bytes": 5765,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/source-audit/ADA_LICENSED_PASSAGES.md",
+      "localPath": "content/reference-library/research/docs/source-audit/ADA_LICENSED_PASSAGES.md",
+      "gitBlobSha": "91f48bc95f61d0dcb466c14cf54fd965f773e9ec",
+      "bytes": 9925,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/source-audit/LIFESPAN_PREVENTION_EXPANSION.md",
+      "localPath": "content/reference-library/research/docs/source-audit/LIFESPAN_PREVENTION_EXPANSION.md",
+      "gitBlobSha": "410269540766ddc468eb57c946d9793ef40245f0",
+      "bytes": 10988,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/source-audit/IMMUNIZATION_EXPANSION.md",
+      "localPath": "content/reference-library/research/docs/source-audit/IMMUNIZATION_EXPANSION.md",
+      "gitBlobSha": "96b429424a894a91a0becfccf4afb98e3764c169",
+      "bytes": 3880,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/source-audit/GERIATRIC_MSK_EXPANSION.md",
+      "localPath": "content/reference-library/research/docs/source-audit/GERIATRIC_MSK_EXPANSION.md",
+      "gitBlobSha": "70ee32064fa0a0bef30c19bbe62e66d9f053de64",
+      "bytes": 11625,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/source-audit/EYE_SPORTS_EXPANSION.md",
+      "localPath": "content/reference-library/research/docs/source-audit/EYE_SPORTS_EXPANSION.md",
+      "gitBlobSha": "6c454bdb7c3450f1b138205cdbdda2e6ba8e77ae",
+      "bytes": 12105,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/source-audit/ANTIBIOTIC_GAP_EXPANSION.md",
+      "localPath": "content/reference-library/research/docs/source-audit/ANTIBIOTIC_GAP_EXPANSION.md",
+      "gitBlobSha": "019804e44d3ae6fcf059cb7afd7f6badc49c1bbf",
+      "bytes": 10919,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/source-audit/GAP_EXPANSION_EDITORIAL_REVIEW.md",
+      "localPath": "content/reference-library/research/docs/source-audit/GAP_EXPANSION_EDITORIAL_REVIEW.md",
+      "gitBlobSha": "c75399ab5f47479f32dd6b420d9ded99bca9c116",
+      "bytes": 6762,
+      "verified": true
+    },
+    {
+      "sourcePath": "reference-library/research/docs/STUDY_MATERIAL.md",
+      "localPath": "content/reference-library/research/docs/STUDY_MATERIAL.md",
+      "gitBlobSha": "a538c010c88a10dc2feec97cf49b3eae8c3d4ab5",
+      "bytes": 15161,
+      "verified": true
+    }
+  ],
+  "absenceChecks": {
+    "AGENTS_md": "GitHub NOT_FOUND at pinned commit",
+    "LICENSE": "GitHub NOT_FOUND at pinned commit"
+  },
+  "byteExactVerified": true
+}

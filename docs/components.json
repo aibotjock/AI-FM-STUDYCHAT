@@ -1,0 +1,602 @@
+{
+  "schemaVersion": 1,
+  "materializedAt": "2026-10-10",
+  "policy": "Only pinned reusable components and starter content are copied; original app runtime and RAG are not copied.",
+  "components": [
+    {
+      "name": "question-bank",
+      "repository": "https://github.com/aibotjock/Chat-app-medical-questions",
+      "branch": "main",
+      "commit": "8544422cbeb41626cde14edecbd618c065f64b37",
+      "copiedPaths": [
+        "questions/medical-question-bank.json"
+      ],
+      "hostPaths": [
+        "content/medical-question-bank.json"
+      ],
+      "license": "No repository-wide license found; source-specific restrictions retained. Owner-authorized private reuse does not grant distribution rights.",
+      "modifications": []
+    },
+    {
+      "name": "practice-engine",
+      "repository": "https://github.com/aibotjock/Chat-app-medical-questions",
+      "branch": "feature/practice-engine",
+      "commit": "a200e84838df9b46e2390475b509540f1a8c095b",
+      "copiedPaths": [
+        "practice-engine/"
+      ],
+      "hostPaths": [
+        "packages/practice-engine/"
+      ],
+      "license": "UNLICENSED",
+      "modifications": [
+        "tests/practice.test.js: bank fixture path adjusted to ../../../content/medical-question-bank.json; runtime unchanged."
+      ]
+    },
+    {
+      "name": "reference-library",
+      "repository": "https://github.com/aibotjock/Chat-app-medical-questions",
+      "branch": "feature/clean-reference-library",
+      "commit": "f4ae87acd60d3afa0b6741a16dfb60a75fd6d4e3",
+      "copiedPaths": [
+        "reference-library/"
+      ],
+      "hostPaths": [
+        "content/reference-library/"
+      ],
+      "license": "No repository-wide license found; per-source processing and reuse restrictions retained in document-reuse-policy.json.",
+      "modifications": []
+    },
+    {
+      "name": "spaced-review-engine",
+      "repository": "https://github.com/aibotjock/AI-FM-STUDYCHAT",
+      "branch": "feature/spaced-review-engine",
+      "commit": "077f37d2f8e831181ad6d1e2a60fcf2922b73c8f",
+      "copiedPaths": [
+        "packages/spaced-review-engine/"
+      ],
+      "hostPaths": [
+        "packages/spaced-review-engine/"
+      ],
+      "license": "UNLICENSED",
+      "modifications": []
+    },
+    {
+      "name": "conversation-agent",
+      "repository": "https://github.com/aibotjock/Conversation-Agent",
+      "branch": "refactor/lean-voice-ui",
+      "commit": "22c8e49ee52581cca65c4333640d3c0ede37502e",
+      "copiedPaths": [
+        "index.js",
+        "index.d.ts",
+        "package.json",
+        "README.md",
+        "NOTICE",
+        "voice-circle.css",
+        "src/",
+        "server/",
+        "tests/",
+        "demo/",
+        "docs/VALIDATION_STATUS.md"
+      ],
+      "hostPaths": [
+        "packages/conversation-agent/"
+      ],
+      "license": "UNLICENSED; all rights reserved; NOTICE retained.",
+      "modifications": []
+    },
+    {
+      "name": "starter-content",
+      "repository": "https://github.com/aibotjock/AI-FM-STUDYCHAT",
+      "branch": "feature/conversation-agent",
+      "commit": "f4b20414d337230f4d90a3c8a14656c3922f5ff1",
+      "copiedPaths": [
+        "shared/content.js"
+      ],
+      "hostPaths": [
+        "content/seed.js"
+      ],
+      "license": "No repository-wide license found; owner-authorized private reuse with recorded source status.",
+      "modifications": []
+    }
+  ],
+  "verification": {
+    "method": "Local Git blob SHA-1 compared to remote pinned GitHub blob IDs or pinned clone objects.",
+    "files": [
+      {
+        "component": "practice",
+        "sourcePath": "practice-engine/README.md",
+        "localPath": "packages/practice-engine/README.md",
+        "upstreamBlobSha": "a634f262e522ab82672a65db84178c9a98084f14",
+        "localBlobSha": "a634f262e522ab82672a65db84178c9a98084f14",
+        "byteExact": true,
+        "modification": null
+      },
+      {
+        "component": "practice",
+        "sourcePath": "practice-engine/package.json",
+        "localPath": "packages/practice-engine/package.json",
+        "upstreamBlobSha": "4945ed349d930c1918a0eb27f6c1cc217c6a6d1b",
+        "localBlobSha": "4945ed349d930c1918a0eb27f6c1cc217c6a6d1b",
+        "byteExact": true,
+        "modification": null
+      },
+      {
+        "component": "practice",
+        "sourcePath": "practice-engine/index.js",
+        "localPath": "packages/practice-engine/index.js",
+        "upstreamBlobSha": "b4432ac5a232b7585676c6c084d326adc7d09aae",
+        "localBlobSha": "b4432ac5a232b7585676c6c084d326adc7d09aae",
+        "byteExact": true,
+        "modification": null
+      },
+      {
+        "component": "practice",
+        "sourcePath": "practice-engine/server/board-practice.js",
+        "localPath": "packages/practice-engine/server/board-practice.js",
+        "upstreamBlobSha": "959b0e4d7005b630e84e7f1d4e2ef66598521103",
+        "localBlobSha": "959b0e4d7005b630e84e7f1d4e2ef66598521103",
+        "byteExact": true,
+        "modification": null
+      },
+      {
+        "component": "practice",
+        "sourcePath": "practice-engine/server/board-alignment.js",
+        "localPath": "packages/practice-engine/server/board-alignment.js",
+        "upstreamBlobSha": "6835e0829f9f5a94db478b602b970095a5c22ca6",
+        "localBlobSha": "6835e0829f9f5a94db478b602b970095a5c22ca6",
+        "byteExact": true,
+        "modification": null
+      },
+      {
+        "component": "practice",
+        "sourcePath": "practice-engine/server/question-bank.js",
+        "localPath": "packages/practice-engine/server/question-bank.js",
+        "upstreamBlobSha": "a42f627b6c310177e54652a1c610b29fd1f8d9ce",
+        "localBlobSha": "a42f627b6c310177e54652a1c610b29fd1f8d9ce",
+        "byteExact": true,
+        "modification": null
+      },
+      {
+        "component": "practice",
+        "sourcePath": "practice-engine/server/learning-strategy.js",
+        "localPath": "packages/practice-engine/server/learning-strategy.js",
+        "upstreamBlobSha": "bec6ce91271af601b51362d484e9d8b9ba541cbb",
+        "localBlobSha": "bec6ce91271af601b51362d484e9d8b9ba541cbb",
+        "byteExact": true,
+        "modification": null
+      },
+      {
+        "component": "practice",
+        "sourcePath": "practice-engine/shared/blueprint.js",
+        "localPath": "packages/practice-engine/shared/blueprint.js",
+        "upstreamBlobSha": "27952d91760629edf35e5bfac85ff0f7976f9687",
+        "localBlobSha": "27952d91760629edf35e5bfac85ff0f7976f9687",
+        "byteExact": true,
+        "modification": null
+      },
+      {
+        "component": "practice",
+        "sourcePath": "practice-engine/shared/disclaimer.js",
+        "localPath": "packages/practice-engine/shared/disclaimer.js",
+        "upstreamBlobSha": "bec7e6e3df9930e4294b6702cc77a2deb5c1121a",
+        "localBlobSha": "bec7e6e3df9930e4294b6702cc77a2deb5c1121a",
+        "byteExact": true,
+        "modification": null
+      },
+      {
+        "component": "practice",
+        "sourcePath": "practice-engine/tests/practice.test.js",
+        "localPath": "packages/practice-engine/tests/practice.test.js",
+        "upstreamBlobSha": "ec7a3e237315956f0c309fc01b9e98eb821c44f9",
+        "localBlobSha": "bb018b9f074800b3538ca9432f21a5c9ddaaba9c",
+        "byteExact": false,
+        "modification": "Adjusted bank test fixture relative path to host content directory."
+      },
+      {
+        "component": "review",
+        "sourcePath": "packages/spaced-review-engine/README.md",
+        "localPath": "packages/spaced-review-engine/README.md",
+        "upstreamBlobSha": "7d30f521cca5a42afe1414bd0e65ccc37192d13a",
+        "localBlobSha": "7d30f521cca5a42afe1414bd0e65ccc37192d13a",
+        "byteExact": true
+      },
+      {
+        "component": "review",
+        "sourcePath": "packages/spaced-review-engine/index.js",
+        "localPath": "packages/spaced-review-engine/index.js",
+        "upstreamBlobSha": "0c7cf99b244437af4843f116f4444a032ca62d46",
+        "localBlobSha": "0c7cf99b244437af4843f116f4444a032ca62d46",
+        "byteExact": true
+      },
+      {
+        "component": "review",
+        "sourcePath": "packages/spaced-review-engine/package.json",
+        "localPath": "packages/spaced-review-engine/package.json",
+        "upstreamBlobSha": "deb7a2f99a03f29ff686998f936deeb06f2f782d",
+        "localBlobSha": "deb7a2f99a03f29ff686998f936deeb06f2f782d",
+        "byteExact": true
+      },
+      {
+        "component": "review",
+        "sourcePath": "packages/spaced-review-engine/shared/scheduler.js",
+        "localPath": "packages/spaced-review-engine/shared/scheduler.js",
+        "upstreamBlobSha": "1d96a02b697869cdae2f4eae115fe058dda0091c",
+        "localBlobSha": "1d96a02b697869cdae2f4eae115fe058dda0091c",
+        "byteExact": true
+      },
+      {
+        "component": "review",
+        "sourcePath": "packages/spaced-review-engine/tests/scheduler.test.js",
+        "localPath": "packages/spaced-review-engine/tests/scheduler.test.js",
+        "upstreamBlobSha": "34b029ab4ae5c068f4ee0035e046095a1f6ea5eb",
+        "localBlobSha": "34b029ab4ae5c068f4ee0035e046095a1f6ea5eb",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "NOTICE",
+        "localPath": "packages/conversation-agent/NOTICE",
+        "upstreamBlobSha": "58028a260180b731754f0bb1f8fee9dba92d9f7e",
+        "localBlobSha": "58028a260180b731754f0bb1f8fee9dba92d9f7e",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "README.md",
+        "localPath": "packages/conversation-agent/README.md",
+        "upstreamBlobSha": "e566727a6d24fe6560372af8f8fcff028f55c5c3",
+        "localBlobSha": "e566727a6d24fe6560372af8f8fcff028f55c5c3",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "demo/demo.js",
+        "localPath": "packages/conversation-agent/demo/demo.js",
+        "upstreamBlobSha": "fd6ef17c054b021f309ab86d202d60121443aff0",
+        "localBlobSha": "fd6ef17c054b021f309ab86d202d60121443aff0",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "demo/index.html",
+        "localPath": "packages/conversation-agent/demo/index.html",
+        "upstreamBlobSha": "ba467960407210c288ff944b95e7b6a6f84b79d9",
+        "localBlobSha": "ba467960407210c288ff944b95e7b6a6f84b79d9",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "docs/VALIDATION_STATUS.md",
+        "localPath": "packages/conversation-agent/docs/VALIDATION_STATUS.md",
+        "upstreamBlobSha": "f7f34bfa741687b15056e3698c9d60f408e78fe6",
+        "localBlobSha": "f7f34bfa741687b15056e3698c9d60f408e78fe6",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "index.d.ts",
+        "localPath": "packages/conversation-agent/index.d.ts",
+        "upstreamBlobSha": "cf8d0b03572cc4c2555c0e125c30e04c0f88cbce",
+        "localBlobSha": "cf8d0b03572cc4c2555c0e125c30e04c0f88cbce",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "index.js",
+        "localPath": "packages/conversation-agent/index.js",
+        "upstreamBlobSha": "a69f2808ce670068dba46c2f9d19575aecc9fe04",
+        "localBlobSha": "a69f2808ce670068dba46c2f9d19575aecc9fe04",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "package.json",
+        "localPath": "packages/conversation-agent/package.json",
+        "upstreamBlobSha": "28748e9bcc01d5c4d19131267c1fc7721b0fcb68",
+        "localBlobSha": "28748e9bcc01d5c4d19131267c1fc7721b0fcb68",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "server/openai-transcription.js",
+        "localPath": "packages/conversation-agent/server/openai-transcription.js",
+        "upstreamBlobSha": "53eef5aad55955d28f75fa09a50f1dc4afcd01b1",
+        "localBlobSha": "53eef5aad55955d28f75fa09a50f1dc4afcd01b1",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "src/browser-audio.js",
+        "localPath": "packages/conversation-agent/src/browser-audio.js",
+        "upstreamBlobSha": "eb90df7d5ec7b5ccc72c16895f539ca9824f3f01",
+        "localBlobSha": "eb90df7d5ec7b5ccc72c16895f539ca9824f3f01",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "src/conversation-core.js",
+        "localPath": "packages/conversation-agent/src/conversation-core.js",
+        "upstreamBlobSha": "8b139b3107ab583de247f4feb0008912c109c942",
+        "localBlobSha": "8b139b3107ab583de247f4feb0008912c109c942",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "src/voice-circle.js",
+        "localPath": "packages/conversation-agent/src/voice-circle.js",
+        "upstreamBlobSha": "4705e29392f5da6755afbf6e5f97f2f656108930",
+        "localBlobSha": "4705e29392f5da6755afbf6e5f97f2f656108930",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "tests/browser-audio.test.js",
+        "localPath": "packages/conversation-agent/tests/browser-audio.test.js",
+        "upstreamBlobSha": "8737ee67450370d22cb8d762606e0eb57185b81c",
+        "localBlobSha": "8737ee67450370d22cb8d762606e0eb57185b81c",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "tests/conversation-core.test.js",
+        "localPath": "packages/conversation-agent/tests/conversation-core.test.js",
+        "upstreamBlobSha": "698bb5054fdf2de8f710f3f67d661b3e81cd7db1",
+        "localBlobSha": "698bb5054fdf2de8f710f3f67d661b3e81cd7db1",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "tests/hourly-budget.test.js",
+        "localPath": "packages/conversation-agent/tests/hourly-budget.test.js",
+        "upstreamBlobSha": "e4856bcda20a49fa7fc39e076d812bce36caebd5",
+        "localBlobSha": "e4856bcda20a49fa7fc39e076d812bce36caebd5",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "tests/render-efficiency.test.js",
+        "localPath": "packages/conversation-agent/tests/render-efficiency.test.js",
+        "upstreamBlobSha": "2a0869e5ac84801531b7a0be8ab708fb4fe1bc09",
+        "localBlobSha": "2a0869e5ac84801531b7a0be8ab708fb4fe1bc09",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "tests/voice-circle.test.js",
+        "localPath": "packages/conversation-agent/tests/voice-circle.test.js",
+        "upstreamBlobSha": "e2c4c982463e5720534e39c9b22038a28b14bdc6",
+        "localBlobSha": "e2c4c982463e5720534e39c9b22038a28b14bdc6",
+        "byteExact": true
+      },
+      {
+        "component": "conversation-agent",
+        "sourcePath": "voice-circle.css",
+        "localPath": "packages/conversation-agent/voice-circle.css",
+        "upstreamBlobSha": "7a334e906847098487c0b9c0a72d9e261aae5cf5",
+        "localBlobSha": "7a334e906847098487c0b9c0a72d9e261aae5cf5",
+        "byteExact": true
+      },
+      {
+        "component": "starter-content",
+        "sourcePath": "shared/content.js",
+        "localPath": "content/seed.js",
+        "upstreamBlobSha": "aa67db1665671ae05cc9e722fac5f6350d13dbea",
+        "localBlobSha": "aa67db1665671ae05cc9e722fac5f6350d13dbea",
+        "byteExact": true
+      },
+      {
+        "component": "question-bank",
+        "sourcePath": "questions/medical-question-bank.json",
+        "localPath": "content/medical-question-bank.json",
+        "upstreamBlobSha": "b9cf2c04f936a763c9657f3ef7eb00dd3f1f945c",
+        "localBlobSha": "b9cf2c04f936a763c9657f3ef7eb00dd3f1f945c",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/README.md",
+        "localPath": "content/reference-library/README.md",
+        "upstreamBlobSha": "9e9f7d725c74f7ef7d13e8b5ea4747753bed87f2",
+        "localBlobSha": "9e9f7d725c74f7ef7d13e8b5ea4747753bed87f2",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/SOURCE_AUDIT.md",
+        "localPath": "content/reference-library/SOURCE_AUDIT.md",
+        "upstreamBlobSha": "d3d5c0d813c2d3282a1ddf7938fe6c2654a36ed6",
+        "localBlobSha": "d3d5c0d813c2d3282a1ddf7938fe6c2654a36ed6",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/references/catalogue.json",
+        "localPath": "content/reference-library/references/catalogue.json",
+        "upstreamBlobSha": "0beee1119c6bcbe812204a06f50f9a1682cb6174",
+        "localBlobSha": "0beee1119c6bcbe812204a06f50f9a1682cb6174",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/references/source-registry.json",
+        "localPath": "content/reference-library/references/source-registry.json",
+        "upstreamBlobSha": "7ae7830c798ab4afcdfb12b31e2889fd5d4a6c2b",
+        "localBlobSha": "7ae7830c798ab4afcdfb12b31e2889fd5d4a6c2b",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/references/document-reuse-policy.json",
+        "localPath": "content/reference-library/references/document-reuse-policy.json",
+        "upstreamBlobSha": "236ab79e0469c47700c4e967f197c58d3d194301",
+        "localBlobSha": "236ab79e0469c47700c4e967f197c58d3d194301",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/source-audit/COMMERCIAL_REFERENCE_RESEARCH.md",
+        "localPath": "content/reference-library/research/docs/source-audit/COMMERCIAL_REFERENCE_RESEARCH.md",
+        "upstreamBlobSha": "e9f2b5c45641bac54dfa596d4f21cbedeab369ad",
+        "localBlobSha": "e9f2b5c45641bac54dfa596d4f21cbedeab369ad",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/source-audit/RESOURCE_INCORPORATION_STATUS.md",
+        "localPath": "content/reference-library/research/docs/source-audit/RESOURCE_INCORPORATION_STATUS.md",
+        "upstreamBlobSha": "b7c27bfac695ee883172ff1db31de19ce78c657c",
+        "localBlobSha": "b7c27bfac695ee883172ff1db31de19ce78c657c",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/source-audit/TREATMENT_EXPANSION.md",
+        "localPath": "content/reference-library/research/docs/source-audit/TREATMENT_EXPANSION.md",
+        "upstreamBlobSha": "3ff67820e336d8508ba70b9bd0758287c4c15f08",
+        "localBlobSha": "3ff67820e336d8508ba70b9bd0758287c4c15f08",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/source-audit/LICENSED_GUIDELINE_EXPANSION.md",
+        "localPath": "content/reference-library/research/docs/source-audit/LICENSED_GUIDELINE_EXPANSION.md",
+        "upstreamBlobSha": "0afc18d871223fa7ace6ad98689997655ad1a9d1",
+        "localBlobSha": "0afc18d871223fa7ace6ad98689997655ad1a9d1",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/EDUCATIONAL_DESIGN.md",
+        "localPath": "content/reference-library/research/docs/EDUCATIONAL_DESIGN.md",
+        "upstreamBlobSha": "fc9d903bf9428600d63cdb55c0720acbdfc1d330",
+        "localBlobSha": "fc9d903bf9428600d63cdb55c0720acbdfc1d330",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/BOARD_ALIGNMENT.md",
+        "localPath": "content/reference-library/research/docs/BOARD_ALIGNMENT.md",
+        "upstreamBlobSha": "905f5275e0805bc6f820301a7dbd5ef58bce21c6",
+        "localBlobSha": "905f5275e0805bc6f820301a7dbd5ef58bce21c6",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/CONDITION_COVERAGE.md",
+        "localPath": "content/reference-library/research/docs/CONDITION_COVERAGE.md",
+        "upstreamBlobSha": "5bb55b8286319f46a61b994b9c46a908e98294d3",
+        "localBlobSha": "5bb55b8286319f46a61b994b9c46a908e98294d3",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/CURRICULUM_GAPS.md",
+        "localPath": "content/reference-library/research/docs/CURRICULUM_GAPS.md",
+        "upstreamBlobSha": "c31be1c328859fb2ede383a34e12952d6a0e14d6",
+        "localBlobSha": "c31be1c328859fb2ede383a34e12952d6a0e14d6",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/source-audit/JOINT_BENZO_LICENSED_PASSAGES.md",
+        "localPath": "content/reference-library/research/docs/source-audit/JOINT_BENZO_LICENSED_PASSAGES.md",
+        "upstreamBlobSha": "f23a2118ec9d0efb5b54d49f2079f26870fdec5f",
+        "localBlobSha": "f23a2118ec9d0efb5b54d49f2079f26870fdec5f",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/source-audit/ADA_LICENSED_PASSAGES.md",
+        "localPath": "content/reference-library/research/docs/source-audit/ADA_LICENSED_PASSAGES.md",
+        "upstreamBlobSha": "91f48bc95f61d0dcb466c14cf54fd965f773e9ec",
+        "localBlobSha": "91f48bc95f61d0dcb466c14cf54fd965f773e9ec",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/source-audit/LIFESPAN_PREVENTION_EXPANSION.md",
+        "localPath": "content/reference-library/research/docs/source-audit/LIFESPAN_PREVENTION_EXPANSION.md",
+        "upstreamBlobSha": "410269540766ddc468eb57c946d9793ef40245f0",
+        "localBlobSha": "410269540766ddc468eb57c946d9793ef40245f0",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/source-audit/IMMUNIZATION_EXPANSION.md",
+        "localPath": "content/reference-library/research/docs/source-audit/IMMUNIZATION_EXPANSION.md",
+        "upstreamBlobSha": "96b429424a894a91a0becfccf4afb98e3764c169",
+        "localBlobSha": "96b429424a894a91a0becfccf4afb98e3764c169",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/source-audit/GERIATRIC_MSK_EXPANSION.md",
+        "localPath": "content/reference-library/research/docs/source-audit/GERIATRIC_MSK_EXPANSION.md",
+        "upstreamBlobSha": "70ee32064fa0a0bef30c19bbe62e66d9f053de64",
+        "localBlobSha": "70ee32064fa0a0bef30c19bbe62e66d9f053de64",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/source-audit/EYE_SPORTS_EXPANSION.md",
+        "localPath": "content/reference-library/research/docs/source-audit/EYE_SPORTS_EXPANSION.md",
+        "upstreamBlobSha": "6c454bdb7c3450f1b138205cdbdda2e6ba8e77ae",
+        "localBlobSha": "6c454bdb7c3450f1b138205cdbdda2e6ba8e77ae",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/source-audit/ANTIBIOTIC_GAP_EXPANSION.md",
+        "localPath": "content/reference-library/research/docs/source-audit/ANTIBIOTIC_GAP_EXPANSION.md",
+        "upstreamBlobSha": "019804e44d3ae6fcf059cb7afd7f6badc49c1bbf",
+        "localBlobSha": "019804e44d3ae6fcf059cb7afd7f6badc49c1bbf",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/source-audit/GAP_EXPANSION_EDITORIAL_REVIEW.md",
+        "localPath": "content/reference-library/research/docs/source-audit/GAP_EXPANSION_EDITORIAL_REVIEW.md",
+        "upstreamBlobSha": "c75399ab5f47479f32dd6b420d9ded99bca9c116",
+        "localBlobSha": "c75399ab5f47479f32dd6b420d9ded99bca9c116",
+        "byteExact": true
+      },
+      {
+        "component": "references",
+        "sourcePath": "reference-library/research/docs/STUDY_MATERIAL.md",
+        "localPath": "content/reference-library/research/docs/STUDY_MATERIAL.md",
+        "upstreamBlobSha": "a538c010c88a10dc2feec97cf49b3eae8c3d4ab5",
+        "localBlobSha": "a538c010c88a10dc2feec97cf49b3eae8c3d4ab5",
+        "byteExact": true
+      }
+    ],
+    "counts": {
+      "questions": 566,
+      "usQuestions": 558,
+      "comparativeQuestions": 8,
+      "referenceUrls": 429,
+      "referenceMetadataRecords": 523,
+      "registryRecords": 75,
+      "historicalResearchDocuments": 17
+    },
+    "tests": {
+      "practice": {
+        "passed": 3,
+        "command": "node --test packages/practice-engine/tests/*.test.js"
+      },
+      "review": {
+        "passed": 9,
+        "command": "node --test packages/spaced-review-engine/tests/*.test.js"
+      },
+      "conversationAgent": {
+        "passed": 33,
+        "command": "node --test packages/conversation-agent/tests/*.test.js"
+      }
+    },
+    "limitations": [
+      "Publisher/provenance audit is not clinical validation of each reference.",
+      "Conversation Agent evidence is automated mocks; physical phone voice remains unverified.",
+      "No repository-wide license found in questions or original app snapshots."
+    ]
+  }
+}

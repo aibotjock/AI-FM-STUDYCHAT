@@ -1,44 +1,9 @@
-// Commercial mode is opt-in; a typo must never expose the personal workspace.
-const mode = process.env.APP_MODE || 'personal';
-if (!['personal', 'commercial'].includes(mode)) throw new Error('APP_MODE must be personal or commercial.');
-try {
-  if (mode === 'commercial') {
-    const { startCommercial } = await import('./commercial/index.js');
-    startCommercial();
-  } else {
-    const { createApp } = await import('./index.js');
-    const port = Number(process.env.PORT || 3000);
-    if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT must be from 1 to 65535.');
-    const host = process.env.HOST || '127.0.0.1';
-    const server = createApp();
-    server.listen(port, host, async () => {
-      console.log(`Family Medicine Study Coach ready on ${host}:${port}. Check Study preferences for the active AI model.`);
-      if (['ready-v1', 'luna6-terra56-ready-v1'].includes(process.env.INGENIUM_INITIAL_CONNECTION_CHECK)) {
-        const { runIngeniumConnectionCheck } = await import('./ingenium-check.js');
-        const result = await runIngeniumConnectionCheck({ baseUrl: `http://127.0.0.1:${port}/`, flushTelemetry: () => server.flushIngeniumTelemetry() });
-        console.log('Ingenium registration check:', JSON.stringify(result));
-      }
-      if (process.env.STUDY_INITIAL_SOURCE_CHECK === 'source-v1') {
-        const { runStudySourceCheck } = await import('./study-check.js');
-        const result = await runStudySourceCheck({ baseUrl: `http://127.0.0.1:${port}/`, flushTelemetry: () => server.flushIngeniumTelemetry() });
-        console.log('Study source selector check:', JSON.stringify(result));
-      }
-      if (process.env.STUDY_INITIAL_CONVERSATION_CHECK === 'natural-v3') {
-        const { runNaturalConversationCheck } = await import('./natural-conversation-check.js');
-        const result = await runNaturalConversationCheck({ baseUrl: `http://127.0.0.1:${port}/`, flushTelemetry: () => server.flushIngeniumTelemetry() });
-        console.log('Study natural conversation check:', JSON.stringify(result));
-      }
-      if (process.env.STUDY_INITIAL_PREMIUM_VOICE_CHECK === 'premium-v1') {
-        const { runPremiumVoiceCheck } = await import('./premium-voice-check.js');
-        const result = await runPremiumVoiceCheck({ baseUrl: `http://127.0.0.1:${port}/` });
-        console.log('Study premium voice check:', JSON.stringify(result));
-      }
-    });
-    const shutdown = async () => { await server.closeVoiceSessions(); server.close(() => process.exit(0)); };
-    process.on('SIGTERM', shutdown);
-    process.on('SIGINT', shutdown);
-  }
-} catch (error) {
-  console.error(error.message);
-  process.exit(1);
-}
+import { loadConfig } from './config.js';
+import { buildApplication } from './bootstrap.js';
+
+const config = loadConfig();
+const app = buildApplication({ config });
+app.server.listen(config.port, config.host, () => console.log(JSON.stringify({ event: 'listening', port: app.server.address().port, node: process.version, aiAvailable: !!config.apiKey, model: config.model })));
+let closing = false;
+async function stop() { if (closing) return; closing = true; await app.shutdown(); }
+process.on('SIGTERM', () => { void stop(); }); process.on('SIGINT', () => { void stop(); });
