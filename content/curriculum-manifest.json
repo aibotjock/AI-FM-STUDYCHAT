@@ -3,16 +3,16 @@
   "checkedAt": "2026-10-09",
   "purpose": "Educational board-study tool only; not medical advice or for clinical use. Source checks are not clinician approval, rights clearance or a medical accuracy certification.",
   "scope": "Disease-reference curriculum: at least 100 curated common or high-yield family medicine conditions, not a prevalence ranking or the complete exam syllabus.",
-  "conditions": 105,
-  "acceptedConditions": 105,
-  "currentConditions": 105,
+  "conditions": 110,
+  "acceptedConditions": 110,
+  "currentConditions": 110,
   "quarantinedConditions": 0,
-  "questions": 210,
-  "currentQuestions": 210,
+  "questions": 446,
+  "currentQuestions": 446,
   "quarantinedQuestions": 0,
-  "sections": 323,
-  "formalGuidelineConditions": 100,
-  "currentFormalGuidelineConditions": 100,
+  "sections": 526,
+  "formalGuidelineConditions": 105,
+  "currentFormalGuidelineConditions": 105,
   "officialReferenceOnlyConditions": [
     {
       "id": "benign-prostatic-hyperplasia",
@@ -36,22 +36,644 @@
     }
   ],
   "quarantine": [],
-  "distinctSourceUrls": 136,
-  "maximumAttributedFactualWordsPerUrl": 190,
+  "distinctSourceUrls": 215,
+  "maximumAttributedFactualWordsPerUrl": 1271,
   "questionDomains": {
-    "acute": 74,
-    "chronic": 98,
-    "emergent": 22,
-    "preventive": 16,
+    "acute": 179,
+    "chronic": 182,
+    "emergent": 47,
+    "preventive": 38,
     "foundations": 0
   },
   "correctAnswerPositions": {
-    "A": 41,
-    "B": 42,
-    "C": 42,
-    "D": 43,
-    "E": 42
+    "A": 91,
+    "B": 88,
+    "C": 88,
+    "D": 91,
+    "E": 88
   },
+  "sourceEditorialBudgets": [
+    {
+      "url": "https://www.nhlbi.nih.gov/health/high-blood-pressure/diagnosis",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/high-blood-pressure/symptoms",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/blood-cholesterol/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/professionals/clinical-tools-patient-management/diabetes/diabetes-prediabetes",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/prediabetes-insulin-resistance",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/type-1-diabetes",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/low-blood-glucose-hypoglycemia",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/diabetes/about/diabetic-ketoacidosis.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/hypothyroidism",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/hyperthyroidism",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/diagnostic-tests/thyroid",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/weight-management/adult-overweight-obesity/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/coronary-heart-disease/diagnosis",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/heart-attack/symptoms",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/heart-failure/living-with",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/atrial-fibrillation/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/venous-thromboembolism/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/venous-thromboembolism/diagnosis",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/tests-diagnosis",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/keeping-kidneys-safe",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones/diagnosis",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/diagnosis",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/adult-outpatient.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2825634",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/prostate-problems/enlarged-prostate-benign-prostatic-hyperplasia",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/sites/default/files/publications/Asthma%20Clinicians%20Guide%20508_02-03-21.pdf",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health-topics/asthma-management-guidelines-2020-updates/faqs",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/copd/about/index.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/pneumonia/diagnosis",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/acute-bronchitis/about/index.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/covid/hcp/clinical-care/outpatient-treatment.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.fda.gov/drugs/drug-safety-communications/fda-requires-boxed-warning-about-serious-mental-health-side-effects-asthma-and-allergy-drug",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/tb/hcp/clinical-overview/latent-tuberculosis-infection.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/tb/hcp/testing-diagnosis/index.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/pediatric-outpatient.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/healthy-swimming/prevention/preventing-swimmers-ear.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/eating-diet-nutrition",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome/diagnosis",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/constipation/symptoms-causes",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/constipation/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/viral-gastroenteritis/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/norovirus/prevention/",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gallstones/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/eating-diet-nutrition",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/appendicitis/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/hepatitis-c/hcp/diagnosis-testing/",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/hcv.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/hepatitis-b/hcp/diagnosis-testing/",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/hivnexus/hcp/diagnosis-testing/index.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/hiv.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://newsinhealth.nih.gov/2025/09/tension-headaches-migraine-more",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/stroke/signs-symptoms/index.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://medlineplus.gov/transientischemicattack.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/epilepsy/first-aid-for-seizures/",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nidcd.nih.gov/health/balance-disorders",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://medlineplus.gov/alzheimersdisease.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://medlineplus.gov/delirium.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/MH/mdd/VADODMDDCPG_ProviderSummary_Final_508_updated.pdf",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nimh.nih.gov/health/publications/generalized-anxiety-disorder-gad",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nimh.nih.gov/health/publications/bipolar-disorder",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/MH/ptsd/VA-DOD-CPG-PTSD-Provider-Summary.pdf",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://medlineplus.gov/alcoholusedisorderaud.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/overdose-prevention/treatment/opioid-use-disorder.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/CD/insomnia/I-OSA-CPG_2025-Provider-Summary_final_20250422.pdf",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/Pain/lbp/VADODLBPCPGProviderSummaryFinal508.pdf",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/CD/OA/Osteoarthritis-CPG_2026-Provider-Summary_final_20260618.pdf",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/osteoporosis/diagnosis-treatment-and-steps-to-take",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://link.springer.com/article/10.1007/s11657-025-01588-3",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/rheumatoid-arthritis/diagnosis-treatment-and-steps-to-take",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://medlineplus.gov/carpaltunnelsyndrome.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/acne/diagnosis-treatment-and-steps-to-take",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/atopic-dermatitis/diagnosis-treatment-and-steps-to-take",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/psoriasis",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://medlineplus.gov/cellulitis.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nichd.nih.gov/health/topics/menstruation/conditioninfo/diagnosed",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/anemia/iron-deficiency-anemia",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nichd.nih.gov/health/topics/pcos/conditioninfo/treatments",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://medlineplus.gov/menopause.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nichd.nih.gov/health/topics/endometri/conditioninfo/diagnose",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/pid.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cancer.gov/types/cervical/screening/abnormal-hpv-pap-test-results",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://ascopubs.org/doi/10.1200/GO.22.00217",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://medlineplus.gov/diabetesandpregnancy.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nichd.nih.gov/health/topics/preeclampsia/conditioninfo",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://medlineplus.gov/ectopicpregnancy.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/bv.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/p-and-s-syphilis.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/syphilis.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/adhd/hcp/clinical-care/index.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://onlinelibrary.wiley.com/doi/10.1111/jpc.70144",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.scielo.br/j/jbpneu/a/WTTJ9tSyCNfwdPpK33DLV5R/?format=html&lang=en",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/urinary-tract-infections-in-children/treatment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-best-practices/preventing-managing-adverse-reactions.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://medlineplus.gov/lab-tests/autonomic-testing/",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://medlineplus.gov/pressuresores.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/shingles/hcp/vaccine-considerations/index.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/chickenpox/php/laboratories/index.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/tobacco/hcp/patient-care-settings/clinical.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/epididymitis.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/scabies/hcp/clinical-care/index.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/scabies/prevention/index.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/lice/treatment/index.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/ringworm/treatment/index.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/70/rr/rr7003a1.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/74/rr/rr7402a1.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2792124",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2807791",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://ascopubs.org/doi/10.1200/GO.23.00285",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    }
+  ],
   "validationMode": "strict-current-readiness",
   "fullyCurrent": true,
   "clinicalApproval": false,
@@ -60,23 +682,31 @@
   "files": [
     {
       "path": "content/conditions/cardiometabolic.json",
-      "sha256": "7bbe1765c889237ec204df9d25c55de901971716013cf9a23d2d205a0a5ab725"
+      "sha256": "e3edfccc3b83497e631eff107b5eaf87bd1cd04822825b3d6f1ff26cbf6dd520"
     },
     {
       "path": "content/conditions/respiratory_infectious.json",
-      "sha256": "48b0ba9e13c0fdef9363fd4d519b3fbdf02f0d55a23e196984dfb98c55256337"
+      "sha256": "4b0105efea31b381d175d40ab5695627f0b692aa9085218de3dd56d63e320f2a"
     },
     {
       "path": "content/conditions/neuro_msk_derm.json",
-      "sha256": "340c8ff445466db050d31e5294e262d05a0fc88d43a22bb3d55550511cf9abea"
+      "sha256": "dcc9d18713f517b16fd4cc195f49032947d9bfb660d46fec2dee24dc2a67dd42"
     },
     {
       "path": "content/conditions/women_children_prevention.json",
-      "sha256": "f21bbe71b0fd66c8f22416910e9bee1f6601936c2ab694eeafaace0ab77ca855"
+      "sha256": "8aa390828b737ffbe451a94aaec7502f1f257b39898eee3f2e1c24475d78028c"
     },
     {
       "path": "content/conditions/common_additions.json",
-      "sha256": "13e1bebd71b556295f43f7b2bbf1835ee604b6e3387dbce4b88390bc07f71df8"
+      "sha256": "ef333f3e18d9749ff539d925917f938525eec6f43e469d1c671751e221e25244"
+    },
+    {
+      "path": "content/conditions/treatment_expansion.json",
+      "sha256": "a6e50c55bfe3861d975e6bb2ae52e059ab4a0513ad380a9d7d5fbcc8941ea83a"
+    },
+    {
+      "path": "content/conditions/licensed_reference_expansion.json",
+      "sha256": "d3521ac41f9ece6d2825032aaf467ef2a4533bf886254c5239d7045329641c34"
     }
   ],
   "sources": [
@@ -134,6 +764,22 @@
       "kind": "clinical-guideline",
       "conditions": [
         "cervical-dysplasia"
+      ]
+    },
+    {
+      "url": "https://ascopubs.org/doi/10.1200/GO.22.00217",
+      "organization": "American Society of Clinical Oncology",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "cervical-dysplasia"
+      ]
+    },
+    {
+      "url": "https://ascopubs.org/doi/10.1200/GO.23.00285",
+      "organization": "American Society of Clinical Oncology",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "metastatic-breast-cancer"
       ]
     },
     {
@@ -205,6 +851,7 @@
       "organization": "Department of Veterans Affairs and Department of Defense",
       "kind": "clinical-guideline",
       "conditions": [
+        "osteoarthritis",
         "osteoarthritis"
       ]
     },
@@ -237,6 +884,7 @@
       "organization": "Department of Veterans Affairs and Department of Defense",
       "kind": "clinical-guideline",
       "conditions": [
+        "post-traumatic-stress-disorder",
         "post-traumatic-stress-disorder"
       ]
     },
@@ -247,6 +895,31 @@
       "conditions": [
         "alcohol-use-disorder",
         "opioid-use-disorder"
+      ]
+    },
+    {
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2792124",
+      "organization": "WikiGuidelines Group / JAMA Network Open",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "osteomyelitis"
+      ]
+    },
+    {
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2807791",
+      "organization": "WikiGuidelines Group / JAMA Network Open",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "infective-endocarditis"
+      ]
+    },
+    {
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2825634",
+      "organization": "WikiGuidelines Group / JAMA Network Open",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "uncomplicated-cystitis",
+        "pyelonephritis"
       ]
     },
     {
@@ -263,6 +936,14 @@
       "kind": "clinical-guideline",
       "conditions": [
         "chronic-kidney-disease"
+      ]
+    },
+    {
+      "url": "https://link.springer.com/article/10.1007/s11657-025-01588-3",
+      "organization": "National Osteoporosis Guideline Group / Archives of Osteoporosis",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "osteoporosis"
       ]
     },
     {
@@ -290,11 +971,60 @@
       ]
     },
     {
+      "url": "https://medlineplus.gov/alcoholusedisorderaud.html",
+      "organization": "National Library of Medicine (MedlinePlus)",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "alcohol-use-disorder"
+      ]
+    },
+    {
+      "url": "https://medlineplus.gov/alzheimersdisease.html",
+      "organization": "National Library of Medicine (MedlinePlus)",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "alzheimer-dementia"
+      ]
+    },
+    {
+      "url": "https://medlineplus.gov/carpaltunnelsyndrome.html",
+      "organization": "National Library of Medicine (MedlinePlus)",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "carpal-tunnel-syndrome"
+      ]
+    },
+    {
+      "url": "https://medlineplus.gov/cellulitis.html",
+      "organization": "National Library of Medicine (MedlinePlus)",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "cellulitis"
+      ]
+    },
+    {
       "url": "https://medlineplus.gov/delirium.html",
       "organization": "National Library of Medicine, MedlinePlus",
       "kind": "official-clinical-reference",
       "conditions": [
+        "delirium",
         "delirium"
+      ]
+    },
+    {
+      "url": "https://medlineplus.gov/diabetesandpregnancy.html",
+      "organization": "National Library of Medicine, MedlinePlus",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "gestational-diabetes"
+      ]
+    },
+    {
+      "url": "https://medlineplus.gov/ectopicpregnancy.html",
+      "organization": "National Library of Medicine, MedlinePlus",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "ectopic-pregnancy"
       ]
     },
     {
@@ -303,6 +1033,38 @@
       "kind": "official-clinical-reference",
       "conditions": [
         "epilepsy"
+      ]
+    },
+    {
+      "url": "https://medlineplus.gov/lab-tests/autonomic-testing/",
+      "organization": "National Library of Medicine, MedlinePlus",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "syncope"
+      ]
+    },
+    {
+      "url": "https://medlineplus.gov/menopause.html",
+      "organization": "National Library of Medicine, MedlinePlus",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "menopausal-symptoms"
+      ]
+    },
+    {
+      "url": "https://medlineplus.gov/pressuresores.html",
+      "organization": "National Library of Medicine, MedlinePlus",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "pressure-injury"
+      ]
+    },
+    {
+      "url": "https://medlineplus.gov/transientischemicattack.html",
+      "organization": "National Library of Medicine (MedlinePlus)",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "transient-ischemic-attack"
       ]
     },
     {
@@ -335,6 +1097,8 @@
       "kind": "official-clinical-reference",
       "conditions": [
         "migraine",
+        "migraine",
+        "tension-headache",
         "tension-headache"
       ]
     },
@@ -343,7 +1107,16 @@
       "organization": "NIH Office of Dietary Supplements",
       "kind": "official-clinical-reference",
       "conditions": [
+        "vitamin-b12-deficiency",
         "vitamin-b12-deficiency"
+      ]
+    },
+    {
+      "url": "https://onlinelibrary.wiley.com/doi/10.1111/jpc.70144",
+      "organization": "Paediatric Research in Emergency Departments International Collaborative (PREDICT) Network",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "bronchiolitis"
       ]
     },
     {
@@ -572,6 +1345,14 @@
       ]
     },
     {
+      "url": "https://www.cancer.gov/types/cervical/screening/abnormal-hpv-pap-test-results",
+      "organization": "National Cancer Institute",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "cervical-dysplasia"
+      ]
+    },
+    {
       "url": "https://www.cariguidelines.org/guidelines/kidney-stones/nutrition-therapy-for-the-prevention-of-kidney-stones/",
       "organization": "CARI Guidelines; Australia and New Zealand",
       "kind": "clinical-guideline",
@@ -580,10 +1361,19 @@
       ]
     },
     {
+      "url": "https://www.cdc.gov/acute-bronchitis/about/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "acute-bronchitis"
+      ]
+    },
+    {
       "url": "https://www.cdc.gov/adhd/hcp/clinical-care/index.html",
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "attention-deficit-hyperactivity-disorder",
         "attention-deficit-hyperactivity-disorder"
       ]
     },
@@ -594,6 +1384,8 @@
       "conditions": [
         "uncomplicated-cystitis",
         "acute-bronchitis",
+        "acute-bronchitis",
+        "bacterial-rhinosinusitis",
         "bacterial-rhinosinusitis"
       ]
     },
@@ -602,7 +1394,24 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "acute-otitis-media",
         "acute-otitis-media"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/chickenpox/php/laboratories/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "herpes-zoster"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/copd/about/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "copd"
       ]
     },
     {
@@ -610,6 +1419,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "covid-19",
         "covid-19"
       ]
     },
@@ -618,6 +1428,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-clinical-reference",
       "conditions": [
+        "diabetic-ketoacidosis",
         "diabetic-ketoacidosis"
       ]
     },
@@ -626,6 +1437,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "epilepsy",
         "epilepsy"
       ]
     },
@@ -642,6 +1454,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "influenza",
         "influenza"
       ]
     },
@@ -658,7 +1471,16 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "streptococcal-pharyngitis",
         "streptococcal-pharyngitis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/healthy-swimming/prevention/preventing-swimmers-ear.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "otitis-externa"
       ]
     },
     {
@@ -666,6 +1488,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "hepatitis-b",
         "hepatitis-b"
       ]
     },
@@ -674,7 +1497,16 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "hepatitis-c",
         "hepatitis-c"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/hivnexus/hcp/diagnosis-testing/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "hiv"
       ]
     },
     {
@@ -686,10 +1518,43 @@
       ]
     },
     {
+      "url": "https://www.cdc.gov/lice/treatment/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "pediculosis-capitis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/70/rr/rr7003a1.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "plague"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/74/rr/rr7402a1.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "tularemia"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/norovirus/prevention/",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "acute-gastroenteritis"
+      ]
+    },
+    {
       "url": "https://www.cdc.gov/overdose-prevention/treatment/opioid-use-disorder.html",
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "opioid-use-disorder",
         "opioid-use-disorder"
       ]
     },
@@ -702,7 +1567,24 @@
       ]
     },
     {
+      "url": "https://www.cdc.gov/ringworm/treatment/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "tinea-corporis"
+      ]
+    },
+    {
       "url": "https://www.cdc.gov/scabies/hcp/clinical-care/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "scabies",
+        "scabies"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/scabies/prevention/index.html",
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
@@ -722,6 +1604,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "herpes-zoster",
         "herpes-zoster"
       ]
     },
@@ -730,6 +1613,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "clinical-guideline",
       "conditions": [
+        "bacterial-vaginosis",
         "bacterial-vaginosis"
       ]
     },
@@ -738,6 +1622,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "clinical-guideline",
       "conditions": [
+        "vulvovaginal-candidiasis",
         "vulvovaginal-candidiasis"
       ]
     },
@@ -746,6 +1631,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "clinical-guideline",
       "conditions": [
+        "chlamydia",
         "chlamydia"
       ]
     },
@@ -754,6 +1640,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "clinical-guideline",
       "conditions": [
+        "epididymitis",
         "epididymitis"
       ]
     },
@@ -762,7 +1649,16 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "clinical-guideline",
       "conditions": [
+        "gonorrhea",
         "gonorrhea"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/hcv.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "hepatitis-c"
       ]
     },
     {
@@ -770,7 +1666,16 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "clinical-guideline",
       "conditions": [
+        "genital-herpes",
         "genital-herpes"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/hiv.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "hiv"
       ]
     },
     {
@@ -778,6 +1683,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "clinical-guideline",
       "conditions": [
+        "syphilis",
         "syphilis"
       ]
     },
@@ -786,6 +1692,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "clinical-guideline",
       "conditions": [
+        "pelvic-inflammatory-disease",
         "pelvic-inflammatory-disease"
       ]
     },
@@ -798,10 +1705,19 @@
       ]
     },
     {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/syphilis.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "syphilis"
+      ]
+    },
+    {
       "url": "https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm",
       "organization": "Centers for Disease Control and Prevention",
       "kind": "clinical-guideline",
       "conditions": [
+        "trichomoniasis",
         "trichomoniasis"
       ]
     },
@@ -811,6 +1727,7 @@
       "kind": "official-recommendation",
       "conditions": [
         "ischemic-stroke",
+        "ischemic-stroke",
         "transient-ischemic-attack"
       ]
     },
@@ -819,6 +1736,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "tuberculosis",
         "tuberculosis"
       ]
     },
@@ -827,6 +1745,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "tuberculosis",
         "tuberculosis"
       ]
     },
@@ -835,6 +1754,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "thermal-burns",
         "thermal-burns"
       ]
     },
@@ -843,6 +1763,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
       "conditions": [
+        "tobacco-use-disorder",
         "tobacco-use-disorder"
       ]
     },
@@ -852,6 +1773,15 @@
       "kind": "official-recommendation",
       "conditions": [
         "pyelonephritis"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-best-practices/preventing-managing-adverse-reactions.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "anaphylaxis",
+        "syncope"
       ]
     },
     {
@@ -869,6 +1799,14 @@
       "kind": "clinical-guideline",
       "conditions": [
         "osteoporosis"
+      ]
+    },
+    {
+      "url": "https://www.fda.gov/drugs/drug-safety-communications/fda-requires-boxed-warning-about-serious-mental-health-side-effects-asthma-and-allergy-drug",
+      "organization": "US Food and Drug Administration",
+      "kind": "official-recommendation",
+      "conditions": [
+        "allergic-rhinitis"
       ]
     },
     {
@@ -894,7 +1832,17 @@
       "kind": "clinical-guideline",
       "conditions": [
         "chronic-insomnia",
+        "chronic-insomnia",
+        "obstructive-sleep-apnea",
         "obstructive-sleep-apnea"
+      ]
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/MH/mdd/VADODMDDCPG_ProviderSummary_Final_508_updated.pdf",
+      "organization": "US Department of Veterans Affairs / Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "major-depression"
       ]
     },
     {
@@ -911,6 +1859,7 @@
       "organization": "Department of Veterans Affairs and Department of Defense",
       "kind": "clinical-guideline",
       "conditions": [
+        "acute-low-back-pain",
         "acute-low-back-pain"
       ]
     },
@@ -995,6 +1944,87 @@
       ]
     },
     {
+      "url": "https://www.nhlbi.nih.gov/health-topics/asthma-management-guidelines-2020-updates/faqs",
+      "organization": "National Heart, Lung, and Blood Institute",
+      "kind": "official-recommendation",
+      "conditions": [
+        "asthma"
+      ]
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/anemia/iron-deficiency-anemia",
+      "organization": "National Heart, Lung, and Blood Institute",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "abnormal-uterine-bleeding",
+        "iron-deficiency-anemia"
+      ]
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/atrial-fibrillation/treatment",
+      "organization": "National Heart, Lung, and Blood Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "atrial-fibrillation"
+      ]
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/blood-cholesterol/treatment",
+      "organization": "National Heart, Lung, and Blood Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "dyslipidemia"
+      ]
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/coronary-heart-disease/diagnosis",
+      "organization": "National Heart, Lung, and Blood Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "stable-coronary-artery-disease"
+      ]
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/heart-attack/symptoms",
+      "organization": "National Heart, Lung, and Blood Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "acute-coronary-syndrome"
+      ]
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/heart-failure/living-with",
+      "organization": "National Heart, Lung, and Blood Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "heart-failure"
+      ]
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/high-blood-pressure/diagnosis",
+      "organization": "National Heart, Lung, and Blood Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "hypertension"
+      ]
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/high-blood-pressure/symptoms",
+      "organization": "National Heart, Lung, and Blood Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "hypertensive-emergency"
+      ]
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/pneumonia/diagnosis",
+      "organization": "National Heart, Lung, and Blood Institute",
+      "kind": "official-recommendation",
+      "conditions": [
+        "community-acquired-pneumonia"
+      ]
+    },
+    {
       "url": "https://www.nhlbi.nih.gov/health/sleep-apnea/treatment",
       "organization": "National Heart, Lung, and Blood Institute",
       "kind": "official-clinical-reference",
@@ -1003,11 +2033,84 @@
       ]
     },
     {
+      "url": "https://www.nhlbi.nih.gov/health/venous-thromboembolism/diagnosis",
+      "organization": "National Heart, Lung, and Blood Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "pulmonary-embolism"
+      ]
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/venous-thromboembolism/treatment",
+      "organization": "National Heart, Lung, and Blood Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "deep-vein-thrombosis"
+      ]
+    },
+    {
       "url": "https://www.nhlbi.nih.gov/sites/default/files/publications/Asthma%20Clinicians%20Guide%20508_02-03-21.pdf",
       "organization": "NHLBI / National Asthma Education and Prevention Program",
       "kind": "clinical-guideline",
       "conditions": [
+        "asthma",
         "asthma"
+      ]
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/acne/diagnosis-treatment-and-steps-to-take",
+      "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "acne-vulgaris"
+      ]
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/atopic-dermatitis/diagnosis-treatment-and-steps-to-take",
+      "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "atopic-dermatitis"
+      ]
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take",
+      "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "gout"
+      ]
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/osteoporosis/diagnosis-treatment-and-steps-to-take",
+      "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "osteoporosis"
+      ]
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/psoriasis",
+      "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "psoriasis"
+      ]
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/rheumatoid-arthritis/diagnosis-treatment-and-steps-to-take",
+      "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "rheumatoid-arthritis"
+      ]
+    },
+    {
+      "url": "https://www.nichd.nih.gov/health/topics/endometri/conditioninfo/diagnose",
+      "organization": "Eunice Kennedy Shriver National Institute of Child Health and Human Development",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "endometriosis"
       ]
     },
     {
@@ -1019,10 +2122,35 @@
       ]
     },
     {
+      "url": "https://www.nichd.nih.gov/health/topics/menstruation/conditioninfo/diagnosed",
+      "organization": "Eunice Kennedy Shriver National Institute of Child Health and Human Development",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "abnormal-uterine-bleeding"
+      ]
+    },
+    {
+      "url": "https://www.nichd.nih.gov/health/topics/pcos/conditioninfo/treatments",
+      "organization": "Eunice Kennedy Shriver National Institute of Child Health and Human Development",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "polycystic-ovary-syndrome"
+      ]
+    },
+    {
+      "url": "https://www.nichd.nih.gov/health/topics/preeclampsia/conditioninfo",
+      "organization": "Eunice Kennedy Shriver National Institute of Child Health and Human Development",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "preeclampsia"
+      ]
+    },
+    {
       "url": "https://www.nidcd.nih.gov/health/balance-disorders",
       "organization": "National Institute on Deafness and Other Communication Disorders",
       "kind": "official-clinical-reference",
       "conditions": [
+        "benign-positional-vertigo",
         "benign-positional-vertigo"
       ]
     },
@@ -1031,6 +2159,7 @@
       "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
       "kind": "official-clinical-reference",
       "conditions": [
+        "hypoglycemia",
         "hypoglycemia"
       ]
     },
@@ -1039,6 +2168,7 @@
       "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
       "kind": "official-clinical-reference",
       "conditions": [
+        "prediabetes",
         "prediabetes"
       ]
     },
@@ -1047,7 +2177,152 @@
       "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
       "kind": "official-clinical-reference",
       "conditions": [
+        "type-1-diabetes",
         "type-1-diabetes"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/diagnostic-tests/thyroid",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "thyroid-nodule"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/eating-diet-nutrition",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "gastroesophageal-reflux-disease"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/treatment",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "gastroesophageal-reflux-disease"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/appendicitis/treatment",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "appendicitis"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/constipation/symptoms-causes",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "chronic-constipation"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/constipation/treatment",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "chronic-constipation"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/eating-diet-nutrition",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "acute-diverticulitis"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/treatment",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "acute-diverticulitis"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gallstones/treatment",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "acute-cholecystitis"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome/diagnosis",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "irritable-bowel-syndrome"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome/treatment",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "irritable-bowel-syndrome"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "peptic-ulcer-h-pylori"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/treatment",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "peptic-ulcer-h-pylori"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/viral-gastroenteritis/treatment",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "acute-gastroenteritis"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/hyperthyroidism",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "hyperthyroidism"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/hypothyroidism",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "hypothyroidism"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/tests-diagnosis",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "chronic-kidney-disease"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/keeping-kidneys-safe",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "acute-kidney-injury"
       ]
     },
     {
@@ -1055,6 +2330,7 @@
       "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
       "kind": "official-clinical-reference",
       "conditions": [
+        "type-2-diabetes",
         "type-2-diabetes"
       ]
     },
@@ -1063,6 +2339,7 @@
       "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
       "kind": "official-clinical-reference",
       "conditions": [
+        "uncomplicated-cystitis",
         "uncomplicated-cystitis"
       ]
     },
@@ -1087,6 +2364,7 @@
       "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
       "kind": "official-clinical-reference",
       "conditions": [
+        "pyelonephritis",
         "pyelonephritis"
       ]
     },
@@ -1095,6 +2373,7 @@
       "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
       "kind": "official-clinical-reference",
       "conditions": [
+        "nephrolithiasis",
         "nephrolithiasis"
       ]
     },
@@ -1111,7 +2390,32 @@
       "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
       "kind": "official-clinical-reference",
       "conditions": [
+        "benign-prostatic-hyperplasia",
         "benign-prostatic-hyperplasia"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/urinary-tract-infections-in-children/treatment",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "pediatric-urinary-tract-infection"
+      ]
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/weight-management/adult-overweight-obesity/treatment",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "obesity"
+      ]
+    },
+    {
+      "url": "https://www.nimh.nih.gov/health/publications/bipolar-disorder",
+      "organization": "National Institute of Mental Health",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "bipolar-disorder"
       ]
     },
     {
@@ -1119,7 +2423,16 @@
       "organization": "National Institute of Mental Health",
       "kind": "official-clinical-reference",
       "conditions": [
+        "generalized-anxiety-disorder",
         "generalized-anxiety-disorder"
+      ]
+    },
+    {
+      "url": "https://www.scielo.br/j/jbpneu/a/WTTJ9tSyCNfwdPpK33DLV5R/?format=html&lang=en",
+      "organization": "Jornal Brasileiro de Pneumologia",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "croup"
       ]
     },
     {

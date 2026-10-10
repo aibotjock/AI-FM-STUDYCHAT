@@ -1,0 +1,11 @@
+# Foundations question expansion
+
+Checked October 10, 2026. Eight new original questions add study design, incidence, prevalence, case-fatality proportions, median, sensitivity and specificity. All counts and scenarios are expressly fictional. Six previous topics and twelve previous questions are retained. New facts and their distractor explanations use the [CDC-authored Epidemiology Glossary](https://www.cdc.gov/reproductive-health/glossary/index.html), specifically the definitions identified in the source record. The visible header is May 15, 2024; its footer is May 14, 2024. This is stable epidemiology education, not a current treatment guideline.
+
+The [CDC agency-material policy](https://www.cdc.gov/other/agencymaterials.html) permits reuse of agency-authored public-domain text subject to its conditions and third-party exceptions. No tables, images, logos or outside linked content are imported. The app supplies original study paraphrases and source links, attribution, free-original notice and nonendorsement. The assessment concerns U.S. reuse; it is not global legal clearance, clinician approval or approval to activate paid access.
+
+Exact document manifest: URL above; organization Centers for Disease Control and Prevention; kind official-clinical-reference; basis public-domain-government; policy URL above; legal/source check October 10, 2026. Source IDs ending in expanded-20261010 support the eight additions. Existing sources retain their previous check dates. The file envelope retains the earliest check date.
+
+The [AHRQ third-edition health-literacy toolkit](https://www.ahrq.gov/health-literacy/improve/precautions/toolkit.html) has a public availability notice requiring permission for reproduction for sale. It receives no new commercial reuse allowance; prior private-study foundation material remains a separate, unresolved commercial assessment. Facts, independently expressed questions, document reproduction and AI-processing terms require separate treatment. No permission is inferred from government hosting.
+
+No qualified clinical or independent item-writing panel review has been claimed. The software checks structural integrity, canonical arithmetic, source bindings, dates and answer concealment; these do not certify medical accuracy or complete exam coverage.

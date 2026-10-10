@@ -1,11 +1,12 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
-import { createStudyCurriculum, validateStudyCondition } from '../server/study-curriculum.js';
+import { createStudyCurriculum, validateStudyCondition, STUDY_CONDITION_FILES, STUDY_OPTIONAL_CONDITION_FILES } from '../server/study-curriculum.js';
+import { sourceEditorialWordBudget, CONCISE_SOURCE_WORD_BUDGET } from '../shared/source-reuse.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const names = ['cardiometabolic.json', 'respiratory_infectious.json', 'neuro_msk_derm.json', 'women_children_prevention.json', 'common_additions.json'];
+const names = STUDY_CONDITION_FILES;
 const ineligibleStatuses = new Set(['withdrawn', 'unresolved-conflict', 'blocked', 'superseded']);
 
 function date(value) {
@@ -74,7 +75,9 @@ export function validateMaintenanceCorpus({ records, files = [], now = Date.now(
   for (const record of structuralRecords) {
     sections += record.sections.length;
     const envelope = files.find(file => file.parsed.conditions.includes(record));
-    if (envelope && record.review.checkedAt !== envelope.parsed.checkedAt) problems.push(`${record.id}: envelope check date mismatch.`);
+    // The envelope records the earliest check in a mixed-date file. Adding
+    // newly checked material must not renew unchanged source review dates.
+    if (envelope && date(record.review.checkedAt) < date(envelope.parsed.checkedAt)) problems.push(`${record.id}: review precedes envelope check date.`);
     const detail = structural.get(record.id);
     if (detail?.questions.some(item => 'correctChoiceId' in item || 'rationale' in item || item.choices.some(choice => 'explanation' in choice))) problems.push(`${record.id}: answer leaked before grading.`);
     for (const question of record.questions) {
@@ -103,7 +106,13 @@ export function validateMaintenanceCorpus({ records, files = [], now = Date.now(
   const referenceOnly = structuralRecords.filter(record => !formal(record)).map(record => ({ id: record.id, name: record.name }));
   const sources = new Map();
   const sourceWords = new Map();
+  const sourceBudgets = new Map();
   for (const record of structuralRecords) for (const source of record.sources) {
+    const budget = sourceEditorialWordBudget(source, { now });
+    // Rights attach to the exact document, independently of the dates on an
+    // older citation to that same document. One validated grant can establish
+    // its editorial budget; a different, restricted co-source stays bounded.
+    sourceBudgets.set(source.url, Math.max(sourceBudgets.get(source.url) ?? 0, budget));
     const entry = sources.get(source.url) || { url: source.url, organization: source.organization, kind: source.kind, conditions: [] };
     entry.conditions.push(record.id);
     sources.set(source.url, entry);
@@ -117,9 +126,15 @@ export function validateMaintenanceCorpus({ records, files = [], now = Date.now(
       }
     };
     for (const section of record.sections) count(section.text, section.sourceIds);
-    for (const question of record.questions) count([question.explanation, ...Object.values(question.distractorExplanations), question.choices.find(choice => choice.id === question.correctChoiceId).text].join(' '), question.sourceIds);
+    for (const question of record.questions) {
+      const expanded = question.sourceIds.some(id => (sourceBudgets.get(urls.get(id)) ?? 0) > CONCISE_SOURCE_WORD_BUDGET);
+      count([...(expanded ? [question.stem, ...question.choices.map(choice => choice.text)] : [question.choices.find(choice => choice.id === question.correctChoiceId).text]), question.explanation, ...Object.values(question.distractorExplanations)].join(' '), question.sourceIds);
+    }
   }
-  for (const [url, words] of sourceWords) if (words > 200) problems.push(`${url}: combined attributed factual teaching/rationale text exceeds the 200-word concise-source budget (${words}).`);
+  for (const [url, words] of sourceWords) {
+    const budget = sourceBudgets.get(url) ?? CONCISE_SOURCE_WORD_BUDGET;
+    if (words > budget) problems.push(`${url}: combined attributed factual teaching/rationale text exceeds the ${budget}-word ${budget === CONCISE_SOURCE_WORD_BUDGET ? 'concise-source' : 'verified-document'} budget (${words}).`);
+  }
   const manifest = {
     schemaVersion: 1, checkedAt: structuralRecords.map(record => record.review.checkedAt).sort()[0] || null,
     purpose: 'Educational board-study tool only; not medical advice or for clinical use. Source checks are not clinician approval, rights clearance or a medical accuracy certification.',
@@ -128,6 +143,7 @@ export function validateMaintenanceCorpus({ records, files = [], now = Date.now(
     questions: questionCount, currentQuestions: currentRecords.reduce((sum, record) => sum + record.questions.length, 0), quarantinedQuestions: quarantine.reduce((sum, record) => sum + record.questionCount, 0), sections,
     formalGuidelineConditions: formalCount, currentFormalGuidelineConditions: currentFormalCount, officialReferenceOnlyConditions: referenceOnly, quarantine,
     distinctSourceUrls: sources.size, maximumAttributedFactualWordsPerUrl: Math.max(0, ...sourceWords.values()), questionDomains: domains, correctAnswerPositions: positions,
+    sourceEditorialBudgets: [...sourceBudgets].filter(([, budget]) => budget > CONCISE_SOURCE_WORD_BUDGET).map(([url, budget]) => ({ url, wordBudget: budget, clinicalApproval: false })),
     validationMode: allowQuarantine ? 'maintenance-allow-quarantine' : 'strict-current-readiness', fullyCurrent: currentRecords.length === records.length && !problems.length,
     clinicalApproval: false, humanReviewed: false, commercialApprovedRecords: 0,
     files: files.map(({ name, sha256 }) => ({ path: `content/conditions/${name}`, sha256 })),
@@ -138,14 +154,15 @@ export function validateMaintenanceCorpus({ records, files = [], now = Date.now(
 
 function readCorpus(rootDir, now) {
   let bytes = 0;
-  return names.map(name => {
+  return names.filter(name => !STUDY_OPTIONAL_CONDITION_FILES.includes(name) || existsSync(resolve(rootDir, 'content/conditions', name))).map(name => {
     const body = readFileSync(resolve(rootDir, 'content/conditions', name), 'utf8');
     bytes += Buffer.byteLength(body);
     if (Buffer.byteLength(body) > 2 * 1024 * 1024 || bytes > 8 * 1024 * 1024) throw new Error('Study corpus exceeds its bounded file limits.');
     const parsed = JSON.parse(body);
     if (!parsed || parsed.schemaVersion !== 1 || !Number.isFinite(date(parsed.checkedAt)) || date(parsed.checkedAt) > now || !Array.isArray(parsed.conditions) || parsed.conditions.length > 125) throw new Error(`${name}: invalid study corpus envelope.`);
-    if (name !== 'common_additions.json' && parsed.conditions.length !== 25) throw new Error(`${name}: expected 25 conditions.`);
+    if (name !== 'common_additions.json' && !STUDY_OPTIONAL_CONDITION_FILES.includes(name) && parsed.conditions.length !== 25) throw new Error(`${name}: expected 25 conditions.`);
     if (name === 'common_additions.json' && parsed.conditions.length < 5) throw new Error(`${name}: expected at least five additional conditions.`);
+    if (STUDY_OPTIONAL_CONDITION_FILES.includes(name) && parsed.conditions.length < 1) throw new Error(`${name}: expected at least one additional study condition.`);
     return { name, parsed, sha256: createHash('sha256').update(body).digest('hex') };
   });
 }

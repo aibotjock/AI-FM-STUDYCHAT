@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { ABFM_BLUEPRINT, BLUEPRINT_VERSION, allocateMixedPractice } from '../shared/blueprint.js';
 import { STUDY_DISCLAIMER } from './study-curriculum.js';
+import { buildBoardAlignment } from './board-alignment.js';
 
 export const BOARD_PRACTICE_SIZES = Object.freeze([10, 20, 40, 80, 100]);
 export const BOARD_PRACTICE_HISTORY_LIMIT = 32;
@@ -77,14 +78,16 @@ export function createBoardPractice({ curricula = [], now = Date.now, random = M
   }
   function catalog() {
     const questions = [...pool().values()];
-    const domains = ABFM_BLUEPRINT.map(domain => ({ ...domain, available: questions.filter(question => question.domain === domain.id).length }));
+    const alignment = buildBoardAlignment(questions, { includeCrosswalk: false });
+    const domains = ABFM_BLUEPRINT.map(domain => ({ ...domain, available: alignment.domains.find(item => item.domain === domain.id).availableQuestions }));
     const sizes = BOARD_PRACTICE_SIZES.map(count => {
       const allocation = allocateMixedPractice(count);
-      const gaps = allocation.filter(item => item.count > domains.find(domain => domain.id === item.domain).available).map(item => ({ domain: item.domain, required: item.count, available: domains.find(domain => domain.id === item.domain).available }));
+      const gaps = allocation.filter(item => item.count > domains.find(domain => domain.id === item.domain).available).map(item => ({ domain: item.domain, required: item.count, available: domains.find(domain => domain.id === item.domain).available, shortfall: item.count - domains.find(domain => domain.id === item.domain).available }));
       return { count, available: gaps.length === 0, allocation, gaps };
     });
-    return { questionCount: questions.length, domains, sizes, availableSizes: sizes.filter(size => size.available).map(size => size.count), blueprintVersion: BLUEPRINT_VERSION, officialScore: false, purpose: 'Independent family medicine board study only; practice timing and accuracy are not official exam scores or readiness predictions.', disclaimer: STUDY_DISCLAIMER };
+    return { questionCount: questions.length, domains, sizes, availableSizes: sizes.filter(size => size.available).map(size => size.count), alignment, blueprintVersion: BLUEPRINT_VERSION, officialScore: false, purpose: 'Independent family medicine board study only; practice timing and accuracy are not official exam scores or readiness predictions.', disclaimer: STUDY_DISCLAIMER };
   }
+  function alignment() { return buildBoardAlignment([...pool().values()]); }
   function validSession(session) {
     return object(session) && validId(session.id) && MODES.has(session.mode) && BOARD_PRACTICE_SIZES.includes(session.count) && typeof session.timed === 'boolean' && ['immediate', 'end'].includes(session.feedback) && validTime(session.createdAt) && (!session.timed || Number.isInteger(session.timeLimitSeconds) && session.timeLimitSeconds >= 60 && session.timeLimitSeconds <= 14400) && Array.isArray(session.selection) && session.selection.length === session.count && new Set(session.selection.map(item => item?.key)).size === session.count && session.selection.every(item => object(item) && KEY.test(item.key || '') && FINGERPRINT.test(item.fingerprint || '')) && object(session.answers) && Object.keys(session.answers).length <= session.count && Object.entries(session.answers).every(([key, answer]) => session.selection.some(item => item.key === key) && object(answer) && CHOICE.test(answer.choiceId || '') && validTime(answer.answeredAt));
   }
@@ -261,5 +264,5 @@ export function createBoardPractice({ curricula = [], now = Date.now, random = M
     state.boardPractice = replacement.boardPractice;
     return history(state);
   }
-  return { catalog, start, view, answer, finish, restart, history, exportHistory, importHistory, sanitizeImport };
+  return { catalog, alignment, start, view, answer, finish, restart, history, exportHistory, importHistory, sanitizeImport };
 }

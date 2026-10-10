@@ -1,0 +1,846 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-10",
+  "conditions": [
+    {
+      "id": "osteomyelitis",
+      "name": "Adult pyogenic osteomyelitis",
+      "aliases": [
+        "bone infection",
+        "pyogenic osteomyelitis",
+        "diabetic foot osteomyelitis",
+        "vertebral osteomyelitis"
+      ],
+      "specialty": "Infectious disease and musculoskeletal",
+      "domain": "acute",
+      "keywords": [
+        "bone",
+        "MRI",
+        "biopsy",
+        "source control",
+        "oral antibiotics",
+        "retained implant",
+        "six weeks",
+        "diabetic foot"
+      ],
+      "overview": "Original source-linked adult pyogenic-osteomyelitis study material. The module covers selected diagnostic, antibiotic-route and duration decisions, with evidence-quality distinctions. It is not a complete prescribing protocol or clinician-approved clinical reference.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "wikiguidelines-osteomyelitis-2022-open",
+          "title": "Use of Novel Strategies to Develop Guidelines for Management of Pyogenic Osteomyelitis in Adults: A WikiGuidelines Group Consensus Statement",
+          "organization": "WikiGuidelines Group / JAMA Network Open",
+          "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2792124",
+          "kind": "clinical-guideline",
+          "edition": "May 10, 2022 consensus statement; evidence through March 1, 2022",
+          "publishedDate": "2022-05-10",
+          "checkedAt": "2026-10-10",
+          "locator": "Questions 1, 3, 4, 5, 6 and 7; Article Information. No linked correction notice found on the checked publisher page.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "International adult consensus",
+          "limitations": "Adult pyogenic infection only; not pediatric, fungal or mycobacterial osteomyelitis. Retained implants, inadequate source control, spinal instability and bacteremia require separate assessment. Most diagnostic and empiric-treatment statements are clinical reviews, not clear recommendations. The article’s externally reproduced figure is excluded.",
+          "attribution": "Spellberg B, et al. JAMA Network Open. 2022;5(5):e2211321. doi:10.1001/jamanetworkopen.2022.11321. Article-specific CC-BY under the linked JAMA permissions terms; a numbered license version was not established.",
+          "derivativeNotice": "Original abbreviated educational paraphrases and original fictional practice questions were created for StudyChat. Wording, selection and organization differ from the article. No complete text, table, figure, image or dose table is reproduced. No author or publisher endorsement is implied.",
+          "rights": {
+            "basis": "cc-by-unversioned",
+            "policyUrl": "https://jamanetwork.com/pages/cc-by-license-permissions",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnostic-imaging",
+          "title": "Use imaging and microbiology according to diagnostic probability",
+          "text": "The adult WikiGuidelines clinical review identifies MRI and certain tagged white-cell studies as more accurate imaging options for osteomyelitis than routine plain radiographs. Plain films can help when fracture or another noninfectious cause is a priority, but do not settle every suspected bone infection. Bone biopsy culture can help target antibiotics; a positive histopathology result is strongly informative, while a negative result does not reliably exclude infection.",
+          "sourceIds": [
+            "wikiguidelines-osteomyelitis-2022-open"
+          ],
+          "sourceLocator": "Question 1: imaging, bone-biopsy culture and histopathology limitations."
+        },
+        {
+          "id": "culture-before-treatment",
+          "title": "Stable patients: balance sampling against dangerous delay",
+          "text": "The review considers obtaining bone or joint microbiology before starting empiric antibiotics reasonable in a clinically stable patient when the organism is not already established. This is conditional, because studies of culture-yield effects disagree. Possible sepsis, imminent spinal-cord compromise or progression of dangerous infection weighs against delay. Blood-culture identification of a likely pathogen can change the need for biopsy.",
+          "sourceIds": [
+            "wikiguidelines-osteomyelitis-2022-open"
+          ],
+          "sourceLocator": "Questions 1 and 3: blood-culture etiology, stability, microbiological sampling and risks of delaying treatment."
+        },
+        {
+          "id": "oral-treatment-criteria",
+          "title": "Oral antibiotics can be appropriate when selection criteria are met",
+          "text": "WikiGuidelines gives a clear recommendation that oral therapy is a reasonable option for adult pyogenic osteomyelitis when the patient is stable, source control is adequate, bacteremia is not persistent, gastrointestinal absorption is reliable, a study-supported regimen covers likely pathogens, and circumstances permit safe use. No minimum intravenous lead-in is required once all criteria are met. This is not permission to use any oral antibiotic or overlook unstable spine disease, drainage needs or medication access.",
+          "sourceIds": [
+            "wikiguidelines-osteomyelitis-2022-open"
+          ],
+          "sourceLocator": "Question 5: five patient-selection criteria and absence of a required minimum IV lead-in."
+        },
+        {
+          "id": "duration-without-implant",
+          "title": "Duration depends on retained material and source control",
+          "text": "For hematogenous or contiguous adult pyogenic osteomyelitis, including diabetic-foot osteomyelitis, the source recommends a maximum six-week antibiotic course when source control is adequate and no prosthetic implant remains. It does not establish that every infection needs exactly six weeks. Shorter debrided courses and treatment after complete resection are discussed with lower certainty. A retained implant or undrained abscess falls outside this six-week recommendation.",
+          "sourceIds": [
+            "wikiguidelines-osteomyelitis-2022-open"
+          ],
+          "sourceLocator": "Question 7: clear recommendation for osteomyelitis without a retained implant; separate clinical reviews for shorter treatment and retained implants."
+        },
+        {
+          "id": "empiric-treatment-framework",
+          "title": "Empiric selection uses pathogen risk, not a universal drug",
+          "text": "In its clinical review, WikiGuidelines discusses coverage of likely gram-positive organisms and gram-negative bacilli, with MRSA and Pseudomonas coverage determined by specific risks. Local susceptibility, prior cultures, patient factors and the presence of an implant influence empiric choice; available cultures can narrow treatment. The article does not establish a single first-line antibiotic for every bone infection. Published clinical outcome evidence is more relevant than theoretical bone penetration alone.",
+          "sourceIds": [
+            "wikiguidelines-osteomyelitis-2022-open"
+          ],
+          "sourceLocator": "Question 4: empirical selection framework, MRSA/Pseudomonas risk and bone-penetration limitations."
+        },
+        {
+          "id": "follow-up-limits",
+          "title": "Clinical failure changes the value of repeat imaging",
+          "text": "The clinical review does not find that routinely repeated inflammatory markers or imaging reliably predict an individual’s long-term treatment success. Repeated imaging can be useful when treatment is clinically failing, to reconsider the diagnosis, find a drainable focus or identify a mechanical complication. Improvement should not be replaced by a rule demanding normal serial images for everyone.",
+          "sourceIds": [
+            "wikiguidelines-osteomyelitis-2022-open"
+          ],
+          "sourceLocator": "Question 6: serial inflammatory biomarkers, routine imaging and targeted imaging in clinical failure."
+        }
+      ],
+      "questions": [
+        {
+          "id": "osteomyelitis-q1",
+          "stem": "A fictional adult has suspected pyogenic osteomyelitis. The probability of bone infection remains substantial, and a plain radiograph has not resolved the diagnosis. There is no MRI contraindication. Which imaging option is identified by the WikiGuidelines review as more accurate for bone-infection assessment?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Another plain radiograph as the only test"
+            },
+            {
+              "id": "B",
+              "text": "Serial ESR as the only test"
+            },
+            {
+              "id": "C",
+              "text": "Serial CRP as the only test"
+            },
+            {
+              "id": "D",
+              "text": "MRI of the suspected site"
+            },
+            {
+              "id": "E",
+              "text": "No further evaluation because the radiograph was nondiagnostic"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "MRI is one of the more accurate imaging approaches described for osteomyelitis. A nondiagnostic plain film does not by itself settle a case with substantial ongoing suspicion.",
+          "distractorExplanations": {
+            "A": "Plain films can be useful for alternative diagnoses but are less accurate for this unresolved infection question.",
+            "B": "The review does not find ESR sufficiently accurate to settle osteomyelitis alone.",
+            "C": "The review does not find CRP sufficiently accurate to settle osteomyelitis alone.",
+            "E": "A nondiagnostic plain radiograph does not eliminate substantial diagnostic suspicion."
+          },
+          "sectionIds": [
+            "diagnostic-imaging"
+          ],
+          "sourceIds": [
+            "wikiguidelines-osteomyelitis-2022-open"
+          ],
+          "domain": "acute",
+          "learningObjective": "Choose an informative imaging modality for unresolved suspected adult osteomyelitis.",
+          "difficulty": "application"
+        },
+        {
+          "id": "osteomyelitis-q2",
+          "stem": "A fictional adult with pyogenic osteomyelitis is stable, has adequate source control and no persistent bacteremia, absorbs medication reliably and can safely follow treatment. A susceptible organism is covered by a regimen studied in osteomyelitis. Which statement best describes the antibiotic-route evidence?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Oral therapy is a reasonable option when all selection criteria are met"
+            },
+            {
+              "id": "B",
+              "text": "Every case requires six weeks of intravenous therapy"
+            },
+            {
+              "id": "C",
+              "text": "Any oral antibiotic works regardless of susceptibility"
+            },
+            {
+              "id": "D",
+              "text": "Oral therapy requires an arbitrary minimum IV period even when criteria are met"
+            },
+            {
+              "id": "E",
+              "text": "Route selection can ignore source control"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "WikiGuidelines supports oral treatment with an appropriate studied regimen in a patient meeting the clinical, source-control, absorption and safe-use criteria. It specifies no required minimum IV lead-in once those criteria are met.",
+          "distractorExplanations": {
+            "B": "The source does not require IV-only treatment in every suitable adult.",
+            "C": "Organism coverage and study-supported regimens are necessary; the route alone is insufficient.",
+            "D": "The source does not impose a fixed minimum IV lead-in after all criteria are met.",
+            "E": "Adequate source control is one of the oral-treatment criteria."
+          },
+          "sectionIds": [
+            "oral-treatment-criteria"
+          ],
+          "sourceIds": [
+            "wikiguidelines-osteomyelitis-2022-open"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply oral-treatment eligibility criteria rather than equating oral therapy with undertreatment.",
+          "difficulty": "application"
+        },
+        {
+          "id": "osteomyelitis-q3",
+          "stem": "A fictional adult has contiguous pyogenic osteomyelitis, no retained prosthetic implant and adequate source control. Which maximum antibiotic duration is the WikiGuidelines clear recommendation for this setting?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Three months for all patients"
+            },
+            {
+              "id": "B",
+              "text": "Indefinite treatment"
+            },
+            {
+              "id": "C",
+              "text": "Six weeks"
+            },
+            {
+              "id": "D",
+              "text": "Two weeks for all patients"
+            },
+            {
+              "id": "E",
+              "text": "Until every image becomes normal"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "The clear recommendation is a maximum of six weeks with adequate source control and no retained implant. The guideline does not claim that exactly six weeks is necessary for every case.",
+          "distractorExplanations": {
+            "A": "Three months is not the stated maximum for this no-implant scenario.",
+            "B": "Indefinite treatment is not the source recommendation for this adequately controlled infection.",
+            "D": "A universal two-week course is not established for this setting.",
+            "E": "Routine imaging normalization is not the described duration endpoint."
+          },
+          "sectionIds": [
+            "duration-without-implant",
+            "follow-up-limits"
+          ],
+          "sourceIds": [
+            "wikiguidelines-osteomyelitis-2022-open"
+          ],
+          "domain": "acute",
+          "learningObjective": "Keep duration recommendations tied to source control and retained-implant status.",
+          "difficulty": "application"
+        },
+        {
+          "id": "osteomyelitis-q4",
+          "stem": "A fictional adult with possible pyogenic osteomyelitis is stable. No organism has been established, bone sampling is promptly available and there is no sepsis or threatened spinal-cord compromise. Which sequence is reasonable according to the WikiGuidelines clinical review?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Always delay treatment for weeks regardless of progression"
+            },
+            {
+              "id": "B",
+              "text": "Select a drug only for its theoretical bone penetration"
+            },
+            {
+              "id": "C",
+              "text": "Skip microbiology because every case has the same pathogen"
+            },
+            {
+              "id": "D",
+              "text": "Use broad treatment indefinitely without seeking etiology"
+            },
+            {
+              "id": "E",
+              "text": "Obtain bone microbiology before empiric treatment if safe, while reassessing stability"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "For a stable adult with unknown etiology, obtaining bone or joint microbiology before empiric treatment can be reasonable. The review acknowledges discordant culture-yield evidence and weighs any delay against dangerous progression.",
+          "distractorExplanations": {
+            "A": "The review supports a conditional sampling decision, not prolonged delay despite worsening.",
+            "B": "Clinical outcome evidence and patient/pathogen factors matter more than penetration theory alone.",
+            "C": "Bone microbiology can identify etiology and help target treatment.",
+            "D": "Indefinite broad therapy ignores the source’s microbiology-guided treatment principle."
+          },
+          "sectionIds": [
+            "culture-before-treatment",
+            "empiric-treatment-framework"
+          ],
+          "sourceIds": [
+            "wikiguidelines-osteomyelitis-2022-open"
+          ],
+          "domain": "acute",
+          "learningObjective": "Balance microbiological diagnosis with the risk of delaying necessary treatment.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "infective-endocarditis",
+      "name": "Adult bacterial infective endocarditis",
+      "aliases": [
+        "infective endocarditis",
+        "bacterial endocarditis",
+        "valve infection",
+        "endocarditis"
+      ],
+      "specialty": "Cardiovascular and infectious disease",
+      "domain": "acute",
+      "keywords": [
+        "blood cultures",
+        "TEE",
+        "TTE",
+        "Duke-ISCVID",
+        "prosthetic valve",
+        "perivalvular abscess",
+        "oral transition",
+        "bacteremia"
+      ],
+      "overview": "Original study material on selected adult bacterial-endocarditis diagnostic and treatment-route decisions. Diagnostic uncertainty and evidence quality are retained. It is not a complete antimicrobial, surgical or prophylaxis protocol and is not clinical-use software.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "wikiguidelines-endocarditis-2023-open",
+          "title": "Guidelines for Diagnosis and Management of Infective Endocarditis in Adults: A WikiGuidelines Group Consensus Statement",
+          "organization": "WikiGuidelines Group / JAMA Network Open",
+          "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2807791",
+          "kind": "clinical-guideline",
+          "edition": "July 31, 2023; corrected August/October 2023 and January 6, 2025",
+          "publishedDate": "2023-07-31",
+          "checkedAt": "2026-10-10",
+          "locator": "Part 1 Questions 1, 2 and 6; Part 2 Question 1; Part 4 Questions 2, 3 and 4; corrected Table 2 and Article Information; linked August/October 2023 corrections.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "International adult consensus",
+          "limitations": "Adult bacterial endocarditis only. Diagnostic/team-selection statements are clinical reviews; oral transitional treatment is the sole clear recommendation in this source. No complete Duke-ISCVID criteria, antimicrobial dose table, surgical algorithm, pediatric protocol or prophylaxis list is imported.",
+          "attribution": "McDonald EG, Aggrey G, Aslan AT, et al. JAMA Network Open. 2023;6(7):e2326366. doi:10.1001/jamanetworkopen.2023.26366. Article-specific CC-BY under the linked JAMA permissions terms; a numbered license version was not established.",
+          "derivativeNotice": "Original abbreviated educational paraphrases and original fictional practice questions were created for StudyChat. Wording, selection and organization differ from the article. No complete text, table, figure, image or dose table is reproduced. No author or publisher endorsement is implied.",
+          "rights": {
+            "basis": "cc-by-unversioned",
+            "policyUrl": "https://jamanetwork.com/pages/cc-by-license-permissions",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "diagnostic-framework",
+          "title": "Diagnosis integrates clinical, microbiological and imaging findings",
+          "text": "The WikiGuidelines diagnostic review describes Duke-based schemas, including the 2023 Duke-ISCVID update, as practical tools incorporating clinical, microbiological and imaging criteria. Pathology is the reference standard but often is not available during initial treatment decisions. This abbreviated module does not reproduce a complete diagnostic score or claim that an isolated symptom establishes infective endocarditis.",
+          "sourceIds": [
+            "wikiguidelines-endocarditis-2023-open"
+          ],
+          "sourceLocator": "Part 1 Question 1: pathology, Duke-based schemas and diagnostic information types."
+        },
+        {
+          "id": "pre-antibiotic-cultures",
+          "title": "When feasible, obtain blood cultures before antibiotics",
+          "text": "In suspected adult infective endocarditis, obtaining blood cultures before antibiotics when feasible improves the chance of recovering the organism. The review discusses several properly filled culture sets rather than a single bottle. Previous antibiotic exposure can lower yield. This principle does not authorize delaying urgent treatment in an unstable patient and does not establish a complete culture-negative-endocarditis algorithm.",
+          "sourceIds": [
+            "wikiguidelines-endocarditis-2023-open"
+          ],
+          "sourceLocator": "Part 1 Question 2: number of culture sets and decreased yield after antibiotic exposure."
+        },
+        {
+          "id": "negative-tte-boundary",
+          "title": "A negative transthoracic study must be interpreted with probability",
+          "text": "TEE is more sensitive than TTE for adult infective endocarditis. The diagnostic review considers TEE useful when an unacceptably high probability remains after a negative TTE and clarification will change treatment; it is also useful for prosthetic-valve evaluation and suspected complications such as perivalvular abscess. A negative TTE can be reassuring in selected low-probability circumstances, not every high-suspicion case.",
+          "sourceIds": [
+            "wikiguidelines-endocarditis-2023-open"
+          ],
+          "sourceLocator": "Part 1 Question 6: pretest probability, TTE quality and reasons to obtain TEE."
+        },
+        {
+          "id": "oral-transition-criteria",
+          "title": "Oral transition is an option for selected adults, not any regimen",
+          "text": "WikiGuidelines gives a clear recommendation that transition from initial intravenous to appropriate oral treatment can be a reasonable option in adult bacterial infective endocarditis. Its patient-selection clinical review considers stability, no immediate surgical or procedural source-control need, clearing or cleared bacteremia, a susceptible organism, a published-data-supported oral regimen, reliable absorption and circumstances allowing safe therapy. The required IV lead-in duration and optimal regimen are not established as universal rules.",
+          "sourceIds": [
+            "wikiguidelines-endocarditis-2023-open"
+          ],
+          "sourceLocator": "Part 4 Questions 3 and 4: trial-supported oral transition, clinical selection criteria and uncertain IV lead-in."
+        },
+        {
+          "id": "multidisciplinary-care",
+          "title": "Complex disease benefits from access to several disciplines",
+          "text": "The WikiGuidelines clinical review describes multidisciplinary endocarditis teams involving infectious disease, pharmacy, cardiology and cardiac surgery, with other specialists according to complications and availability. Observational studies suggest benefit, but no randomized trials establish a universal team-transfer rule. Hemodynamic instability, heart failure, prosthetic material, abscesses and embolic complications are examples of complex circumstances needing coordinated expertise.",
+          "sourceIds": [
+            "wikiguidelines-endocarditis-2023-open"
+          ],
+          "sourceLocator": "Part 2 Question 1: team disciplines, observational evidence and complex populations."
+        },
+        {
+          "id": "organism-directed-antibiotics",
+          "title": "Definitive antibiotics depend on the organism and valve context",
+          "text": "The corrected WikiGuidelines clinical-review table lists cefazolin or antistaphylococcal penicillins such as oxacillin or nafcillin as preferred primary agents for susceptible staphylococci. For methicillin-resistant staphylococci, it lists vancomycin or daptomycin; ceftriaxone is listed for susceptible HACEK organisms. These are organism-specific primary-agent categories, not complete universal regimens. Valve type, susceptibility, allergy, comorbidity and any adjunctive treatment require separate assessment. Evidence for several regimen details remains limited.",
+          "sourceIds": [
+            "wikiguidelines-endocarditis-2023-open"
+          ],
+          "sourceLocator": "Part 4 Question 2 and corrected Table 2: preferred primary treatment by organism; adjacent text on valve type, patient factors and evidence limitations."
+        }
+      ],
+      "questions": [
+        {
+          "id": "infective-endocarditis-q1",
+          "stem": "A fictional adult has a high ongoing clinical suspicion of native-valve infective endocarditis despite a negative TTE. Clarifying the diagnosis will change treatment, and transesophageal imaging is feasible. Which next study is most supported by the diagnostic review?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Another negative TTE automatically settles the diagnosis"
+            },
+            {
+              "id": "B",
+              "text": "No imaging because cultures alone always establish valve involvement"
+            },
+            {
+              "id": "C",
+              "text": "Transesophageal echocardiography"
+            },
+            {
+              "id": "D",
+              "text": "A plain chest radiograph to exclude endocarditis"
+            },
+            {
+              "id": "E",
+              "text": "Serial CRP alone to establish an infected valve"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "TEE is more sensitive than TTE and is useful when substantial unacceptable diagnostic probability remains after a negative TTE and the result will change treatment.",
+          "distractorExplanations": {
+            "A": "The impact of a negative TTE depends on probability and image quality.",
+            "B": "Blood cultures provide microbiology but do not replace the imaging assessment in this vignette.",
+            "D": "A plain chest film is not the source’s next valve-focused imaging option.",
+            "E": "CRP alone does not establish valve infection in the described diagnostic framework."
+          },
+          "sectionIds": [
+            "negative-tte-boundary",
+            "diagnostic-framework"
+          ],
+          "sourceIds": [
+            "wikiguidelines-endocarditis-2023-open"
+          ],
+          "domain": "acute",
+          "learningObjective": "Use pretest probability when interpreting a negative TTE in suspected endocarditis.",
+          "difficulty": "application"
+        },
+        {
+          "id": "infective-endocarditis-q2",
+          "stem": "A fictional adult is stable with suspected infective endocarditis. Antibiotics have not started and blood sampling can be obtained promptly. Which sequence best preserves etiologic information according to the source?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Begin antibiotics, then intentionally wait days before sampling"
+            },
+            {
+              "id": "B",
+              "text": "Obtain appropriate blood-culture sets before antibiotics when feasible"
+            },
+            {
+              "id": "C",
+              "text": "Use only a urine culture to identify the valve pathogen"
+            },
+            {
+              "id": "D",
+              "text": "Omit microbiology if a murmur is present"
+            },
+            {
+              "id": "E",
+              "text": "Collect cultures only after the antibiotic course is complete"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "When feasible, blood cultures should precede antibiotics because prior exposure lowers recovery of the causative organism. This stable vignette does not justify a rule to delay treatment in an unstable patient.",
+          "distractorExplanations": {
+            "A": "Antibiotic exposure can reduce blood-culture yield.",
+            "C": "Urine culture does not replace blood cultures for this suspected endovascular infection.",
+            "D": "The diagnostic framework needs microbiological information; a murmur alone is insufficient.",
+            "E": "Waiting until treatment completion sacrifices the opportunity to establish etiology early."
+          },
+          "sectionIds": [
+            "pre-antibiotic-cultures",
+            "diagnostic-framework"
+          ],
+          "sourceIds": [
+            "wikiguidelines-endocarditis-2023-open"
+          ],
+          "domain": "acute",
+          "learningObjective": "Protect blood-culture yield without turning sampling into a reason for dangerous treatment delay.",
+          "difficulty": "application"
+        },
+        {
+          "id": "infective-endocarditis-q3",
+          "stem": "A fictional adult receiving IV treatment for bacterial endocarditis is stable. Bacteremia is clearing, no immediate cardiac procedure is needed, gastrointestinal absorption is reliable and a studied oral regimen covers the susceptible organism. Safe medication access and follow-up are established. Which option best matches WikiGuidelines?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Consider transition to the supported oral regimen after the selection review"
+            },
+            {
+              "id": "B",
+              "text": "Switch to any available oral antibiotic regardless of susceptibility"
+            },
+            {
+              "id": "C",
+              "text": "Require IV-only treatment in every suitable case"
+            },
+            {
+              "id": "D",
+              "text": "Stop all antibiotics because bacteremia is clearing"
+            },
+            {
+              "id": "E",
+              "text": "Ignore cardiac source control once oral medication is available"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Appropriate oral transitional treatment is a reasonable option for selected adults. The drug, organism, clinical course, source-control needs, absorption and practical safety all matter.",
+          "distractorExplanations": {
+            "B": "Oral treatment still requires a susceptible organism and a regimen supported by clinical data.",
+            "C": "The source’s clear recommendation supports oral transition as an option in suitable adults.",
+            "D": "Clearing bacteremia does not establish that the treatment course is complete.",
+            "E": "Immediate surgical and source-control needs remain part of selection."
+          },
+          "sectionIds": [
+            "oral-transition-criteria"
+          ],
+          "sourceIds": [
+            "wikiguidelines-endocarditis-2023-open"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize selected adult endocarditis patients in whom appropriate oral transition can be considered.",
+          "difficulty": "application"
+        },
+        {
+          "id": "infective-endocarditis-q4",
+          "stem": "A fictional adult with infective endocarditis has prosthetic cardiac material and a perivalvular abscess. Which organizational approach best reflects the WikiGuidelines clinical review for complex disease?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Treat every case within one specialty regardless of complications"
+            },
+            {
+              "id": "B",
+              "text": "Transfer every patient automatically because randomized trials prove a universal rule"
+            },
+            {
+              "id": "C",
+              "text": "Use microbiology alone without cardiac assessment"
+            },
+            {
+              "id": "D",
+              "text": "Coordinate infectious disease, pharmacy, cardiology and cardiac surgery expertise"
+            },
+            {
+              "id": "E",
+              "text": "Use an antibiotic-route decision to eliminate procedural assessment"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "The review describes a multidisciplinary team for complex endocarditis, with infectious disease, pharmacy, cardiology and cardiac surgery among the core disciplines. Evidence for team benefit is observational; a universal transfer rule is not established.",
+          "distractorExplanations": {
+            "A": "Prosthetic material and an abscess are complex features for coordinated expertise.",
+            "B": "The source reports no randomized evidence establishing a universal transfer rule.",
+            "C": "Microbiology alone does not cover the cardiac and procedural complications in this case.",
+            "E": "Changing medication route does not address the abscess or remove assessment for intervention."
+          },
+          "sectionIds": [
+            "multidisciplinary-care",
+            "negative-tte-boundary"
+          ],
+          "sourceIds": [
+            "wikiguidelines-endocarditis-2023-open"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Coordinate specialist expertise for endocarditis complicated by prosthetic material and abscess.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "metastatic-breast-cancer",
+      "name": "Metastatic breast cancer: resource-stratified study",
+      "aliases": [
+        "metastatic breast cancer",
+        "stage IV breast cancer",
+        "advanced breast cancer"
+      ],
+      "specialty": "Oncology and palliative care",
+      "domain": "chronic",
+      "keywords": [
+        "HR-positive",
+        "HER2",
+        "menopause",
+        "aromatase inhibitor",
+        "ovarian suppression",
+        "palliative care",
+        "CDK4/6",
+        "resource-constrained"
+      ],
+      "overview": "Original study excerpts from an ASCO guideline for adult metastatic breast cancer in resource-constrained settings. Focuses on biological assessment, endocrine eligibility and early palliative needs. This partial international module does not establish a current complete US systemic-treatment sequence.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "asco-metastatic-breast-2024-open",
+          "title": "Systemic Treatment of Patients With Metastatic Breast Cancer: ASCO Resource-Stratified Guideline",
+          "organization": "American Society of Clinical Oncology",
+          "url": "https://ascopubs.org/doi/10.1200/GO.23.00285",
+          "kind": "clinical-guideline",
+          "edition": "2024 resource-stratified guideline; DOI GO.23.00285",
+          "publishedDate": "2024-01-10",
+          "checkedAt": "2026-10-10",
+          "locator": "Exact article deposited in PMC10793992: Introduction; General Notes; First-Line — Hormone Receptor-Positive; copyright and license information.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "International Basic, Limited and Enhanced resource settings",
+          "limitations": "Adult metastatic disease in resource-constrained settings; explicitly not intended for Maximal settings. This is not a current complete US first-line or sequencing protocol. Molecular testing, treatment availability and clinical severity matter. The separate Q-and-A article with NC-ND terms is excluded; no figures or tables are reproduced.",
+          "attribution": "Al Sukhun S, Temin S, Barrios CH, et al. Systemic Treatment of Patients With Metastatic Breast Cancer: ASCO Resource-Stratified Guideline. JCO Global Oncology. 2024;10:e2300285. doi:10.1200/GO.23.00285. CC BY 4.0.",
+          "derivativeNotice": "Original abbreviated educational paraphrases and original fictional practice questions were created for StudyChat. Wording, selection and organization differ from the article. No complete text, table, figure, image or dose table is reproduced. No author or publisher endorsement is implied.",
+          "rights": {
+            "basis": "cc-by-4.0",
+            "policyUrl": "https://creativecommons.org/licenses/by/4.0/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "resource-scope-and-assessment",
+          "title": "Match metastatic treatment to biology, menopause and resources",
+          "text": "The ASCO resource-stratified guideline concerns adults with metastatic breast cancer in resource-constrained settings, not a complete Maximal-resource protocol. It advises treatment according to pathological and biomarker features when reliable testing is available, including hormone-receptor and HER2 status, and emphasizes menopausal assessment. Cases should be discussed with a multidisciplinary team. Resource-constrained alternatives must not be presented as a universally preferred United States regimen.",
+          "sourceIds": [
+            "asco-metastatic-breast-2024-open"
+          ],
+          "sourceLocator": "Introduction; General Notes 3 and 4; First-Line — Hormone Receptor-Positive."
+        },
+        {
+          "id": "palliative-at-presentation",
+          "title": "Palliative needs should be addressed at presentation",
+          "text": "ASCO’s resource-stratified metastatic-breast guideline calls for identifying and addressing palliative-care needs at presentation for all patients, including when antineoplastic treatment is unavailable. Symptom support and disease-directed treatment can be considered together; palliation is not confined to the moment all anticancer options are exhausted. This module does not supply opioid dosing or a complete supportive-care protocol.",
+          "sourceIds": [
+            "asco-metastatic-breast-2024-open"
+          ],
+          "sourceLocator": "The Bottom Line — General Notes, note 1: palliative-care needs at metastatic presentation, including no accessible antineoplastic intervention."
+        },
+        {
+          "id": "premenopausal-ai-boundary",
+          "title": "Aromatase inhibition in premenopausal disease needs ovarian suppression",
+          "text": "In the ASCO resource-stratified guideline, premenopausal patients can receive an aromatase inhibitor only with ovarian suppression or ablation. Menopausal status therefore affects endocrine-treatment selection. This is a specific eligibility principle, not a complete metastatic treatment choice: receptor status, contraindications, resources and the wider oncology assessment are still necessary.",
+          "sourceIds": [
+            "asco-metastatic-breast-2024-open"
+          ],
+          "sourceLocator": "General Notes, note 2; First-Line — Hormone Receptor-Positive, premenopausal recommendations."
+        },
+        {
+          "id": "hr-positive-resource-alternative",
+          "title": "When a recommended combination is unavailable, preserve an endocrine option",
+          "text": "For hormone-receptor-positive, HER2-negative metastatic disease in the resource-constrained settings addressed, ASCO recommends hormonal therapy alone when the nonsteroidal aromatase-inhibitor/CDK4/6-inhibitor combination is unavailable. Life-threatening or highly symptomatic disease has different considerations; the guideline discusses chemotherapy in that context. An availability-based alternative should not be mislabeled the universally best high-resource first-line regimen.",
+          "sourceIds": [
+            "asco-metastatic-breast-2024-open"
+          ],
+          "sourceLocator": "First-Line — Hormone Receptor-Positive: unavailable AI/CDK4/6 combination, hormonal monotherapy and life-threatening/highly symptomatic qualifications."
+        }
+      ],
+      "questions": [
+        {
+          "id": "metastatic-breast-cancer-q1",
+          "stem": "A fictional adult with newly evaluated metastatic breast cancer is being discussed in an ASCO resource-constrained setting. Reliable pathology and biomarker testing are available. Which information should guide treatment selection rather than using the same regimen for every tumor?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "The patient’s age alone"
+            },
+            {
+              "id": "B",
+              "text": "Menopausal status plus pathological and hormone-receptor/HER2 features"
+            },
+            {
+              "id": "C",
+              "text": "Medication price alone, regardless of tumor biology"
+            },
+            {
+              "id": "D",
+              "text": "The primary-tumor side alone"
+            },
+            {
+              "id": "E",
+              "text": "Whether symptoms have been present for an arbitrary number of weeks"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "ASCO recommends using reliable pathological and biomarker features, and menopausal status affects endocrine choices. The article concerns resource-constrained metastatic care rather than a universal Maximal-setting protocol.",
+          "distractorExplanations": {
+            "A": "Age alone does not replace menopausal and tumor-biological assessment.",
+            "C": "Resources matter but do not justify ignoring reliable tumor biology.",
+            "D": "Tumor side alone does not supply the biological selection framework.",
+            "E": "An arbitrary symptom duration does not replace the described assessment."
+          },
+          "sectionIds": [
+            "resource-scope-and-assessment"
+          ],
+          "sourceIds": [
+            "asco-metastatic-breast-2024-open"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Use tumor biology and menopausal status to frame metastatic-breast treatment selection.",
+          "difficulty": "application",
+          "examScope": "comparative-study"
+        },
+        {
+          "id": "metastatic-breast-cancer-q2",
+          "stem": "In a fictional study case in an ASCO resource-constrained setting, a premenopausal patient with hormone-receptor-positive disease is being considered for an aromatase inhibitor. Which accompanying intervention is required by the source’s eligibility principle?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No accompanying ovarian intervention"
+            },
+            {
+              "id": "B",
+              "text": "Empiric antibiotics"
+            },
+            {
+              "id": "C",
+              "text": "Routine radiation to every metastatic site"
+            },
+            {
+              "id": "D",
+              "text": "Ovarian suppression or ablation"
+            },
+            {
+              "id": "E",
+              "text": "Stopping all symptom-support measures"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "The guideline states that premenopausal patients receive aromatase inhibitors only with ovarian suppression or ablation. This principle does not establish the full regimen or drug sequence for every setting.",
+          "distractorExplanations": {
+            "A": "An aromatase inhibitor alone does not meet the stated premenopausal condition.",
+            "B": "Antibiotics do not supply the ovarian intervention in the source.",
+            "C": "Radiation to every metastatic site is not the required accompanying endocrine intervention.",
+            "E": "Symptom support is not replaced by endocrine-treatment selection."
+          },
+          "sectionIds": [
+            "premenopausal-ai-boundary"
+          ],
+          "sourceIds": [
+            "asco-metastatic-breast-2024-open"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize the ovarian-function boundary for aromatase inhibition in premenopausal disease.",
+          "difficulty": "application",
+          "examScope": "comparative-study"
+        },
+        {
+          "id": "metastatic-breast-cancer-q3",
+          "stem": "A fictional adult in an ASCO resource-constrained setting presents with metastatic breast cancer. Disease-directed therapy is being assessed. When does the ASCO resource-stratified guideline recommend addressing palliative-care needs?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Only after every anticancer drug has failed"
+            },
+            {
+              "id": "B",
+              "text": "Only when no oncology team is available"
+            },
+            {
+              "id": "C",
+              "text": "At presentation, alongside the other care assessments"
+            },
+            {
+              "id": "D",
+              "text": "Only after a fixed survival prediction is reached"
+            },
+            {
+              "id": "E",
+              "text": "Only if biomarker testing is unavailable"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Palliative needs should be addressed at metastatic presentation for all patients, including those without accessible antineoplastic therapy. Palliation can accompany disease-directed assessment.",
+          "distractorExplanations": {
+            "A": "The source does not require exhausting all anticancer therapy first.",
+            "B": "Availability of an oncology team does not remove palliative needs.",
+            "D": "A fixed survival estimate is not the stated entry criterion.",
+            "E": "Biomarker availability is not the criterion for withholding symptom support."
+          },
+          "sectionIds": [
+            "palliative-at-presentation"
+          ],
+          "sourceIds": [
+            "asco-metastatic-breast-2024-open"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Integrate palliative-needs assessment early in metastatic-breast study scenarios.",
+          "difficulty": "application",
+          "examScope": "comparative-study"
+        },
+        {
+          "id": "metastatic-breast-cancer-q4",
+          "stem": "A fictional postmenopausal adult has hormone-receptor-positive, HER2-negative metastatic breast cancer without life-threatening or highly symptomatic disease. In the resource-constrained setting described by ASCO, the AI/CDK4/6 combination is unavailable. What availability-based systemic-treatment option does this guideline preserve?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Hormonal therapy alone when otherwise appropriate"
+            },
+            {
+              "id": "B",
+              "text": "No treatment solely because the combination is unavailable"
+            },
+            {
+              "id": "C",
+              "text": "An HER2-targeted regimen selected regardless of HER2 status"
+            },
+            {
+              "id": "D",
+              "text": "Combination chemotherapy as a mandatory substitute for every patient"
+            },
+            {
+              "id": "E",
+              "text": "A regimen chosen without pathology or receptor information"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "For the resource-constrained setting addressed, ASCO preserves hormonal monotherapy when the AI/CDK4/6 combination is unavailable. The question excludes the severity qualifications that change the choice and does not define the best complete US high-resource regimen.",
+          "distractorExplanations": {
+            "B": "Unavailable combination therapy does not require abandoning all endocrine options.",
+            "C": "HER2-negative biology does not support selecting an HER2 regimen regardless of status.",
+            "D": "The source does not mandate combination chemotherapy for every stable HR-positive case.",
+            "E": "Reliable pathology and biomarker features remain part of selection."
+          },
+          "sectionIds": [
+            "hr-positive-resource-alternative",
+            "resource-scope-and-assessment"
+          ],
+          "sourceIds": [
+            "asco-metastatic-breast-2024-open"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Distinguish an availability-based endocrine alternative from a universal metastatic first-line claim.",
+          "difficulty": "application",
+          "examScope": "comparative-study"
+        }
+      ]
+    }
+  ]
+}

@@ -19,6 +19,7 @@ import { buildNaturalTutorPrompt, buildNaturalTutorSchema, validateNaturalDraft,
 import { isOperatorTitle, learnerState, preserveOperatorConversations } from './operator-conversations.js';
 import { createPremiumSpeechService, premiumSpeechText, splitPremiumSpeech, premiumVoice, PREMIUM_PREVIEW_TEXT, PremiumSpeechError } from './premium-speech.js';
 import { createConversationAudioService, conversationAudioId, CONVERSATION_AUDIO_LIMITS, ConversationAudioError } from './conversation-audio.js';
+import { publicEvidencePolicy } from '../shared/evidence-policy.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, timeZone: 'America/New_York', voiceEnabled: true, voiceId: 'marin', competencyRatings: {} });
@@ -437,7 +438,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           const studyList = curriculum?.list();
           const curriculumSummary = studyList ? { conditions: studyList.total, questions: studyList.questionCount, currentConditions: studyList.currentCount, formalGuidelineConditions: studyList.conditions.filter(condition => condition.formalGuideline).length } : null;
           const boardCatalog = boardPractice?.catalog();
-          return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: modelSelectionEnabled || ai.configured ? ai.model : null, modelWarning: ai.unavailableReason || null, modelSelectionEnabled, voiceEnabled, voiceModel: null, sourcedVoiceEnabled: curriculumEnabled, voiceMode: curriculumEnabled ? speech?.configured ? 'validated-openai-speech' : 'canonical-browser' : null, premiumSpeechEnabled: Boolean(speech?.configured), conversationAgentEnabled: Boolean(conversationAudio?.options().enabled), prohibitedModels: ['Astra'], curriculum: curriculumSummary, boardPractice: boardCatalog ? { questions: boardCatalog.questionCount, availableMixedSizes: boardCatalog.availableSizes } : null });
+          return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: modelSelectionEnabled || ai.configured ? ai.model : null, modelWarning: ai.unavailableReason || null, modelSelectionEnabled, voiceEnabled, voiceModel: null, sourcedVoiceEnabled: curriculumEnabled, voiceMode: curriculumEnabled ? speech?.configured ? 'validated-openai-speech' : 'canonical-browser' : null, premiumSpeechEnabled: Boolean(speech?.configured), conversationAgentEnabled: Boolean(conversationAudio?.options().enabled), prohibitedModels: ['Astra'], evidencePolicy: curriculumEnabled ? publicEvidencePolicy() : null, curriculum: curriculumSummary, boardPractice: boardCatalog ? { questions: boardCatalog.questionCount, availableMixedSizes: boardCatalog.availableSizes } : null });
         }
         if (req.method === 'POST' && path === '/api/login') {
           rateLimit(req, 'login', 8, 15 * 60000);
@@ -555,6 +556,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
         if (['/api/voice/session', '/api/voice/transcript', '/api/voice/stop'].includes(path)) fail(403, 'Unvalidated model-generated speech is disabled. Use sourced voice to hear the canonical study text returned by Coach; this app is for study only.');
         if (path === '/api/board-practice' || path.startsWith('/api/board-practice/')) {
           if (!boardPractice) fail(403, 'Original board practice is available in the personal study pilot. Commercial clinical review remains separate.');
+          if (req.method === 'GET' && path === '/api/board-practice/alignment') return json(res, 200, boardOperation(() => boardPractice.alignment()), { 'Content-Disposition': 'attachment; filename="family-medicine-blueprint-alignment.json"' });
           if (req.method === 'GET' && path === '/api/board-practice') {
             let active = null;
             let activeError;

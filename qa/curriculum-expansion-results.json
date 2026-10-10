@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-10T04:40:17.399Z",
+  "baselineCommit": "a8c0700a51a33c46190e31569026f2e6c7c5ca2a",
+  "baselineQuestions": 222,
+  "preservedLegacyFingerprints": 216,
+  "changedLegacyFingerprints": [
+    "alcohol-use-disorder:alcohol-use-disorder-q1",
+    "alcohol-use-disorder:alcohol-use-disorder-q2",
+    "migraine:migraine-q2",
+    "opioid-use-disorder:opioid-use-disorder-q1",
+    "tension-headache:tension-headache-q1",
+    "tension-headache:tension-headache-q2"
+  ],
+  "reason": "Stricter aggregate source budget now includes every distractor rationale. Two legacy VA PDF documents exceeded the existing concise 200-word budget; compress repeated original teaching/rationales without adding facts or inferred rights. Canonical span/replay/session fingerprints deliberately invalidate affected old items.",
+  "sourceReviewDatesRenewed": false,
+  "clinicalApprovalGranted": false,
+  "paidCalls": 0
+}

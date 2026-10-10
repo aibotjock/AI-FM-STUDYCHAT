@@ -1,0 +1,1881 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Exact-document editorial reuse allowances for original study teaching. Document rights are separate from medical freshness, clinician review, commercial activation and store publication.",
+  "documents": [
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/70/rr/rr7003a1.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-mmwr",
+      "policyUrl": "https://www.cdc.gov/mmwr/about.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/TREATMENT_EXPANSION.md",
+      "scope": "Original text-based study material; no logos, third-party content or clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/74/rr/rr7402a1.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-mmwr",
+      "policyUrl": "https://www.cdc.gov/mmwr/about.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/TREATMENT_EXPANSION.md",
+      "scope": "Original text-based study material; no logos, third-party content or clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/reproductive-health/glossary/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_FOUNDATIONS.md",
+      "scope": "CDC-authored definitions; original hypothetical arithmetic and vignettes only. U.S. reuse assessment, not global rights or clinical approval."
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/high-blood-pressure/diagnosis",
+      "organizations": [
+        "National Heart, Lung, and Blood Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/high-blood-pressure/symptoms",
+      "organizations": [
+        "National Heart, Lung, and Blood Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/blood-cholesterol/treatment",
+      "organizations": [
+        "National Heart, Lung, and Blood Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/professionals/clinical-tools-patient-management/diabetes/diabetes-prediabetes",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/prediabetes-insulin-resistance",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/type-1-diabetes",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/low-blood-glucose-hypoglycemia",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/diabetes/about/diabetic-ketoacidosis.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/hypothyroidism",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/hyperthyroidism",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/diagnostic-tests/thyroid",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/weight-management/adult-overweight-obesity/treatment",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/coronary-heart-disease/diagnosis",
+      "organizations": [
+        "National Heart, Lung, and Blood Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/heart-attack/symptoms",
+      "organizations": [
+        "National Heart, Lung, and Blood Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/heart-failure/living-with",
+      "organizations": [
+        "National Heart, Lung, and Blood Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/atrial-fibrillation/treatment",
+      "organizations": [
+        "National Heart, Lung, and Blood Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/venous-thromboembolism/treatment",
+      "organizations": [
+        "National Heart, Lung, and Blood Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/venous-thromboembolism/diagnosis",
+      "organizations": [
+        "National Heart, Lung, and Blood Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/tests-diagnosis",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/keeping-kidneys-safe",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones/diagnosis",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/diagnosis",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis/treatment",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/prostate-problems/enlarged-prostate-benign-prostatic-hyperplasia",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take",
+      "organizations": [
+        "National Institute of Arthritis and Musculoskeletal and Skin Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niams.nih.gov/disclaimer",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_CARDIOMETABOLIC.md",
+      "scope": "Agency-authored text checked individually; original study paraphrases and fictional questions only. Excludes media, marks, third-party content, global rights and clinical approval."
+    },
+    {
+      "url": "https://onlinelibrary.wiley.com/doi/10.1111/jpc.70144",
+      "organizations": [
+        "Paediatric Research in Emergency Departments International Collaborative (PREDICT) Network"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "cc-by-4.0",
+      "policyUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact article text under CC BY 4.0, attribution and changes notice required. Excludes separately credited third-party materials, tables/figures, clinical approval and any inference of US guideline equivalence."
+    },
+    {
+      "url": "https://www.scielo.br/j/jbpneu/a/WTTJ9tSyCNfwdPpK33DLV5R/?format=html&lang=en",
+      "organizations": [
+        "Jornal Brasileiro de Pneumologia"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "cc-by-4.0",
+      "policyUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact article text under CC BY 4.0, attribution and changes notice required. Excludes separately credited third-party materials, tables/figures, clinical approval and any inference of US guideline equivalence."
+    },
+    {
+      "url": "https://newsinhealth.nih.gov/2025/09/tension-headaches-migraine-more",
+      "organizations": [
+        "National Institutes of Health (NIH News in Health)"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://newsinhealth.nih.gov/about-us",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/stroke/signs-symptoms/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://medlineplus.gov/transientischemicattack.html",
+      "organizations": [
+        "National Library of Medicine (MedlinePlus)"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/epilepsy/first-aid-for-seizures/",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nidcd.nih.gov/health/balance-disorders",
+      "organizations": [
+        "National Institute on Deafness and Other Communication Disorders"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nidcd.nih.gov/policies",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://medlineplus.gov/alzheimersdisease.html",
+      "organizations": [
+        "National Library of Medicine (MedlinePlus)"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://medlineplus.gov/delirium.html",
+      "organizations": [
+        "National Library of Medicine (MedlinePlus)"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/MH/mdd/VADODMDDCPG_ProviderSummary_Final_508_updated.pdf",
+      "organizations": [
+        "US Department of Veterans Affairs / Department of Defense"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://department.va.gov/copyright-policy/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nimh.nih.gov/health/publications/generalized-anxiety-disorder-gad",
+      "organizations": [
+        "National Institute of Mental Health"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nimh.nih.gov/site-info/policies",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nimh.nih.gov/health/publications/bipolar-disorder",
+      "organizations": [
+        "National Institute of Mental Health"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nimh.nih.gov/site-info/policies",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/MH/ptsd/VA-DOD-CPG-PTSD-Provider-Summary.pdf",
+      "organizations": [
+        "US Department of Veterans Affairs / Department of Defense"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://department.va.gov/copyright-policy/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://medlineplus.gov/alcoholusedisorderaud.html",
+      "organizations": [
+        "National Library of Medicine (MedlinePlus)"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/overdose-prevention/treatment/opioid-use-disorder.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/CD/insomnia/I-OSA-CPG_2025-Provider-Summary_final_20250422.pdf",
+      "organizations": [
+        "US Department of Veterans Affairs / Department of Defense"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://department.va.gov/copyright-policy/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/Pain/lbp/VADODLBPCPGProviderSummaryFinal508.pdf",
+      "organizations": [
+        "US Department of Veterans Affairs / Department of Defense"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://department.va.gov/copyright-policy/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/CD/OA/Osteoarthritis-CPG_2026-Provider-Summary_final_20260618.pdf",
+      "organizations": [
+        "US Department of Veterans Affairs / Department of Defense"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://department.va.gov/copyright-policy/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/osteoporosis/diagnosis-treatment-and-steps-to-take",
+      "organizations": [
+        "National Institute of Arthritis and Musculoskeletal and Skin Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niams.nih.gov/disclaimer",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/rheumatoid-arthritis/diagnosis-treatment-and-steps-to-take",
+      "organizations": [
+        "National Institute of Arthritis and Musculoskeletal and Skin Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niams.nih.gov/disclaimer",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://medlineplus.gov/carpaltunnelsyndrome.html",
+      "organizations": [
+        "National Library of Medicine (MedlinePlus)"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/acne/diagnosis-treatment-and-steps-to-take",
+      "organizations": [
+        "National Institute of Arthritis and Musculoskeletal and Skin Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niams.nih.gov/disclaimer",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/atopic-dermatitis/diagnosis-treatment-and-steps-to-take",
+      "organizations": [
+        "National Institute of Arthritis and Musculoskeletal and Skin Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niams.nih.gov/disclaimer",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/psoriasis",
+      "organizations": [
+        "National Institute of Arthritis and Musculoskeletal and Skin Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niams.nih.gov/disclaimer",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://medlineplus.gov/cellulitis.html",
+      "organizations": [
+        "National Library of Medicine (MedlinePlus)"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_NEURO_MSK_DERM.md",
+      "scope": "Specifically reviewed agency-authored text. Excludes third-party instruments, tables, figures, assets, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/sites/default/files/publications/Asthma%20Clinicians%20Guide%20508_02-03-21.pdf",
+      "organizations": [
+        "National Heart, Lung, and Blood Institute / NAEPP"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health-topics/asthma-management-guidelines-2020-updates/faqs",
+      "organizations": [
+        "National Heart, Lung, and Blood Institute"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/copd/about/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/pneumonia/diagnosis",
+      "organizations": [
+        "National Heart, Lung, and Blood Institute"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/adult-outpatient.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/acute-bronchitis/about/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/covid/hcp/clinical-care/outpatient-treatment.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.fda.gov/drugs/drug-safety-communications/fda-requires-boxed-warning-about-serious-mental-health-side-effects-asthma-and-allergy-drug",
+      "organizations": [
+        "US Food and Drug Administration"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.fda.gov/about-fda/about-website/website-policies",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/tb/hcp/clinical-overview/latent-tuberculosis-infection.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/tb/hcp/testing-diagnosis/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/pediatric-outpatient.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/healthy-swimming/prevention/preventing-swimmers-ear.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/eating-diet-nutrition",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/treatment",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/treatment",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome/diagnosis",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome/treatment",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/constipation/symptoms-causes",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/constipation/treatment",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/viral-gastroenteritis/treatment",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/norovirus/prevention/",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gallstones/treatment",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/treatment",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/eating-diet-nutrition",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/appendicitis/treatment",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/hepatitis-c/hcp/diagnosis-testing/",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/hcv.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/hepatitis-b/hcp/diagnosis-testing/",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/hivnexus/hcp/diagnosis-testing/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/hiv.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/tobacco/hcp/patient-care-settings/clinical.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/epididymitis.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/scabies/hcp/clinical-care/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/scabies/prevention/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/lice/treatment/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/ringworm/treatment/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_RESPIRATORY.md",
+      "scope": "Individually read agency-authored text, original study paraphrases and fictional questions. Excludes third-party material, graphics, marks, global rights and clinical approval."
+    },
+    {
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2825634",
+      "organizations": [
+        "WikiGuidelines Group / JAMA Network Open"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "cc-by-unversioned",
+      "policyUrl": "https://jamanetwork.com/pages/cc-by-license-permissions",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/LICENSED_GUIDELINE_EXPANSION.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://link.springer.com/article/10.1007/s11657-025-01588-3",
+      "organizations": [
+        "National Osteoporosis Guideline Group / Archives of Osteoporosis"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "cc-by-4.0",
+      "policyUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/LICENSED_GUIDELINE_EXPANSION.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.nichd.nih.gov/health/topics/menstruation/conditioninfo/diagnosed",
+      "organizations": [
+        "Eunice Kennedy Shriver National Institute of Child Health and Human Development"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nichd.nih.gov/disclaimer",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.nhlbi.nih.gov/health/anemia/iron-deficiency-anemia",
+      "organizations": [
+        "National Heart, Lung, and Blood Institute"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.nichd.nih.gov/health/topics/pcos/conditioninfo/treatments",
+      "organizations": [
+        "Eunice Kennedy Shriver National Institute of Child Health and Human Development"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nichd.nih.gov/disclaimer",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://medlineplus.gov/menopause.html",
+      "organizations": [
+        "National Library of Medicine, MedlinePlus"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.nichd.nih.gov/health/topics/endometri/conditioninfo/diagnose",
+      "organizations": [
+        "Eunice Kennedy Shriver National Institute of Child Health and Human Development"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nichd.nih.gov/disclaimer",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/pid.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cancer.gov/types/cervical/screening/abnormal-hpv-pap-test-results",
+      "organizations": [
+        "National Cancer Institute"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cancer.gov/policies/copyright-reuse",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://ascopubs.org/doi/10.1200/GO.22.00217",
+      "organizations": [
+        "American Society of Clinical Oncology"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "cc-by-4.0",
+      "policyUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/LICENSED_GUIDELINE_EXPANSION.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://medlineplus.gov/diabetesandpregnancy.html",
+      "organizations": [
+        "National Library of Medicine, MedlinePlus"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.nichd.nih.gov/health/topics/preeclampsia/conditioninfo",
+      "organizations": [
+        "Eunice Kennedy Shriver National Institute of Child Health and Human Development"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nichd.nih.gov/disclaimer",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://medlineplus.gov/ectopicpregnancy.html",
+      "organizations": [
+        "National Library of Medicine, MedlinePlus"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/bv.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/p-and-s-syphilis.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/syphilis.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/adhd/hcp/clinical-care/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/urinary-tract-infections-in-children/treatment",
+      "organizations": [
+        "National Institute of Diabetes and Digestive and Kidney Diseases"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niddk.nih.gov/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/",
+      "organizations": [
+        "National Institutes of Health, Office of Dietary Supplements"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.nih.gov/about-nih/frequently-asked-questions",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-best-practices/preventing-managing-adverse-reactions.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://medlineplus.gov/lab-tests/autonomic-testing/",
+      "organizations": [
+        "National Library of Medicine, MedlinePlus"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://medlineplus.gov/pressuresores.html",
+      "organizations": [
+        "National Library of Medicine, MedlinePlus"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/shingles/hcp/vaccine-considerations/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/chickenpox/php/laboratories/index.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/QUESTION_EXPANSION_WOMEN_CHILDREN.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2792124",
+      "organizations": [
+        "WikiGuidelines Group / JAMA Network Open"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "cc-by-unversioned",
+      "policyUrl": "https://jamanetwork.com/pages/cc-by-license-permissions",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/LICENSED_GUIDELINE_EXPANSION.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2807791",
+      "organizations": [
+        "WikiGuidelines Group / JAMA Network Open"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "cc-by-unversioned",
+      "policyUrl": "https://jamanetwork.com/pages/cc-by-license-permissions",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/LICENSED_GUIDELINE_EXPANSION.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://ascopubs.org/doi/10.1200/GO.23.00285",
+      "organizations": [
+        "American Society of Clinical Oncology"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "cc-by-4.0",
+      "policyUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/LICENSED_GUIDELINE_EXPANSION.md",
+      "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    }
+  ]
+}

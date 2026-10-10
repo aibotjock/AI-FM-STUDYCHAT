@@ -46,6 +46,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Types of Headaches",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "migraine-gov-expansion-20261010",
+          "title": "Tension Headaches, Migraine, and More",
+          "organization": "National Institutes of Health (NIH News in Health)",
+          "url": "https://newsinhealth.nih.gov/2025/09/tension-headaches-migraine-more",
+          "kind": "official-clinical-reference",
+          "edition": "September 2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "September 2025; Trying Treatments",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://newsinhealth.nih.gov/about-us",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -60,7 +78,7 @@
         {
           "id": "acute-treatment",
           "title": "Acute treatment",
-          "text": "VA/DoD recommends specified triptans, including sumatriptan, for an acute migraine attack; selection requires checking contraindications.",
+          "text": "VA/DoD recommends specified triptans, including sumatriptan, for acute migraine; check contraindications.",
           "sourceIds": [
             "migraine-va2023"
           ]
@@ -68,9 +86,17 @@
         {
           "id": "secondary-warning",
           "title": "Secondary headache warnings",
-          "text": "Thunderclap onset, focal neurologic findings, fever, papilledema, or major pattern change require assessment for secondary causes.",
+          "text": "Thunderclap onset, focal neurologic findings, fever, papilledema, or major pattern change warrant secondary-cause assessment.",
           "sourceIds": [
             "migraine-va2023"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "Frequent headache painkiller use can contribute to rebound headache. Preventive treatment aims to reduce attacks rather than only relieve an attack already underway.",
+          "sourceIds": [
+            "migraine-gov-expansion-20261010"
           ]
         }
       ],
@@ -144,12 +170,12 @@
             }
           ],
           "correctChoiceId": "B",
-          "explanation": "Sumatriptan is an acute migraine option in Recommendation 19.",
+          "explanation": "Recommendation 19 supports sumatriptan for acute migraine.",
           "distractorExplanations": {
             "A": "Not an acute migraine option.",
-            "C": "Not a listed migraine abortive.",
-            "D": "No infection is described.",
-            "E": "Not a migraine treatment."
+            "C": "Not listed.",
+            "D": "No infection described.",
+            "E": "Not migraine treatment."
           },
           "sectionIds": [
             "acute-treatment"
@@ -159,6 +185,92 @@
           ],
           "domain": "acute",
           "learningObjective": "Distinguish acute migraine therapy from unrelated drugs.",
+          "difficulty": "application"
+        },
+        {
+          "id": "migraine-q3",
+          "stem": "A learner reviews a fictional patient with established migraine who now takes headache painkillers most days and has increasingly frequent headaches. Which issue deserves assessment before simply increasing rescue use?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Possible medication-related rebound headache"
+            },
+            {
+              "id": "B",
+              "text": "Increase the number of rescue-medication days"
+            },
+            {
+              "id": "C",
+              "text": "Assess only whether each rescue dose reduces pain"
+            },
+            {
+              "id": "D",
+              "text": "Change the rescue product without reviewing use frequency"
+            },
+            {
+              "id": "E",
+              "text": "Defer medication-use review until preventive treatment fails"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "NIH describes rebound headache with frequent painkiller use; increasing rescue use without reassessment does not address that concern.",
+          "distractorExplanations": {
+            "B": "That change misses the cited concern about frequent painkiller use.",
+            "C": "Acute relief alone does not assess increasing use and headache frequency.",
+            "D": "The cited concern involves frequency, which a product switch alone misses.",
+            "E": "The described frequent use already warrants review of rebound headache."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "migraine-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Assess frequent headache medication use.",
+          "difficulty": "application"
+        },
+        {
+          "id": "migraine-q4",
+          "stem": "A fictional patient with established migraine has frequent attacks despite relief of individual episodes. Which discussion addresses reducing future attacks rather than only treating current pain?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Review only medication used once an attack has started"
+            },
+            {
+              "id": "B",
+              "text": "Discuss preventive treatment with the treating clinician"
+            },
+            {
+              "id": "C",
+              "text": "Increase as-needed rescue use without discussing prevention"
+            },
+            {
+              "id": "D",
+              "text": "Wait for the next attack to reassess current pain"
+            },
+            {
+              "id": "E",
+              "text": "Change only the timing of the acute rescue dose"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Preventive treatment seeks to reduce future migraine attacks; acute relief alone does not answer the frequency problem.",
+          "distractorExplanations": {
+            "A": "This addresses acute relief rather than the stated prevention goal.",
+            "C": "This remains an acute-only approach and omits attack prevention.",
+            "D": "The question asks about future attack frequency, not current pain.",
+            "E": "Dose timing alone does not answer the preventive-treatment question."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "migraine-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Distinguish migraine prevention from acute relief.",
           "difficulty": "application"
         }
       ]
@@ -207,13 +319,31 @@
           "checkedAt": "2026-10-09",
           "locator": "Types of Headaches",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "tension-headache-gov-expansion-20261010",
+          "title": "Tension Headaches, Migraine, and More",
+          "organization": "National Institutes of Health (NIH News in Health)",
+          "url": "https://newsinhealth.nih.gov/2025/09/tension-headaches-migraine-more",
+          "kind": "official-clinical-reference",
+          "edition": "September 2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "September 2025; Types of Headaches; Trying Treatments",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://newsinhealth.nih.gov/about-us",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
         {
           "id": "pattern",
           "title": "Clinical pattern",
-          "text": "Tension-type headaches often feel like bilateral pressure, remain mild to moderate, and do not worsen with routine activity. Nausea and vomiting are absent; stress and poor sleep may contribute.",
+          "text": "Tension-type headache is often mild to moderate bilateral pressure, not worsened by routine activity, without nausea or vomiting. Stress and poor sleep may contribute.",
           "sourceIds": [
             "tension-va2023",
             "tension-nih2025"
@@ -222,7 +352,7 @@
         {
           "id": "prevention",
           "title": "Chronic prevention",
-          "text": "VA/DoD suggests amitriptyline for chronic tension-type headache prevention, after considering adverse effects and individual risks.",
+          "text": "VA/DoD suggests amitriptyline for chronic tension-type prevention; consider adverse effects and risks.",
           "sourceIds": [
             "tension-va2023"
           ]
@@ -230,9 +360,17 @@
         {
           "id": "reassessment",
           "title": "Reassessment",
-          "text": "Review headache frequency and medication use. New abrupt severe pain or neurologic changes should prompt secondary-headache evaluation.",
+          "text": "Review frequency and medication use; abrupt severe pain or neurologic changes warrant secondary-headache evaluation.",
           "sourceIds": [
             "tension-va2023"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "A headache diary can record timing, duration, treatment, sleep, stress, and possible triggers. Stress, inadequate sleep, dehydration, and posture can contribute to tension-type headache.",
+          "sourceIds": [
+            "tension-headache-gov-expansion-20261010"
           ]
         }
       ],
@@ -263,10 +401,10 @@
             }
           ],
           "correctChoiceId": "D",
-          "explanation": "Bilateral pressing pain without activity aggravation or nausea favors tension-type headache.",
+          "explanation": "Bilateral pressure without nausea or activity aggravation favors tension-type.",
           "distractorExplanations": {
-            "A": "Severe clustered attacks are not described.",
-            "B": "Aura and typical migraine-associated features are absent.",
+            "A": "No severe clustered attacks.",
+            "B": "No aura or typical migraine-associated features.",
             "C": "No brief focal facial attacks.",
             "E": "No abrupt severe emergency pattern."
           },
@@ -311,7 +449,7 @@
           "distractorExplanations": {
             "A": "Not headache prevention.",
             "B": "Not headache prevention.",
-            "D": "Not the guideline's suggested TTH preventive.",
+            "D": "Not suggested here.",
             "E": "Not headache prevention."
           },
           "sectionIds": [
@@ -322,6 +460,92 @@
           ],
           "domain": "chronic",
           "learningObjective": "Identify a supported chronic tension-type preventive.",
+          "difficulty": "application"
+        },
+        {
+          "id": "tension-headache-q3",
+          "stem": "An adult in a study vignette has recurrent tension-type headaches but cannot identify a pattern. Which follow-up tool best helps characterize possible triggers and treatment response?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Track only headache severity without timing or context"
+            },
+            {
+              "id": "B",
+              "text": "Track only the number of pain-reliever tablets used"
+            },
+            {
+              "id": "C",
+              "text": "Record headache timing, duration, treatment, sleep, and stress"
+            },
+            {
+              "id": "D",
+              "text": "Track sleep duration without recording headache episodes"
+            },
+            {
+              "id": "E",
+              "text": "Recall only the most severe episode at the next visit"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "NIH recommends a headache diary that captures symptoms, timing, treatment, and context to identify patterns.",
+          "distractorExplanations": {
+            "A": "Severity alone omits trigger and treatment information needed here.",
+            "B": "Medication count alone does not characterize symptom context or response.",
+            "D": "Sleep may matter, but this does not link sleep to headache patterns.",
+            "E": "Retrospective recall of one episode misses the recurring pattern."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "tension-headache-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Use a headache diary to characterize patterns.",
+          "difficulty": "application"
+        },
+        {
+          "id": "tension-headache-q4",
+          "stem": "A fictional patient has tension-type headaches during weeks of poor sleep, little fluid intake, and prolonged desk work. Which counseling topic is supported alongside appropriate clinical review?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Focus only on increasing acute pain-reliever use"
+            },
+            {
+              "id": "B",
+              "text": "Review only medication brand preference"
+            },
+            {
+              "id": "C",
+              "text": "Attribute the headaches to desk posture alone"
+            },
+            {
+              "id": "D",
+              "text": "Review sleep, hydration, stress, and posture"
+            },
+            {
+              "id": "E",
+              "text": "Wait for headaches to become constant before reviewing habits"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "NIH identifies these modifiable contributors to tension-type headache; the vignette does not establish an infectious cause.",
+          "distractorExplanations": {
+            "A": "This does not assess the described modifiable contributors.",
+            "B": "Product preference does not address sleep, hydration, stress, or posture.",
+            "C": "NIH describes several possible contributors; the case includes more than posture.",
+            "E": "The recurrent pattern already provides relevant contributors to review."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "tension-headache-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Identify modifiable tension-headache contributors.",
           "difficulty": "application"
         }
       ]
@@ -372,6 +596,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Signs and symptoms; When to seek emergency help",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "ischemic-stroke-gov-expansion-20261010",
+          "title": "Signs and Symptoms of Stroke",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/stroke/signs-symptoms/index.html",
+          "kind": "official-clinical-reference",
+          "edition": "May 19, 2026",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "May 19, 2026; B.E.F.A.S.T.; What to do if you think someone is having a stroke",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -397,6 +639,14 @@
           "text": "A low NIHSS score alone does not exclude thrombolysis when deficits are disabling. Non-disabling deficits follow a different treatment pathway.",
           "sourceIds": [
             "stroke-aha2026"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "When stroke symptoms appear, note their onset and activate emergency services promptly. CDC advises ambulance transport rather than driving oneself or arranging a private ride.",
+          "sourceIds": [
+            "ischemic-stroke-gov-expansion-20261010"
           ]
         }
       ],
@@ -487,6 +737,92 @@
           "domain": "emergent",
           "learningObjective": "Apply the 2026 early thrombolysis recommendation.",
           "difficulty": "application"
+        },
+        {
+          "id": "ischemic-stroke-q3",
+          "stem": "A fictional patient develops sudden facial weakness and abnormal speech while a family member watches. Emergency services are being called. Which additional information should the family record immediately?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "The time emergency personnel are expected to arrive"
+            },
+            {
+              "id": "B",
+              "text": "The time the symptoms will be reassessed"
+            },
+            {
+              "id": "C",
+              "text": "The time of the most recent routine neurologic examination"
+            },
+            {
+              "id": "D",
+              "text": "The time of the next scheduled medical visit"
+            },
+            {
+              "id": "E",
+              "text": "The time the symptoms first appeared"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "CDC advises noting symptom onset because the timing informs emergency treatment decisions.",
+          "distractorExplanations": {
+            "A": "Arrival time does not establish when symptoms began.",
+            "B": "A planned reassessment time does not establish onset.",
+            "C": "The observed acute onset is the information asked for here.",
+            "D": "The future appointment does not define the current symptom onset."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "ischemic-stroke-gov-expansion-20261010"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Record observed stroke symptom onset.",
+          "difficulty": "application"
+        },
+        {
+          "id": "ischemic-stroke-q4",
+          "stem": "In a study vignette, an adult suddenly develops unilateral weakness and trouble speaking. A relative proposes driving to the emergency department. Which transport plan is recommended by CDC?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Call emergency services for ambulance transport"
+            },
+            {
+              "id": "B",
+              "text": "Have the patient drive directly to the hospital"
+            },
+            {
+              "id": "C",
+              "text": "Have the relative arrange private transport after observation"
+            },
+            {
+              "id": "D",
+              "text": "Call the usual clinic first and await a routine callback"
+            },
+            {
+              "id": "E",
+              "text": "Arrange transport only if the symptoms persist"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "CDC recommends calling 911 and using an ambulance so emergency personnel can begin care en route.",
+          "distractorExplanations": {
+            "B": "CDC advises ambulance transport rather than the affected patient driving.",
+            "C": "This adds observation rather than the recommended immediate emergency response.",
+            "D": "Waiting for a routine callback does not provide the advised emergency transport.",
+            "E": "CDC advises an immediate emergency response to stroke symptoms."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "ischemic-stroke-gov-expansion-20261010"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Choose emergency transport for suspected stroke.",
+          "difficulty": "application"
         }
       ]
     },
@@ -535,6 +871,24 @@
           "checkedAt": "2026-10-09",
           "locator": "What should I do to treat a transient ischemic attack?",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "transient-ischemic-attack-gov-expansion-20261010",
+          "title": "Transient Ischemic Attack — MedlinePlus Health Topic Summary",
+          "organization": "National Library of Medicine (MedlinePlus)",
+          "url": "https://medlineplus.gov/transientischemicattack.html",
+          "kind": "official-clinical-reference",
+          "edition": "Summary",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Summary; mechanism and future stroke risk",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -560,6 +914,14 @@
           "text": "Disposition combines neurologic evaluation and vessel imaging with risk assessment. Early neurology input is preferable to a score alone.",
           "sourceIds": [
             "tia-aha2023"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "TIA involves a temporary interruption of blood supply to part of the brain and can warn of future stroke. After urgent assessment, prevention includes managing blood pressure and cholesterol and supporting a healthy lifestyle.",
+          "sourceIds": [
+            "transient-ischemic-attack-gov-expansion-20261010"
           ]
         }
       ],
@@ -649,6 +1011,92 @@
           "domain": "emergent",
           "learningObjective": "Choose sensitive tissue imaging in suspected TIA.",
           "difficulty": "application"
+        },
+        {
+          "id": "transient-ischemic-attack-q3",
+          "stem": "A fictional patient has completed urgent assessment after a brief episode of unilateral weakness and is diagnosed with TIA. Which mechanism best explains the transient episode?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Progressive loss of cortical neurons over years"
+            },
+            {
+              "id": "B",
+              "text": "Briefly blocked blood supply to part of the brain"
+            },
+            {
+              "id": "C",
+              "text": "An episode of abnormal electrical activity in the brain"
+            },
+            {
+              "id": "D",
+              "text": "Compression of a peripheral nerve outside the brain"
+            },
+            {
+              "id": "E",
+              "text": "A disturbance originating in the inner-ear balance system"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "The MedlinePlus summary describes a brief blockage of brain blood supply; the alternatives are not established mechanisms for this vignette.",
+          "distractorExplanations": {
+            "A": "The cited TIA explanation is a brief interruption of brain blood supply.",
+            "C": "The supplied diagnosis is TIA, with the cited transient ischemic mechanism.",
+            "D": "The source locates TIA’s mechanism in brain blood supply.",
+            "E": "The diagnosed event is explained by transient cerebral blood-supply interruption."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "transient-ischemic-attack-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Explain the transient ischemic mechanism.",
+          "difficulty": "application"
+        },
+        {
+          "id": "transient-ischemic-attack-q4",
+          "stem": "After urgent evaluation for TIA in a study case, a patient asks what can reduce future stroke risk. Which ongoing plan is supported by the cited summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Review lifestyle habits but omit blood pressure and cholesterol"
+            },
+            {
+              "id": "B",
+              "text": "Review medications but omit smoking and activity habits"
+            },
+            {
+              "id": "C",
+              "text": "Address blood pressure, cholesterol, smoking, diet, and activity"
+            },
+            {
+              "id": "D",
+              "text": "Focus only on whether neurologic symptoms recur"
+            },
+            {
+              "id": "E",
+              "text": "Delay prevention planning until another episode occurs"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "MedlinePlus links TIA with future stroke risk and supports managing vascular risk factors and healthy habits.",
+          "distractorExplanations": {
+            "A": "The cited prevention plan includes management of both vascular risks.",
+            "B": "The cited plan also includes healthy lifestyle measures.",
+            "D": "Symptom surveillance alone omits the described risk-reduction measures.",
+            "E": "The evaluated TIA already signals a reason to address future stroke risk."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "transient-ischemic-attack-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Identify prevention priorities after evaluated TIA.",
+          "difficulty": "application"
         }
       ]
     },
@@ -709,6 +1157,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Everyday strategies: Understand epilepsy and your treatment; Manage your seizures",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "epilepsy-gov-expansion-20261010",
+          "title": "First Aid for Seizures",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/epilepsy/first-aid-for-seizures/",
+          "kind": "official-clinical-reference",
+          "edition": "May 15, 2024",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "May 15, 2024; keeping someone safe; when to call 911",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -734,6 +1200,14 @@
           "text": "Take antiseizure medicine as prescribed, discuss other drugs and supplements with the clinician, and track seizures and potential triggers.",
           "sourceIds": [
             "epilepsy-cdc-manage2024"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "Seizure first aid includes clearing hazards, cushioning the head, and gently positioning the person on their side when appropriate. Do not restrain them or put objects in their mouth. A first-ever seizure warrants emergency help. Food or water should wait until full alertness returns.",
+          "sourceIds": [
+            "epilepsy-gov-expansion-20261010"
           ]
         }
       ],
@@ -823,6 +1297,92 @@
           "domain": "chronic",
           "learningObjective": "Use adherence and tracking in epilepsy self-management",
           "difficulty": "application"
+        },
+        {
+          "id": "epilepsy-q3",
+          "stem": "During a simulated generalized convulsive seizure, a bystander reaches for a spoon to put between the person’s teeth. Which action best follows CDC first aid?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Insert a soft object between the teeth"
+            },
+            {
+              "id": "B",
+              "text": "Hold the limbs firmly to stop the movements"
+            },
+            {
+              "id": "C",
+              "text": "Offer water as soon as the movements slow"
+            },
+            {
+              "id": "D",
+              "text": "Keep objects out of the mouth, clear hazards, and cushion the head"
+            },
+            {
+              "id": "E",
+              "text": "Prioritize opening the jaw instead of clearing nearby hazards"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "CDC advises against mouth objects and restraint and recommends protecting the person from nearby hazards.",
+          "distractorExplanations": {
+            "A": "CDC advises against placing any object in the mouth.",
+            "B": "CDC advises against restraining the person.",
+            "C": "CDC advises waiting until full alertness before food or water.",
+            "E": "Mouth manipulation is not the recommended protective first-aid action."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "epilepsy-gov-expansion-20261010"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Apply safe first aid during convulsions.",
+          "difficulty": "application"
+        },
+        {
+          "id": "epilepsy-q4",
+          "stem": "A fictional adult has a first-ever convulsive seizure lasting two minutes and begins waking afterward. No established seizure disorder is known. Which response is supported even though five minutes were not reached?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Observe without calling solely because the event lasted under five minutes"
+            },
+            {
+              "id": "B",
+              "text": "Wait for a second event before requesting emergency help"
+            },
+            {
+              "id": "C",
+              "text": "Arrange routine follow-up only after the person returns to baseline"
+            },
+            {
+              "id": "D",
+              "text": "Treat the short event as an established familiar seizure pattern"
+            },
+            {
+              "id": "E",
+              "text": "Call emergency services because this was a first-ever seizure"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "CDC includes a first-ever seizure among indications for calling 911; duration is not the only criterion.",
+          "distractorExplanations": {
+            "A": "First-ever seizure is a separate CDC criterion for emergency help.",
+            "B": "The first-ever event itself meets the cited criterion.",
+            "C": "Return toward baseline does not remove the first-ever-event criterion.",
+            "D": "The vignette supplies no established seizure disorder or familiar pattern."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "epilepsy-gov-expansion-20261010"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Recognize a seizure emergency beyond duration.",
+          "difficulty": "application"
         }
       ]
     },
@@ -860,6 +1420,24 @@
           "checkedAt": "2026-10-09",
           "locator": "What are some types of balance disorders?; How are balance disorders treated?; How can I help my doctor make a diagnosis?",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "benign-positional-vertigo-gov-expansion-20261010",
+          "title": "Balance Disorders",
+          "organization": "National Institute on Deafness and Other Communication Disorders",
+          "url": "https://www.nidcd.nih.gov/health/balance-disorders",
+          "kind": "official-clinical-reference",
+          "edition": "Updated March 6, 2018",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Updated March 6, 2018; types; treatment and injury prevention",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.nidcd.nih.gov/policies",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -885,6 +1463,14 @@
           "text": "A trained clinician may use an Epley maneuver to relocate displaced particles in BPPV. Some people need more than one treatment session.",
           "sourceIds": [
             "bppv-nidcd"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "Vertigo with hearing loss, tinnitus, and ear fullness warrants assessment for another balance disorder, including Ménière disease. Balance problems also require attention to falls, lighting, handrails, and mobility support. NIDCD separately describes vestibular neuronitis mainly as vertigo, labyrinthitis as inner-ear inflammation/infection, and Mal de Debarquement as rocking after travel.",
+          "sourceIds": [
+            "benign-positional-vertigo-gov-expansion-20261010"
           ]
         }
       ],
@@ -974,6 +1560,92 @@
           "domain": "acute",
           "learningObjective": "Identify a particle-repositioning intervention",
           "difficulty": "application"
+        },
+        {
+          "id": "benign-positional-vertigo-q3",
+          "stem": "A study case initially labeled BPPV now includes hearing loss, tinnitus, and a feeling of fullness in one ear during vertigo episodes. Which alternative is specifically described by NIDCD?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Ménière disease"
+            },
+            {
+              "id": "B",
+              "text": "BPPV without revisiting the diagnosis"
+            },
+            {
+              "id": "C",
+              "text": "Vestibular neuronitis"
+            },
+            {
+              "id": "D",
+              "text": "Labyrinthitis"
+            },
+            {
+              "id": "E",
+              "text": "Mal de Debarquement syndrome"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "NIDCD describes this cluster with Ménière disease; a prior BPPV label should not prevent reassessment.",
+          "distractorExplanations": {
+            "B": "The additional hearing-loss, tinnitus, and fullness cluster warrants reassessment.",
+            "C": "The cited neuronitis description centers on vertigo rather than this ear-symptom cluster.",
+            "D": "Ménière disease is the specific match for the cited combined ear symptoms.",
+            "E": "NIDCD describes rocking after travel rather than this combined ear-symptom pattern."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "benign-positional-vertigo-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Use associated ear symptoms in vertigo reassessment.",
+          "difficulty": "application"
+        },
+        {
+          "id": "benign-positional-vertigo-q4",
+          "stem": "A fictional older adult with a diagnosed balance disorder nearly falls when walking to the bathroom in darkness. Which additional plan is supported alongside condition-specific treatment?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Focus only on repeating the condition-specific maneuver"
+            },
+            {
+              "id": "B",
+              "text": "Improve lighting and handrails and assess mobility support"
+            },
+            {
+              "id": "C",
+              "text": "Wait for a completed fall before reviewing home safety"
+            },
+            {
+              "id": "D",
+              "text": "Review dizziness frequency without assessing the walking environment"
+            },
+            {
+              "id": "E",
+              "text": "Recommend mobility support without discussing lighting or handrails"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "NIDCD recommends measures such as avoiding dark walking areas, adding handrails, and using support when needed.",
+          "distractorExplanations": {
+            "A": "Treatment alone does not address the immediate environmental fall hazard.",
+            "C": "The near-fall already identifies the risk addressed by the source.",
+            "D": "Episode frequency alone omits the hazard described in the case.",
+            "E": "Support may help, but this plan leaves the stated environmental risks unaddressed."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "benign-positional-vertigo-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Address fall risk with balance disorders.",
+          "difficulty": "application"
         }
       ]
     },
@@ -1011,6 +1683,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Recommendations 1, 2, 8 and 9",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "alzheimer-dementia-gov-expansion-20261010",
+          "title": "Alzheimer’s Disease — MedlinePlus Health Topic Summary",
+          "organization": "National Library of Medicine (MedlinePlus)",
+          "url": "https://medlineplus.gov/alzheimersdisease.html",
+          "kind": "official-clinical-reference",
+          "edition": "Summary",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Summary; symptoms; mild cognitive impairment",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -1036,6 +1726,14 @@
           "text": "Assess understanding and decision-making capacity, then communicate the evaluation and care plan with the patient and an appropriate care partner.",
           "sourceIds": [
             "alz-detect2024"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "Progressive memory problems affecting daily activities are not simply normal aging and merit evaluation. Mild cognitive impairment carries increased concern, but not everyone with MCI develops Alzheimer disease.",
+          "sourceIds": [
+            "alzheimer-dementia-gov-expansion-20261010"
           ]
         }
       ],
@@ -1125,6 +1823,92 @@
           "domain": "chronic",
           "learningObjective": "Select structural imaging for suspected dementia",
           "difficulty": "application"
+        },
+        {
+          "id": "alzheimer-dementia-q3",
+          "stem": "A study vignette describes years of worsening memory followed by getting lost in familiar places and difficulty managing daily activities. Which counseling response best reflects the cited summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Attribute the functional decline to normal aging"
+            },
+            {
+              "id": "B",
+              "text": "Reassure on the basis that the changes occurred gradually"
+            },
+            {
+              "id": "C",
+              "text": "Explain that this exceeds normal aging and needs evaluation"
+            },
+            {
+              "id": "D",
+              "text": "Assess only memory while omitting daily functioning"
+            },
+            {
+              "id": "E",
+              "text": "Diagnose Alzheimer disease from this brief history alone"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "MedlinePlus distinguishes progressive functional impairment from normal aging and recommends evaluating noticeable memory changes.",
+          "distractorExplanations": {
+            "A": "The cited summary distinguishes AD-type functional decline from normal aging.",
+            "B": "Gradual onset does not make the described functional impairment normal.",
+            "D": "The loss of daily function is a central feature of the case.",
+            "E": "The summary supports evaluation rather than confirmation from this history alone."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "alzheimer-dementia-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize cognitive decline beyond normal aging.",
+          "difficulty": "application"
+        },
+        {
+          "id": "alzheimer-dementia-q4",
+          "stem": "A fictional patient diagnosed with mild cognitive impairment asks whether Alzheimer disease is inevitable. Which response is supported?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Predict inevitable progression to Alzheimer disease"
+            },
+            {
+              "id": "B",
+              "text": "Reassure that MCI rules out future Alzheimer disease"
+            },
+            {
+              "id": "C",
+              "text": "Predict progression solely from family history"
+            },
+            {
+              "id": "D",
+              "text": "Some people with MCI develop Alzheimer disease, but not all"
+            },
+            {
+              "id": "E",
+              "text": "Use one current symptom to forecast the complete future course"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "The summary explicitly states that many, but not all, people with MCI develop Alzheimer disease.",
+          "distractorExplanations": {
+            "A": "The source states that not all people with MCI develop AD.",
+            "B": "The source describes progression in some people with MCI.",
+            "C": "The source does not make family history a deterministic prognosis.",
+            "E": "The cited summary does not establish an individual outcome from one symptom."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "alzheimer-dementia-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Counsel about uncertainty in MCI progression.",
+          "difficulty": "application"
         }
       ]
     },
@@ -1173,6 +1957,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Sections II, IV, XIII and XIV",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "delirium-gov-expansion-20261010",
+          "title": "Delirium — MedlinePlus Health Topic Summary",
+          "organization": "National Library of Medicine (MedlinePlus)",
+          "url": "https://medlineplus.gov/delirium.html",
+          "kind": "official-clinical-reference",
+          "edition": "Summary",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Summary; delirium types; causes and treatment",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -1199,6 +2001,14 @@
           "text": "For postoperative delirium without threatening agitation, do not routinely give antipsychotics or benzodiazepines. Withdrawal syndromes require a different assessment.",
           "sourceIds": [
             "delirium-ags2014"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "Delirium may be hypoactive rather than agitated. A new episode prompts assessment for causes such as medication effects, withdrawal, dehydration, infection, and other illness; correcting the cause is a treatment priority.",
+          "sourceIds": [
+            "delirium-gov-expansion-20261010"
           ]
         }
       ],
@@ -1289,6 +2099,92 @@
           "domain": "acute",
           "learningObjective": "Manage non-dangerous postoperative delirium",
           "difficulty": "application"
+        },
+        {
+          "id": "delirium-q3",
+          "stem": "A hospitalized older adult in a fictional case becomes newly sleepy, less interactive, and inattentive over one day. A trainee dismisses delirium because there is no agitation. Which interpretation is most appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Assess delirium only if agitation subsequently appears"
+            },
+            {
+              "id": "B",
+              "text": "Interpret quiet behavior alone as recovery"
+            },
+            {
+              "id": "C",
+              "text": "Attribute the abrupt change only to established dementia"
+            },
+            {
+              "id": "D",
+              "text": "Assess only nighttime behavior and disregard the daytime change"
+            },
+            {
+              "id": "E",
+              "text": "Hypoactive delirium remains possible"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "MedlinePlus describes hypoactive delirium with reduced activity and sleepiness; agitation is not required.",
+          "distractorExplanations": {
+            "A": "The hypoactive subtype does not require agitation.",
+            "B": "A new sleepy, inattentive presentation does not establish recovery.",
+            "C": "The source recognizes an acute delirium process, including in people with dementia.",
+            "D": "The abrupt daytime change remains relevant to delirium assessment."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "delirium-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize a hypoactive delirium presentation.",
+          "difficulty": "application"
+        },
+        {
+          "id": "delirium-q4",
+          "stem": "A study patient develops abrupt confusion after a medication change and poor oral intake. Which first assessment priority is supported?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Investigate potential causes including medicines and dehydration"
+            },
+            {
+              "id": "B",
+              "text": "Assign dementia as the sole explanation before reviewing the recent changes"
+            },
+            {
+              "id": "C",
+              "text": "Review the surroundings but omit medication and hydration history"
+            },
+            {
+              "id": "D",
+              "text": "Treat symptoms before considering the cause"
+            },
+            {
+              "id": "E",
+              "text": "Assume the newest medicine is the cause without further assessment"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "The summary prioritizes finding the cause and identifies medication effects and dehydration among potential contributors.",
+          "distractorExplanations": {
+            "B": "The source calls for assessing the cause of an abrupt episode.",
+            "C": "Both medicines and dehydration are cited potential contributors.",
+            "D": "The cited treatment priority is identifying and addressing the cause.",
+            "E": "The temporal relationship suggests review but does not prove one cause."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "delirium-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Investigate reversible delirium contributors.",
+          "difficulty": "application"
         }
       ]
     },
@@ -1326,6 +2222,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Recommendations 2, 6, 11, 12, 15 and 21",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "major-depression-gov-expansion-20261010",
+          "title": "VA/DoD Management of Major Depressive Disorder — Provider Summary",
+          "organization": "US Department of Veterans Affairs / Department of Defense",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/MH/mdd/VADODMDDCPG_ProviderSummary_Final_508_updated.pdf",
+          "kind": "clinical-guideline",
+          "edition": "February 2022",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "February 2022; Recommendations 2 and 15",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -1351,6 +2265,14 @@
           "text": "After remission with an antidepressant, continue the effective therapeutic regimen for at least six months to reduce relapse risk.",
           "sourceIds": [
             "mdd-va2022"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "VA/DoD suggests quantitative severity measurement during treatment planning and follow-up. It also suggests medication plus evidence-based psychotherapy for severe, persistent, or recurrent MDD; these are conditional recommendations.",
+          "sourceIds": [
+            "major-depression-gov-expansion-20261010"
           ]
         }
       ],
@@ -1440,6 +2362,92 @@
           "domain": "chronic",
           "learningObjective": "Plan antidepressant continuation after remission",
           "difficulty": "application"
+        },
+        {
+          "id": "major-depression-q3",
+          "stem": "An adult with established MDD is returning for follow-up in a study vignette. Which approach best supports shared decisions about treatment progress under the VA/DoD guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Judge improvement only by attendance at appointments"
+            },
+            {
+              "id": "B",
+              "text": "Use a quantitative depression-severity measure at regular intervals"
+            },
+            {
+              "id": "C",
+              "text": "Assess symptoms only at the initial visit"
+            },
+            {
+              "id": "D",
+              "text": "Use refill frequency as the measure of symptom response"
+            },
+            {
+              "id": "E",
+              "text": "Base the next decision only on the current drug name"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Recommendation 2 suggests repeated quantitative severity measurement to guide treatment planning and shared decisions.",
+          "distractorExplanations": {
+            "A": "Attendance does not quantitatively assess depression severity.",
+            "C": "The guideline suggests severity measurement at regular follow-up intervals.",
+            "D": "Refills do not measure the patient’s depressive symptoms.",
+            "E": "Drug identity alone does not establish severity or treatment progress."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "major-depression-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Use measurement to assess depression treatment progress.",
+          "difficulty": "application"
+        },
+        {
+          "id": "major-depression-q4",
+          "stem": "A fictional adult has recurrent MDD with multiple prior episodes and wants to discuss a treatment plan. Which option does VA/DoD suggest for this pattern?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Discuss medication alone without considering psychotherapy"
+            },
+            {
+              "id": "B",
+              "text": "Discuss psychotherapy alone without considering medication"
+            },
+            {
+              "id": "C",
+              "text": "Combine pharmacotherapy with evidence-based psychotherapy"
+            },
+            {
+              "id": "D",
+              "text": "Choose a plan without incorporating the previous episodes"
+            },
+            {
+              "id": "E",
+              "text": "Defer treatment-strategy review because recurrence is already documented"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Recommendation 15 suggests combined medication and evidence-based psychotherapy for recurrent, severe, or persistent MDD.",
+          "distractorExplanations": {
+            "A": "The recurrent pattern supports discussing the suggested combined approach.",
+            "B": "The guideline suggests considering both modalities in recurrent MDD.",
+            "D": "Recurrence is one of the cited reasons to consider combined treatment.",
+            "E": "Documented recurrence is relevant to the current strategy discussion."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "major-depression-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize a suggested combined-treatment indication.",
+          "difficulty": "application"
         }
       ]
     },
@@ -1476,6 +2484,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Diagnosis; psychotherapy; medication",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "generalized-anxiety-disorder-gov-expansion-20261010",
+          "title": "Generalized Anxiety Disorder: What You Need to Know",
+          "organization": "National Institute of Mental Health",
+          "url": "https://www.nimh.nih.gov/health/publications/generalized-anxiety-disorder-gad",
+          "kind": "official-clinical-reference",
+          "edition": "Diagnosis",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Diagnosis; Medication",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.nimh.nih.gov/site-info/policies",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -1501,6 +2527,14 @@
           "text": "SSRIs and SNRIs can treat GAD but take weeks to work. Benzodiazepines can cause tolerance and dependence and may be prescribed only briefly.",
           "sourceIds": [
             "gad-nimh"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "GAD assessment considers hard-to-control worry over at least six months, associated symptoms, and impact. SSRI/SNRI benefit may take several weeks rather than appearing immediately.",
+          "sourceIds": [
+            "generalized-anxiety-disorder-gov-expansion-20261010"
           ]
         }
       ],
@@ -1590,6 +2624,92 @@
           "domain": "chronic",
           "learningObjective": "Counsel about long-term benzodiazepine limitations",
           "difficulty": "application"
+        },
+        {
+          "id": "generalized-anxiety-disorder-q3",
+          "stem": "An adult in a study case reports eight months of hard-to-control worry about many everyday matters, with restlessness, fatigue, poor concentration, and impaired functioning. Which diagnosis should the evaluator consider?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Adjustment disorder"
+            },
+            {
+              "id": "B",
+              "text": "Panic disorder"
+            },
+            {
+              "id": "C",
+              "text": "Social anxiety disorder"
+            },
+            {
+              "id": "D",
+              "text": "Generalized anxiety disorder"
+            },
+            {
+              "id": "E",
+              "text": "Obsessive-compulsive disorder"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "NIMH describes persistent hard-to-control worry for at least six months with associated symptoms as a GAD assessment pattern.",
+          "distractorExplanations": {
+            "A": "The sustained multi-domain worry pattern supports assessing GAD in the cited source.",
+            "B": "The supplied history describes persistent worry rather than establishing this alternative.",
+            "C": "The worry extends across everyday domains rather than establishing this alternative.",
+            "E": "The vignette does not establish this alternative to the cited GAD pattern."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "generalized-anxiety-disorder-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply the GAD duration and symptom pattern.",
+          "difficulty": "application"
+        },
+        {
+          "id": "generalized-anxiety-disorder-q4",
+          "stem": "A fictional adult starting an SSRI for GAD asks why anxiety has not resolved after two days. Which expectation is supported by NIMH?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Expect the full benefit to be evident after the first dose"
+            },
+            {
+              "id": "B",
+              "text": "Declare the treatment ineffective after two days"
+            },
+            {
+              "id": "C",
+              "text": "Change treatment solely from the absence of immediate relief"
+            },
+            {
+              "id": "D",
+              "text": "Assess only immediate sedation as evidence of effectiveness"
+            },
+            {
+              "id": "E",
+              "text": "Improvement may take several weeks and should be followed clinically"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "NIMH states that SSRI and SNRI medicines may take several weeks to start working.",
+          "distractorExplanations": {
+            "A": "NIMH describes SSRI/SNRI benefit over several weeks.",
+            "B": "Two days is shorter than the source’s described onset interval.",
+            "C": "The cited onset interval supports follow-up rather than this conclusion alone.",
+            "D": "The source describes delayed symptom benefit, not immediate sedation as the goal."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "generalized-anxiety-disorder-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Set realistic onset expectations for GAD medication.",
+          "difficulty": "application"
         }
       ]
     },
@@ -1627,6 +2747,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Recommendations 3, 5, 12, 18, 23 and 24",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "bipolar-disorder-gov-expansion-20261010",
+          "title": "Bipolar Disorder — NIMH Publication",
+          "organization": "National Institute of Mental Health",
+          "url": "https://www.nimh.nih.gov/health/publications/bipolar-disorder",
+          "kind": "official-clinical-reference",
+          "edition": "Symptoms",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Symptoms; diagnosis and longitudinal history",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.nimh.nih.gov/site-info/policies",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -1652,6 +2790,14 @@
           "text": "Maintenance choices depend on the episode pattern. Lamotrigine has strong support for preventing recurrence of bipolar depressive episodes.",
           "sourceIds": [
             "bipolar-va2023"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "Manic symptoms can include unusually elevated or irritable mood, increased activity, racing thoughts, and decreased need for sleep. Assessment considers the lifetime course; unrecognized bipolar illness can be missed during depression-only visits.",
+          "sourceIds": [
+            "bipolar-disorder-gov-expansion-20261010"
           ]
         }
       ],
@@ -1741,6 +2887,92 @@
           "domain": "chronic",
           "learningObjective": "Select maintenance treatment by episode polarity",
           "difficulty": "application"
+        },
+        {
+          "id": "bipolar-disorder-q3",
+          "stem": "A study vignette describes an adult with a striking increase in activity, unusually elevated mood, racing thoughts, and little need for sleep, causing disruption at work. Which episode pattern should be assessed?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "A manic episode"
+            },
+            {
+              "id": "B",
+              "text": "A major depressive episode"
+            },
+            {
+              "id": "C",
+              "text": "Generalized anxiety disorder"
+            },
+            {
+              "id": "D",
+              "text": "A sleep disorder without a mood episode"
+            },
+            {
+              "id": "E",
+              "text": "Normal variation in productivity"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "NIMH lists increased activity, elevated or irritable mood, racing thoughts, and decreased need for sleep among manic symptoms.",
+          "distractorExplanations": {
+            "B": "The source associates increased activity and decreased sleep need with mania.",
+            "C": "The supplied mood and activity constellation prompts a manic-episode assessment.",
+            "D": "This interpretation leaves the marked mood and activity changes unaddressed.",
+            "E": "The marked change and disrupted function warrant assessment rather than dismissal."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "bipolar-disorder-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize a manic symptom constellation.",
+          "difficulty": "application"
+        },
+        {
+          "id": "bipolar-disorder-q4",
+          "stem": "A fictional adult presents during depression and reports previous periods of unusually high energy that felt productive. Which additional history best reduces the risk of missing bipolar illness?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Document only depressive symptoms present today"
+            },
+            {
+              "id": "B",
+              "text": "Review lifetime mood episodes, activity changes, severity, and family history"
+            },
+            {
+              "id": "C",
+              "text": "Review sleep only during the current depressive period"
+            },
+            {
+              "id": "D",
+              "text": "Exclude hypomania because the past periods felt productive"
+            },
+            {
+              "id": "E",
+              "text": "Rely solely on the patient’s current mood label"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "NIMH emphasizes the lifetime course and notes that hypomanic episodes can be missed when patients seek help only for depression.",
+          "distractorExplanations": {
+            "A": "A current-only history can miss earlier elevated mood episodes.",
+            "C": "This omits the prior high-energy periods described in the case.",
+            "D": "NIMH notes that hypomania can feel productive and go unrecognized.",
+            "E": "The cited diagnostic approach considers the lifetime course and family history."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "bipolar-disorder-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Use longitudinal history in bipolar assessment.",
+          "difficulty": "application"
         }
       ]
     },
@@ -1778,6 +3010,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Recommendations 3, 7, 8 and 19",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "post-traumatic-stress-disorder-gov-expansion-20261010",
+          "title": "VA/DoD Management of PTSD and Acute Stress Disorder — Provider Summary",
+          "organization": "US Department of Veterans Affairs / Department of Defense",
+          "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/MH/ptsd/VA-DOD-CPG-PTSD-Provider-Summary.pdf",
+          "kind": "clinical-guideline",
+          "edition": "June 2023",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "June 2023; Recommendations 2 and 34",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -1803,6 +3053,14 @@
           "text": "The guideline recommends against benzodiazepines as PTSD treatment. A sedative response does not establish effective treatment of core symptoms.",
           "sourceIds": [
             "ptsd-va2023"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "A positive PTSD screen is followed by diagnostic assessment; VA/DoD suggests a validated structured clinician interview. Co-occurring substance use disorder alone should not preclude recommended PTSD treatments.",
+          "sourceIds": [
+            "post-traumatic-stress-disorder-gov-expansion-20261010"
           ]
         }
       ],
@@ -1892,6 +3150,92 @@
           "domain": "chronic",
           "learningObjective": "Apply the PTSD benzodiazepine recommendation",
           "difficulty": "application"
+        },
+        {
+          "id": "post-traumatic-stress-disorder-q3",
+          "stem": "An adult in a study vignette has a positive PTSD screening result. Which next assessment does VA/DoD suggest to confirm the diagnosis?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Confirm the diagnosis from the screening result alone"
+            },
+            {
+              "id": "B",
+              "text": "Repeat the screening questionnaire as the only confirmation step"
+            },
+            {
+              "id": "C",
+              "text": "Use a validated structured clinician-administered diagnostic interview"
+            },
+            {
+              "id": "D",
+              "text": "Use participation in a trauma support group as confirmation"
+            },
+            {
+              "id": "E",
+              "text": "Use a treatment response as the sole diagnostic confirmation"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Recommendation 2 suggests a validated structured clinician interview for diagnostic confirmation, rather than screening alone.",
+          "distractorExplanations": {
+            "A": "The guideline distinguishes a positive screen from diagnostic confirmation.",
+            "B": "Repeating screening does not supply the suggested structured diagnostic interview.",
+            "D": "Group participation does not establish the diagnosis.",
+            "E": "Response alone does not replace the recommended diagnostic assessment."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "post-traumatic-stress-disorder-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Distinguish PTSD screening from diagnostic confirmation.",
+          "difficulty": "application"
+        },
+        {
+          "id": "post-traumatic-stress-disorder-q4",
+          "stem": "A fictional adult has PTSD and co-occurring substance use disorder. A trainee proposes automatically excluding recommended trauma-focused treatment solely because of the comorbidity. Which response reflects VA/DoD?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Require complete resolution of the comorbidity before any PTSD treatment"
+            },
+            {
+              "id": "B",
+              "text": "Treat only the substance use disorder without reviewing PTSD options"
+            },
+            {
+              "id": "C",
+              "text": "Replace the PTSD treatment assessment with a blanket exclusion"
+            },
+            {
+              "id": "D",
+              "text": "Comorbidity alone should not preclude recommended PTSD treatments"
+            },
+            {
+              "id": "E",
+              "text": "Assume the comorbidity proves trauma-focused treatment cannot help"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Recommendation 34 suggests that co-occurring substance use disorder not preclude the recommended PTSD treatments; individual planning still matters.",
+          "distractorExplanations": {
+            "A": "The guideline suggests against this automatic exclusion based on comorbidity alone.",
+            "B": "The cited recommendation permits consideration of recommended PTSD treatments.",
+            "C": "The source favors individual treatment consideration rather than this blanket rule.",
+            "E": "The cited recommendation does not establish that conclusion."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "post-traumatic-stress-disorder-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Avoid automatic PTSD-treatment exclusion for comorbidity.",
+          "difficulty": "application"
         }
       ]
     },
@@ -1928,13 +3272,31 @@
           "checkedAt": "2026-10-09",
           "locator": "Recommendations 5, 12 and 15; medication contraindication table, printed page 18",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "alcohol-use-disorder-gov-expansion-20261010",
+          "title": "Alcohol Use Disorder — MedlinePlus Health Topic Summary",
+          "organization": "National Library of Medicine (MedlinePlus)",
+          "url": "https://medlineplus.gov/alcoholusedisorderaud.html",
+          "kind": "official-clinical-reference",
+          "edition": "Summary",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Summary; diagnostic symptoms; withdrawal",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
         {
           "id": "aud-medication",
           "title": "Offer ongoing treatment",
-          "text": "Naltrexone and topiramate have strong guideline support for moderate or severe AUD; combine treatment planning with an appropriate psychosocial intervention.",
+          "text": "Naltrexone and topiramate have strong support for moderate/severe AUD; include psychosocial intervention.",
           "sourceIds": [
             "aud-va2021"
           ]
@@ -1942,7 +3304,7 @@
         {
           "id": "aud-opioids",
           "title": "Check opioid exposure",
-          "text": "Naltrexone is contraindicated with current opioid agonist treatment or physiological opioid dependence. Assess opioid use before selecting it.",
+          "text": "Naltrexone is contraindicated with current opioid agonist treatment or physiological opioid dependence; assess opioid use first.",
           "sourceIds": [
             "aud-va2021"
           ]
@@ -1950,9 +3312,17 @@
         {
           "id": "aud-withdrawal",
           "title": "Separate withdrawal care",
-          "text": "Moderate or severe alcohol withdrawal requires monitored treatment; benzodiazepines are recommended in that setting, distinct from long-term AUD medication.",
+          "text": "Moderate/severe withdrawal requires monitored treatment with recommended benzodiazepines, distinct from long-term AUD medication.",
           "sourceIds": [
             "aud-va2021"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "AUD assessment examines loss of control, cravings, impaired responsibilities, and other symptoms over the past year. Withdrawal can include shakiness and, in severe cases, seizures or hallucinations; symptoms warrant clinical assessment.",
+          "sourceIds": [
+            "alcohol-use-disorder-gov-expansion-20261010"
           ]
         }
       ],
@@ -1985,10 +3355,10 @@
           "correctChoiceId": "C",
           "explanation": "Naltrexone is a strongly supported AUD medication when contraindications are absent.",
           "distractorExplanations": {
-            "A": "An antibiotic does not treat AUD.",
-            "B": "Clopidogrel does not treat AUD.",
-            "D": "Donepezil is not an AUD therapy.",
-            "E": "Amlodipine is not an AUD therapy."
+            "A": "Not an AUD therapy.",
+            "B": "Not an AUD therapy.",
+            "D": "Not an AUD therapy.",
+            "E": "Not an AUD therapy."
           },
           "sectionIds": [
             "aud-medication",
@@ -2030,9 +3400,9 @@
           "explanation": "Current opioid agonist treatment is a contraindication to naltrexone.",
           "distractorExplanations": {
             "A": "Age alone is not this contraindication.",
-            "B": "This is a treatment goal.",
-            "C": "Counseling is compatible with AUD care.",
-            "E": "A normal liver test does not create this contraindication."
+            "B": "A treatment goal.",
+            "C": "Compatible with AUD care.",
+            "E": "Not this contraindication."
           },
           "sectionIds": [
             "aud-opioids"
@@ -2042,6 +3412,92 @@
           ],
           "domain": "chronic",
           "learningObjective": "Recognize a naltrexone contraindication",
+          "difficulty": "application"
+        },
+        {
+          "id": "alcohol-use-disorder-q3",
+          "stem": "A fictional adult repeatedly drinks more than intended, cannot cut down, and misses work because of drinking. Which next step is supported by the cited summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Exclude AUD because the patient remains employed"
+            },
+            {
+              "id": "B",
+              "text": "Assess only the amount consumed at the most recent occasion"
+            },
+            {
+              "id": "C",
+              "text": "Assess only whether alcohol causes a physical hangover"
+            },
+            {
+              "id": "D",
+              "text": "Defer assessment until a withdrawal episode has occurred"
+            },
+            {
+              "id": "E",
+              "text": "Evaluate for alcohol use disorder and its functional impact"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "MedlinePlus includes loss of control, unsuccessful attempts to cut down, and impaired responsibilities among AUD assessment symptoms.",
+          "distractorExplanations": {
+            "A": "Remaining employed does not negate the supplied impaired-control symptoms.",
+            "B": "The source examines symptoms and functional impact over the past year.",
+            "C": "This omits the described loss of control and impaired responsibilities.",
+            "D": "The supplied AUD assessment symptoms do not require waiting for withdrawal."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "alcohol-use-disorder-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Identify symptoms prompting AUD evaluation.",
+          "difficulty": "application"
+        },
+        {
+          "id": "alcohol-use-disorder-q4",
+          "stem": "In a study vignette, a person with longstanding heavy alcohol use develops shakiness and hallucinations after stopping. Which concern should the learner recognize?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Possible severe alcohol withdrawal needing clinical assessment"
+            },
+            {
+              "id": "B",
+              "text": "Ordinary craving without considering withdrawal severity"
+            },
+            {
+              "id": "C",
+              "text": "An uncomplicated adjustment requiring no further assessment"
+            },
+            {
+              "id": "D",
+              "text": "A non-alcohol-related explanation without reviewing cessation"
+            },
+            {
+              "id": "E",
+              "text": "Established chronic dementia as the only explanation"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "MedlinePlus describes withdrawal after alcohol wears off and lists hallucinations and seizures among severe manifestations.",
+          "distractorExplanations": {
+            "B": "The cited summary includes hallucinations among severe withdrawal manifestations.",
+            "C": "The source identifies this pattern as potentially severe withdrawal.",
+            "D": "Recent cessation is relevant to the cited withdrawal mechanism.",
+            "E": "The acute cessation-associated pattern warrants withdrawal assessment."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "alcohol-use-disorder-gov-expansion-20261010"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Recognize a potentially severe alcohol-withdrawal pattern.",
           "difficulty": "application"
         }
       ]
@@ -2092,13 +3548,31 @@
           "checkedAt": "2026-10-09",
           "locator": "Medication treatment of OUD; naloxone",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "opioid-use-disorder-gov-expansion-20261010",
+          "title": "Treatment of Opioid Use Disorder",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/overdose-prevention/treatment/opioid-use-disorder.html",
+          "kind": "official-clinical-reference",
+          "edition": "August 12, 2024",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "August 12, 2024; treatment options; getting support",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
         {
           "id": "oud-maintenance",
           "title": "Treat beyond withdrawal",
-          "text": "Withdrawal management alone is discouraged because relapse and overdose risk remain. Offer ongoing medication treatment and additional support.",
+          "text": "Withdrawal-only management is discouraged because relapse and overdose risks remain; offer ongoing medication treatment and support.",
           "sourceIds": [
             "oud-va2021",
             "oud-cdc2024"
@@ -2118,6 +3592,14 @@
           "text": "Naloxone reverses opioid overdose; it is not a substitute for maintenance OUD treatment. Overdose education and access are important parts of care.",
           "sourceIds": [
             "oud-cdc2024"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "CDC describes buprenorphine, methadone, and naltrexone for ongoing OUD treatment, with counseling or psychosocial support where helpful. Naloxone instead reverses opioid overdose and has a separate rescue role.",
+          "sourceIds": [
+            "opioid-use-disorder-gov-expansion-20261010"
           ]
         }
       ],
@@ -2209,6 +3691,92 @@
           "domain": "chronic",
           "learningObjective": "Identify medication treatment for OUD",
           "difficulty": "application"
+        },
+        {
+          "id": "opioid-use-disorder-q3",
+          "stem": "A study patient receiving medication for OUD asks whether counseling can also be useful. Which response reflects CDC’s description?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Use medication without ever reviewing supportive services"
+            },
+            {
+              "id": "B",
+              "text": "Counseling and psychosocial support may add benefit alongside medication"
+            },
+            {
+              "id": "C",
+              "text": "Replace medication with counseling as the default for everyone"
+            },
+            {
+              "id": "D",
+              "text": "Require the same counseling plan regardless of individual needs"
+            },
+            {
+              "id": "E",
+              "text": "Limit the recovery plan to medication refills alone"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "CDC describes medication treatment and possible additional benefit from counseling or psychosocial support.",
+          "distractorExplanations": {
+            "A": "CDC describes possible additional benefit from counseling or psychosocial support.",
+            "C": "CDC describes medication as an effective part of treatment, with individual planning.",
+            "D": "CDC states that OUD treatment varies according to individual needs.",
+            "E": "CDC’s treatment goals include health and social function, with additional supports possible."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "opioid-use-disorder-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Integrate supportive care with OUD medication treatment.",
+          "difficulty": "application"
+        },
+        {
+          "id": "opioid-use-disorder-q4",
+          "stem": "In a fictional OUD recovery-planning visit, the patient and family ask what can reverse an opioid overdose if one occurs. Which medication has that role?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Buprenorphine"
+            },
+            {
+              "id": "B",
+              "text": "Methadone"
+            },
+            {
+              "id": "C",
+              "text": "Naloxone"
+            },
+            {
+              "id": "D",
+              "text": "Naltrexone"
+            },
+            {
+              "id": "E",
+              "text": "Outpatient counseling"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "CDC identifies naloxone as an overdose-reversal medication; the other items do not provide that pharmacologic function.",
+          "distractorExplanations": {
+            "A": "CDC lists this for ongoing OUD treatment, not the cited overdose-reversal role.",
+            "B": "CDC lists this for ongoing OUD treatment, not the cited overdose-reversal role.",
+            "D": "CDC lists this for ongoing OUD treatment, not the cited overdose-reversal role.",
+            "E": "Counseling supports recovery but does not pharmacologically reverse an overdose."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "opioid-use-disorder-gov-expansion-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Distinguish naloxone rescue from recovery supports.",
+          "difficulty": "application"
         }
       ]
     },
@@ -2245,6 +3813,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Recommendations 5 through 10; Sidebar 3",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "chronic-insomnia-gov-expansion-20261010",
+          "title": "VA/DoD Chronic Insomnia Disorder and OSA — Provider Summary",
+          "organization": "US Department of Veterans Affairs / Department of Defense",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/CD/insomnia/I-OSA-CPG_2025-Provider-Summary_final_20250422.pdf",
+          "kind": "clinical-guideline",
+          "edition": "2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "2025; Sidebar 3, behavioral components and adaptations",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -2270,6 +3856,14 @@
           "text": "When medication is appropriate, doxepin is suggested; benzodiazepines, diphenhydramine and trazodone are discouraged.",
           "sourceIds": [
             "insomnia-va2025"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "CBT-I includes stimulus control, which strengthens the association between bed and sleep. VA/DoD lists bipolar disorder among conditions requiring adaptation of CBT-I/BBT-I rather than an identical protocol for everyone. Sleep restriction adjusts time in bed, cognitive restructuring addresses sleep beliefs, sleep hygiene addresses behaviors/environment, and arousal reduction uses calming routines and relaxation.",
+          "sourceIds": [
+            "chronic-insomnia-gov-expansion-20261010"
           ]
         }
       ],
@@ -2360,6 +3954,92 @@
           "domain": "chronic",
           "learningObjective": "Distinguish supported from discouraged insomnia medications",
           "difficulty": "application"
+        },
+        {
+          "id": "chronic-insomnia-q3",
+          "stem": "A fictional adult with chronic insomnia spends long periods awake in bed. The therapist explains an intervention intended to make the bed a stronger cue for sleep. Which CBT-I component is being described?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Sleep restriction therapy"
+            },
+            {
+              "id": "B",
+              "text": "Cognitive restructuring"
+            },
+            {
+              "id": "C",
+              "text": "Sleep hygiene education alone"
+            },
+            {
+              "id": "D",
+              "text": "Stimulus control"
+            },
+            {
+              "id": "E",
+              "text": "Arousal reduction techniques"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "VA/DoD describes stimulus control as strengthening the bed’s association with sleep rather than wakefulness.",
+          "distractorExplanations": {
+            "A": "This component adjusts time in bed rather than the specific bed-cue association.",
+            "B": "This component addresses thoughts and beliefs about sleep.",
+            "C": "This focuses on behaviors and environment rather than the specific bed-cue association.",
+            "E": "These use calming routines and relaxation rather than that specific association."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "chronic-insomnia-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize the purpose of CBT-I stimulus control.",
+          "difficulty": "application"
+        },
+        {
+          "id": "chronic-insomnia-q4",
+          "stem": "A study patient with chronic insomnia also has bipolar disorder and is being considered for behavioral insomnia treatment. Which planning response reflects the guideline sidebar?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Apply the standard intervention without reviewing bipolar comorbidity"
+            },
+            {
+              "id": "B",
+              "text": "Exclude all behavioral insomnia treatment solely because of bipolar disorder"
+            },
+            {
+              "id": "C",
+              "text": "Base intervention planning only on insomnia duration"
+            },
+            {
+              "id": "D",
+              "text": "Review medication options while omitting behavioral adaptation"
+            },
+            {
+              "id": "E",
+              "text": "Adapt the behavioral intervention to the comorbidity"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Sidebar 3 lists bipolar disorder as requiring adaptation of CBT-I/BBT-I; it does not prescribe automatic universal exclusion.",
+          "distractorExplanations": {
+            "A": "The sidebar specifically calls for adaptation with bipolar disorder.",
+            "B": "The sidebar lists adaptation rather than automatic exclusion.",
+            "C": "Duration alone omits the cited need to consider the comorbidity.",
+            "D": "The question asks about planning the behavioral intervention safely and appropriately."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "chronic-insomnia-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize the need to adapt behavioral insomnia care.",
+          "difficulty": "application"
         }
       ]
     },
@@ -2408,6 +4088,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Positive airway pressure devices; healthy lifestyle changes",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "obstructive-sleep-apnea-gov-expansion-20261010",
+          "title": "VA/DoD Chronic Insomnia Disorder and OSA — Provider Summary",
+          "organization": "US Department of Veterans Affairs / Department of Defense",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/CD/insomnia/I-OSA-CPG_2025-Provider-Summary_final_20250422.pdf",
+          "kind": "clinical-guideline",
+          "edition": "2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "2025; Recommendations 1, 2 and 4",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -2434,6 +4132,14 @@
           "sourceIds": [
             "osa-va2025",
             "osa-nhlbi2025"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "OSA screening identifies people needing further evaluation; diagnosis requires PSG or appropriate HSAT. A nondiagnostic home sleep apnea test requires further sleep testing rather than automatic exclusion of OSA.",
+          "sourceIds": [
+            "obstructive-sleep-apnea-gov-expansion-20261010"
           ]
         }
       ],
@@ -2523,6 +4229,92 @@
           "domain": "chronic",
           "learningObjective": "Explain the mechanism of CPAP",
           "difficulty": "application"
+        },
+        {
+          "id": "obstructive-sleep-apnea-q3",
+          "stem": "A fictional adult has persistent symptoms suggesting OSA, but a home sleep apnea test was nondiagnostic. Which next step follows VA/DoD?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Obtain further sleep testing with PSG or appropriate HSAT"
+            },
+            {
+              "id": "B",
+              "text": "Interpret the recording as a definitive negative study"
+            },
+            {
+              "id": "C",
+              "text": "Repeat only a screening questionnaire to complete diagnosis"
+            },
+            {
+              "id": "D",
+              "text": "Close the evaluation because one home test was attempted"
+            },
+            {
+              "id": "E",
+              "text": "Diagnose OSA from symptoms alone after the failed recording"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Recommendation 4 calls for further sleep testing after a nondiagnostic HSAT.",
+          "distractorExplanations": {
+            "B": "A nondiagnostic study does not establish absence of OSA.",
+            "C": "The recommendation calls for further diagnostic sleep testing.",
+            "D": "The guideline recommends further testing after a nondiagnostic HSAT.",
+            "E": "The guideline calls for diagnostic testing rather than this inference alone."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "obstructive-sleep-apnea-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Respond appropriately to a nondiagnostic OSA test.",
+          "difficulty": "application"
+        },
+        {
+          "id": "obstructive-sleep-apnea-q4",
+          "stem": "An adult in a study vignette screens positive for OSA on a validated screening instrument. Which interpretation is most appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Diagnose OSA from the screening score alone"
+            },
+            {
+              "id": "B",
+              "text": "Further evaluation and diagnostic sleep testing are needed"
+            },
+            {
+              "id": "C",
+              "text": "Select a fixed treatment solely from the screening score"
+            },
+            {
+              "id": "D",
+              "text": "Repeat only the questionnaire as diagnostic confirmation"
+            },
+            {
+              "id": "E",
+              "text": "Treat the screen as equivalent to a completed sleep study"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "The guideline separates screening for further evaluation from diagnosis using PSG or HSAT.",
+          "distractorExplanations": {
+            "A": "Screening identifies concern but does not provide the stated diagnostic test.",
+            "C": "The positive screen supports evaluation, not a fixed treatment decision.",
+            "D": "Repeated screening is different from PSG or appropriate HSAT.",
+            "E": "The guideline distinguishes these roles."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "obstructive-sleep-apnea-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Distinguish OSA screening from diagnostic testing.",
+          "difficulty": "application"
         }
       ]
     },
@@ -2559,6 +4351,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Recommendations 1 through 3 and 9; Sidebar 1",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "acute-low-back-pain-gov-expansion-20261010",
+          "title": "VA/DoD Diagnosis and Treatment of Low Back Pain — Provider Summary",
+          "organization": "US Department of Veterans Affairs / Department of Defense",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/Pain/lbp/VADODLBPCPGProviderSummaryFinal508.pdf",
+          "kind": "clinical-guideline",
+          "edition": "February 2022",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "February 2022; Sidebar 3; Recommendation 19",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -2584,6 +4394,14 @@
           "text": "Suspected cauda equina syndrome requires emergent imaging, with MRI preferred when feasible. This is a different pathway from uncomplicated mechanical pain.",
           "sourceIds": [
             "lbp-va2022"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "For uncomplicated acute low back pain, VA/DoD includes advice to remain active. It suggests NSAIDs as a medication option when individually appropriate; this is a conditional recommendation, not a universal prescription. It recommends against benzodiazepines, suggests against systemic corticosteroids, and finds insufficient evidence for gabapentin/pregabalin or a specific herbal supplement.",
+          "sourceIds": [
+            "acute-low-back-pain-gov-expansion-20261010"
           ]
         }
       ],
@@ -2674,6 +4492,92 @@
           "domain": "emergent",
           "learningObjective": "Recognize the imaging urgency of suspected cauda equina syndrome",
           "difficulty": "application"
+        },
+        {
+          "id": "acute-low-back-pain-q3",
+          "stem": "A nonpregnant adult in a fictional case has uncomplicated acute low back pain after appropriate assessment. Which self-care advice is included in the VA/DoD management sidebar?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Prescribe complete bed rest until all pain disappears"
+            },
+            {
+              "id": "B",
+              "text": "Delay activity discussion until pain becomes chronic"
+            },
+            {
+              "id": "C",
+              "text": "Remain active within an individually appropriate plan"
+            },
+            {
+              "id": "D",
+              "text": "Review medication only and omit daily activity guidance"
+            },
+            {
+              "id": "E",
+              "text": "Require a single identical activity plan regardless of tolerance"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Sidebar 3 includes advice to remain active for acute as well as longer-duration low back pain.",
+          "distractorExplanations": {
+            "A": "The cited management sidebar includes advice to remain active.",
+            "B": "The sidebar includes activity advice for acute pain.",
+            "D": "The source includes activity advice alongside suitable treatment options.",
+            "E": "The scenario calls for individually appropriate management, not a universal intensity."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "acute-low-back-pain-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply activity advice for uncomplicated acute back pain.",
+          "difficulty": "application"
+        },
+        {
+          "id": "acute-low-back-pain-q4",
+          "stem": "A nonpregnant adult with uncomplicated acute low back pain is discussing medication after assessment of suitability. Which class does VA/DoD suggest?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Benzodiazepines"
+            },
+            {
+              "id": "B",
+              "text": "Systemic corticosteroids"
+            },
+            {
+              "id": "C",
+              "text": "Gabapentin or pregabalin as a routinely recommended class"
+            },
+            {
+              "id": "D",
+              "text": "Nonsteroidal anti-inflammatory drugs"
+            },
+            {
+              "id": "E",
+              "text": "A routinely recommended herbal supplement"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Recommendation 19 suggests NSAIDs; recommendations 28 and 29 oppose routine systemic corticosteroids and benzodiazepines in this context.",
+          "distractorExplanations": {
+            "A": "Recommendation 29 recommends against this class for low back pain.",
+            "B": "Recommendation 28 suggests against this option for low back pain.",
+            "C": "Recommendation 20 reports insufficient evidence for or against these agents.",
+            "E": "Recommendation 30 does not establish a recommended specific herbal supplement."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "acute-low-back-pain-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Identify a suggested medication class for low back pain.",
+          "difficulty": "application"
         }
       ]
     },
@@ -2724,6 +4628,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Core treatment recommendations; new conditional recommendations",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "osteoarthritis-gov-expansion-20261010",
+          "title": "VA/DoD Non-Surgical Management of Hip and Knee Osteoarthritis — Provider Summary",
+          "organization": "US Department of Veterans Affairs / Department of Defense",
+          "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/CD/OA/Osteoarthritis-CPG_2026-Provider-Summary_final_20260618.pdf",
+          "kind": "clinical-guideline",
+          "edition": "June 2026",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "June 2026; Recommendations 14 and 15",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -2751,6 +4673,14 @@
           "sourceIds": [
             "oa-va2026",
             "oa-acr2026"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "VA/DoD suggests against starting opioids, including tramadol, for hip or knee OA pain. For persistent knee OA pain inadequately relieved by other interventions, it suggests considering intra-articular corticosteroid injection.",
+          "sourceIds": [
+            "osteoarthritis-gov-expansion-20261010"
           ]
         }
       ],
@@ -2841,6 +4771,92 @@
           "domain": "chronic",
           "learningObjective": "Select a supported medication option for knee OA",
           "difficulty": "application"
+        },
+        {
+          "id": "osteoarthritis-q3",
+          "stem": "A fictional adult with knee OA has never used opioid analgesics. A trainee recommends starting tramadol simply because pain persists. Which position reflects the 2026 VA/DoD guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Start tramadol because all persistent OA pain requires an opioid"
+            },
+            {
+              "id": "B",
+              "text": "Exclude tramadol from the opioid-initiation recommendation"
+            },
+            {
+              "id": "C",
+              "text": "Choose an opioid before considering the OA guideline"
+            },
+            {
+              "id": "D",
+              "text": "Treat tramadol as the standard next step solely from symptom duration"
+            },
+            {
+              "id": "E",
+              "text": "It suggests against initiating opioids, including tramadol, for OA pain"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Recommendation 14 suggests against initiating opioids, explicitly including tramadol, for OA-related pain.",
+          "distractorExplanations": {
+            "A": "The guideline does not make persistence a universal opioid indication.",
+            "B": "Recommendation 14 explicitly includes tramadol.",
+            "C": "The cited recommendation specifically addresses opioid initiation for OA pain.",
+            "D": "Duration alone does not establish that step under this recommendation."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "osteoarthritis-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Apply the OA opioid-initiation recommendation.",
+          "difficulty": "application"
+        },
+        {
+          "id": "osteoarthritis-q4",
+          "stem": "A study patient has persistent knee OA pain despite other suitable interventions. Which additional option does VA/DoD conditionally suggest discussing?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Intra-articular corticosteroid injection"
+            },
+            {
+              "id": "B",
+              "text": "Initiate long-term opioid treatment as the default next step"
+            },
+            {
+              "id": "C",
+              "text": "Describe the injection as a definitive cure before discussing it"
+            },
+            {
+              "id": "D",
+              "text": "Continue the current plan without reviewing the inadequate relief"
+            },
+            {
+              "id": "E",
+              "text": "Offer an injection without reviewing preferences or suitability"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Recommendation 15 suggests intra-articular corticosteroid injection for knee pain inadequately relieved by other interventions; it is not a cure guarantee.",
+          "distractorExplanations": {
+            "B": "Recommendation 14 suggests against initiating opioids for OA pain.",
+            "C": "The conditional recommendation does not promise a cure.",
+            "D": "Persistent pain despite interventions is the reason to reconsider options here.",
+            "E": "A suggested intervention still requires an individualized discussion."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "osteoarthritis-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize a conditional intervention for persistent knee OA.",
+          "difficulty": "application"
         }
       ]
     },
@@ -2877,6 +4893,46 @@
           "checkedAt": "2026-10-09",
           "locator": "Recommendations 1.1, 2.1, 2.2 and 3.3",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "osteoporosis-gov-expansion-20261010",
+          "title": "Osteoporosis: Diagnosis, Treatment, and Steps to Take",
+          "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases",
+          "url": "https://www.niams.nih.gov/health-topics/osteoporosis/diagnosis-treatment-and-steps-to-take",
+          "kind": "official-clinical-reference",
+          "edition": "Reviewed December 2022",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Reviewed December 2022; BMD testing; preventing falls",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niams.nih.gov/disclaimer",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "nogg-2024-article-open",
+          "title": "The 2024 UK clinical guideline for the prevention and treatment of osteoporosis",
+          "organization": "National Osteoporosis Guideline Group / Archives of Osteoporosis",
+          "url": "https://link.springer.com/article/10.1007/s11657-025-01588-3",
+          "kind": "clinical-guideline",
+          "edition": "2024 UK guideline, published September 8, 2025",
+          "publishedDate": "2025-09-08",
+          "checkedAt": "2026-10-10",
+          "locator": "Pharmacological treatment options: anabolic treatment recommendation 13; Contraindications and special precautions for bisphosphonates; Open Access license.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United Kingdom; postmenopausal women and men aged at least 50",
+          "limitations": "Comparative UK guideline content. UK intervention thresholds, formulary choices and licensing durations are not imported as US ABFM rules. The module does not cover all osteoporosis populations, contraindications, renal thresholds or complete drug-selection pathways. No images or third-party material are imported.",
+          "attribution": "Gregson CL, Armstrong DJ, Avgerinou C, et al. The 2024 UK clinical guideline for the prevention and treatment of osteoporosis. Archives of Osteoporosis. 2025;20:119. doi:10.1007/s11657-025-01588-3. CC BY 4.0.",
+          "derivativeNotice": "Original abbreviated educational paraphrases and original fictional practice questions were created for StudyChat. Wording, selection and organization differ from the article. No complete text, table, figure, image or dose table is reproduced. No author or publisher endorsement is implied.",
+          "rights": {
+            "basis": "cc-by-4.0",
+            "policyUrl": "https://creativecommons.org/licenses/by/4.0/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -2903,6 +4959,32 @@
           "sourceIds": [
             "osteoporosis-endocrine2020"
           ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "DXA of hip and spine measures bone mineral density and supports osteoporosis assessment. Fracture prevention also includes fall-risk review, safer lighting, secured rugs, and appropriately placed bathroom grab bars. Heel quantitative ultrasound evaluates bone but does not measure BMD; an abnormal result may require DXA assessment.",
+          "sourceIds": [
+            "osteoporosis-gov-expansion-20261010"
+          ]
+        },
+        {
+          "id": "open-nogg-anabolic-follow-on",
+          "title": "UK comparison: maintain gains after anabolic therapy",
+          "text": "NOGG’s UK guideline recommends initiating an antiresorptive drug without delay after the approved anabolic-treatment course. Its listed follow-on agents include alendronate, zoledronate and denosumab. This sequence is a fracture-prevention teaching point; suitability and a planned long-term regimen remain necessary. The article’s UK approval durations and intervention thresholds are not presented as United States examination rules.",
+          "sourceIds": [
+            "nogg-2024-article-open"
+          ],
+          "sourceLocator": "Pharmacological treatment options — Anabolic drug treatment, recommendation 13; Summary of main recommendations, follow-on therapy."
+        },
+        {
+          "id": "open-nogg-oral-contraindications",
+          "title": "UK comparison: oral bisphosphonates and esophageal emptying",
+          "text": "NOGG identifies esophageal abnormalities that delay emptying, such as stricture or achalasia, as contraindications to oral bisphosphonates. Inability to remain upright after the dose is another administration-related contraindication. Oral convenience does not remove these restrictions. Choosing an alternative still requires the separate renal, calcium, safety and preference assessment; this excerpt does not designate one alternative as best for everyone.",
+          "sourceIds": [
+            "nogg-2024-article-open"
+          ],
+          "sourceLocator": "Contraindications and special precautions for the use of bisphosphonates: esophageal emptying and upright-position limitations."
         }
       ],
       "questions": [
@@ -2992,6 +5074,180 @@
           "domain": "chronic",
           "learningObjective": "Avoid an unprotected denosumab interruption",
           "difficulty": "application"
+        },
+        {
+          "id": "osteoporosis-q3",
+          "stem": "A fictional patient is being evaluated for low bone density. Which test directly measures bone mineral density at commonly assessed hip and spine sites?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "A serum calcium measurement alone"
+            },
+            {
+              "id": "B",
+              "text": "Dual-energy x-ray absorptiometry"
+            },
+            {
+              "id": "C",
+              "text": "Heel quantitative ultrasound alone"
+            },
+            {
+              "id": "D",
+              "text": "A fall-risk questionnaire alone"
+            },
+            {
+              "id": "E",
+              "text": "A spine examination alone"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "NIAMS describes DXA as the common bone-mineral-density test, particularly at the hip and spine.",
+          "distractorExplanations": {
+            "A": "That result is not the cited measurement of bone mineral density.",
+            "C": "NIAMS states that heel QUS does not measure BMD and may require DXA.",
+            "D": "Fall-risk assessment is useful but does not measure bone density.",
+            "E": "Examination alone is not the cited hip-and-spine BMD measurement."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "osteoporosis-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Identify the role of DXA in bone-density assessment.",
+          "difficulty": "application"
+        },
+        {
+          "id": "osteoporosis-q4",
+          "stem": "A study patient with osteoporosis reports tripping over loose rugs and difficulty stepping into the bathtub. Which added prevention plan directly addresses the described risks?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Review osteoporosis medication without discussing household hazards"
+            },
+            {
+              "id": "B",
+              "text": "Review calcium intake as the only additional prevention measure"
+            },
+            {
+              "id": "C",
+              "text": "Secure rugs, improve lighting, and install suitable grab bars"
+            },
+            {
+              "id": "D",
+              "text": "Review fracture history without changing the unsafe environment"
+            },
+            {
+              "id": "E",
+              "text": "Wait for another fall before considering home modifications"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "NIAMS includes fall prevention, secured rugs, lighting, and bathroom grab bars in fracture-risk reduction.",
+          "distractorExplanations": {
+            "A": "This leaves the loose rugs and bathtub risks unaddressed.",
+            "B": "Nutrition alone does not address the falls risk described here.",
+            "D": "History is useful, but the question asks about reducing the current hazards.",
+            "E": "The source supports preventive action on existing hazards."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "osteoporosis-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Address environmental falls risk in osteoporosis.",
+          "difficulty": "application"
+        },
+        {
+          "id": "osteoporosis-q5",
+          "stem": "In a fictional study case comparing the NOGG UK guideline, a postmenopausal woman has completed her approved anabolic osteoporosis-treatment course. An appropriate antiresorptive agent is safe and available. Which next strategy follows this source?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Begin an unplanned drug-free period until a new fracture"
+            },
+            {
+              "id": "B",
+              "text": "Use exercise alone as the mandatory replacement"
+            },
+            {
+              "id": "C",
+              "text": "Delay all medication until imaging returns to normal"
+            },
+            {
+              "id": "D",
+              "text": "Repeat anabolic treatment indefinitely without reassessment"
+            },
+            {
+              "id": "E",
+              "text": "Begin appropriate antiresorptive follow-on therapy without delay"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "NOGG recommends antiresorptive treatment without delay after the approved anabolic course. This question uses the UK article’s sequence principle and does not import UK drug-approval durations or fracture thresholds as US board rules.",
+          "distractorExplanations": {
+            "A": "An unplanned medication gap is not the recommended follow-on strategy.",
+            "B": "Exercise is valuable but is not the specified replacement for indicated follow-on pharmacotherapy.",
+            "C": "Normalizing imaging is not the described trigger for follow-on therapy.",
+            "D": "Indefinite repeated anabolic treatment is not the stated sequence."
+          },
+          "sectionIds": [
+            "open-nogg-anabolic-follow-on"
+          ],
+          "sourceIds": [
+            "nogg-2024-article-open"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize the antiresorptive follow-on principle after an anabolic osteoporosis-treatment course.",
+          "difficulty": "application",
+          "examScope": "comparative-study"
+        },
+        {
+          "id": "osteoporosis-q6",
+          "stem": "In a fictional osteoporosis study case, oral alendronate is being considered. The patient has achalasia that delays esophageal emptying. Which finding most directly makes the oral route unsuitable under the NOGG UK guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "The esophageal emptying disorder"
+            },
+            {
+              "id": "B",
+              "text": "The fact that the patient can remain upright"
+            },
+            {
+              "id": "C",
+              "text": "The availability of several osteoporosis treatments"
+            },
+            {
+              "id": "D",
+              "text": "The need to consider patient preferences"
+            },
+            {
+              "id": "E",
+              "text": "The presence of a fracture-prevention goal"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "The guideline lists abnormalities delaying esophageal emptying, including achalasia, as an oral-bisphosphonate contraindication. An alternative needs its own safety and suitability assessment.",
+          "distractorExplanations": {
+            "B": "Ability to remain upright would not itself create this administration contraindication.",
+            "C": "The existence of alternatives is not the physiological reason oral treatment is unsuitable.",
+            "D": "Preferences matter but do not remove the stated esophageal contraindication.",
+            "E": "Fracture prevention is the treatment goal, not a reason the oral drug is unsuitable."
+          },
+          "sectionIds": [
+            "open-nogg-oral-contraindications"
+          ],
+          "sourceIds": [
+            "nogg-2024-article-open"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Identify an administration-related contraindication before selecting oral bisphosphonate treatment.",
+          "difficulty": "application",
+          "examScope": "comparative-study"
         }
       ]
     },
@@ -3028,6 +5284,24 @@
           "checkedAt": "2026-10-09",
           "locator": "DMARD-naive moderate-to-high disease activity; glucocorticoids; treat-to-target recommendations",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "rheumatoid-arthritis-gov-expansion-20261010",
+          "title": "Rheumatoid Arthritis: Diagnosis, Treatment, and Steps to Take",
+          "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases",
+          "url": "https://www.niams.nih.gov/health-topics/rheumatoid-arthritis/diagnosis-treatment-and-steps-to-take",
+          "kind": "official-clinical-reference",
+          "edition": "Reviewed November 2022",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Reviewed November 2022; laboratory tests; occupational therapy",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niams.nih.gov/disclaimer",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -3053,6 +5327,14 @@
           "text": "Longer-term glucocorticoids are strongly discouraged as routine accompaniment to DMARD initiation. If needed, minimize dose and duration.",
           "sourceIds": [
             "ra-acr2021"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "Negative rheumatoid factor or normal blood tests do not by themselves exclude RA; assessment integrates clinical findings and other tests. Occupational therapy and adaptive devices can help with daily activities affected by RA.",
+          "sourceIds": [
+            "rheumatoid-arthritis-gov-expansion-20261010"
           ]
         }
       ],
@@ -3143,6 +5425,92 @@
           "domain": "chronic",
           "learningObjective": "Apply treat-to-target RA management",
           "difficulty": "application"
+        },
+        {
+          "id": "rheumatoid-arthritis-q3",
+          "stem": "A fictional adult has a clinical pattern concerning for RA, but rheumatoid factor is negative. Which interpretation best follows NIAMS?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Exclude RA on the basis of negative rheumatoid factor"
+            },
+            {
+              "id": "B",
+              "text": "Assign an alternative arthritis diagnosis from this result alone"
+            },
+            {
+              "id": "C",
+              "text": "Defer further assessment unless rheumatoid factor later becomes positive"
+            },
+            {
+              "id": "D",
+              "text": "Continue an integrated assessment; the negative result alone does not exclude RA"
+            },
+            {
+              "id": "E",
+              "text": "Use RF alone rather than combining history, examination, and tests"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "NIAMS states that not all people with RA have positive RF and some have normal blood tests.",
+          "distractorExplanations": {
+            "A": "NIAMS states that some people with RA are RF negative.",
+            "B": "The result alone does not establish another diagnosis.",
+            "C": "The source recognizes RA despite negative or normal tests.",
+            "E": "NIAMS describes an integrated diagnostic approach."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "rheumatoid-arthritis-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Avoid excluding RA from a single negative test.",
+          "difficulty": "application"
+        },
+        {
+          "id": "rheumatoid-arthritis-q4",
+          "stem": "A study patient with established RA has difficulty holding utensils and managing clothing fasteners. Which support specifically addresses daily-function barriers?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Review drug refills without assessing the affected tasks"
+            },
+            {
+              "id": "B",
+              "text": "Assess inflammatory markers as the only response"
+            },
+            {
+              "id": "C",
+              "text": "Recommend avoiding all hand activities without exploring adaptations"
+            },
+            {
+              "id": "D",
+              "text": "Wait for permanent joint damage before discussing assistance"
+            },
+            {
+              "id": "E",
+              "text": "Occupational therapy and appropriately chosen adaptive devices"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "NIAMS describes occupational therapy and adaptive tools as supports for daily living and work in RA.",
+          "distractorExplanations": {
+            "A": "Refill review alone does not address the daily-function barriers.",
+            "B": "The question asks about functional support, not laboratory monitoring alone.",
+            "C": "The source describes therapy and adaptive tools to support function.",
+            "D": "The cited supportive services address existing functional limitations."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "rheumatoid-arthritis-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Match functional RA difficulties with supportive services.",
+          "difficulty": "application"
         }
       ]
     },
@@ -3180,6 +5548,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Summary recommendations, printed pages 6–7; diagnosis and corticosteroid-injection chapters",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "carpal-tunnel-syndrome-gov-expansion-20261010",
+          "title": "Carpal Tunnel Syndrome — MedlinePlus Health Topic Summary",
+          "organization": "National Library of Medicine (MedlinePlus)",
+          "url": "https://medlineplus.gov/carpaltunnelsyndrome.html",
+          "kind": "official-clinical-reference",
+          "edition": "Summary",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Summary; symptoms; treatment",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -3205,6 +5591,14 @@
           "text": "Corticosteroid injection has not demonstrated long-term improvement of CTS in the guideline evidence; it should not be presented as a reliably lasting cure.",
           "sourceIds": [
             "cts-aaos2024"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "CTS involves compression of the median nerve at the wrist and often causes thumb, index, and middle-finger symptoms, sometimes worse at night with bent wrists. Night wrist splinting is a described treatment option. Severe or refractory symptoms may prompt surgical consideration; the summary does not describe acupuncture as proven to improve CTS.",
+          "sourceIds": [
+            "carpal-tunnel-syndrome-gov-expansion-20261010"
           ]
         }
       ],
@@ -3295,6 +5689,92 @@
           "domain": "chronic",
           "learningObjective": "Counsel about the limits of CTS injection",
           "difficulty": "application"
+        },
+        {
+          "id": "carpal-tunnel-syndrome-q3",
+          "stem": "A fictional adult develops nocturnal tingling in the thumb, index, and middle fingers, especially when sleeping with a bent wrist. Which nerve is implicated in the described CTS pattern?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Median nerve"
+            },
+            {
+              "id": "B",
+              "text": "Ulnar nerve"
+            },
+            {
+              "id": "C",
+              "text": "Radial nerve"
+            },
+            {
+              "id": "D",
+              "text": "Axillary nerve"
+            },
+            {
+              "id": "E",
+              "text": "Musculocutaneous nerve"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "The MedlinePlus summary identifies median-nerve compression in CTS and describes this nocturnal finger-symptom pattern.",
+          "distractorExplanations": {
+            "B": "The cited CTS reference identifies the median nerve for this pattern.",
+            "C": "The cited CTS reference identifies median compression at the wrist.",
+            "D": "The supplied wrist and finger pattern supports the cited median-nerve explanation.",
+            "E": "The source does not establish this alternative for the described CTS pattern."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "carpal-tunnel-syndrome-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Localize a typical CTS symptom pattern.",
+          "difficulty": "application"
+        },
+        {
+          "id": "carpal-tunnel-syndrome-q4",
+          "stem": "A study patient has early CTS symptoms that are most troublesome at night. After assessment, which conservative option is specifically described in the cited summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Immediate surgery without a trial of conservative care"
+            },
+            {
+              "id": "B",
+              "text": "A wrist splint, usually worn at night"
+            },
+            {
+              "id": "C",
+              "text": "Waiting until permanent thumb weakness appears"
+            },
+            {
+              "id": "D",
+              "text": "Acupuncture as a proven corrective treatment"
+            },
+            {
+              "id": "E",
+              "text": "Ignoring contributing health conditions"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "MedlinePlus lists wrist splints, usually worn at night, among CTS treatment options.",
+          "distractorExplanations": {
+            "A": "The summary describes surgery for severe or refractory symptoms.",
+            "C": "Early assessment and treatment aim to prevent lasting damage.",
+            "D": "The summary does not describe acupuncture as proven to improve CTS.",
+            "E": "The summary recommends treating conditions that may contribute to symptoms."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "carpal-tunnel-syndrome-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Identify a conservative option for early CTS.",
+          "difficulty": "application"
         }
       ]
     },
@@ -3331,6 +5811,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Strong recommendations; good practice statements; severe acne",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "acne-vulgaris-gov-expansion-20261010",
+          "title": "Acne: Diagnosis, Treatment, and Steps to Take",
+          "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases",
+          "url": "https://www.niams.nih.gov/health-topics/acne/diagnosis-treatment-and-steps-to-take",
+          "kind": "official-clinical-reference",
+          "edition": "Reviewed July 2023",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Reviewed July 2023; diagnosis; living with acne",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niams.nih.gov/disclaimer",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -3356,6 +5854,14 @@
           "text": "Isotretinoin is recommended for severe acne or acne that has failed standard oral or topical therapy, subject to its separate safety requirements.",
           "sourceIds": [
             "acne-aad2024"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "Acne assessment includes review of current and recently stopped medicines. Supportive skin care uses gentle cleansing and avoids rough scrubbing, squeezing, or picking lesions, which can contribute to scars or dark marks.",
+          "sourceIds": [
+            "acne-vulgaris-gov-expansion-20261010"
           ]
         }
       ],
@@ -3445,6 +5951,92 @@
           "domain": "chronic",
           "learningObjective": "Recognize acne warranting isotretinoin consideration",
           "difficulty": "application"
+        },
+        {
+          "id": "acne-vulgaris-q3",
+          "stem": "A teenager in a study vignette scrubs acne lesions with a rough pad and squeezes them daily. Which skin-care advice follows NIAMS?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Use a stronger scrub pad to remove lesions"
+            },
+            {
+              "id": "B",
+              "text": "Continue squeezing lesions before applying topical medication"
+            },
+            {
+              "id": "C",
+              "text": "Use gentle cleansing and avoid squeezing or picking"
+            },
+            {
+              "id": "D",
+              "text": "Pick lesions only when they appear inflamed"
+            },
+            {
+              "id": "E",
+              "text": "Focus only on prescription selection and omit skin-care counseling"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "NIAMS recommends gentle cleansing and avoiding picking; squeezing lesions can contribute to scars or dark marks.",
+          "distractorExplanations": {
+            "A": "NIAMS recommends gentle cleansing and avoiding rough scrub pads.",
+            "B": "The source warns that squeezing can contribute to scars or dark marks.",
+            "D": "The recommendation is to avoid picking rather than select lesions to pick.",
+            "E": "The described harmful skin-care practices warrant direct counseling."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "acne-vulgaris-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Counsel about supportive acne skin care.",
+          "difficulty": "application"
+        },
+        {
+          "id": "acne-vulgaris-q4",
+          "stem": "A fictional patient reports a recent change in acne after several medication changes. Which history item is explicitly part of the NIAMS diagnostic approach?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Change acne treatment before reviewing recent medicines"
+            },
+            {
+              "id": "B",
+              "text": "Treat the temporal association as proof of a medication cause"
+            },
+            {
+              "id": "C",
+              "text": "Review only topical acne products and omit other medications"
+            },
+            {
+              "id": "D",
+              "text": "Review medicines currently used and recently stopped"
+            },
+            {
+              "id": "E",
+              "text": "Review only medicines still used and omit recently stopped ones"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "NIAMS includes current and recently stopped medicines in acne assessment; timing alone does not prove causation.",
+          "distractorExplanations": {
+            "A": "Medication review is explicitly part of the cited assessment.",
+            "B": "The assessment approach does not establish causation from timing alone.",
+            "C": "NIAMS calls for the current and recently stopped medication history.",
+            "E": "The cited history includes both current and recently stopped medicines."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "acne-vulgaris-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Incorporate medication review into acne assessment.",
+          "difficulty": "application"
         }
       ]
     },
@@ -3494,6 +6086,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Moisturizers and topical treatments; systemic corticosteroids",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "atopic-dermatitis-gov-expansion-20261010",
+          "title": "Atopic Dermatitis: Diagnosis, Treatment, and Steps to Take",
+          "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases",
+          "url": "https://www.niams.nih.gov/health-topics/atopic-dermatitis/diagnosis-treatment-and-steps-to-take",
+          "kind": "official-clinical-reference",
+          "edition": "Reviewed November 2022",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Reviewed November 2022; diagnostic history; sleep and skin care",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niams.nih.gov/disclaimer",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -3519,6 +6129,14 @@
           "text": "The 2026 pediatric recommendations support moisturizers and appropriate topical treatments and recommend against routine systemic corticosteroids. Check individual drug age indications separately.",
           "sourceIds": [
             "ad-aad-peds2026"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "AD assessment includes possible irritants such as detergents and fragrances and the impact on sleep. Ongoing itch that disrupts rest warrants review of disease control rather than being ignored because the rash appears limited.",
+          "sourceIds": [
+            "atopic-dermatitis-gov-expansion-20261010"
           ]
         }
       ],
@@ -3608,6 +6226,92 @@
           "domain": "chronic",
           "learningObjective": "Apply the pediatric systemic-corticosteroid caution",
           "difficulty": "application"
+        },
+        {
+          "id": "atopic-dermatitis-q3",
+          "stem": "A study patient with AD reports recurrent flares after changing to fragranced soap and detergent. Which additional assessment is supported?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Review food exposures only"
+            },
+            {
+              "id": "B",
+              "text": "Confirm an allergy solely from the product-change timing"
+            },
+            {
+              "id": "C",
+              "text": "Change treatment without reviewing the possible irritants"
+            },
+            {
+              "id": "D",
+              "text": "Assess rash size but omit the exposure history"
+            },
+            {
+              "id": "E",
+              "text": "Review irritant exposures and whether they track with flares"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "NIAMS includes soaps, detergents, perfumes, and cosmetics in exposure history; assessment does not presume a proven allergy.",
+          "distractorExplanations": {
+            "A": "The cited history also includes the soaps and detergents described here.",
+            "B": "A temporal association supports assessment but does not prove allergy.",
+            "C": "This omits the relevant exposure pattern in the vignette.",
+            "D": "Severity assessment alone does not address the possible trigger described here."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "atopic-dermatitis-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Assess possible irritants during AD flare review.",
+          "difficulty": "application"
+        },
+        {
+          "id": "atopic-dermatitis-q4",
+          "stem": "A fictional child with AD has nightly itch and poor sleep despite a small visible rash area. Which follow-up priority is supported by NIAMS?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Discuss sleep disruption and options to improve disease control"
+            },
+            {
+              "id": "B",
+              "text": "Assess rash area as the only measure of disease impact"
+            },
+            {
+              "id": "C",
+              "text": "Review skin appearance without asking about nighttime symptoms"
+            },
+            {
+              "id": "D",
+              "text": "Continue the existing plan without discussing impaired sleep"
+            },
+            {
+              "id": "E",
+              "text": "Assess attendance at follow-up instead of the child’s symptoms"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "NIAMS advises discussing sleep disrupted by itching and scratching to improve AD control.",
+          "distractorExplanations": {
+            "B": "The source also includes sleep problems and itch burden.",
+            "C": "This leaves the identified sleep disruption unassessed.",
+            "D": "NIAMS recommends discussing options when itching prevents restful sleep.",
+            "E": "Attendance does not measure the nighttime itch and sleep burden."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "atopic-dermatitis-gov-expansion-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Include sleep burden in AD treatment follow-up.",
+          "difficulty": "application"
         }
       ]
     },
@@ -3644,6 +6348,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Topical therapy; psoriasis comorbidities",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "psoriasis-gov-expansion-20261010",
+          "title": "Psoriasis — NIAMS Overview",
+          "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases",
+          "url": "https://www.niams.nih.gov/health-topics/psoriasis",
+          "kind": "official-clinical-reference",
+          "edition": "Reviewed October 2023",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Reviewed October 2023; types of psoriasis",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niams.nih.gov/disclaimer",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -3669,6 +6391,14 @@
           "text": "Assess relevant comorbidities, including psoriatic arthritis and cardiometabolic and mental-health concerns; coordinate care when findings warrant it.",
           "sourceIds": [
             "psoriasis-aad"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "Guttate psoriasis can present as small scattered lesions after an upper respiratory infection. Inverse psoriasis appears as smoother patches in skin folds, where rubbing and sweating can worsen symptoms. Plaque psoriasis has raised scaly patches, pustular psoriasis has pustules, and erythrodermic psoriasis has widespread involvement.",
+          "sourceIds": [
+            "psoriasis-gov-expansion-20261010"
           ]
         }
       ],
@@ -3758,6 +6488,92 @@
           "domain": "chronic",
           "learningObjective": "Recognize joint symptoms needing psoriatic-arthritis assessment",
           "difficulty": "application"
+        },
+        {
+          "id": "psoriasis-q3",
+          "stem": "A young adult in a study vignette develops many small red lesions on the torso and limbs after a recent throat infection. Which psoriasis type is described by the cited NIAMS reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Plaque psoriasis"
+            },
+            {
+              "id": "B",
+              "text": "Guttate psoriasis"
+            },
+            {
+              "id": "C",
+              "text": "Inverse psoriasis"
+            },
+            {
+              "id": "D",
+              "text": "Pustular psoriasis"
+            },
+            {
+              "id": "E",
+              "text": "Erythrodermic psoriasis"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "NIAMS describes guttate psoriasis as small lesions in younger people, often after an upper respiratory infection.",
+          "distractorExplanations": {
+            "A": "NIAMS describes raised scaly patches rather than the supplied small-lesion pattern.",
+            "C": "The cited description places inverse lesions mainly in skin folds.",
+            "D": "The vignette does not describe the pustules in that type’s definition.",
+            "E": "The vignette lacks the widespread involvement in that type’s description."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "psoriasis-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize a guttate psoriasis presentation.",
+          "difficulty": "application"
+        },
+        {
+          "id": "psoriasis-q4",
+          "stem": "A fictional patient with psoriasis has smooth red patches in the groin and axillae that worsen with rubbing and sweating. Which subtype fits this distribution?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Guttate psoriasis"
+            },
+            {
+              "id": "B",
+              "text": "Plaque psoriasis"
+            },
+            {
+              "id": "C",
+              "text": "Inverse psoriasis"
+            },
+            {
+              "id": "D",
+              "text": "Pustular psoriasis"
+            },
+            {
+              "id": "E",
+              "text": "Erythrodermic psoriasis"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "NIAMS describes inverse psoriasis in skin folds with worsening from friction and sweating.",
+          "distractorExplanations": {
+            "A": "The cited type has small scattered lesions rather than this flexural pattern.",
+            "B": "The smoother flexural patches fit the inverse description better.",
+            "D": "The vignette does not describe the defining pustules.",
+            "E": "The vignette does not describe widespread involvement."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "psoriasis-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize inverse psoriasis by morphology and distribution.",
+          "difficulty": "application"
         }
       ]
     },
@@ -3794,6 +6610,24 @@
           "checkedAt": "2026-10-09",
           "locator": "Section IV recommendations 3, 4 and 7; cellulitis evidence summary",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cellulitis-gov-expansion-20261010",
+          "title": "Cellulitis — MedlinePlus Health Topic Summary",
+          "organization": "National Library of Medicine (MedlinePlus)",
+          "url": "https://medlineplus.gov/cellulitis.html",
+          "kind": "official-clinical-reference",
+          "edition": "Summary",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Summary; clinical pattern; severity and route of treatment",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://medlineplus.gov/about/using/usingcontent/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -3819,6 +6653,14 @@
           "text": "Deeper infection concern, severe compromise or failed outpatient care can warrant hospitalization. A purulent collection requires an abscess-specific assessment.",
           "sourceIds": [
             "cellulitis-idsa2014"
+          ]
+        },
+        {
+          "id": "expanded-application",
+          "title": "Additional referenced study applications",
+          "text": "Cellulitis affects skin and deeper underlying tissues; skin injury can provide a bacterial entry point. The MedlinePlus summary distinguishes oral antibiotics for mild cases from possible IV antibiotics in more severe cases.",
+          "sourceIds": [
+            "cellulitis-gov-expansion-20261010"
           ]
         }
       ],
@@ -3907,6 +6749,92 @@
           ],
           "domain": "acute",
           "learningObjective": "Use response to guide cellulitis duration",
+          "difficulty": "application"
+        },
+        {
+          "id": "cellulitis-q3",
+          "stem": "A study patient develops painful red tender skin with fever after a skin wound. Which history detail supports the mechanism described for cellulitis?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Use the skin wound only to estimate antibiotic duration"
+            },
+            {
+              "id": "B",
+              "text": "Focus on fever without reviewing the skin injury"
+            },
+            {
+              "id": "C",
+              "text": "Choose the causative organism solely from the injury’s appearance"
+            },
+            {
+              "id": "D",
+              "text": "The wound may have provided an entry point for bacteria"
+            },
+            {
+              "id": "E",
+              "text": "Treat tenderness as evidence against skin infection"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "MedlinePlus describes bacterial entry through skin injury and a painful red tender skin-infection pattern.",
+          "distractorExplanations": {
+            "A": "The question asks how the wound supports the infection’s entry mechanism.",
+            "B": "The wound provides a relevant potential entry point in the cited description.",
+            "C": "The wound supports possible entry but does not identify the organism alone.",
+            "E": "The cited cellulitis symptom description includes painful tender skin."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "cellulitis-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Connect skin barrier injury with cellulitis risk.",
+          "difficulty": "application"
+        },
+        {
+          "id": "cellulitis-q4",
+          "stem": "A fictional patient has cellulitis judged severe after clinical assessment. Compared with a mild case, which treatment-route distinction is described in the cited summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Use oral therapy for every case regardless of assessed severity"
+            },
+            {
+              "id": "B",
+              "text": "Withhold antibiotics solely because IV treatment is being considered"
+            },
+            {
+              "id": "C",
+              "text": "Choose the route solely from the patient’s age"
+            },
+            {
+              "id": "D",
+              "text": "Use the selected route to infer the causative organism"
+            },
+            {
+              "id": "E",
+              "text": "Intravenous rather than only oral antibiotics may be needed"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "MedlinePlus describes oral antibiotics for mild cellulitis and possible IV treatment for more severe cases.",
+          "distractorExplanations": {
+            "A": "The source distinguishes possible IV therapy in more severe cases.",
+            "B": "The source describes IV antibiotics as a route of treatment, not withholding therapy.",
+            "C": "The source’s route distinction concerns severity rather than age alone.",
+            "D": "Treatment route does not establish the pathogen."
+          },
+          "sectionIds": [
+            "expanded-application"
+          ],
+          "sourceIds": [
+            "cellulitis-gov-expansion-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Relate cellulitis severity to treatment-route assessment.",
           "difficulty": "application"
         }
       ]

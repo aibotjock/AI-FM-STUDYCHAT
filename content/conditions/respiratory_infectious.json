@@ -37,6 +37,46 @@
           "checkedAt": "2026-10-09",
           "locator": "Pages 3–5: ages 4+, SMART, and long-acting muscarinic antagonists",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "nhlbi-asthma-clinician-verified20261010",
+          "title": "2020 Focused Updates to the Asthma Management Guidelines: Clinician’s Guide",
+          "organization": "National Heart, Lung, and Blood Institute / NAEPP",
+          "url": "https://www.nhlbi.nih.gov/sites/default/files/publications/Asthma%20Clinicians%20Guide%20508_02-03-21.pdf",
+          "kind": "clinical-guideline",
+          "edition": "2020 focused update; clinician guide PDF revised February 2021",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Printed pages 8–9: FeNO testing in diagnosis and management",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Selected focused-update recommendations, not a complete asthma guideline. Only original educational summaries are added; the formatted publication is not modified or redistributed. No dose tables or society journal text is imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "nhlbi-asthma-faq-verified20261010",
+          "title": "Frequently Asked Questions (FAQs): 2020 Focused Updates to the Asthma Management Guidelines",
+          "organization": "National Heart, Lung, and Blood Institute",
+          "url": "https://www.nhlbi.nih.gov/health-topics/asthma-management-guidelines-2020-updates/faqs",
+          "kind": "official-recommendation",
+          "edition": "Federal explanatory webpage for 2020 focused updates; displayed page date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Indoor Allergen Reduction bullets",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Government-authored explanatory summary. Allergen interventions require relevant sensitization/exposure; this does not provide a universal environmental-control prescription.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -63,6 +103,24 @@
           "sourceIds": [
             "nhlbi-asthma-2020-clinician"
           ]
+        },
+        {
+          "id": "feno-adjunct-20261010",
+          "title": "FeNO as an adjunct",
+          "text": "For people aged five years or older whose asthma diagnosis remains uncertain after history, examination and spirometry with bronchodilator testing, NAEPP conditionally supports adding FeNO to the evaluation. FeNO is an adjunct, not a stand-alone assessment of asthma control, future exacerbations or exacerbation severity.",
+          "sourceIds": [
+            "nhlbi-asthma-clinician-verified20261010"
+          ],
+          "sourceLocator": "Printed pages 8–9; FeNO diagnostic recommendations and management key points."
+        },
+        {
+          "id": "allergen-multicomponent-20261010",
+          "title": "Targeted indoor allergen reduction",
+          "text": "When asthma is associated with sensitivity to indoor allergens such as dust mites, NHLBI describes using multiple allergen-reduction strategies. A mattress or pillow cover alone often does not improve asthma outcomes. Routine indoor allergen interventions are not recommended for people without relevant indoor allergy.",
+          "sourceIds": [
+            "nhlbi-asthma-faq-verified20261010"
+          ],
+          "sourceLocator": "Indoor Allergen Reduction bullets: multiple strategies and absence of indoor allergy."
         }
       ],
       "questions": [
@@ -151,6 +209,92 @@
           "learningObjective": "Distinguish preferred LABA addition from the LAMA alternative.",
           "difficulty": "application",
           "id": "asthma-q2"
+        },
+        {
+          "id": "asthma-q3",
+          "stem": "A seven-year-old has recurrent wheezing, but history, examination and spirometry with bronchodilator testing leave the asthma diagnosis uncertain. Which use of fractional exhaled nitric oxide best follows the focused update?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Diagnose asthma from FeNO alone"
+            },
+            {
+              "id": "B",
+              "text": "Use FeNO alone to grade exacerbation severity"
+            },
+            {
+              "id": "C",
+              "text": "Add FeNO as an adjunct to the existing evaluation"
+            },
+            {
+              "id": "D",
+              "text": "Use a single FeNO value to predict future exacerbations"
+            },
+            {
+              "id": "E",
+              "text": "Exclude FeNO from consideration because the patient is a child"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "NAEPP conditionally supports adjunctive FeNO in diagnostic uncertainty at age five or older.",
+          "distractorExplanations": {
+            "A": "The recommendation adds FeNO to the evaluation rather than using it alone.",
+            "B": "FeNO should not be used in isolation to assess exacerbation severity.",
+            "D": "FeNO should not be used in isolation to predict future exacerbations.",
+            "E": "The conditional diagnostic recommendation includes people aged five or older."
+          },
+          "sectionIds": [
+            "feno-adjunct-20261010"
+          ],
+          "sourceIds": [
+            "nhlbi-asthma-clinician-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Use FeNO appropriately when the asthma diagnosis remains uncertain.",
+          "difficulty": "application"
+        },
+        {
+          "id": "asthma-q4",
+          "stem": "An adult with asthma has documented dust-mite sensitivity and symptoms associated with bedroom exposure. The patient asks whether buying a mattress cover alone is the guideline-supported environmental strategy. Which response is best?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Regard a mattress cover alone as sufficient allergen mitigation"
+            },
+            {
+              "id": "B",
+              "text": "Recommend one generic device without considering the identified allergen"
+            },
+            {
+              "id": "C",
+              "text": "Promise that one cover reliably prevents future exacerbations"
+            },
+            {
+              "id": "D",
+              "text": "Exclude environmental measures because asthma already has medication treatment"
+            },
+            {
+              "id": "E",
+              "text": "Consider several targeted allergen-reduction measures rather than a cover alone"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "NHLBI supports multiple targeted strategies for relevant indoor allergy; a single measure often does not improve outcomes.",
+          "distractorExplanations": {
+            "A": "NHLBI recommends multiple strategies; one strategy often does not improve outcomes.",
+            "B": "The recommendation concerns relevant indoor sensitivity and targeted strategies.",
+            "C": "The source does not promise this outcome from one measure.",
+            "D": "Relevant indoor sensitivity makes targeted reduction part of management to consider."
+          },
+          "sectionIds": [
+            "allergen-multicomponent-20261010"
+          ],
+          "sourceIds": [
+            "nhlbi-asthma-faq-verified20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Distinguish targeted multicomponent allergen reduction from an isolated intervention.",
+          "difficulty": "application"
         }
       ]
     },
@@ -190,6 +334,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Recommendations 1, 4, 8 and 9; summary tables, pages 5–7",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-copd-education-verified20261010",
+          "title": "About COPD",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/copd/about/index.html",
+          "kind": "official-recommendation",
+          "edition": "Official federal educational webpage; headline May 15, 2024, footer May 14, 2024",
+          "publishedDate": "2024-05-15",
+          "checkedAt": "2026-10-10",
+          "locator": "Treatment and management: Lifestyle changes; Treatment options",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Educational COPD management overview, not a substitute for a complete prescribing guideline. No VA/DoD or GOLD text is imported; no vaccine schedule or oxygen threshold is inferred.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -216,6 +380,24 @@
           "sourceIds": [
             "vadod-copd-2026"
           ]
+        },
+        {
+          "id": "rehabilitation-20261010",
+          "title": "Pulmonary rehabilitation",
+          "text": "CDC describes pulmonary rehabilitation as a personalized program that teaches COPD symptom-management strategies, including breathing techniques, energy conservation, and appropriate food and physical activity choices. COPD can be treated to improve symptoms and quality of life, but these measures do not constitute a cure.",
+          "sourceIds": [
+            "cdc-copd-education-verified20261010"
+          ],
+          "sourceLocator": "Treatment and management; Lifestyle changes: pulmonary rehabilitation; opening statement that COPD has no cure."
+        },
+        {
+          "id": "cessation-priority-20261010",
+          "title": "Smoking cessation priority",
+          "text": "For a person with COPD who smokes, CDC identifies stopping smoking as the most important part of treatment. Respiratory vaccinations and appropriate medication are additional management measures. Supplemental oxygen is discussed for low blood oxygen, not as a universal substitute for smoking cessation.",
+          "sourceIds": [
+            "cdc-copd-education-verified20261010"
+          ],
+          "sourceLocator": "Treatment and management: Lifestyle changes, quit smoking; Treatment options, vaccines and oxygen."
         }
       ],
       "questions": [
@@ -304,6 +486,92 @@
           "learningObjective": "Apply dual long-acting bronchodilation for significant COPD symptoms.",
           "difficulty": "application",
           "id": "copd-q2"
+        },
+        {
+          "id": "copd-q3",
+          "stem": "A former smoker with stable COPD remains limited during daily activities despite an established medication plan. The patient wants a structured program that teaches breathing techniques and energy conservation. Which intervention specifically addresses these goals?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Supplemental oxygen without evidence of low blood oxygen"
+            },
+            {
+              "id": "B",
+              "text": "Pulmonary rehabilitation"
+            },
+            {
+              "id": "C",
+              "text": "A medication change without a skills-training program"
+            },
+            {
+              "id": "D",
+              "text": "Respiratory vaccination alone"
+            },
+            {
+              "id": "E",
+              "text": "Smoking-cessation counseling alone"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Pulmonary rehabilitation provides personalized COPD management skills, including breathing techniques and energy conservation.",
+          "distractorExplanations": {
+            "A": "CDC discusses oxygen for low blood oxygen; it is not the described skills program.",
+            "C": "Medication can treat symptoms, while rehabilitation provides the requested management training.",
+            "D": "Vaccination helps prevent illness rather than teaching breathing and energy-conservation skills.",
+            "E": "Cessation is important for smokers, but the requested structured skills program is rehabilitation."
+          },
+          "sectionIds": [
+            "rehabilitation-20261010"
+          ],
+          "sourceIds": [
+            "cdc-copd-education-verified20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Choose pulmonary rehabilitation for COPD self-management and functional goals.",
+          "difficulty": "application"
+        },
+        {
+          "id": "copd-q4",
+          "stem": "A patient with COPD continues smoking and asks which lifestyle change deserves highest priority while continuing the existing treatment plan. Which answer best follows CDC’s management overview?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Stop smoking"
+            },
+            {
+              "id": "B",
+              "text": "Rely on respiratory vaccination as the main response to continued smoking"
+            },
+            {
+              "id": "C",
+              "text": "Use oxygen as the main response without assessing blood oxygen"
+            },
+            {
+              "id": "D",
+              "text": "Rely on avoiding exertion as the main response to continued smoking"
+            },
+            {
+              "id": "E",
+              "text": "Defer smoking-cessation support until a respiratory infection occurs"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "CDC calls smoking cessation the most important part of treatment for smokers with COPD.",
+          "distractorExplanations": {
+            "B": "Vaccination is an additional measure; CDC prioritizes cessation for smokers.",
+            "C": "Oxygen is discussed for low blood oxygen and does not replace cessation.",
+            "D": "Avoiding exertion does not implement the cited smoking-cessation priority for this learner vignette.",
+            "E": "The source smoking-cessation priority is not limited to an infection visit."
+          },
+          "sectionIds": [
+            "cessation-priority-20261010"
+          ],
+          "sourceIds": [
+            "cdc-copd-education-verified20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Prioritize smoking cessation within COPD management.",
+          "difficulty": "application"
         }
       ]
     },
@@ -342,6 +610,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Tables 1, 2 and 4; adult nonimmunocompromised population",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "nhlbi-pneumonia-diagnosis-verified20261010",
+          "title": "Pneumonia — Diagnosis",
+          "organization": "National Heart, Lung, and Blood Institute",
+          "url": "https://www.nhlbi.nih.gov/health/pneumonia/diagnosis",
+          "kind": "official-recommendation",
+          "edition": "Official government educational webpage last updated March 24, 2022",
+          "publishedDate": "2022-03-24",
+          "checkedAt": "2026-10-10",
+          "locator": "Diagnostic tests and procedures: chest X-ray, pulse oximetry, CT, bronchoscopy and pleural fluid culture",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Educational diagnostic overview; does not establish a complete CAP testing algorithm or antibiotic regimen. Invasive testing is conditional, not routine for every pneumonia patient.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.nhlbi.nih.gov/about/contact/trademark-branding-and-logo",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -368,6 +656,24 @@
           "sourceIds": [
             "idsa-cap-pathway"
           ]
+        },
+        {
+          "id": "diagnostic-imaging-20261010",
+          "title": "Initial diagnostic imaging",
+          "text": "NHLBI explains that pneumonia diagnosis combines history, examination and tests. A chest X-ray is commonly used to look for lung inflammation. Pulse oximetry assesses blood oxygen rather than providing lung imaging. CT provides more detail and can reveal complications; it is not described as necessary for every patient.",
+          "sourceIds": [
+            "nhlbi-pneumonia-diagnosis-verified20261010"
+          ],
+          "sourceLocator": "Diagnostic tests and procedures: chest X-ray, pulse oximetry and chest CT."
+        },
+        {
+          "id": "pleural-fluid-sampling-20261010",
+          "title": "Pleural fluid evaluation",
+          "text": "When pleural fluid sampling is indicated, thoracentesis obtains fluid from the pleural space between the lung and chest wall for culture. Bronchoscopy examines the airways and may collect lung tissue or lung fluid when pneumonia treatment is not working well. CT can demonstrate pleural disorders but does not itself obtain a culture specimen.",
+          "sourceIds": [
+            "nhlbi-pneumonia-diagnosis-verified20261010"
+          ],
+          "sourceLocator": "Diagnostic tests and procedures: bronchoscopy, chest CT and pleural fluid culture/thoracentesis."
         }
       ],
       "questions": [
@@ -456,6 +762,92 @@
           "learningObjective": "Select standard nonsevere inpatient CAP antibacterial classes.",
           "difficulty": "application",
           "id": "community-acquired-pneumonia-q2"
+        },
+        {
+          "id": "community-acquired-pneumonia-q3",
+          "stem": "A previously healthy adult has fever, cough and new focal lung findings. Pneumonia is suspected, and the clinician wants a commonly used initial imaging test to look for lung inflammation. Which test best fits that purpose?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Pulse oximetry"
+            },
+            {
+              "id": "B",
+              "text": "Complete blood count"
+            },
+            {
+              "id": "C",
+              "text": "Blood culture"
+            },
+            {
+              "id": "D",
+              "text": "Chest X-ray"
+            },
+            {
+              "id": "E",
+              "text": "Routine bronchoscopy"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "NHLBI identifies chest X-ray as a commonly used test for diagnosing pneumonia by looking for lung inflammation.",
+          "distractorExplanations": {
+            "A": "Pulse oximetry measures blood oxygen rather than imaging lung inflammation.",
+            "B": "A CBC may assess the immune response but does not provide lung imaging.",
+            "C": "Blood culture evaluates pathogens rather than providing lung imaging.",
+            "E": "NHLBI describes bronchoscopy as conditional, for example when treatment is not working."
+          },
+          "sectionIds": [
+            "diagnostic-imaging-20261010"
+          ],
+          "sourceIds": [
+            "nhlbi-pneumonia-diagnosis-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select a commonly used imaging study in suspected pneumonia.",
+          "difficulty": "application"
+        },
+        {
+          "id": "community-acquired-pneumonia-q4",
+          "stem": "A hospitalized patient with pneumonia has a pleural fluid collection. After assessment, the team determines that a pleural fluid culture is needed. Which procedure obtains the required specimen?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Arterial blood sampling"
+            },
+            {
+              "id": "B",
+              "text": "Thoracentesis"
+            },
+            {
+              "id": "C",
+              "text": "Bronchoscopy"
+            },
+            {
+              "id": "D",
+              "text": "Chest CT"
+            },
+            {
+              "id": "E",
+              "text": "Sputum collection"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Thoracentesis samples fluid from the pleural space for culture.",
+          "distractorExplanations": {
+            "A": "This obtains a blood specimen rather than the pleural fluid specimen requested.",
+            "C": "Bronchoscopy examines airways and can sample lung tissue or fluid, not the specified pleural-space collection.",
+            "D": "CT can reveal pleural disorders but does not itself obtain a culture specimen.",
+            "E": "Sputum is cough mucus rather than fluid sampled from the pleural space."
+          },
+          "sectionIds": [
+            "pleural-fluid-sampling-20261010"
+          ],
+          "sourceIds": [
+            "nhlbi-pneumonia-diagnosis-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Match an indicated pleural culture to thoracentesis.",
+          "difficulty": "application"
         }
       ]
     },
@@ -492,6 +884,46 @@
           "checkedAt": "2026-10-09",
           "locator": "Acute uncomplicated bronchitis row",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-bronchitis-adult-verified20261010",
+          "title": "Outpatient Clinical Care for Adults",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/adult-outpatient.html",
+          "kind": "official-recommendation",
+          "edition": "Official adult outpatient prescribing summary, April 16, 2024",
+          "publishedDate": "2024-04-16",
+          "checkedAt": "2026-10-10",
+          "locator": "Acute uncomplicated bronchitis row: diagnosis and chest radiography",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Applies to otherwise healthy adults with uncomplicated bronchitis after considering pneumonia. Linked society publications are not imported; cited background studies are older.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-bronchitis-basics-verified20261010",
+          "title": "Chest Cold (Acute Bronchitis) Basics",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/acute-bronchitis/about/index.html",
+          "kind": "official-recommendation",
+          "edition": "Official educational webpage dated July 2, 2025",
+          "publishedDate": "2025-07-02",
+          "checkedAt": "2026-10-10",
+          "locator": "How to feel better; Over-the-counter medicine",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "CDC scopes this information to healthy people without underlying heart/lung problems or immunocompromise. No pediatric dosing or cough-medicine endorsement is added.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -518,6 +950,24 @@
           "sourceIds": [
             "cdc-adult-outpatient"
           ]
+        },
+        {
+          "id": "imaging-boundary-20261010",
+          "title": "Chest imaging in uncomplicated cough",
+          "text": "CDC describes pneumonia as uncommon in otherwise healthy adults without abnormal vital signs or focal lung findings. Relevant abnormalities include heart rate at least 100, respiratory rate at least 24, oral temperature at least 38°C, or focal consolidation, egophony or fremitus. Chest radiography is not indicated in most uncomplicated bronchitis cases.",
+          "sourceIds": [
+            "cdc-bronchitis-adult-verified20261010"
+          ],
+          "sourceLocator": "Acute uncomplicated bronchitis row: diagnostic bullets."
+        },
+        {
+          "id": "symptom-relief-boundary-20261010",
+          "title": "Symptom relief versus cure",
+          "text": "CDC describes rest and fluids as supportive measures for uncomplicated acute bronchitis. Over-the-counter medicines may temporarily relieve symptoms, but they do not cure the illness. Product labels and directions still apply, and medication selection should account for other prescription and nonprescription medicines.",
+          "sourceIds": [
+            "cdc-bronchitis-basics-verified20261010"
+          ],
+          "sourceLocator": "How to feel better; Over-the-counter medicine."
         }
       ],
       "questions": [
@@ -607,6 +1057,92 @@
           "learningObjective": "Recognize when the uncomplicated-bronchitis pathway no longer applies.",
           "difficulty": "application",
           "id": "acute-bronchitis-q2"
+        },
+        {
+          "id": "acute-bronchitis-q3",
+          "stem": "A healthy adult has several days of cough. Heart rate is 78/min, respiratory rate 16/min and oral temperature 37.0°C. There is no focal consolidation, egophony or fremitus. Uncomplicated bronchitis is the working diagnosis. Which imaging approach best fits CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Obtain chest CT as routine initial imaging"
+            },
+            {
+              "id": "B",
+              "text": "Obtain a radiograph solely because cough has lasted several days"
+            },
+            {
+              "id": "C",
+              "text": "Obtain routine imaging because the patient is an adult"
+            },
+            {
+              "id": "D",
+              "text": "Obtain a radiograph solely to select an antibiotic for uncomplicated bronchitis"
+            },
+            {
+              "id": "E",
+              "text": "No routine chest radiography for this uncomplicated presentation"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "CDC states that chest radiography is not indicated in most uncomplicated bronchitis cases with reassuring vital signs and examination.",
+          "distractorExplanations": {
+            "A": "The CDC summary does not support routine CT in this uncomplicated presentation.",
+            "B": "The reassuring vital signs and examination do not establish a routine radiography indication.",
+            "C": "Adult status alone is not the described imaging criterion.",
+            "D": "CDC recommends neither routine imaging nor routine antibiotics for uncomplicated bronchitis."
+          },
+          "sectionIds": [
+            "imaging-boundary-20261010"
+          ],
+          "sourceIds": [
+            "cdc-bronchitis-adult-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Avoid routine chest imaging when uncomplicated bronchitis features are reassuring.",
+          "difficulty": "application"
+        },
+        {
+          "id": "acute-bronchitis-q4",
+          "stem": "A healthy adult with uncomplicated acute bronchitis asks whether an over-the-counter cough medicine will cure the illness. Which counseling statement is most consistent with CDC’s educational guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Cough suppressants reliably shorten the underlying infection"
+            },
+            {
+              "id": "B",
+              "text": "Over-the-counter decongestants eradicate the cause"
+            },
+            {
+              "id": "C",
+              "text": "It may temporarily relieve symptoms but will not cure the illness"
+            },
+            {
+              "id": "D",
+              "text": "Combining several products guarantees faster recovery"
+            },
+            {
+              "id": "E",
+              "text": "Symptom improvement proves the illness has been cured"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "CDC distinguishes temporary symptom relief from cure and includes rest and fluids in supportive care.",
+          "distractorExplanations": {
+            "A": "CDC describes temporary relief rather than a cure or guaranteed shortened illness.",
+            "B": "CDC does not describe these medicines as eradicating the underlying cause.",
+            "D": "The guidance does not promise faster recovery from combining products and advises following labels.",
+            "E": "Temporary symptom relief is not equivalent to cure."
+          },
+          "sectionIds": [
+            "symptom-relief-boundary-20261010"
+          ],
+          "sourceIds": [
+            "cdc-bronchitis-basics-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Explain the limited role of over-the-counter symptom relief in acute bronchitis.",
+          "difficulty": "application"
         }
       ]
     },
@@ -643,6 +1179,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Acute rhinosinusitis row",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-rhinosinusitis-adult-verified20261010",
+          "title": "Outpatient Clinical Care for Adults",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/adult-outpatient.html",
+          "kind": "official-recommendation",
+          "edition": "Official adult outpatient prescribing summary, April 16, 2024",
+          "publishedDate": "2024-04-16",
+          "checkedAt": "2026-10-10",
+          "locator": "Acute rhinosinusitis row: diagnosis, sinus radiographs and management",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Adult uncomplicated sinusitis summary. Underlying references include 2012 and 2015 society guidelines; do not import them or infer duration, dose, complication imaging or all allergy regimens.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -669,6 +1225,24 @@
           "sourceIds": [
             "cdc-adult-outpatient"
           ]
+        },
+        {
+          "id": "first-line-selection-20261010",
+          "title": "First-line antibiotic selection",
+          "text": "When an adult bacterial rhinosinusitis case is selected for antibiotic treatment, CDC lists amoxicillin or amoxicillin/clavulanate as first-line agents. Macrolides such as azithromycin are not recommended because of pneumococcal resistance. Doxycycline or a respiratory fluoroquinolone are listed alternatives for penicillin-allergic patients; they are not presented as the default first-line choice for every adult.",
+          "sourceIds": [
+            "cdc-rhinosinusitis-adult-verified20261010"
+          ],
+          "sourceLocator": "Acute rhinosinusitis row, Management bullets."
+        },
+        {
+          "id": "clinical-diagnosis-imaging-20261010",
+          "title": "Clinical patterns and imaging",
+          "text": "CDC supports bacterial rhinosinusitis recognition using persistent symptoms beyond ten days without improvement, severe symptoms, or deterioration after initial improvement. Routine sinus radiographs are not recommended. This statement does not define imaging for suspected orbital, intracranial or other complicated disease.",
+          "sourceIds": [
+            "cdc-rhinosinusitis-adult-verified20261010"
+          ],
+          "sourceLocator": "Acute rhinosinusitis row, Diagnosis bullets."
         }
       ],
       "questions": [
@@ -757,6 +1331,92 @@
           "learningObjective": "Recognize observation as a valid option.",
           "difficulty": "application",
           "id": "bacterial-rhinosinusitis-q2"
+        },
+        {
+          "id": "bacterial-rhinosinusitis-q3",
+          "stem": "A nonpregnant adult has uncomplicated bacterial rhinosinusitis, no penicillin allergy and no relevant contraindication. After discussing observation, the clinician and patient choose antibiotic treatment. Which option matches CDC’s first-line list?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Amoxicillin/clavulanate"
+            },
+            {
+              "id": "B",
+              "text": "Azithromycin"
+            },
+            {
+              "id": "C",
+              "text": "Doxycycline"
+            },
+            {
+              "id": "D",
+              "text": "Levofloxacin"
+            },
+            {
+              "id": "E",
+              "text": "Clindamycin"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "CDC lists amoxicillin or amoxicillin/clavulanate as first-line treatment when antibiotics are chosen.",
+          "distractorExplanations": {
+            "B": "CDC advises against macrolides because of pneumococcal resistance.",
+            "C": "Doxycycline is listed as a penicillin-allergy alternative rather than the default first-line choice here.",
+            "D": "A respiratory fluoroquinolone is listed as a penicillin-allergy alternative rather than the default first-line choice here.",
+            "E": "Clindamycin is not the first-line choice specified in this CDC adult summary."
+          },
+          "sectionIds": [
+            "first-line-selection-20261010"
+          ],
+          "sourceIds": [
+            "cdc-rhinosinusitis-adult-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select a first-line antibiotic class for an appropriate uncomplicated adult case.",
+          "difficulty": "application"
+        },
+        {
+          "id": "bacterial-rhinosinusitis-q4",
+          "stem": "An adult has twelve days of nasal discharge and daytime cough without improvement. Examination identifies no orbital or neurologic complication, and uncomplicated rhinosinusitis is being assessed. Which diagnostic approach is most consistent with CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Require sinus radiographs before applying the clinical criteria"
+            },
+            {
+              "id": "B",
+              "text": "Classify the illness as viral solely because cough is present"
+            },
+            {
+              "id": "C",
+              "text": "Wait for a month of symptoms before considering a bacterial pattern"
+            },
+            {
+              "id": "D",
+              "text": "Use the clinical pattern without routine sinus radiographs"
+            },
+            {
+              "id": "E",
+              "text": "Use a normal sinus radiograph to establish viral etiology"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Persistence beyond ten days without improvement supports the bacterial pattern; routine sinus radiographs are not recommended.",
+          "distractorExplanations": {
+            "A": "Routine sinus radiographs are not recommended.",
+            "B": "Persistent daytime cough is one example in the CDC bacterial pattern.",
+            "C": "The greater-than-ten-day persistent-symptom criterion is already met.",
+            "E": "The source does not establish etiology from that radiographic inference."
+          },
+          "sectionIds": [
+            "clinical-diagnosis-imaging-20261010"
+          ],
+          "sourceIds": [
+            "cdc-rhinosinusitis-adult-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Use duration and course while avoiding routine sinus radiography.",
+          "difficulty": "application"
         }
       ]
     },
@@ -794,6 +1454,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Diagnosis; negative RADT; recommended antibiotics",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-strep-verified20261010",
+          "title": "Clinical Guidance for Group A Streptococcal Pharyngitis",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html",
+          "kind": "official-recommendation",
+          "edition": "Official clinical webpage dated November 18, 2025",
+          "publishedDate": "2025-11-18",
+          "checkedAt": "2026-10-10",
+          "locator": "Some symptoms strongly suggest viral infection; Clinical examination only with viral symptoms; Other options for patients with penicillin allergy",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Source-limited GAS testing and allergy boundaries. Linked IDSA/AAP/AHA text and antibiotic dose tables are not imported; alternative susceptibility varies by location and time.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -820,6 +1500,24 @@
           "sourceIds": [
             "cdc-strep-clinical"
           ]
+        },
+        {
+          "id": "viral-testing-boundary-20261010",
+          "title": "Clear viral features",
+          "text": "Cough, rhinorrhea, hoarseness, oral ulcers or conjunctivitis strongly suggest viral pharyngitis. When clear viral symptoms are present, CDC says history and examination can support a viral diagnosis without GAS testing. Antibiotics should not treat viral pharyngitis.",
+          "sourceIds": [
+            "cdc-strep-verified20261010"
+          ],
+          "sourceLocator": "Some symptoms strongly suggest viral infection; Clinical examination only with viral symptoms; Treatment."
+        },
+        {
+          "id": "immediate-allergy-boundary-20261010",
+          "title": "Immediate penicillin hypersensitivity",
+          "text": "CDC specifically advises avoiding cephalexin and cefadroxil in patients with immediate-type penicillin hypersensitivity. This restriction should be considered before selecting among allergy alternatives. The page notes that macrolide and clindamycin resistance varies geographically and over time.",
+          "sourceIds": [
+            "cdc-strep-verified20261010"
+          ],
+          "sourceLocator": "Other options for patients with a penicillin allergy; Antibiotic resistance."
         }
       ],
       "questions": [
@@ -908,6 +1606,92 @@
           "learningObjective": "Select narrow first-line treatment for confirmed GAS.",
           "difficulty": "application",
           "id": "streptococcal-pharyngitis-q2"
+        },
+        {
+          "id": "streptococcal-pharyngitis-q3",
+          "stem": "A fourteen-year-old has sore throat accompanied by cough, rhinorrhea, hoarseness and conjunctivitis. The examination supports a straightforward viral illness. Which GAS approach best follows CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No GAS testing is needed when clear viral features are present"
+            },
+            {
+              "id": "B",
+              "text": "Give empiric penicillin before considering the viral features"
+            },
+            {
+              "id": "C",
+              "text": "Perform a RADT with backup culture despite a clearly viral presentation"
+            },
+            {
+              "id": "D",
+              "text": "Obtain a throat culture in every patient with sore throat"
+            },
+            {
+              "id": "E",
+              "text": "Start antibiotics while awaiting testing in this viral presentation"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Clear viral symptoms permit a clinical viral-pharyngitis assessment without GAS testing.",
+          "distractorExplanations": {
+            "B": "These clear viral features do not support empiric treatment for GAS.",
+            "C": "CDC says clear viral symptoms do not require GAS testing.",
+            "D": "CDC permits a clinical viral assessment without testing when viral symptoms are clear.",
+            "E": "CDC advises against antibiotics for viral pharyngitis."
+          },
+          "sectionIds": [
+            "viral-testing-boundary-20261010"
+          ],
+          "sourceIds": [
+            "cdc-strep-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Avoid GAS testing and antibiotic treatment in clear viral pharyngitis.",
+          "difficulty": "application"
+        },
+        {
+          "id": "streptococcal-pharyngitis-q4",
+          "stem": "An adult has confirmed GAS pharyngitis and a documented immediate anaphylactic reaction to penicillin. Before choosing an allergy alternative, which restriction is explicitly stated by CDC?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Treat confirmed GAS with cephalexin regardless of immediate allergy type"
+            },
+            {
+              "id": "B",
+              "text": "Use cefadroxil for any penicillin allergy without further distinction"
+            },
+            {
+              "id": "C",
+              "text": "Choose an allergy alternative without reviewing the reaction type"
+            },
+            {
+              "id": "D",
+              "text": "Assume local macrolide susceptibility is unchanged across years"
+            },
+            {
+              "id": "E",
+              "text": "Avoid cephalexin and cefadroxil in immediate-type penicillin hypersensitivity"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "CDC specifically advises avoiding those two agents in immediate-type penicillin hypersensitivity.",
+          "distractorExplanations": {
+            "A": "CDC explicitly restricts cephalexin in immediate-type penicillin hypersensitivity.",
+            "B": "CDC also explicitly restricts cefadroxil in this allergy category.",
+            "C": "CDC makes the allergy type relevant to alternative selection.",
+            "D": "Macrolide resistance varies geographically and temporally."
+          },
+          "sectionIds": [
+            "immediate-allergy-boundary-20261010"
+          ],
+          "sourceIds": [
+            "cdc-strep-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply the immediate-hypersensitivity boundary to GAS allergy alternatives.",
+          "difficulty": "application"
         }
       ]
     },
@@ -944,6 +1728,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Priority Groups; Antiviral Drug Options; co-circulation",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-influenza-antivirals-verified20261010",
+          "title": "Influenza Antiviral Medications: Summary for Clinicians",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html",
+          "kind": "official-recommendation",
+          "edition": "Official clinical summary reviewed and updated March 10, 2026",
+          "publishedDate": "2024-10-01",
+          "checkedAt": "2026-10-10",
+          "locator": "Table 1 and footnote 3; Summary of Influenza Antiviral Treatment Recommendations, pregnancy paragraphs",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Current retrieved seasonal guidance; age, pregnancy, airway disease and other contraindications affect selection. No dosing, society text or unrestricted substitution between agents is added.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -970,6 +1774,24 @@
           "sourceIds": [
             "cdc-influenza-antivirals"
           ]
+        },
+        {
+          "id": "pregnancy-antiviral-20261010",
+          "title": "Pregnancy antiviral preference",
+          "text": "CDC identifies oral oseltamivir as the preferred influenza treatment during pregnancy. Baloxavir is not recommended during pregnancy or breastfeeding because adequate efficacy and safety data are unavailable. Antiviral choice is not based solely on single-dose convenience.",
+          "sourceIds": [
+            "cdc-influenza-antivirals-verified20261010"
+          ],
+          "sourceLocator": "Summary of Influenza Antiviral Treatment Recommendations: pregnancy and baloxavir paragraphs."
+        },
+        {
+          "id": "zanamivir-airways-20261010",
+          "title": "Inhaled zanamivir boundary",
+          "text": "CDC’s antiviral table and footnote state that inhaled zanamivir is contraindicated in underlying airway disease such as asthma or COPD because of bronchospasm risk. The table identifies activity against both influenza A and B. Airway disease affects drug choice rather than excluding influenza infection or all antiviral treatment. CDC separately advises against amantadine and rimantadine because of high resistance among circulating influenza A viruses.",
+          "sourceIds": [
+            "cdc-influenza-antivirals-verified20261010"
+          ],
+          "sourceLocator": "Table 1: inhaled zanamivir row and footnote 3. Current medications available section: amantadine and rimantadine resistance."
         }
       ],
       "questions": [
@@ -1060,6 +1882,93 @@
           "learningObjective": "Distinguish priority illness from the early uncomplicated outpatient window.",
           "difficulty": "application",
           "id": "influenza-q2"
+        },
+        {
+          "id": "influenza-q3",
+          "stem": "A pregnant adult has confirmed influenza and is being assessed promptly for antiviral treatment. No relevant contraindication prevents the preferred oral agent. Which option matches CDC’s pregnancy preference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Oral baloxavir"
+            },
+            {
+              "id": "B",
+              "text": "Inhaled zanamivir"
+            },
+            {
+              "id": "C",
+              "text": "Oral oseltamivir"
+            },
+            {
+              "id": "D",
+              "text": "Intravenous peramivir"
+            },
+            {
+              "id": "E",
+              "text": "Oral rimantadine"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "CDC identifies oral oseltamivir as the preferred treatment during pregnancy.",
+          "distractorExplanations": {
+            "A": "Baloxavir is not recommended in pregnancy because adequate efficacy and safety data are lacking.",
+            "B": "This is not the preferred pregnancy agent stated by CDC.",
+            "D": "This is not the preferred pregnancy agent when the preferred oral drug can be used.",
+            "E": "CDC separately advises against rimantadine because of circulating influenza A resistance; oral oseltamivir is its pregnancy preference."
+          },
+          "sectionIds": [
+            "pregnancy-antiviral-20261010",
+            "zanamivir-airways-20261010"
+          ],
+          "sourceIds": [
+            "cdc-influenza-antivirals-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Choose the CDC-preferred influenza agent during pregnancy.",
+          "difficulty": "application"
+        },
+        {
+          "id": "influenza-q4",
+          "stem": "A twenty-six-year-old with asthma has influenza. Which listed influenza antiviral is specifically contraindicated because of the underlying airway disease?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Oral oseltamivir"
+            },
+            {
+              "id": "B",
+              "text": "Inhaled zanamivir"
+            },
+            {
+              "id": "C",
+              "text": "Intravenous peramivir"
+            },
+            {
+              "id": "D",
+              "text": "Oral baloxavir"
+            },
+            {
+              "id": "E",
+              "text": "Amantadine"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Inhaled zanamivir is contraindicated in asthma or COPD because of bronchospasm risk.",
+          "distractorExplanations": {
+            "A": "CDC does not list asthma as this agent’s airway-disease contraindication.",
+            "C": "CDC does not list asthma as this agent’s airway-disease contraindication.",
+            "D": "CDC does not list asthma as this agent’s airway-disease contraindication.",
+            "E": "CDC does not recommend amantadine because of viral resistance; that is different from the specified zanamivir airway contraindication."
+          },
+          "sectionIds": [
+            "zanamivir-airways-20261010"
+          ],
+          "sourceIds": [
+            "cdc-influenza-antivirals-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize the inhaled zanamivir contraindication in asthma.",
+          "difficulty": "application"
         }
       ]
     },
@@ -1097,6 +2006,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Who qualifies; nirmatrelvir-ritonavir; intravenous remdesivir",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-covid-outpatient-verified20261010",
+          "title": "COVID-19 Treatment Clinical Care for Outpatients",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/covid/hcp/clinical-care/outpatient-treatment.html",
+          "kind": "official-recommendation",
+          "edition": "Official clinical webpage updated October 8, 2026",
+          "publishedDate": "2024-07-16",
+          "checkedAt": "2026-10-10",
+          "locator": "Who qualifies for treatment; Risk Factor; COVID-19 Rebound",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Risk-based outpatient guidance; individual eligibility and contraindications still require review. Rebound statements do not authorize automatic repeat antiviral courses or replace assessment of severe illness.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -1123,6 +2052,24 @@
           "sourceIds": [
             "cdc-covid-outpatient"
           ]
+        },
+        {
+          "id": "age-risk-eligibility-20261010",
+          "title": "Age and outpatient eligibility",
+          "text": "CDC recommends considering treatment in mild or moderate COVID-19 when risk factors for severe outcomes are present. Age is an important risk factor, increasing substantially beyond sixty-five. Lack of recommended vaccination is an additional risk factor, not the only qualification for treatment; a vaccinated older adult can still warrant eligibility assessment.",
+          "sourceIds": [
+            "cdc-covid-outpatient-verified20261010"
+          ],
+          "sourceLocator": "Key points; Who qualifies for treatment; Risk Factor."
+        },
+        {
+          "id": "rebound-transmission-20261010",
+          "title": "Rebound and transmission",
+          "text": "CDC describes rebound as renewed symptoms after recovery or a new positive test after a negative one. It can occur with or without antiviral treatment and generally presents as mild symptoms several days after initial illness resolves. CDC says people with rebound should isolate to prevent transmission; treatment benefits outweigh rebound risk in patients at high risk for severe outcomes.",
+          "sourceIds": [
+            "cdc-covid-outpatient-verified20261010"
+          ],
+          "sourceLocator": "COVID-19 Rebound paragraph."
         }
       ],
       "questions": [
@@ -1212,6 +2159,92 @@
           "learningObjective": "Apply the remdesivir outpatient window.",
           "difficulty": "application",
           "id": "covid-19-q2"
+        },
+        {
+          "id": "covid-19-q3",
+          "stem": "A vaccinated seventy-eight-year-old has mild COVID-19 on symptom day two. The patient assumes vaccination makes outpatient treatment irrelevant. Which response best follows CDC’s risk-based approach?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Defer eligibility review because vaccination alone excludes treatment"
+            },
+            {
+              "id": "B",
+              "text": "Assess treatment only after a new oxygen requirement develops"
+            },
+            {
+              "id": "C",
+              "text": "Wait for hospital admission before reviewing antiviral options"
+            },
+            {
+              "id": "D",
+              "text": "Assess antiviral eligibility because advancing age remains a risk factor"
+            },
+            {
+              "id": "E",
+              "text": "Choose symptom care without eligibility review because the illness is presently mild"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "CDC recommends considering treatment for mild-to-moderate disease with risk factors; advancing age remains relevant.",
+          "distractorExplanations": {
+            "A": "Vaccination status is one factor; advancing age can still confer risk.",
+            "B": "The CDC outpatient guidance covers mild or moderate disease with risk factors.",
+            "C": "Outpatient treatment aims to reduce progression to hospitalization.",
+            "E": "The source addresses outpatient treatment for people with mild or moderate COVID-19 who are at higher risk; initial mild illness does not remove the age-based review here."
+          },
+          "sectionIds": [
+            "age-risk-eligibility-20261010"
+          ],
+          "sourceIds": [
+            "cdc-covid-outpatient-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Assess outpatient treatment eligibility in an older vaccinated adult.",
+          "difficulty": "application"
+        },
+        {
+          "id": "covid-19-q4",
+          "stem": "An adult improves after COVID-19, then develops mild recurrent symptoms and a new positive test three days after testing negative. No severe features are described. Which interpretation and next action best fit CDC’s rebound guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Rebound can occur with or without antivirals; isolate to help prevent transmission"
+            },
+            {
+              "id": "B",
+              "text": "The repeat positive test necessarily proves antiviral resistance"
+            },
+            {
+              "id": "C",
+              "text": "The recurrence necessarily establishes bacterial pneumonia"
+            },
+            {
+              "id": "D",
+              "text": "Prior antiviral treatment makes isolation unnecessary"
+            },
+            {
+              "id": "E",
+              "text": "Rebound is possible only in people who received antivirals"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "CDC advises isolation for rebound to prevent transmission and recognizes rebound with or without antiviral treatment.",
+          "distractorExplanations": {
+            "B": "The CDC rebound description does not establish drug resistance from recurrence alone.",
+            "C": "The described rebound pattern does not establish bacterial pneumonia.",
+            "D": "CDC still advises isolation for rebound.",
+            "E": "CDC reports rebound in treated and untreated patients."
+          },
+          "sectionIds": [
+            "rebound-transmission-20261010"
+          ],
+          "sourceIds": [
+            "cdc-covid-outpatient-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply the transmission precaution for COVID-19 rebound.",
+          "difficulty": "application"
         }
       ]
     },
@@ -1249,6 +2282,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Summary; intranasal corticosteroids; montelukast; food allergy testing",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "fda-montelukast-warning-verified20261010",
+          "title": "FDA requires Boxed Warning about serious mental health side effects for asthma and allergy drug montelukast (Singulair); advises restricting use for allergic rhinitis",
+          "organization": "US Food and Drug Administration",
+          "url": "https://www.fda.gov/drugs/drug-safety-communications/fda-requires-boxed-warning-about-serious-mental-health-side-effects-asthma-and-allergy-drug",
+          "kind": "official-recommendation",
+          "edition": "FDA Drug Safety Communication, March 4, 2020",
+          "publishedDate": "2020-03-04",
+          "checkedAt": "2026-10-10",
+          "locator": "What should patients and parents/caregivers do?; What should health care professionals do?",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Agency-authored safety communication, not the restricted society rhinitis parameter or a complete rhinitis treatment guideline. No manufacturer label text, dose or assurance of absence of risk is imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.fda.gov/about-fda/about-website/website-policies",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -1275,6 +2328,24 @@
           "sourceIds": [
             "jtf-rhinitis-2020"
           ]
+        },
+        {
+          "id": "montelukast-reserve-20261010",
+          "title": "Montelukast selection boundary",
+          "text": "FDA advises reserving montelukast for allergic rhinitis when alternative therapies provide an inadequate response or cannot be tolerated. Its boxed warning concerns serious behavior or mood changes, including suicidal thoughts or actions. Alternative allergy medicines should be considered rather than using montelukast as the automatic first choice.",
+          "sourceIds": [
+            "fda-montelukast-warning-verified20261010"
+          ],
+          "sourceLocator": "What should patients and parents/caregivers do?; What should health care professionals do?"
+        },
+        {
+          "id": "montelukast-new-symptoms-20261010",
+          "title": "New behavior or mood symptoms",
+          "text": "FDA instructs patients who develop behavior or mood changes while taking montelukast to stop the medicine and contact a healthcare professional immediately. Examples include agitation and vivid dreams. Counseling applies to all recipients, and some events have been reported after discontinuation; stopping does not eliminate the need for follow-up.",
+          "sourceIds": [
+            "fda-montelukast-warning-verified20261010"
+          ],
+          "sourceLocator": "What should patients and parents/caregivers do? symptom list; What should health care professionals do?"
         }
       ],
       "questions": [
@@ -1365,6 +2436,92 @@
           "learningObjective": "Avoid unsupported food-allergy evaluation in isolated rhinitis.",
           "difficulty": "application",
           "id": "allergic-rhinitis-q2"
+        },
+        {
+          "id": "allergic-rhinitis-q3",
+          "stem": "An adult with allergic rhinitis asks to start montelukast because a friend likes it. The patient has not tried alternative allergy therapies and has no stated intolerance to them. Which selection principle follows FDA’s warning?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Start montelukast first because no previous psychiatric symptoms are reported"
+            },
+            {
+              "id": "B",
+              "text": "Apply the mental-health counseling requirement only to asthma treatment"
+            },
+            {
+              "id": "C",
+              "text": "Use a short trial without discussing the boxed warning"
+            },
+            {
+              "id": "D",
+              "text": "Select montelukast before considering other allergy therapies"
+            },
+            {
+              "id": "E",
+              "text": "Reserve montelukast for inadequate response or intolerance to alternatives"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "FDA limits allergic-rhinitis use to patients with inadequate response or intolerance to alternative therapies.",
+          "distractorExplanations": {
+            "A": "FDA still reserves allergic-rhinitis use for inadequate response or intolerance to alternatives.",
+            "B": "FDA advises counseling all montelukast recipients.",
+            "C": "FDA advises counseling all recipients about mental-health side effects.",
+            "D": "This does not apply FDA’s reserve-use restriction."
+          },
+          "sectionIds": [
+            "montelukast-reserve-20261010"
+          ],
+          "sourceIds": [
+            "fda-montelukast-warning-verified20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Apply FDA’s reserve-use restriction for montelukast in allergic rhinitis.",
+          "difficulty": "application"
+        },
+        {
+          "id": "allergic-rhinitis-q4",
+          "stem": "An adult taking montelukast for allergic rhinitis reports new vivid nightmares and agitation. Which medication response is explicitly advised by FDA?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Continue unchanged and reassess at a routine visit"
+            },
+            {
+              "id": "B",
+              "text": "Reduce the dose as the sole response without contacting a professional"
+            },
+            {
+              "id": "C",
+              "text": "Stop montelukast and contact a healthcare professional immediately"
+            },
+            {
+              "id": "D",
+              "text": "Change the dosing time as the sole response"
+            },
+            {
+              "id": "E",
+              "text": "Stop the medicine but omit follow-up because risk ends immediately"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "FDA advises stopping montelukast and promptly contacting a healthcare professional for new behavior or mood changes.",
+          "distractorExplanations": {
+            "A": "FDA recommends immediate contact rather than routine waiting.",
+            "B": "The stated safety response is stopping the medicine and contacting a professional.",
+            "D": "Changing timing is not the stated safety response.",
+            "E": "Some events have been reported after discontinuation, and contact is still advised."
+          },
+          "sectionIds": [
+            "montelukast-new-symptoms-20261010"
+          ],
+          "sourceIds": [
+            "fda-montelukast-warning-verified20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize and respond to potential montelukast neuropsychiatric effects.",
+          "difficulty": "application"
         }
       ]
     },
@@ -1415,6 +2572,46 @@
           "checkedAt": "2026-10-09",
           "locator": "TB blood tests; diagnosis",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-tb-latent-verified20261010",
+          "title": "Clinical Overview of Latent Tuberculosis Infection",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/tb/hcp/clinical-overview/latent-tuberculosis-infection.html",
+          "kind": "official-recommendation",
+          "edition": "Official clinical webpage dated April 17, 2025",
+          "publishedDate": "2025-04-17",
+          "checkedAt": "2026-10-10",
+          "locator": "Treatment and recovery: short-course regimens, isoniazid monotherapy and regimen selection",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Latent infection only after active disease is excluded. Source-case susceptibility, medical conditions and drug interactions affect eligibility. No active-TB regimen or copyrighted society paper is imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-tb-testing-verified20261010",
+          "title": "Clinical Testing and Diagnosis for Tuberculosis",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/tb/hcp/testing-diagnosis/index.html",
+          "kind": "official-recommendation",
+          "edition": "Official clinical webpage dated April 17, 2025",
+          "publishedDate": "2025-04-17",
+          "checkedAt": "2026-10-10",
+          "locator": "Recommended tests: paragraph on written documentation of previous positive tests",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Avoid-repeat-testing boundary does not eliminate symptom assessment or evaluation when disease is suspected. Linked society diagnostic guidelines and AAP materials are not imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -1441,6 +2638,24 @@
           "sourceIds": [
             "cdc-tb-latent"
           ]
+        },
+        {
+          "id": "latent-short-course-20261010",
+          "title": "Preferred latent-infection regimens",
+          "text": "For eligible latent-TB patients after excluding disease, CDC preferentially recommends three- or four-month rifamycin-based regimens over six- or nine-month isoniazid monotherapy. Four months of daily rifampin is one listed short-course option. Longer isoniazid regimens remain effective alternatives when a short course is not appropriate; selection considers susceptibility, conditions and interactions.",
+          "sourceIds": [
+            "cdc-tb-latent-verified20261010"
+          ],
+          "sourceLocator": "Treatment and recovery; Short-course regimens; Isoniazid monotherapy regimens; Selecting a treatment regimen."
+        },
+        {
+          "id": "prior-positive-testing-20261010",
+          "title": "Previously documented positive testing",
+          "text": "CDC advises against repeating TB blood tests or skin tests in people with written documentation of a prior positive test or treatment for TB disease. Many remain positive, and an additional infection test usually contributes little. Existing documentation and appropriate clinical evaluation should guide follow-up; this is not an exemption from evaluating possible active disease.",
+          "sourceIds": [
+            "cdc-tb-testing-verified20261010"
+          ],
+          "sourceLocator": "Recommended tests opening paragraph; Key points and Diagnosis."
         }
       ],
       "questions": [
@@ -1529,6 +2744,92 @@
           "learningObjective": "Separate TB infection from active disease before preventive therapy.",
           "difficulty": "application",
           "id": "tuberculosis-q2"
+        },
+        {
+          "id": "tuberculosis-q3",
+          "stem": "An adult has latent TB infection after active disease is excluded. Drug susceptibility, medical conditions and interactions permit rifampin treatment. Among these options, which matches CDC’s preferred short-course approach?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Nine months of isoniazid as the default preferred course"
+            },
+            {
+              "id": "B",
+              "text": "Four months of daily rifampin"
+            },
+            {
+              "id": "C",
+              "text": "Six months of isoniazid as the default preferred course"
+            },
+            {
+              "id": "D",
+              "text": "Delay preventive treatment until a repeat IGRA is negative"
+            },
+            {
+              "id": "E",
+              "text": "Reserve all rifamycin regimens for active rather than latent disease"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "CDC preferentially recommends eligible short-course rifamycin-based regimens; four months of daily rifampin is listed.",
+          "distractorExplanations": {
+            "A": "Nine-month isoniazid is an effective alternative when a short course is not an option.",
+            "C": "Six-month isoniazid is an alternative rather than the preferred eligible short-course choice.",
+            "D": "Treatment eligibility is based on latent infection with disease excluded, not on obtaining a negative repeat test.",
+            "E": "CDC lists rifamycin-based short courses for eligible latent infection."
+          },
+          "sectionIds": [
+            "latent-short-course-20261010"
+          ],
+          "sourceIds": [
+            "cdc-tb-latent-verified20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Choose a preferred eligible short-course latent-TB regimen.",
+          "difficulty": "application"
+        },
+        {
+          "id": "tuberculosis-q4",
+          "stem": "An adult brings written documentation of a previous positive IGRA. A second infection test is proposed solely to see whether the old result has disappeared. Which approach follows CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Repeat the IGRA as a test of cure"
+            },
+            {
+              "id": "B",
+              "text": "Use a skin test to determine whether the prior IGRA has disappeared"
+            },
+            {
+              "id": "C",
+              "text": "Interpret the documented IGRA as proof of active disease"
+            },
+            {
+              "id": "D",
+              "text": "Avoid another blood or skin infection test solely for this purpose and use the documented history in follow-up"
+            },
+            {
+              "id": "E",
+              "text": "Use a repeat negative infection test alone to exclude active disease"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "CDC advises against repeating blood or skin infection tests after a documented prior positive result; many remain positive and additional testing usually adds little.",
+          "distractorExplanations": {
+            "A": "CDC advises against repeat infection testing after a documented prior positive.",
+            "B": "Changing the infection-test method does not remove the avoid-repeat-testing boundary.",
+            "C": "A positive infection test alone does not establish active disease.",
+            "E": "Infection tests alone cannot exclude active TB disease."
+          },
+          "sectionIds": [
+            "prior-positive-testing-20261010"
+          ],
+          "sourceIds": [
+            "cdc-tb-testing-verified20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Avoid unhelpful repeat infection testing after a documented positive TB result.",
+          "difficulty": "application"
         }
       ]
     },
@@ -1566,6 +2867,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Acute otitis media row",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-pediatric-aom-verified20261010",
+          "title": "Outpatient Clinical Care for Pediatric Populations",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/pediatric-outpatient.html",
+          "kind": "official-recommendation",
+          "edition": "CDC outpatient summary, April 22, 2024; AOM row only",
+          "publishedDate": "2024-04-22",
+          "checkedAt": "2026-10-10",
+          "locator": "Acute otitis media row: age/laterality watchful waiting; prophylactic antibiotics for recurrent AOM",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Only the CDC-authored AOM summary is used. This is not a newly revised full AAP guideline. The page's obsolete pediatric UTI material is excluded, as are linked copyrighted publications and images.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -1592,6 +2913,15 @@
           "sourceIds": [
             "cdc-pediatric-aom"
           ]
+        },
+        {
+          "id": "observation-age-laterality",
+          "title": "Age and laterality in mild AOM",
+          "text": "CDC says mild unilateral AOM in children aged 6–23 months, or mild unilateral or bilateral AOM in children older than 2 years, may be appropriate for watchful waiting through shared decision-making. This is selected observation, not a rule to observe every severity or age. The same AOM row says not to use prophylactic antibiotics to reduce recurrent AOM frequency.",
+          "sourceIds": [
+            "cdc-pediatric-aom-verified20261010"
+          ],
+          "sourceLocator": "Acute otitis media — Management: watchful waiting and prophylactic-antibiotic bullets."
         }
       ],
       "questions": [
@@ -1680,6 +3010,92 @@
           "learningObjective": "Use conjunctivitis as a modifier of AOM antibiotic choice.",
           "difficulty": "application",
           "id": "acute-otitis-media-q2"
+        },
+        {
+          "id": "acute-otitis-media-q3",
+          "stem": "A fictional 18-month-old has confirmed mild unilateral AOM. There is no severe illness, the family can return for follow-up, and shared decision-making is possible. Which initial option fits CDC's age/laterality observation criteria?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Consider watchful waiting through shared decision-making"
+            },
+            {
+              "id": "B",
+              "text": "Observation at this age requires bilateral AOM"
+            },
+            {
+              "id": "C",
+              "text": "Observation is unavailable until the child is older than 2 years"
+            },
+            {
+              "id": "D",
+              "text": "Observation requires an antibiotic course to fail first"
+            },
+            {
+              "id": "E",
+              "text": "Observation requires a history of recurrent AOM"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "The CDC AOM summary allows watchful waiting for selected mild unilateral cases at 6–23 months. Eligibility must not be generalized to every presentation.",
+          "distractorExplanations": {
+            "B": "CDC allows observation for selected mild unilateral AOM at 6–23 months; bilateral disease is not the eligibility criterion in this age group.",
+            "C": "The source includes selected mild unilateral cases aged 6–23 months.",
+            "D": "Prior antibiotic failure is not part of the source observation criterion for this selected mild unilateral case.",
+            "E": "Recurrent episodes are not required by CDC’s selected mild unilateral observation criterion at this age."
+          },
+          "sectionIds": [
+            "observation-age-laterality"
+          ],
+          "sourceIds": [
+            "cdc-pediatric-aom-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply age and laterality to a shared-decision observation option.",
+          "difficulty": "application"
+        },
+        {
+          "id": "acute-otitis-media-q4",
+          "stem": "A fictional child has recurrent AOM. The family asks whether continuous prophylactic antibiotics should be prescribed solely to reduce future episode frequency. What does the CDC outpatient AOM summary recommend?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Use continuous low-dose amoxicillin between acute episodes"
+            },
+            {
+              "id": "B",
+              "text": "Use amoxicillin/clavulanate between episodes when amoxicillin was recently prescribed"
+            },
+            {
+              "id": "C",
+              "text": "Prescribe antibiotics whenever upper-respiratory symptoms begin to prevent the next AOM episode"
+            },
+            {
+              "id": "D",
+              "text": "Do not prescribe prophylactic antibiotics solely to reduce recurrent AOM frequency"
+            },
+            {
+              "id": "E",
+              "text": "Start prophylactic antibiotics after each completed acute course even when the episode has resolved"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "CDC states that prophylactic antibiotics are not recommended to reduce the frequency of recurrent AOM. This answer does not choose a treatment for a current acute episode.",
+          "distractorExplanations": {
+            "A": "CDC does not recommend prophylactic antibiotics solely to reduce recurrent AOM frequency.",
+            "B": "Antibiotic choice for an acute episode does not establish an exception to the CDC statement against recurrence prophylaxis.",
+            "C": "That remains an antibiotic prophylaxis strategy for recurrence reduction, which the cited CDC summary does not recommend.",
+            "E": "The completed acute course does not change the source statement against antibiotics solely for preventing recurrences."
+          },
+          "sectionIds": [
+            "observation-age-laterality"
+          ],
+          "sourceIds": [
+            "cdc-pediatric-aom-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Separate recurrent-AOM antibiotic prophylaxis from acute-episode treatment.",
+          "difficulty": "application"
         }
       ]
     },
@@ -1717,6 +3133,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Pages 1–3: examination; treatment; urgent referral",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-swimmers-ear-verified20261010",
+          "title": "Preventing Swimmer's Ear",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/healthy-swimming/prevention/preventing-swimmers-ear.html",
+          "kind": "official-clinical-reference",
+          "edition": "CDC prevention and treatment overview, May 28, 2025",
+          "publishedDate": "2025-05-28",
+          "checkedAt": "2026-10-10",
+          "locator": "Prevention steps: ear-drying drops, objects in ear canal and ear wax; Treatment",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "CDC prevention material, not a full specialist treatment guideline. No borrowed HSE regimen or invasive-disease protocol is used for these new questions; no images or proprietary assets are imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -1743,6 +3179,24 @@
           "sourceIds": [
             "hse-otitis-externa-2026"
           ]
+        },
+        {
+          "id": "drying-drop-boundaries",
+          "title": "When ear-drying drops are unsuitable",
+          "text": "CDC advises discussing ear-drying drops with a health care provider and says not to use them with tympanostomy tubes, a punctured eardrum, swimmer's ear or ear drainage. Ear pain or drainage should prompt health care evaluation. This prevention advice is separate from prescribed treatment for an active infection.",
+          "sourceIds": [
+            "cdc-swimmers-ear-verified20261010"
+          ],
+          "sourceLocator": "Prevention steps — Check with your healthcare provider about using ear-drying drops; Treatment."
+        },
+        {
+          "id": "protective-wax",
+          "title": "Avoid objects and unnecessary wax removal",
+          "text": "For swimmer's-ear prevention, CDC advises against putting objects such as cotton-tip swabs into the ear canal and against trying to remove ear wax. Wax helps protect the ear canal from infection. Drying methods should preserve these protective structures rather than scrape them away.",
+          "sourceIds": [
+            "cdc-swimmers-ear-verified20261010"
+          ],
+          "sourceLocator": "Prevention steps — Don't put objects in ear canal; Don't try to remove ear wax."
         }
       ],
       "questions": [
@@ -1831,6 +3285,93 @@
           "learningObjective": "Recognize invasive external-ear infection red flags.",
           "difficulty": "application",
           "id": "otitis-externa-q2"
+        },
+        {
+          "id": "otitis-externa-q3",
+          "stem": "In a fictional prevention visit, a child with tympanostomy tubes asks about using over-the-counter ear-drying drops after swimming. Which counseling best follows CDC advice?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Use the drying drops provided there is no current ear pain"
+            },
+            {
+              "id": "B",
+              "text": "Use the drying drops only if there is no visible drainage"
+            },
+            {
+              "id": "C",
+              "text": "Avoid ear-drying drops with tympanostomy tubes and discuss an appropriate prevention plan with the provider"
+            },
+            {
+              "id": "D",
+              "text": "Use the drying drops only after prolonged swimming"
+            },
+            {
+              "id": "E",
+              "text": "Use the drying drops whenever the tissue around the tube looks normal"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "CDC specifically excludes tympanostomy tubes from situations suitable for ear-drying drops. This is a prevention-safety boundary, not a prescription for treating otitis externa.",
+          "distractorExplanations": {
+            "A": "The CDC exclusion for tympanostomy tubes applies even without current ear pain.",
+            "B": "Absence of drainage does not remove the separate CDC exclusion for tympanostomy tubes.",
+            "D": "Length of swimming does not replace the source exclusion for tympanostomy tubes.",
+            "E": "The source exclusion concerns the presence of the tube, not just visible inflammation around it."
+          },
+          "sectionIds": [
+            "drying-drop-boundaries"
+          ],
+          "sourceIds": [
+            "cdc-swimmers-ear-verified20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Recognize ear-drying-drop exclusions rather than generalize prevention products.",
+          "difficulty": "application"
+        },
+        {
+          "id": "otitis-externa-q4",
+          "stem": "A fictional swimmer repeatedly inserts cotton-tip swabs into the ear canal and removes wax to prevent external-ear infections. What source-supported change should be discussed?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Continue swabbing inside the canal, but only after swimming"
+            },
+            {
+              "id": "B",
+              "text": "Avoid inserting objects and unnecessary wax removal; wax helps protect the ear canal"
+            },
+            {
+              "id": "C",
+              "text": "Keep swabbing inside the canal as long as it does not cause visible bleeding"
+            },
+            {
+              "id": "D",
+              "text": "Remove wax routinely before swimming instead of after swimming"
+            },
+            {
+              "id": "E",
+              "text": "Replace the swab with another small cleaning object inside the canal"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "CDC discourages objects in the canal and removal of protective ear wax as swimmer's-ear prevention practices.",
+          "distractorExplanations": {
+            "A": "The CDC prevention advice is to avoid putting objects into the canal; limiting this to after swimming does not follow that advice.",
+            "C": "The source discourages objects in the canal rather than making prevention eligibility depend on visible bleeding.",
+            "D": "Changing the timing does not follow CDC advice against unnecessary removal of protective wax.",
+            "E": "CDC discourages objects in the canal, not only this one type of swab."
+          },
+          "sectionIds": [
+            "protective-wax",
+            "drying-drop-boundaries"
+          ],
+          "sourceIds": [
+            "cdc-swimmers-ear-verified20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Correct an unsafe ear-cleaning practice using CDC prevention guidance.",
+          "difficulty": "application"
         }
       ]
     },
@@ -1868,6 +3409,46 @@
           "checkedAt": "2026-10-09",
           "locator": "Best practice advice 4, 6 and 8",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "niddk-gerd-diet-verified20261010",
+          "title": "Eating, Diet, & Nutrition for GER & GERD",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/eating-diet-nutrition",
+          "kind": "official-clinical-reference",
+          "edition": "Educational web page; last reviewed July 2020",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "How can changes in my eating habits improve GERD symptoms?",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of NIDDK-authored educational text only; cited external publications and graphics are excluded. The stated older review date is preserved; this is not a comprehensive or newly graded 2026 guideline. Board-study use only.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niddk.nih.gov/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "niddk-gerd-treatment-verified20261010",
+          "title": "Treatment for GER & GERD",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/treatment",
+          "kind": "official-clinical-reference",
+          "edition": "Educational web page; last reviewed July 2020",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Over-the-counter and prescription medicines: Antacids, H2 blockers and proton pump inhibitors",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of NIDDK-authored educational text only; cited external publications and graphics are excluded. The stated older review date is preserved; this is not a comprehensive or newly graded 2026 guideline. Board-study use only.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niddk.nih.gov/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -1894,6 +3475,24 @@
           "sourceIds": [
             "aga-gerd-2022"
           ]
+        },
+        {
+          "id": "verified-nocturnal-meals",
+          "title": "Nocturnal reflux and meal timing",
+          "text": "For reflux when lying down or at night, NIDDK describes finishing meals at least three hours before lying down or going to bed as a change that may improve symptoms.",
+          "sourceIds": [
+            "niddk-gerd-diet-verified20261010"
+          ],
+          "sourceLocator": "How can changes in my eating habits improve GERD symptoms?"
+        },
+        {
+          "id": "verified-acid-suppression",
+          "title": "Acid suppression and esophageal healing",
+          "text": "NIDDK describes PPIs as more effective than H2 blockers for GERD symptoms and healing the esophageal lining. This comparison does not replace evaluation of alarms or establish an individualized dose or duration.",
+          "sourceIds": [
+            "niddk-gerd-treatment-verified20261010"
+          ],
+          "sourceLocator": "Over-the-counter and prescription medicines: H2 blockers and proton pump inhibitors"
         }
       ],
       "questions": [
@@ -1982,6 +3581,92 @@
           "learningObjective": "Recognize when reflux symptoms require endoscopic evaluation.",
           "difficulty": "application",
           "id": "gastroesophageal-reflux-disease-q2"
+        },
+        {
+          "id": "gastroesophageal-reflux-disease-q3",
+          "stem": "In a board-study vignette, an adult plans to lie down at 10 p.m. Reflux is worst after late dinner. Which dinner-completion time best meets NIDDK's meal-to-recumbency interval?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "9:30 p.m."
+            },
+            {
+              "id": "B",
+              "text": "9 p.m."
+            },
+            {
+              "id": "C",
+              "text": "7 p.m."
+            },
+            {
+              "id": "D",
+              "text": "8 p.m."
+            },
+            {
+              "id": "E",
+              "text": "8:30 p.m."
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "A meal-to-recumbency interval of at least three hours may improve nocturnal symptoms.",
+          "distractorExplanations": {
+            "A": "Thirty minutes is shorter than the described three-hour interval.",
+            "B": "One hour is shorter than the described three-hour interval.",
+            "D": "Two hours is shorter than the described three-hour interval.",
+            "E": "Ninety minutes is shorter than the described three-hour interval."
+          },
+          "sectionIds": [
+            "verified-nocturnal-meals"
+          ],
+          "sourceIds": [
+            "niddk-gerd-diet-verified20261010"
+          ],
+          "domain": "chronic",
+          "difficulty": "application",
+          "learningObjective": "Apply meal timing to a nocturnal reflux pattern."
+        },
+        {
+          "id": "gastroesophageal-reflux-disease-q4",
+          "stem": "A fictional adult has documented reflux-related esophageal injury. Which listed approach has greater esophageal-healing effectiveness than H2 blockers in NIDDK's summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Antacids used only for breakthrough symptoms"
+            },
+            {
+              "id": "B",
+              "text": "Proton pump inhibitors"
+            },
+            {
+              "id": "C",
+              "text": "H2 blockers"
+            },
+            {
+              "id": "D",
+              "text": "Meal-timing changes as the only healing treatment"
+            },
+            {
+              "id": "E",
+              "text": "Observation of symptoms without a healing-treatment plan"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "NIDDK identifies PPIs as more effective than H2 blockers for esophageal healing.",
+          "distractorExplanations": {
+            "A": "NIDDK describes antacids for mild symptom relief; its healing comparison favors PPIs.",
+            "C": "The source identifies PPIs as more effective than H2 blockers.",
+            "D": "The stated comparative esophageal-healing evidence concerns PPIs.",
+            "E": "Observation does not provide the healing approach identified."
+          },
+          "sectionIds": [
+            "verified-acid-suppression"
+          ],
+          "sourceIds": [
+            "niddk-gerd-treatment-verified20261010"
+          ],
+          "domain": "chronic",
+          "difficulty": "application",
+          "learningObjective": "Distinguish symptom relief from the source's comparative esophageal-healing evidence."
         }
       ]
     },
@@ -2020,6 +3705,46 @@
           "checkedAt": "2026-10-09",
           "locator": "When to test; treatment table; treatment pearls",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "niddk-ulcer-treatment-verified20261010",
+          "title": "Treatment for Peptic Ulcers (Stomach or Duodenal Ulcers)",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/treatment",
+          "kind": "official-clinical-reference",
+          "edition": "Educational web page; last reviewed September 2022",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Treating the causes of peptic ulcers: Nonsteroidal anti-inflammatory drugs (NSAIDs)",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of NIDDK-authored educational text only; cited external publications and graphics are excluded. The stated older review date is preserved; this is not a comprehensive or newly graded 2026 guideline. Board-study use only.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niddk.nih.gov/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "niddk-ulcer-alarms-verified20261010",
+          "title": "Symptoms & Causes of Peptic Ulcers (Stomach or Duodenal Ulcers)",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/symptoms-causes",
+          "kind": "official-clinical-reference",
+          "edition": "Educational web page; last reviewed September 2022",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "What are the symptoms of a peptic ulcer? Complication warning symptoms",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of NIDDK-authored educational text only; cited external publications and graphics are excluded. The stated older review date is preserved; this is not a comprehensive or newly graded 2026 guideline. Board-study use only.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niddk.nih.gov/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -2046,6 +3771,24 @@
           "sourceIds": [
             "acg-hpylori-2024"
           ]
+        },
+        {
+          "id": "verified-nsaid-cause",
+          "title": "Managing an NSAID contributor",
+          "text": "For an NSAID-associated ulcer, NIDDK describes clinician-directed changes to the NSAID or pain medicine. If an NSAID must continue, a PPI may be recommended. Ulcer healing includes addressing the cause, not only symptoms.",
+          "sourceIds": [
+            "niddk-ulcer-treatment-verified20261010"
+          ],
+          "sourceLocator": "Treating the causes of peptic ulcers: Nonsteroidal anti-inflammatory drugs (NSAIDs)"
+        },
+        {
+          "id": "verified-ulcer-alarms",
+          "title": "Ulcer-complication warning signs",
+          "text": "Black tarry stool, bloody or coffee-ground emesis, faintness, shock symptoms or persistent sudden severe abdominal pain warrant immediate medical assessment in NIDDK's ulcer summary. The signs raise concern for a complication; they do not independently establish its exact type.",
+          "sourceIds": [
+            "niddk-ulcer-alarms-verified20261010"
+          ],
+          "sourceLocator": "What are the symptoms of a peptic ulcer? Complication warning symptoms"
         }
       ],
       "questions": [
@@ -2134,6 +3877,92 @@
           "learningObjective": "Prepare properly for an H. pylori test of cure.",
           "difficulty": "application",
           "id": "peptic-ulcer-h-pylori-q2"
+        },
+        {
+          "id": "peptic-ulcer-h-pylori-q3",
+          "stem": "A fictional adult has an NSAID-associated ulcer. The team determines that the NSAID remains necessary. Which additional measure is described by NIDDK?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Use the necessary NSAID with food but no ulcer-directed medicine"
+            },
+            {
+              "id": "B",
+              "text": "Switch to another NSAID without reviewing ulcer treatment or protection"
+            },
+            {
+              "id": "C",
+              "text": "Treat for H. pylori without establishing that infection"
+            },
+            {
+              "id": "D",
+              "text": "Consider PPI protection while reviewing the NSAID plan"
+            },
+            {
+              "id": "E",
+              "text": "Continue the NSAID without ulcer-directed care once pain improves"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "When NSAID use must continue, NIDDK describes adding a PPI and reviewing the causative medicine.",
+          "distractorExplanations": {
+            "A": "The source describes ulcer-healing treatment and cause management, not food alone.",
+            "B": "For the stated need to continue an NSAID, the source describes adding a PPI and reviewing the NSAID contributor; switching alone does not supply that ulcer-healing strategy.",
+            "C": "The source distinguishes H. pylori treatment from managing an NSAID-associated ulcer.",
+            "E": "Pain improvement does not address the ulcer's cause."
+          },
+          "sectionIds": [
+            "verified-nsaid-cause"
+          ],
+          "sourceIds": [
+            "niddk-ulcer-treatment-verified20261010"
+          ],
+          "domain": "chronic",
+          "difficulty": "application",
+          "learningObjective": "Apply gastroprotection when a causative NSAID cannot be discontinued."
+        },
+        {
+          "id": "peptic-ulcer-h-pylori-q4",
+          "stem": "A fictional patient with ulcer history develops black tarry stools and faintness. What is the best next action?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Arrange immediate medical assessment for a possible ulcer complication"
+            },
+            {
+              "id": "B",
+              "text": "Schedule review in four weeks without assessing the current symptoms"
+            },
+            {
+              "id": "C",
+              "text": "Wait for an H. pylori result before assessing the warning signs"
+            },
+            {
+              "id": "D",
+              "text": "Add an antacid and defer assessment if pain improves"
+            },
+            {
+              "id": "E",
+              "text": "Change the NSAID alone and wait for the tarry stools to resolve"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "NIDDK lists tarry stool and faintness among ulcer-complication warning signs requiring immediate assessment.",
+          "distractorExplanations": {
+            "B": "The warning signs call for immediate assessment.",
+            "C": "Cause testing does not replace assessment of a possible acute complication.",
+            "D": "Pain fluctuation does not resolve the listed warning signs.",
+            "E": "Changing a contributor alone does not assess the possible complication."
+          },
+          "sectionIds": [
+            "verified-ulcer-alarms"
+          ],
+          "sourceIds": [
+            "niddk-ulcer-alarms-verified20261010"
+          ],
+          "domain": "emergent",
+          "difficulty": "application",
+          "learningObjective": "Recognize ulcer warning signs that override routine outpatient follow-up."
         }
       ]
     },
@@ -2172,6 +4001,46 @@
           "checkedAt": "2026-10-09",
           "locator": "Best practice advice 1–3 and 5–7 in official commissioned publication abstract",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "niddk-ibs-diagnosis-verified20261010",
+          "title": "Diagnosis of Irritable Bowel Syndrome",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome/diagnosis",
+          "kind": "official-clinical-reference",
+          "edition": "Educational web page; last reviewed November 2017",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Review of your symptoms: features suggesting another health problem; Other tests",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of NIDDK-authored educational text only; cited external publications and graphics are excluded. The stated older review date is preserved; this is not a comprehensive or newly graded 2026 guideline. Board-study use only.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niddk.nih.gov/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "niddk-ibs-therapy-verified20261010",
+          "title": "Treatment for Irritable Bowel Syndrome",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome/treatment",
+          "kind": "official-clinical-reference",
+          "edition": "Educational web page; last reviewed November 2017",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Medicines; Mental health therapies",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of NIDDK-authored educational text only; cited external publications and graphics are excluded. The stated older review date is preserved; this is not a comprehensive or newly graded 2026 guideline. Board-study use only.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niddk.nih.gov/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -2198,6 +4067,24 @@
           "sourceIds": [
             "aga-ibs-diet-2022"
           ]
+        },
+        {
+          "id": "verified-ibs-alarms",
+          "title": "Features outside uncomplicated IBS",
+          "text": "NIDDK identifies anemia, rectal bleeding, black or bloody stool and weight loss as findings that may suggest a condition other than IBS. Further investigation is selected using symptoms, history and test results rather than assuming these are IBS manifestations.",
+          "sourceIds": [
+            "niddk-ibs-diagnosis-verified20261010"
+          ],
+          "sourceLocator": "Review of your symptoms: features suggesting another health problem; Other tests"
+        },
+        {
+          "id": "verified-ibs-behavioral",
+          "title": "Behavioral treatment options",
+          "text": "NIDDK describes cognitive behavioral therapy, gut-directed hypnotherapy and relaxation training as therapies that may improve IBS symptoms.",
+          "sourceIds": [
+            "niddk-ibs-therapy-verified20261010"
+          ],
+          "sourceLocator": "Mental health therapies"
         }
       ],
       "questions": [
@@ -2286,6 +4173,92 @@
           "learningObjective": "Recognize contraindications to restrictive IBS dietary strategies.",
           "difficulty": "application",
           "id": "irritable-bowel-syndrome-q2"
+        },
+        {
+          "id": "irritable-bowel-syndrome-q3",
+          "stem": "A fictional adult labeled as having IBS now reports rectal bleeding and unintentional weight loss. Which next approach best matches NIDDK?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Attribute the new bleeding to established IBS without reassessment"
+            },
+            {
+              "id": "B",
+              "text": "Escalate dietary restriction as the only next step"
+            },
+            {
+              "id": "C",
+              "text": "Confirm IBS solely from the prior label"
+            },
+            {
+              "id": "D",
+              "text": "Treat only the bowel symptoms and delay investigation"
+            },
+            {
+              "id": "E",
+              "text": "Investigate for another condition rather than assume uncomplicated IBS"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Bleeding and weight loss are features NIDDK lists as potentially indicating another condition.",
+          "distractorExplanations": {
+            "A": "NIDDK identifies bleeding as a possible sign of another condition.",
+            "B": "Diet alone bypasses assessment of bleeding and weight loss.",
+            "C": "A prior label does not resolve the new findings.",
+            "D": "The described findings call for considering another cause."
+          },
+          "sectionIds": [
+            "verified-ibs-alarms"
+          ],
+          "sourceIds": [
+            "niddk-ibs-diagnosis-verified20261010"
+          ],
+          "domain": "chronic",
+          "difficulty": "application",
+          "learningObjective": "Reconsider an IBS label when bleeding or weight loss appears."
+        },
+        {
+          "id": "irritable-bowel-syndrome-q4",
+          "stem": "A fictional adult with established IBS wants a treatment that directly addresses symptom-related thought and behavior patterns while continuing medical care. Which option fits NIDDK?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Loperamide"
+            },
+            {
+              "id": "B",
+              "text": "Cognitive behavioral therapy"
+            },
+            {
+              "id": "C",
+              "text": "A fiber supplement"
+            },
+            {
+              "id": "D",
+              "text": "An antispasmodic"
+            },
+            {
+              "id": "E",
+              "text": "Another dietary elimination"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "CBT is described as a way to change thought and behavior patterns to improve IBS symptoms.",
+          "distractorExplanations": {
+            "A": "The source lists loperamide for IBS with diarrhea, not thought-and-behavior work.",
+            "C": "Fiber is a dietary approach rather than the requested behavioral therapy.",
+            "D": "Antispasmodics are listed for abdominal pain, not thought-and-behavior work.",
+            "E": "This is a dietary intervention rather than the requested therapy."
+          },
+          "sectionIds": [
+            "verified-ibs-behavioral"
+          ],
+          "sourceIds": [
+            "niddk-ibs-therapy-verified20261010"
+          ],
+          "domain": "chronic",
+          "difficulty": "application",
+          "learningObjective": "Recognize CBT as an IBS symptom-management option."
         }
       ]
     },
@@ -2336,6 +4309,46 @@
           "checkedAt": "2026-10-09",
           "locator": "Best practice advice: anorectal testing, secondary causes and surgery",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "niddk-constipation-causes-verified20261010",
+          "title": "Symptoms & Causes of Constipation",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/constipation/symptoms-causes",
+          "kind": "official-clinical-reference",
+          "edition": "Educational web page; last reviewed May 2018",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Certain medicines and dietary supplements; When should I see a doctor?",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of NIDDK-authored educational text only; cited external publications and graphics are excluded. The stated older review date is preserved; this is not a comprehensive or newly graded 2026 guideline. Board-study use only.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niddk.nih.gov/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "niddk-constipation-treatment-verified20261010",
+          "title": "Treatment for Constipation",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/constipation/treatment",
+          "kind": "official-clinical-reference",
+          "edition": "Educational web page; last reviewed May 2018",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Stop taking certain medicines or dietary supplements; How do doctors treat constipation?",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of NIDDK-authored educational text only; cited external publications and graphics are excluded. The stated older review date is preserved; this is not a comprehensive or newly graded 2026 guideline. Board-study use only.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niddk.nih.gov/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -2362,6 +4375,25 @@
           "sourceIds": [
             "aga-refractory-constipation-2026"
           ]
+        },
+        {
+          "id": "verified-medication-review",
+          "title": "Medication contributors",
+          "text": "NIDDK lists iron supplements and several medication classes as possible constipation contributors. A clinician can review whether changing the medicine or its use is appropriate; patients should not stop prescribed treatment without discussion.",
+          "sourceIds": [
+            "niddk-constipation-causes-verified20261010",
+            "niddk-constipation-treatment-verified20261010"
+          ],
+          "sourceLocator": "Certain medicines and dietary supplements; When should I see a doctor?; treatment-page medication review"
+        },
+        {
+          "id": "verified-constipation-alarms",
+          "title": "Alarm symptoms",
+          "text": "Constipation accompanied by constant abdominal pain, inability to pass gas, vomiting, fever, rectal bleeding or unexplained weight loss warrants prompt assessment in NIDDK's summary. These findings should not simply trigger escalation of routine self-care.",
+          "sourceIds": [
+            "niddk-constipation-causes-verified20261010"
+          ],
+          "sourceLocator": "When should I see a doctor?"
         }
       ],
       "questions": [
@@ -2450,6 +4482,93 @@
           "learningObjective": "Evaluate pelvic-floor dysfunction before a refractory-constipation label.",
           "difficulty": "application",
           "id": "chronic-constipation-q2"
+        },
+        {
+          "id": "chronic-constipation-q3",
+          "stem": "A fictional adult's constipation worsened after starting prescribed iron. Which next step addresses a recognized secondary contributor?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Discontinue the prescribed iron independently"
+            },
+            {
+              "id": "B",
+              "text": "Escalate laxatives without reviewing medication contributors"
+            },
+            {
+              "id": "C",
+              "text": "Review the iron treatment with the prescribing clinician before changing it"
+            },
+            {
+              "id": "D",
+              "text": "Label the constipation refractory and idiopathic without medication review"
+            },
+            {
+              "id": "E",
+              "text": "Exclude iron as a contributor because it was prescribed for a valid reason"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Iron can worsen constipation; NIDDK advises clinician-directed medication review before changing treatment.",
+          "distractorExplanations": {
+            "A": "NIDDK advises discussing medication changes with a clinician.",
+            "B": "This misses the possible medication contributor.",
+            "D": "A listed contributor should be reviewed before assuming idiopathic disease.",
+            "E": "A valid prescription can still have a constipation effect."
+          },
+          "sectionIds": [
+            "verified-medication-review"
+          ],
+          "sourceIds": [
+            "niddk-constipation-causes-verified20261010",
+            "niddk-constipation-treatment-verified20261010"
+          ],
+          "domain": "chronic",
+          "difficulty": "application",
+          "learningObjective": "Review a medication contributor before escalating a constipation label."
+        },
+        {
+          "id": "chronic-constipation-q4",
+          "stem": "A fictional adult with longstanding constipation now has constant abdominal pain, vomiting and cannot pass gas. Which next action is most appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Increase fiber and continue home care without assessment"
+            },
+            {
+              "id": "B",
+              "text": "Try another OTC laxative before considering evaluation"
+            },
+            {
+              "id": "C",
+              "text": "Schedule only a routine constipation workup weeks later"
+            },
+            {
+              "id": "D",
+              "text": "Seek immediate medical assessment"
+            },
+            {
+              "id": "E",
+              "text": "Delay assessment until a bowel movement occurs"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "NIDDK identifies this combination of alarm symptoms as a reason for immediate assessment.",
+          "distractorExplanations": {
+            "A": "Self-care escalation does not replace assessment of these alarm symptoms.",
+            "B": "This postpones the indicated alarm assessment.",
+            "C": "The new warning signs require immediate rather than deferred assessment.",
+            "E": "NIDDK does not advise waiting for a bowel movement in this setting."
+          },
+          "sectionIds": [
+            "verified-constipation-alarms"
+          ],
+          "sourceIds": [
+            "niddk-constipation-causes-verified20261010"
+          ],
+          "domain": "emergent",
+          "difficulty": "application",
+          "learningObjective": "Recognize constipation alarm symptoms that require urgent evaluation."
         }
       ]
     },
@@ -2487,6 +4606,46 @@
           "checkedAt": "2026-10-09",
           "locator": "Recommendations 35, 36, 39, 41 and 45",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "niddk-gastroenteritis-treatment-verified20261010",
+          "title": "Treatment of Viral Gastroenteritis (“Stomach Flu”)",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/viral-gastroenteritis/treatment",
+          "kind": "official-clinical-reference",
+          "edition": "Educational web page; last reviewed May 2018",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Over-the-counter medicines",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of NIDDK-authored educational text only; cited external publications and graphics are excluded. The stated older review date is preserved; this is not a comprehensive or newly graded 2026 guideline. Board-study use only.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niddk.nih.gov/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-norovirus-prevention-verified20261010",
+          "title": "How to Prevent Norovirus",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/norovirus/prevention/",
+          "kind": "official-recommendation",
+          "edition": "Official web page dated January 13, 2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Prevention steps and strategies: If you are sick; Wash your hands well",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of CDC-authored text only; external society links, graphics and full texts are excluded. Preserve stated population and exceptions. Board-study use only; not a complete prescribing protocol. International government-work rights require jurisdiction review.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -2513,6 +4672,24 @@
           "sourceIds": [
             "idsa-infectious-diarrhea-2017"
           ]
+        },
+        {
+          "id": "verified-antidiarrheal-alarms",
+          "title": "Bloody diarrhea or fever",
+          "text": "NIDDK advises medical assessment rather than using over-the-counter diarrhea medicines when diarrhea is bloody or accompanied by fever. The page also cautions that these medicines may be unsafe for infants and children.",
+          "sourceIds": [
+            "niddk-gastroenteritis-treatment-verified20261010"
+          ],
+          "sourceLocator": "Over-the-counter medicines"
+        },
+        {
+          "id": "verified-norovirus-food-work",
+          "title": "Preventing norovirus spread",
+          "text": "CDC advises avoiding food preparation and care of others while ill and for at least 48 hours after norovirus symptoms stop. Handwashing with soap and water is emphasized; sanitizer alone is not an adequate substitute.",
+          "sourceIds": [
+            "cdc-norovirus-prevention-verified20261010"
+          ],
+          "sourceLocator": "Prevention steps and strategies: If you are sick; Wash your hands well"
         }
       ],
       "questions": [
@@ -2601,6 +4778,92 @@
           "learningObjective": "Recognize a pathogen-specific reason to avoid antibiotics.",
           "difficulty": "application",
           "id": "acute-gastroenteritis-q2"
+        },
+        {
+          "id": "acute-gastroenteritis-q3",
+          "stem": "A fictional adult with acute diarrhea now has fever and blood in the stool and asks to use an over-the-counter antidiarrheal. Which next action fits NIDDK?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Avoid self-treatment with the antidiarrheal and obtain medical assessment"
+            },
+            {
+              "id": "B",
+              "text": "Use the antidiarrheal as the sole next action"
+            },
+            {
+              "id": "C",
+              "text": "Increase the antidiarrheal before any assessment"
+            },
+            {
+              "id": "D",
+              "text": "Replace fluids but omit assessment of the blood and fever"
+            },
+            {
+              "id": "E",
+              "text": "Wait for diarrhea to end before reporting the blood"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Bloody diarrhea or fever triggers assessment rather than OTC diarrhea self-treatment in this summary.",
+          "distractorExplanations": {
+            "B": "This bypasses NIDDK's warning-sign assessment.",
+            "C": "The source advises against OTC self-treatment in this setting.",
+            "D": "Fluid replacement does not address the required assessment of these findings.",
+            "E": "This delays evaluation of the listed warning signs."
+          },
+          "sectionIds": [
+            "verified-antidiarrheal-alarms"
+          ],
+          "sourceIds": [
+            "niddk-gastroenteritis-treatment-verified20261010"
+          ],
+          "domain": "acute",
+          "difficulty": "application",
+          "learningObjective": "Recognize when diarrhea should not be managed with OTC antidiarrheals alone."
+        },
+        {
+          "id": "acute-gastroenteritis-q4",
+          "stem": "A fictional restaurant worker had norovirus vomiting and diarrhea; symptoms stopped this morning. Which return-to-food-handling advice matches CDC?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Return immediately if hand sanitizer is available"
+            },
+            {
+              "id": "B",
+              "text": "Return after six symptom-free hours"
+            },
+            {
+              "id": "C",
+              "text": "Return after one symptom-free day"
+            },
+            {
+              "id": "D",
+              "text": "Wait at least 48 hours after symptoms stop and use soap-and-water handwashing"
+            },
+            {
+              "id": "E",
+              "text": "Return as soon as gloves are worn, regardless of the symptom-free interval"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "CDC specifies at least 48 hours after symptoms stop and emphasizes soap-and-water handwashing.",
+          "distractorExplanations": {
+            "A": "Sanitizer does not replace handwashing or the exclusion interval.",
+            "B": "This is shorter than CDC's interval.",
+            "C": "This is shorter than CDC's interval.",
+            "E": "Glove use does not satisfy the stated symptom-free interval."
+          },
+          "sectionIds": [
+            "verified-norovirus-food-work"
+          ],
+          "sourceIds": [
+            "cdc-norovirus-prevention-verified20261010"
+          ],
+          "domain": "preventive",
+          "difficulty": "application",
+          "learningObjective": "Apply norovirus food-handler exclusion and hygiene guidance."
         }
       ]
     },
@@ -2637,6 +4900,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Initial and subsequent imaging recommendations; implementation considerations",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "niddk-gallstone-treatment-verified20261010",
+          "title": "Treatment for Gallstones",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gallstones/treatment",
+          "kind": "official-clinical-reference",
+          "edition": "Educational web page; last reviewed November 2017",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "How do health care professionals treat gallstones? Surgery; Nonsurgical treatments: ERCP",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of NIDDK-authored educational text only; cited external publications and graphics are excluded. The stated older review date is preserved; this is not a comprehensive or newly graded 2026 guideline. Board-study use only.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niddk.nih.gov/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -2663,6 +4946,24 @@
           "sourceIds": [
             "idsa-cholecystitis-imaging-2024"
           ]
+        },
+        {
+          "id": "verified-gallbladder-operation",
+          "title": "Gallbladder-directed treatment",
+          "text": "NIDDK describes cholecystectomy as surgical removal of the gallbladder and the usual treatment for symptomatic gallstone disease. This broad educational summary does not specify acute-cholecystitis timing, antibiotic choices or management for unstable patients.",
+          "sourceIds": [
+            "niddk-gallstone-treatment-verified20261010"
+          ],
+          "sourceLocator": "How do health care professionals treat gallstones? Surgery"
+        },
+        {
+          "id": "verified-duct-stone-extraction",
+          "title": "A stone in the common bile duct",
+          "text": "NIDDK describes ERCP as a procedure sometimes used to remove a gallstone stuck in the common bile duct. This treats a duct stone and does not establish a complete acute-cholecystitis or cholangitis protocol.",
+          "sourceIds": [
+            "niddk-gallstone-treatment-verified20261010"
+          ],
+          "sourceLocator": "Nonsurgical treatments: Endoscopic retrograde cholangiopancreatography (ERCP)"
         }
       ],
       "questions": [
@@ -2751,6 +5052,92 @@
           "learningObjective": "Escalate imaging after persistent diagnostic uncertainty.",
           "difficulty": "application",
           "id": "acute-cholecystitis-q2"
+        },
+        {
+          "id": "acute-cholecystitis-q3",
+          "stem": "In a fictional case, a stable surgical candidate has recurrent symptomatic gallstones after an episode of cholecystitis. Which intervention is the usual gallstone treatment described by NIDDK?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Routine oral stone dissolution instead of surgery in this surgical candidate"
+            },
+            {
+              "id": "B",
+              "text": "Cholecystectomy"
+            },
+            {
+              "id": "C",
+              "text": "Routine shock-wave lithotripsy instead of surgery"
+            },
+            {
+              "id": "D",
+              "text": "ERCP alone as the gallbladder-removal procedure"
+            },
+            {
+              "id": "E",
+              "text": "No further treatment planning because the acute pain improved"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Cholecystectomy removes the gallbladder; NIDDK describes it as the usual symptomatic-gallstone treatment.",
+          "distractorExplanations": {
+            "A": "NIDDK reserves nonsurgical treatment for selected situations rather than describing it as usual treatment.",
+            "C": "NIDDK describes this as a rarely used nonsurgical treatment.",
+            "D": "ERCP is described for a stuck duct stone, not gallbladder removal.",
+            "E": "The source notes that symptomatic episodes can recur after symptoms subside."
+          },
+          "sectionIds": [
+            "verified-gallbladder-operation"
+          ],
+          "sourceIds": [
+            "niddk-gallstone-treatment-verified20261010"
+          ],
+          "domain": "acute",
+          "difficulty": "application",
+          "learningObjective": "Identify the gallbladder-removal procedure without inferring a timing or antibiotic protocol."
+        },
+        {
+          "id": "acute-cholecystitis-q4",
+          "stem": "During a fictional gallstone-related admission, a stone is confirmed to be stuck in the common bile duct. Which listed procedure does NIDDK describe for removing such a stone?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Oral stone-dissolution therapy as the routine duct-extraction procedure"
+            },
+            {
+              "id": "B",
+              "text": "Shock-wave lithotripsy as the routine duct-extraction procedure"
+            },
+            {
+              "id": "C",
+              "text": "Cholecystectomy alone as the specified duct-extraction procedure"
+            },
+            {
+              "id": "D",
+              "text": "Symptom observation alone instead of planning duct-stone treatment"
+            },
+            {
+              "id": "E",
+              "text": "Endoscopic retrograde cholangiopancreatography"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "NIDDK specifically describes ERCP for extraction of a stone stuck in the common bile duct.",
+          "distractorExplanations": {
+            "A": "The source describes dissolution for selected cholesterol stones, not as the stated duct-extraction procedure.",
+            "B": "The source describes this as a rarely used stone-breaking treatment, not the specified duct extraction.",
+            "C": "Cholecystectomy removes the gallbladder; the source describes ERCP for a stuck duct stone.",
+            "D": "This does not provide the duct-stone removal described."
+          },
+          "sectionIds": [
+            "verified-duct-stone-extraction"
+          ],
+          "sourceIds": [
+            "niddk-gallstone-treatment-verified20261010"
+          ],
+          "domain": "acute",
+          "difficulty": "application",
+          "learningObjective": "Distinguish common-bile-duct stone extraction from gallbladder treatment."
         }
       ]
     },
@@ -2787,6 +5174,46 @@
           "checkedAt": "2026-10-09",
           "locator": "Best practice advice 1–3 and 6–8",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "niddk-diverticular-treatment-verified20261010",
+          "title": "Treatment for Diverticular Disease",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/treatment",
+          "kind": "official-clinical-reference",
+          "edition": "Educational web page; last reviewed August 2021",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Diverticulitis complications: abscesses",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of NIDDK-authored educational text only; cited external publications and graphics are excluded. The stated older review date is preserved; this is not a comprehensive or newly graded 2026 guideline. Board-study use only.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niddk.nih.gov/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "niddk-diverticular-diet-verified20261010",
+          "title": "Eating, Diet, & Nutrition for Diverticular Disease",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/eating-diet-nutrition",
+          "kind": "official-clinical-reference",
+          "edition": "Educational web page; last reviewed August 2021",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "What should I eat and drink if I have diverticular disease? Should I avoid certain foods?",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of NIDDK-authored educational text only; cited external publications and graphics are excluded. The stated older review date is preserved; this is not a comprehensive or newly graded 2026 guideline. Board-study use only.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niddk.nih.gov/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -2813,6 +5240,24 @@
           "sourceIds": [
             "aga-diverticulitis-2021"
           ]
+        },
+        {
+          "id": "verified-diverticular-abscess",
+          "title": "Abscess management",
+          "text": "NIDDK distinguishes small diverticular abscesses that may be treated with antibiotics from large abscesses or those not improving with antibiotics, for which drainage may be recommended. This summary supplies no numerical size cutoff or universal procedural rule.",
+          "sourceIds": [
+            "niddk-diverticular-treatment-verified20261010"
+          ],
+          "sourceLocator": "Diverticulitis complications: abscesses"
+        },
+        {
+          "id": "verified-recovery-diet",
+          "title": "Diet after recovery",
+          "text": "After diverticulitis, NIDDK describes gradual increases in dietary fiber when appropriate. Most people with diverticular disease do not need a routine ban on nuts, popcorn or seeds. This recovery advice is distinct from a short-term diet used during an acute attack.",
+          "sourceIds": [
+            "niddk-diverticular-diet-verified20261010"
+          ],
+          "sourceLocator": "What should I eat and drink if I have diverticular disease? Should I avoid certain foods?"
         }
       ],
       "questions": [
@@ -2901,6 +5346,92 @@
           "learningObjective": "Apply post-diverticulitis colonoscopy timing.",
           "difficulty": "application",
           "id": "acute-diverticulitis-q2"
+        },
+        {
+          "id": "acute-diverticulitis-q3",
+          "stem": "A fictional inpatient has a large diverticular abscess that is not improving with antibiotics. Which additional treatment should the team evaluate under NIDDK's summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Continue unchanged antibiotics without reassessing the persistent collection"
+            },
+            {
+              "id": "B",
+              "text": "Defer collection-directed treatment until all symptoms resolve"
+            },
+            {
+              "id": "C",
+              "text": "Manage the abscess as an uncomplicated home-care episode"
+            },
+            {
+              "id": "D",
+              "text": "Defer complication treatment until a later colonoscopy"
+            },
+            {
+              "id": "E",
+              "text": "Drain the abscess"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "NIDDK describes drainage for large abscesses or those that fail to improve with antibiotics.",
+          "distractorExplanations": {
+            "A": "Persistent failure and a large abscess support considering drainage.",
+            "B": "The large, nonimproving abscess warrants evaluation of drainage rather than deferring collection treatment.",
+            "C": "The source distinguishes complications from uncomplicated home-care cases.",
+            "D": "Colonoscopy is not the abscess treatment described."
+          },
+          "sectionIds": [
+            "verified-diverticular-abscess"
+          ],
+          "sourceIds": [
+            "niddk-diverticular-treatment-verified20261010"
+          ],
+          "domain": "acute",
+          "difficulty": "application",
+          "learningObjective": "Recognize when a diverticular abscess may require drainage beyond antibiotics."
+        },
+        {
+          "id": "acute-diverticulitis-q4",
+          "stem": "A fictional adult has recovered fully from diverticulitis and asks about long-term eating. Which advice best matches NIDDK?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Consider gradually increasing fiber; do not routinely ban nuts, popcorn and seeds"
+            },
+            {
+              "id": "B",
+              "text": "Ban all nuts and seeds permanently"
+            },
+            {
+              "id": "C",
+              "text": "Keep the long-term recovery diet restricted to acute-attack clear liquids"
+            },
+            {
+              "id": "D",
+              "text": "Choose a low-fiber diet for long-term prevention"
+            },
+            {
+              "id": "E",
+              "text": "Choose a low-fiber, high-red-meat diet to prevent another episode"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "NIDDK supports an individualized, gradual fiber increase and does not recommend routine avoidance of nuts, popcorn or seeds.",
+          "distractorExplanations": {
+            "B": "NIDDK states these foods generally need not be avoided.",
+            "C": "This confuses acute dietary measures with recovery eating.",
+            "D": "This opposes the described gradual fiber strategy.",
+            "E": "NIDDK links low fiber and high red meat to increased diverticulitis risk."
+          },
+          "sectionIds": [
+            "verified-recovery-diet"
+          ],
+          "sourceIds": [
+            "niddk-diverticular-diet-verified20261010"
+          ],
+          "domain": "acute",
+          "difficulty": "application",
+          "learningObjective": "Distinguish recovery dietary advice from outdated diverticular-food restrictions."
         }
       ]
     },
@@ -2938,6 +5469,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Diagnostic Imaging for Suspected Acute Appendicitis: adults, children and pregnant people",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "niddk-appendicitis-treatment-verified20261010",
+          "title": "Treatment for Appendicitis",
+          "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+          "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/appendicitis/treatment",
+          "kind": "official-clinical-reference",
+          "edition": "Educational web page; last reviewed July 2021",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Can doctors treat appendicitis without surgery? How do doctors treat complications of a burst appendix? Abscess",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of NIDDK-authored educational text only; cited external publications and graphics are excluded. The stated older review date is preserved; this is not a comprehensive or newly graded 2026 guideline. Board-study use only.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niddk.nih.gov/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -2964,6 +5515,24 @@
           "sourceIds": [
             "idsa-appendicitis-imaging-2024"
           ]
+        },
+        {
+          "id": "verified-appendicitis-options",
+          "title": "Selected nonsurgical treatment",
+          "text": "NIDDK describes appendectomy as standard treatment while noting that some mild cases may improve with antibiotics alone. Suitability is individualized; the summary does not establish a validated selection rule or guarantee freedom from later surgery.",
+          "sourceIds": [
+            "niddk-appendicitis-treatment-verified20261010"
+          ],
+          "sourceLocator": "How do doctors treat appendicitis? Can doctors treat appendicitis without surgery?"
+        },
+        {
+          "id": "verified-appendiceal-abscess",
+          "title": "Localized abscess",
+          "text": "For an appendiceal abscess, NIDDK describes draining pus to permit healing. Diffuse peritonitis is discussed separately and may require immediate surgery. The summary does not define collection-size thresholds or a complete antibiotic regimen.",
+          "sourceIds": [
+            "niddk-appendicitis-treatment-verified20261010"
+          ],
+          "sourceLocator": "How do doctors treat complications of a burst appendix? Abscess; Peritonitis"
         }
       ],
       "questions": [
@@ -3052,6 +5621,93 @@
           "learningObjective": "Apply pregnancy-specific escalation after nondiagnostic ultrasound.",
           "difficulty": "application",
           "id": "appendicitis-q2"
+        },
+        {
+          "id": "appendicitis-q3",
+          "stem": "A fictional adult with mild appendicitis asks how to frame discussion of antibiotic-only treatment. Which statement best matches NIDDK?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Select antibiotic-only care from symptom severity without reviewing tests, health and age"
+            },
+            {
+              "id": "B",
+              "text": "End surgical reassessment solely because early pain improves on antibiotics"
+            },
+            {
+              "id": "C",
+              "text": "Some mild cases may improve with antibiotics, but surgery remains standard and selection is individualized"
+            },
+            {
+              "id": "D",
+              "text": "Present antibiotic-only care as the routine standard instead of discussing surgery"
+            },
+            {
+              "id": "E",
+              "text": "Use the same mild-case antibiotic-only pathway for diffuse peritonitis"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "The summary acknowledges selected nonsurgical treatment without replacing standard surgery for everyone.",
+          "distractorExplanations": {
+            "A": "NIDDK describes individualized selection using symptoms, test results, health and age.",
+            "B": "The source does not establish early pain response as a complete selection rule.",
+            "D": "NIDDK retains surgery as standard while describing selected alternatives.",
+            "E": "The source discusses diffuse peritonitis separately, including immediate surgery in most cases."
+          },
+          "sectionIds": [
+            "verified-appendicitis-options",
+            "verified-appendiceal-abscess"
+          ],
+          "sourceIds": [
+            "niddk-appendicitis-treatment-verified20261010"
+          ],
+          "domain": "emergent",
+          "difficulty": "application",
+          "learningObjective": "Explain the limited scope of antibiotic-only appendicitis treatment."
+        },
+        {
+          "id": "appendicitis-q4",
+          "stem": "A fictional patient with appendicitis has a localized appendiceal abscess. Which collection-directed approach does the NIDDK summary describe to permit healing?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Repeat diagnostic imaging alone"
+            },
+            {
+              "id": "B",
+              "text": "Use the immediate-surgery pathway described for diffuse peritonitis"
+            },
+            {
+              "id": "C",
+              "text": "Use the antibiotic-only pathway described for selected mild appendicitis"
+            },
+            {
+              "id": "D",
+              "text": "Provide symptom-directed analgesia alone"
+            },
+            {
+              "id": "E",
+              "text": "Evaluate drainage of the abscess"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "NIDDK describes draining pus from an appendiceal abscess to allow healing.",
+          "distractorExplanations": {
+            "A": "Imaging does not itself provide the drainage of pus described for the collection.",
+            "B": "The source discusses diffuse peritonitis separately from a localized abscess and describes drainage for the collection in this question.",
+            "C": "The selected mild-case discussion does not replace the source's separate abscess-management passage.",
+            "D": "Symptom treatment alone does not provide the collection drainage described by NIDDK."
+          },
+          "sectionIds": [
+            "verified-appendiceal-abscess"
+          ],
+          "sourceIds": [
+            "niddk-appendicitis-treatment-verified20261010"
+          ],
+          "domain": "emergent",
+          "difficulty": "application",
+          "learningObjective": "Recognize localized appendiceal abscess management as distinct from uncomplicated appendicitis."
         }
       ]
     },
@@ -3088,6 +5744,46 @@
           "checkedAt": "2026-10-09",
           "locator": "HCV antibody; NAT testing; interpretation; next steps",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-hcv-diagnosis-verified20261010",
+          "title": "Clinical Screening and Diagnosis for Hepatitis C",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/hepatitis-c/hcp/diagnosis-testing/",
+          "kind": "official-recommendation",
+          "edition": "Official web page dated January 31, 2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "How to interpret test results: HCV antibody reactive, HCV RNA not detected; footnote on follow-up exceptions",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of CDC-authored text only; external society links, graphics and full texts are excluded. Preserve stated population and exceptions. Board-study use only; not a complete prescribing protocol. International government-work rights require jurisdiction review.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-hcv-reinfection-verified20261010",
+          "title": "Hepatitis C Virus (HCV) Infection",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/hcv.htm",
+          "kind": "official-recommendation",
+          "edition": "2021 STI Treatment Guidelines; page last reviewed July 22, 2021",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Diagnosis: persistent antibody after resolved infection or successful treatment; reinfection testing",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Use only the CDC-authored Diagnosis subsection on post-clearance antibody and reinfection testing. Do not import the page's older infant-testing advice or linked AASLD/IDSA guidance. Educational use only; international government-work rights require jurisdiction review.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -3114,6 +5810,24 @@
           "sourceIds": [
             "cdc-hcv-diagnosis"
           ]
+        },
+        {
+          "id": "verified-hcv-rna-negative",
+          "title": "Reactive antibody without detectable RNA",
+          "text": "Reactive HCV antibody with undetectable RNA indicates no current HCV infection; most cases need no additional action. Recent exposure, clinical evidence of HCV disease or specimen concerns can require follow-up. Antibody alone cannot establish active infection or prove that the initial result was false.",
+          "sourceIds": [
+            "cdc-hcv-diagnosis-verified20261010"
+          ],
+          "sourceLocator": "How to interpret test results: HCV antibody reactive, HCV RNA not detected; footnote on follow-up exceptions"
+        },
+        {
+          "id": "verified-hcv-reinfection",
+          "title": "Testing after clearance",
+          "text": "HCV antibody can remain positive after spontaneous clearance or successful treatment. With ongoing exposure risk, RNA testing is used to assess reinfection. Successful clearance does not provide immunity to reinfection.",
+          "sourceIds": [
+            "cdc-hcv-reinfection-verified20261010"
+          ],
+          "sourceLocator": "Diagnosis: persistent antibody after resolved infection or successful treatment; reinfection testing"
         }
       ],
       "questions": [
@@ -3202,6 +5916,94 @@
           "learningObjective": "Choose virologic testing after recent HCV exposure.",
           "difficulty": "application",
           "id": "hepatitis-c-q2"
+        },
+        {
+          "id": "hepatitis-c-q3",
+          "stem": "A fictional adult has reactive HCV antibody but undetectable HCV RNA, no recent exposure, no signs of HCV disease and no specimen concerns. Which interpretation best matches CDC?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Current HCV infection is established"
+            },
+            {
+              "id": "B",
+              "text": "No current HCV infection; further action is usually unnecessary"
+            },
+            {
+              "id": "C",
+              "text": "The antibody result must be false in every case"
+            },
+            {
+              "id": "D",
+              "text": "Antiviral treatment is required based on antibody alone"
+            },
+            {
+              "id": "E",
+              "text": "The results prove lifelong immunity"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Undetectable RNA means no current infection; most such cases need no further action absent the stated exceptions.",
+          "distractorExplanations": {
+            "A": "Current infection requires detectable RNA.",
+            "C": "A reactive antibody can also reflect past resolved infection.",
+            "D": "Antibody alone does not establish current infection.",
+            "E": "These results do not establish immunity to future infection."
+          },
+          "sectionIds": [
+            "verified-hcv-rna-negative",
+            "verified-hcv-reinfection"
+          ],
+          "sourceIds": [
+            "cdc-hcv-diagnosis-verified20261010",
+            "cdc-hcv-reinfection-verified20261010"
+          ],
+          "domain": "chronic",
+          "difficulty": "application",
+          "learningObjective": "Interpret a reactive HCV antibody with negative RNA while preserving follow-up exceptions."
+        },
+        {
+          "id": "hepatitis-c-q4",
+          "stem": "A fictional adult previously cleared HCV and still has positive HCV antibody. Ongoing injection-related exposure creates concern for reinfection. Which test should assess a new infection?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Repeat antibody alone"
+            },
+            {
+              "id": "B",
+              "text": "Liver ultrasound alone"
+            },
+            {
+              "id": "C",
+              "text": "HCV RNA testing"
+            },
+            {
+              "id": "D",
+              "text": "Serum albumin alone"
+            },
+            {
+              "id": "E",
+              "text": "No test because clearance guarantees immunity"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "After clearance, persistent antibody cannot distinguish reinfection; CDC uses RNA testing for ongoing risk.",
+          "distractorExplanations": {
+            "A": "Antibody may remain positive after clearance.",
+            "B": "This does not test for the RNA evidence specified by CDC.",
+            "E": "Clearance does not confer immunity to reinfection.",
+            "D": "This does not test for the RNA evidence specified by CDC."
+          },
+          "sectionIds": [
+            "verified-hcv-reinfection"
+          ],
+          "sourceIds": [
+            "cdc-hcv-reinfection-verified20261010"
+          ],
+          "domain": "chronic",
+          "difficulty": "application",
+          "learningObjective": "Choose RNA rather than repeat antibody to evaluate HCV reinfection."
         }
       ]
     },
@@ -3238,6 +6040,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Recommended tests; interpretation table; what to do next",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-hbv-diagnosis-verified20261010",
+          "title": "Clinical Testing and Diagnosis for Hepatitis B",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/hepatitis-b/hcp/diagnosis-testing/",
+          "kind": "official-recommendation",
+          "edition": "Official web page; published May 15, 2024; updated and reviewed August 14, 2026",
+          "publishedDate": "2024-05-15",
+          "checkedAt": "2026-10-10",
+          "locator": "How to interpret test results: resolved infection and susceptible pattern; vaccine documentation footnote",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original summary of CDC-authored text only; external society links, graphics and full texts are excluded. Preserve stated population and exceptions. Board-study use only; not a complete prescribing protocol. International government-work rights require jurisdiction review.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -3264,6 +6086,24 @@
           "sourceIds": [
             "cdc-hbv-diagnosis"
           ]
+        },
+        {
+          "id": "verified-hbv-resolved",
+          "title": "Resolved infection and reactivation",
+          "text": "Negative HBsAg with positive total anti-HBc and anti-HBs is the CDC table's resolved-infection pattern. The associated action is counseling about reactivation risk; prior natural infection must not be equated with vaccine-only immunity.",
+          "sourceIds": [
+            "cdc-hbv-diagnosis-verified20261010"
+          ],
+          "sourceLocator": "How to interpret test results: resolved infection row"
+        },
+        {
+          "id": "verified-hbv-susceptible",
+          "title": "Susceptible pattern and vaccine history",
+          "text": "When HBsAg, total anti-HBc and anti-HBs are all negative and there is no documented completed HepB series, CDC's table identifies susceptibility and advises offering HepB vaccination under ACIP recommendations. Waning anti-HBs after documented vaccination is a different situation.",
+          "sourceIds": [
+            "cdc-hbv-diagnosis-verified20261010"
+          ],
+          "sourceLocator": "How to interpret test results: all-negative pattern; vaccine-documentation footnote"
         }
       ],
       "questions": [
@@ -3353,6 +6193,92 @@
           "learningObjective": "Distinguish acute HBV infection from immunity and susceptibility.",
           "difficulty": "application",
           "id": "hepatitis-b-q2"
+        },
+        {
+          "id": "hepatitis-b-q3",
+          "stem": "A fictional adult has negative HBsAg, positive total anti-HBc and positive anti-HBs. Which interpretation and counseling need best match CDC?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Acute infection requiring that label from this pattern alone"
+            },
+            {
+              "id": "B",
+              "text": "Vaccine-only immunity with no prior infection"
+            },
+            {
+              "id": "C",
+              "text": "Susceptibility requiring the all-negative interpretation"
+            },
+            {
+              "id": "D",
+              "text": "Resolved infection; counsel about reactivation risk"
+            },
+            {
+              "id": "E",
+              "text": "Chronic infection established by a positive HBsAg result"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "This is the resolved-infection pattern; CDC advises reactivation-risk counseling.",
+          "distractorExplanations": {
+            "A": "The listed results are not the acute-infection pattern.",
+            "B": "Vaccine-only immunity does not include core antibody.",
+            "C": "The core and surface antibodies are positive.",
+            "E": "HBsAg is negative in the vignette."
+          },
+          "sectionIds": [
+            "verified-hbv-resolved"
+          ],
+          "sourceIds": [
+            "cdc-hbv-diagnosis-verified20261010"
+          ],
+          "domain": "chronic",
+          "difficulty": "application",
+          "learningObjective": "Interpret resolved HBV infection and retain reactivation-risk counseling."
+        },
+        {
+          "id": "hepatitis-b-q4",
+          "stem": "A fictional unvaccinated adult has negative HBsAg, total anti-HBc and anti-HBs and no documented completed HepB series. Which next preventive step matches CDC's table?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Offer HepB vaccination under ACIP recommendations"
+            },
+            {
+              "id": "B",
+              "text": "Label the pattern as resolved infection"
+            },
+            {
+              "id": "C",
+              "text": "Treat the panel as vaccine-proven immunity"
+            },
+            {
+              "id": "D",
+              "text": "Diagnose chronic HBV from the negative surface antigen"
+            },
+            {
+              "id": "E",
+              "text": "Ignore vaccine history and assume waning immunity"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "In the absence of a completed vaccine series, this all-negative pattern indicates susceptibility and supports offering vaccination.",
+          "distractorExplanations": {
+            "B": "Resolved infection includes core antibody and usually surface antibody.",
+            "C": "No completed series or surface antibody is documented.",
+            "D": "This is not the chronic-infection pattern.",
+            "E": "The source distinguishes documented prior vaccination from susceptibility."
+          },
+          "sectionIds": [
+            "verified-hbv-susceptible"
+          ],
+          "sourceIds": [
+            "cdc-hbv-diagnosis-verified20261010"
+          ],
+          "domain": "preventive",
+          "difficulty": "application",
+          "learningObjective": "Combine triple-panel results with vaccination documentation before offering HepB vaccination."
         }
       ]
     },
@@ -3390,6 +6316,46 @@
           "checkedAt": "2026-10-09",
           "locator": "Panel recommendations; initiating ART; prevention of HIV transmission",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-hiv-testing-verified20261010",
+          "title": "Clinical Testing Guidance for HIV",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/hivnexus/hcp/diagnosis-testing/index.html",
+          "kind": "official-recommendation",
+          "edition": "Published May 15, 2024; updated and reviewed August 17, 2026",
+          "publishedDate": "2024-05-15",
+          "checkedAt": "2026-10-10",
+          "locator": "Key points: routine screening ages 13–64; ongoing-risk annual screening; opt-out approach",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "CDC-authored testing guidance, not blanket permission for linked coauthored NIH guideline PDFs. Retain age/risk and consent scope; no images or linked proprietary materials.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-hiv-sti-verified20261010",
+          "title": "HIV — STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/hiv.htm",
+          "kind": "clinical-guideline",
+          "edition": "CDC STI Treatment Guidelines, 2021; HIV chapter",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Diagnostic Considerations and Acute HIV Infection: negative/indeterminate initial tests and HIV RNA",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "CDC-authored guideline chapter only. This source does not supply a full ART regimen, a diagnostic laboratory procedure or a blanket license for linked external documents.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -3416,6 +6382,24 @@
           "sourceIds": [
             "nih-hiv-art-initiation"
           ]
+        },
+        {
+          "id": "routine-opt-out-screening",
+          "title": "Routine HIV screening and consent",
+          "text": "CDC recommends that all patients aged 13–64 receive HIV testing at least once as part of routine health care, with at least annual screening for ongoing risk factors. An opt-out approach means informing the patient that testing will be included and allowing the patient to decline; it does not mean testing secretly or without the opportunity to refuse.",
+          "sourceIds": [
+            "cdc-hiv-testing-verified20261010"
+          ],
+          "sourceLocator": "Key points; Screening recommendations and opt-out approach."
+        },
+        {
+          "id": "acute-negative-testing",
+          "title": "A negative initial test can require HIV RNA",
+          "text": "When acute HIV is suspected after a recent possible exposure and initial CDC-algorithm tests are negative or indeterminate, CDC recommends additional HIV RNA testing. If RNA is also negative, repeat testing in a few weeks is recommended to assess very early infection. A negative antibody or antigen/antibody report must not be assumed to include an RNA test.",
+          "sourceIds": [
+            "cdc-hiv-sti-verified20261010"
+          ],
+          "sourceLocator": "General HIV testing recommendations; Diagnostic Considerations; Acute HIV Infection."
         }
       ],
       "questions": [
@@ -3504,6 +6488,92 @@
           "learningObjective": "Integrate adherence support into ART initiation.",
           "difficulty": "application",
           "id": "hiv-q2"
+        },
+        {
+          "id": "hiv-q3",
+          "stem": "In a fictional board case, an adult has a recent possible HIV exposure, compatible symptoms and a negative initial laboratory antigen/antibody test. Acute HIV remains a concern. Which next test best follows CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Repeat the same antigen/antibody test alone as the entire immediate assessment"
+            },
+            {
+              "id": "B",
+              "text": "Obtain an HIV-1/HIV-2 antibody differentiation assay alone"
+            },
+            {
+              "id": "C",
+              "text": "Obtain an antibody-only home test as the sole assessment"
+            },
+            {
+              "id": "D",
+              "text": "Obtain a CD4 count alone"
+            },
+            {
+              "id": "E",
+              "text": "Request HIV RNA testing"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "CDC recommends HIV RNA when acute infection is suspected despite negative or indeterminate initial testing. A negative initial report does not establish that RNA testing was performed.",
+          "distractorExplanations": {
+            "A": "When acute infection remains suspected after negative initial testing, CDC recommends additional RNA testing rather than relying on initial-assay testing alone.",
+            "B": "The stated concern is acute infection despite negative initial testing; the source next-step pathway calls for HIV RNA.",
+            "C": "Antibody-only testing can miss acute infection, so it does not replace the source RNA pathway here.",
+            "D": "An immune-status measurement alone is not the CDC RNA-testing step for this suspected acute infection."
+          },
+          "sectionIds": [
+            "acute-negative-testing"
+          ],
+          "sourceIds": [
+            "cdc-hiv-sti-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select HIV RNA when recent exposure and symptoms leave concern after a negative initial test.",
+          "difficulty": "application"
+        },
+        {
+          "id": "hiv-q4",
+          "stem": "A fictional 22-year-old attending routine primary care has never been tested for HIV and reports no ongoing risk factor. Which CDC screening approach is appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Offer the first routine test only if an STI has already been diagnosed"
+            },
+            {
+              "id": "B",
+              "text": "Offer screening only after the patient discloses an ongoing risk factor"
+            },
+            {
+              "id": "C",
+              "text": "Offer at least one routine HIV test using an informed opt-out approach"
+            },
+            {
+              "id": "D",
+              "text": "Order the test without telling the patient because the clinic uses opt-out screening"
+            },
+            {
+              "id": "E",
+              "text": "Schedule annual tests solely because every routine patient must be screened annually"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "CDC recommends at least one routine HIV test for ages 13–64. Opt-out screening informs the patient and permits refusal; risk disclosure is not required for the first routine screen.",
+          "distractorExplanations": {
+            "A": "CDC recommends at least one routine screen in this age group without requiring an STI diagnosis.",
+            "B": "The first routine age-based screen is not conditional on an identified ongoing risk factor.",
+            "D": "CDC describes opt-out as informing the patient and allowing refusal.",
+            "E": "CDC specifies at least once for this age group; its at-least-annual recommendation addresses ongoing risk factors, which the vignette does not supply."
+          },
+          "sectionIds": [
+            "routine-opt-out-screening"
+          ],
+          "sourceIds": [
+            "cdc-hiv-testing-verified20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply routine age-based HIV screening while preserving the opportunity to decline.",
+          "difficulty": "application"
         }
       ]
     },
@@ -3541,6 +6611,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Adult regimens; follow-up; management of sex partners",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-chlamydia-verified20261010",
+          "title": "Chlamydial Infections — STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
+          "kind": "clinical-guideline",
+          "edition": "CDC STI Treatment Guidelines, 2021; chapter reviewed July 22, 2021",
+          "publishedDate": "2021-07-22",
+          "checkedAt": "2026-10-10",
+          "locator": "Chlamydial Infection Among Adolescents and Adults: screening and Diagnostic Considerations; Special Considerations — Pregnancy",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "CDC-authored chapter, with pregnancy and age-specific scope preserved. New questions do not import doses, neonatal protocols or third-party studies; no linked publication license is assumed.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -3567,6 +6657,24 @@
           "sourceIds": [
             "cdc-chlamydia-2021"
           ]
+        },
+        {
+          "id": "pregnancy-test-of-cure",
+          "title": "Pregnancy requires a test of cure",
+          "text": "For chlamydial infection in pregnancy, CDC recommends a test of cure, preferably by NAAT, approximately 4 weeks after completion of treatment. Retesting at 3 months also addresses reinfection. The pregnancy requirement must not be replaced by the ordinary nonpregnant rule against routine test of cure.",
+          "sourceIds": [
+            "cdc-chlamydia-verified20261010"
+          ],
+          "sourceLocator": "Special Considerations — Pregnancy, test-of-cure and retesting paragraph."
+        },
+        {
+          "id": "screening-and-self-swab",
+          "title": "Screening without symptoms and specimen choice",
+          "text": "CDC recommends annual chlamydia screening for sexually active women younger than 25 years and older women with increased risk. NAAT is recommended for detecting urogenital infection. A patient-collected vaginal swab in a clinical setting is an acceptable specimen approach; its sensitivity and specificity are equivalent to clinician-collected vaginal swabs.",
+          "sourceIds": [
+            "cdc-chlamydia-verified20261010"
+          ],
+          "sourceLocator": "Chlamydial Infection Among Adolescents and Adults, annual-screening paragraph; Diagnostic Considerations, vaginal-swab NAAT paragraphs."
         }
       ],
       "questions": [
@@ -3655,6 +6763,92 @@
           "learningObjective": "Distinguish reinfection retesting from an unnecessary early test of cure.",
           "difficulty": "application",
           "id": "chlamydia-q2"
+        },
+        {
+          "id": "chlamydia-q3",
+          "stem": "A fictional pregnant adult completes recommended chlamydia treatment with reliable adherence and no ongoing symptoms. What early follow-up distinguishes this situation from routine nonpregnant follow-up?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Obtain the pregnancy test of cure by NAAT 1 week after completing therapy"
+            },
+            {
+              "id": "B",
+              "text": "Use only the 3-month reinfection retest with no earlier test of cure"
+            },
+            {
+              "id": "C",
+              "text": "Obtain the pregnancy test of cure by NAAT 2 weeks after completing therapy"
+            },
+            {
+              "id": "D",
+              "text": "Obtain a test of cure, preferably by NAAT, approximately 4 weeks after completing therapy"
+            },
+            {
+              "id": "E",
+              "text": "Perform a test of cure only if adherence is uncertain or symptoms persist"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "CDC recommends a pregnancy test of cure at about 4 weeks even when treatment was completed; a later 3-month retest addresses reinfection rather than replacing this check.",
+          "distractorExplanations": {
+            "A": "CDC specifies approximately 4 weeks for the pregnancy test of cure, not this earlier interval.",
+            "B": "CDC recommends both the pregnancy test of cure and later retesting; the latter does not replace the former.",
+            "C": "The source specifies approximately 4 weeks after therapy for the pregnancy test of cure.",
+            "E": "That applies the ordinary nonpregnant follow-up condition instead of the separate pregnancy recommendation."
+          },
+          "sectionIds": [
+            "pregnancy-test-of-cure"
+          ],
+          "sourceIds": [
+            "cdc-chlamydia-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply pregnancy-specific eradication follow-up separately from reinfection retesting.",
+          "difficulty": "application"
+        },
+        {
+          "id": "chlamydia-q4",
+          "stem": "A fictional sexually active 21-year-old woman has no genitourinary symptoms and is due for chlamydia screening. She prefers to collect her own vaginal swab in the clinic. Which plan follows CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Offer annual screening with a suitable NAAT using the patient-collected vaginal swab"
+            },
+            {
+              "id": "B",
+              "text": "Delay NAAT screening until genitourinary symptoms develop"
+            },
+            {
+              "id": "C",
+              "text": "Accept only a clinician-collected vaginal swab and refuse a patient-collected specimen"
+            },
+            {
+              "id": "D",
+              "text": "Use urinalysis alone rather than a chlamydia NAAT"
+            },
+            {
+              "id": "E",
+              "text": "Postpone age-based screening until she reaches 25"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "CDC recommends annual screening in this age group and accepts patient-collected vaginal swabs in a clinical setting for appropriate NAATs.",
+          "distractorExplanations": {
+            "B": "The source recommends annual screening for this sexually active age group despite absence of symptoms.",
+            "C": "CDC accepts patient-collected vaginal swabs in a clinical setting for appropriate NAATs.",
+            "D": "The source-recommended detection approach for this screening question is a suitable NAAT, not urinalysis alone.",
+            "E": "Sexually active women younger than 25 are specifically included in the annual screening recommendation."
+          },
+          "sectionIds": [
+            "screening-and-self-swab"
+          ],
+          "sourceIds": [
+            "cdc-chlamydia-verified20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Choose recommended asymptomatic chlamydia screening and an acceptable patient-collected specimen.",
+          "difficulty": "application"
         }
       ]
     },
@@ -3692,6 +6886,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Uncomplicated anogenital infection; pharyngeal infection; follow-up",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-gonorrhea-verified20261010",
+          "title": "Gonococcal Infections Among Adolescents and Adults — STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm",
+          "kind": "clinical-guideline",
+          "edition": "CDC STI Treatment Guidelines, 2021; chapter reviewed September 21, 2022",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Suspected Cephalosporin Treatment Failure; Disseminated Gonococcal Infection",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Preserve the distinction between suspected failure and common reinfection. No culture-handling procedure, isolate shipping instruction, dose or unsupported empiric substitution is imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -3718,6 +6932,24 @@
           "sourceIds": [
             "cdc-gonorrhea-2021"
           ]
+        },
+        {
+          "id": "suspected-treatment-failure",
+          "title": "Persistent symptoms need culture and susceptibility assessment",
+          "text": "CDC says to consider treatment failure when symptoms persist 3–5 days after recommended gonorrhea treatment and no posttreatment sexual contact is reported. Most suspected failures are reinfections, but when reinfection is unlikely and failure is suspected, obtain relevant specimens for culture, preferably with simultaneous NAAT, and susceptibility testing if gonorrhea is isolated before retreatment. Specialist/public-health consultation is part of this pathway.",
+          "sourceIds": [
+            "cdc-gonorrhea-verified20261010"
+          ],
+          "sourceLocator": "Suspected Cephalosporin Treatment Failure, recognition, culture/susceptibility and consultation paragraphs."
+        },
+        {
+          "id": "disseminated-testing",
+          "title": "Disseminated disease can have little genital inflammation",
+          "text": "Disseminated gonococcal infection can cause acral petechial or pustular lesions, asymmetric polyarthralgia, tenosynovitis or oligoarticular septic arthritis, while genital infection can be minimally symptomatic. When DGI is suspected, CDC recommends NAAT and culture from exposed urogenital/extragenital sites and from disseminated sites of infection; gonococcal isolates should receive susceptibility testing.",
+          "sourceIds": [
+            "cdc-gonorrhea-verified20261010"
+          ],
+          "sourceLocator": "Disseminated Gonococcal Infection, clinical findings and specimen-collection paragraphs."
         }
       ],
       "questions": [
@@ -3806,6 +7038,92 @@
           "learningObjective": "Distinguish pharyngeal test-of-cure requirements.",
           "difficulty": "application",
           "id": "gonorrhea-q2"
+        },
+        {
+          "id": "gonorrhea-q3",
+          "stem": "A fictional adult has persistent gonorrhea symptoms 5 days after recommended treatment, reports no sexual contact afterward, and reinfection is judged unlikely. Before choosing retreatment, which investigation best follows the CDC suspected-failure pathway?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Repeat NAAT alone without obtaining culture or susceptibility information"
+            },
+            {
+              "id": "B",
+              "text": "Obtain relevant culture specimens, preferably with simultaneous NAAT, and susceptibility testing if gonorrhea is isolated"
+            },
+            {
+              "id": "C",
+              "text": "Use a urethral Gram stain alone to infer antibiotic susceptibility"
+            },
+            {
+              "id": "D",
+              "text": "Obtain culture but omit susceptibility testing if gonorrhea is isolated"
+            },
+            {
+              "id": "E",
+              "text": "Defer investigation to the routine 3-month NAAT reinfection retest"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "CDC recommends culture and susceptibility assessment before retreatment when failure is suspected and reinfection is unlikely. Persistent symptoms do not themselves prove resistant infection.",
+          "distractorExplanations": {
+            "A": "The suspected-failure pathway specifically calls for culture and susceptibility assessment when reinfection is unlikely.",
+            "C": "The source calls for testing gonococcal isolates for susceptibility rather than inferring it from microscopy alone.",
+            "D": "Susceptibility testing of the isolate is part of the stated CDC suspected-failure investigation.",
+            "E": "The ongoing symptoms and unlikely reinfection fit the source failure-assessment pathway, not delayed routine screening."
+          },
+          "sectionIds": [
+            "suspected-treatment-failure"
+          ],
+          "sourceIds": [
+            "cdc-gonorrhea-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Investigate suspected gonorrhea treatment failure without prematurely labeling resistance.",
+          "difficulty": "application"
+        },
+        {
+          "id": "gonorrhea-q4",
+          "stem": "In a fictional study case, an adult has pustular acral lesions, tenosynovitis and asymmetric joint pain after a possible STI exposure, but little genital discomfort. DGI is suspected. Which testing approach fits CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Obtain only a genital NAAT because genital infection is the presumed entry site"
+            },
+            {
+              "id": "B",
+              "text": "Culture blood or an involved joint without assessing exposed mucosal sites"
+            },
+            {
+              "id": "C",
+              "text": "Obtain NAAT from exposed mucosal sites but no cultures or disseminated-site specimens"
+            },
+            {
+              "id": "D",
+              "text": "Culture only one skin lesion and omit the remaining exposed and disseminated sites"
+            },
+            {
+              "id": "E",
+              "text": "Test exposed mucosal sites and disseminated infection sites using the recommended NAAT/culture approach"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "DGI may occur with minimal genital inflammation. CDC recommends testing exposed urogenital/extragenital sites and disseminated sites, with susceptibility testing for gonococcal isolates.",
+          "distractorExplanations": {
+            "A": "CDC calls for exposed urogenital/extragenital sites and disseminated infection sites, even when genital symptoms are minimal.",
+            "B": "The source also includes exposed mucosal sites in the DGI investigation.",
+            "C": "The source recommends both site categories and culture information; this samples only part of the suspected DGI presentation.",
+            "D": "Testing only that lesion omits the broader source-directed site assessment."
+          },
+          "sectionIds": [
+            "disseminated-testing"
+          ],
+          "sourceIds": [
+            "cdc-gonorrhea-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize a disseminated gonococcal pattern and broaden site-specific diagnostic sampling.",
+          "difficulty": "application"
         }
       ]
     }

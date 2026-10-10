@@ -37,6 +37,26 @@
           "checkedAt": "2026-10-09",
           "locator": "For non-pregnant patients: combining treatments; For pregnant patients; Follow up with patients",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-tobacco-verified20261010",
+          "title": "Clinical Interventions to Treat Tobacco Use and Dependence Among Adults",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/tobacco/hcp/patient-care-settings/clinical.html",
+          "kind": "official-recommendation",
+          "edition": "CDC page displays May 14 and May 15, 2024 dates",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "For non-pregnant patients — Combining treatments; E-cigarettes and pregnancy",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "CDC-authored adult cessation guidance. No medication doses or blanket pregnancy medication safety claims; the conflicting displayed day dates are not resolved by inventing one.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -63,6 +83,24 @@
           "sourceIds": [
             "cdc-tobacco-clinical2024"
           ]
+        },
+        {
+          "id": "patch-short-acting-nrt",
+          "title": "Pair long- and short-acting nicotine replacement",
+          "text": "For suitable nonpregnant adults, CDC supports combining a long-acting nicotine patch with short-acting NRT such as gum or lozenges. The page states this improves quit success. Selection still requires individual suitability; this does not establish a pregnancy recommendation or specific dose. Varenicline and bupropion are separate prescription cessation medicines listed alongside NRT; they are not the short-acting NRT products in this combination.",
+          "sourceIds": [
+            "cdc-tobacco-verified20261010"
+          ],
+          "sourceLocator": "For non-pregnant patients — Combining treatments."
+        },
+        {
+          "id": "ecig-pregnancy-boundary",
+          "title": "E-cigarettes are not a safe pregnancy cessation substitute",
+          "text": "CDC says e-cigarettes are not safe during pregnancy, are not FDA-approved smoking-cessation aids and lack sufficient evidence to establish smoking-cessation benefit. Behavioral counseling and support are the initial pregnancy approach; medication decisions require individualized benefit–harm consideration.",
+          "sourceIds": [
+            "cdc-tobacco-verified20261010"
+          ],
+          "sourceLocator": "For pregnant patients; E-cigarettes and pregnancy."
         }
       ],
       "questions": [
@@ -152,6 +190,93 @@
           "domain": "preventive",
           "learningObjective": "Apply pregnancy-specific smoking cessation counseling.",
           "difficulty": "application"
+        },
+        {
+          "id": "tobacco-use-disorder-q3",
+          "stem": "A fictional nonpregnant adult is receiving counseling and tolerates a nicotine patch, but wants a source-supported nicotine-replacement combination. Contraindications have been assessed. Which combination matches CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Varenicline plus bupropion"
+            },
+            {
+              "id": "B",
+              "text": "A nicotine patch plus varenicline"
+            },
+            {
+              "id": "C",
+              "text": "A long-acting nicotine patch plus short-acting nicotine gum or lozenges"
+            },
+            {
+              "id": "D",
+              "text": "Bupropion alone"
+            },
+            {
+              "id": "E",
+              "text": "Varenicline alone"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "CDC supports combined long- and short-acting NRT for suitable nonpregnant adults; the question does not set doses or remove individual screening.",
+          "distractorExplanations": {
+            "A": "These are separate prescription cessation medicines, not the specified long- and short-acting NRT pair.",
+            "B": "Varenicline is not the short-acting NRT product in the requested source-supported NRT combination.",
+            "D": "This is a single prescription cessation medicine, not combined long- and short-acting NRT.",
+            "E": "This is a single prescription cessation medicine, not the requested NRT combination."
+          },
+          "sectionIds": [
+            "patch-short-acting-nrt",
+            "ecig-pregnancy-boundary"
+          ],
+          "sourceIds": [
+            "cdc-tobacco-verified20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Identify a supported long- and short-acting NRT combination without extending it to pregnancy.",
+          "difficulty": "application"
+        },
+        {
+          "id": "tobacco-use-disorder-q4",
+          "stem": "A fictional pregnant smoker asks whether switching to e-cigarettes is a safe, FDA-approved smoking-cessation treatment. Which counseling best reflects CDC's evidence and safety statements?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Explain that e-cigarettes are not safe during pregnancy or FDA-approved cessation aids; offer behavioral support"
+            },
+            {
+              "id": "B",
+              "text": "Recommend e-cigarettes first because they do not burn tobacco"
+            },
+            {
+              "id": "C",
+              "text": "Postpone all cessation support until after delivery"
+            },
+            {
+              "id": "D",
+              "text": "Present vaping as an FDA-approved smoking-cessation medicine"
+            },
+            {
+              "id": "E",
+              "text": "Recommend vaping instead of counseling because cessation benefit is established"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "CDC rejects e-cigarettes as a safe pregnancy substitute and notes their unapproved cessation status and uncertain cessation benefit. Behavioral counseling/support is the initial pregnancy approach.",
+          "distractorExplanations": {
+            "B": "CDC still states that e-cigarettes are not safe in pregnancy; lack of combustion does not establish the proposed safety claim.",
+            "C": "CDC recommends behavioral counseling and support during pregnancy.",
+            "D": "FDA cessation approval is not established by the source; CDC explicitly says e-cigarettes are not approved cessation aids.",
+            "E": "CDC describes insufficient cessation evidence and recommends behavioral support."
+          },
+          "sectionIds": [
+            "ecig-pregnancy-boundary"
+          ],
+          "sourceIds": [
+            "cdc-tobacco-verified20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Communicate e-cigarette pregnancy safety and cessation-evidence limits accurately.",
+          "difficulty": "application"
         }
       ]
     },
@@ -188,6 +313,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Diagnostic considerations: torsion referral and NAAT/culture; Follow-up",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-epididymitis-verified20261010",
+          "title": "Epididymitis — STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/epididymitis.htm",
+          "kind": "clinical-guideline",
+          "edition": "CDC STI Treatment Guidelines, 2021; chapter reviewed July 22, 2021",
+          "publishedDate": "2021-07-22",
+          "checkedAt": "2026-10-10",
+          "locator": "Diagnostic Considerations — ultrasound limitations; Treatment — insertive anal sex and combined STI/enteric risk",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Adult acute-epididymitis guidance. These questions do not substitute ultrasound for torsion assessment, prescribe doses or assume enteric-only risk without the source-required exclusion of gonorrhea.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -214,6 +359,24 @@
           "sourceIds": [
             "cdc-epididymitis2021"
           ]
+        },
+        {
+          "id": "negative-ultrasound",
+          "title": "Negative ultrasound does not exclude epididymitis",
+          "text": "CDC says ultrasound is primarily used to evaluate possible spermatic-cord torsion in painful unilateral swelling. A negative ultrasound does not rule out epididymitis and does not by itself change its management. Clinical history, examination and objective inflammation/pathogen assessment remain important. Torsion that is not excluded still requires appropriate clinical evaluation.",
+          "sourceIds": [
+            "cdc-epididymitis-verified20261010"
+          ],
+          "sourceLocator": "Diagnostic Considerations, ultrasound-role and negative-ultrasound paragraphs."
+        },
+        {
+          "id": "sti-enteric-treatment",
+          "title": "Cover STI and enteric risks when both are plausible",
+          "text": "For acute epididymitis likely due to chlamydia, gonorrhea or enteric organisms in a man who practices insertive anal sex, CDC lists ceftriaxone plus levofloxacin. Presumptive therapy is selected from pathogen-risk context before all results return. Levofloxacin monotherapy is reserved for likely enteric-only infection after source-defined exclusion of gonorrhea, not every case with possible enteric exposure. CDC separately lists ceftriaxone plus doxycycline for likely chlamydia/gonorrhea without the combined enteric-risk category.",
+          "sourceIds": [
+            "cdc-epididymitis-verified20261010"
+          ],
+          "sourceLocator": "Treatment — presumptive therapy; Recommended Regimens — likely chlamydia/gonorrhea, combined STI/enteric risk and enteric-only monotherapy conditions."
         }
       ],
       "questions": [
@@ -302,6 +465,92 @@
           "domain": "acute",
           "learningObjective": "Recognize when epididymitis nonresponse needs reevaluation.",
           "difficulty": "application"
+        },
+        {
+          "id": "epididymitis-q3",
+          "stem": "A fictional adult has a clinical presentation and objective inflammatory findings consistent with acute epididymitis. Appropriate evaluation has addressed concern for torsion. A scrotal ultrasound is negative. Which interpretation follows CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Stop the epididymitis assessment because the ultrasound is normal"
+            },
+            {
+              "id": "B",
+              "text": "Let the normal scan override the objective inflammatory findings"
+            },
+            {
+              "id": "C",
+              "text": "Use the scan alone to distinguish STI organisms from enteric organisms"
+            },
+            {
+              "id": "D",
+              "text": "A negative ultrasound does not rule out epididymitis or independently negate the clinical assessment"
+            },
+            {
+              "id": "E",
+              "text": "Use the negative scan as the sole basis for dismissing any unresolved torsion concern"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "CDC notes the limited diagnostic usefulness of ultrasound in clinically consistent epididymitis and explicitly states that a negative scan does not rule it out. Ongoing torsion concern still requires clinical evaluation.",
+          "distractorExplanations": {
+            "A": "CDC says a negative ultrasound does not rule out epididymitis.",
+            "B": "The source retains clinical and objective assessment despite a negative scan.",
+            "C": "Ultrasound does not replace the source's pathogen testing and clinical-risk assessment.",
+            "E": "CDC emphasizes clinical evaluation when torsion is not otherwise excluded."
+          },
+          "sectionIds": [
+            "negative-ultrasound"
+          ],
+          "sourceIds": [
+            "cdc-epididymitis-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Avoid using a negative ultrasound as an exclusion test for clinically supported epididymitis.",
+          "difficulty": "application"
+        },
+        {
+          "id": "epididymitis-q4",
+          "stem": "A fictional adult man has acute epididymitis and reports insertive anal sex. Chlamydia, gonorrhea and enteric organisms are plausible; gonorrhea has not been ruled out. No relevant drug contraindications are present. Which presumptive regimen matches the CDC combined-risk recommendation, without specifying doses?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Levofloxacin alone"
+            },
+            {
+              "id": "B",
+              "text": "Ceftriaxone plus doxycycline"
+            },
+            {
+              "id": "C",
+              "text": "Ceftriaxone alone"
+            },
+            {
+              "id": "D",
+              "text": "Doxycycline alone"
+            },
+            {
+              "id": "E",
+              "text": "Ceftriaxone plus levofloxacin"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "CDC lists this pair for acute epididymitis with possible STI and enteric causes in men who practice insertive anal sex. Enteric-only levofloxacin monotherapy requires the source's gonorrhea-exclusion condition.",
+          "distractorExplanations": {
+            "A": "The enteric-only monotherapy pathway requires gonorrhea to be ruled out; that condition is absent here.",
+            "B": "CDC lists this pair for likely chlamydia/gonorrhea; its combined STI/enteric-risk category specifies ceftriaxone plus levofloxacin.",
+            "C": "This omits the additional agent in CDC's combined STI/enteric-risk regimen.",
+            "D": "This is not the combined STI/enteric-risk regimen in the source."
+          },
+          "sectionIds": [
+            "sti-enteric-treatment"
+          ],
+          "sourceIds": [
+            "cdc-epididymitis-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Match combined STI/enteric epididymitis risk to the source regimen without an unsupported monotherapy shortcut.",
+          "difficulty": "application"
         }
       ]
     },
@@ -339,6 +588,46 @@
           "checkedAt": "2026-10-09",
           "locator": "Classic scabies: first-line medications; Crusted scabies: oral and topical agents",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-scabies-care-verified20261010",
+          "title": "Clinical Care of Scabies",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/scabies/hcp/clinical-care/index.html",
+          "kind": "official-recommendation",
+          "edition": "CDC clinical-care page, December 18, 2023",
+          "publishedDate": "2023-12-18",
+          "checkedAt": "2026-10-10",
+          "locator": "Classic scabies — oral ivermectin safety boundaries",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "No ivermectin dose or claim of established pregnancy safety; oral ivermectin is not FDA-approved for scabies. Source-defined lack of safety data is distinct from a universal contraindication.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-scabies-prevention-verified20261010",
+          "title": "Preventing Scabies",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/scabies/prevention/index.html",
+          "kind": "official-recommendation",
+          "edition": "CDC prevention page, December 18, 2023",
+          "publishedDate": "2023-12-18",
+          "checkedAt": "2026-10-10",
+          "locator": "Overview — simultaneous household/close-contact treatment and clothing/bedding measures",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Human scabies household prevention only; no pesticide fumigation, veterinary extrapolation or copied images.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -365,6 +654,24 @@
           "sourceIds": [
             "cdc-scabies-care2023"
           ]
+        },
+        {
+          "id": "ivermectin-safety-gap",
+          "title": "Do not invent established oral-ivermectin safety",
+          "text": "CDC states that oral ivermectin is not FDA-approved for scabies treatment and that its safety in pregnancy and children weighing less than 15 kg has not been established. This is a safety-evidence boundary, not permission to label the drug established safe for those groups or to invent a dosing workaround.",
+          "sourceIds": [
+            "cdc-scabies-care-verified20261010"
+          ],
+          "sourceLocator": "Classic scabies — Ivermectin oral tablet bullet."
+        },
+        {
+          "id": "household-control",
+          "title": "Treat household contacts together",
+          "text": "CDC recommends treating household members and close contacts at the same time as the person with scabies, and washing clothing and bedding used during the 3 days before treatment. Appropriate laundering or isolation of unwashable items is part of spread control. Do not wait for each household member to develop symptoms before applying the source's simultaneous-treatment approach.",
+          "sourceIds": [
+            "cdc-scabies-prevention-verified20261010"
+          ],
+          "sourceLocator": "Overview — simultaneous treatment and clothing/bedding bullets."
         }
       ],
       "questions": [
@@ -453,6 +760,92 @@
           "domain": "acute",
           "learningObjective": "Distinguish crusted-scabies treatment from classic-scabies therapy.",
           "difficulty": "application"
+        },
+        {
+          "id": "scabies-q3",
+          "stem": "A fictional pregnant adult with classic scabies asks whether oral ivermectin has established pregnancy safety. Which statement preserves the CDC evidence boundary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Select oral ivermectin from adult classic-scabies efficacy data without a pregnancy safety review"
+            },
+            {
+              "id": "B",
+              "text": "Safety of oral ivermectin in pregnancy has not been established; discuss suitable options rather than promise safety"
+            },
+            {
+              "id": "C",
+              "text": "Treat off-label scabies use as evidence of FDA-approved pregnancy safety"
+            },
+            {
+              "id": "D",
+              "text": "Use the adult's weight above 15 kg as the only safety consideration"
+            },
+            {
+              "id": "E",
+              "text": "Transfer topical-treatment safety assumptions directly to the oral drug"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "CDC describes unestablished pregnancy safety and unapproved US scabies indication for oral ivermectin. Lack of established safety must not be rewritten as a guarantee of safety.",
+          "distractorExplanations": {
+            "A": "The source's ordinary efficacy statement does not remove the specific pregnancy safety gap.",
+            "C": "Oral ivermectin is not FDA-approved for scabies, and its pregnancy safety is not established.",
+            "D": "The under-15-kg caution concerns children; the separate pregnancy safety gap still applies.",
+            "E": "CDC describes an oral-ivermectin-specific safety limitation that cannot be filled by another formulation's assumptions."
+          },
+          "sectionIds": [
+            "ivermectin-safety-gap"
+          ],
+          "sourceIds": [
+            "cdc-scabies-care-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Preserve an oral-ivermectin pregnancy safety gap without inventing approval or safety.",
+          "difficulty": "application"
+        },
+        {
+          "id": "scabies-q4",
+          "stem": "In a fictional household, one person has confirmed scabies and other close contacts have no current itch. Which control plan follows CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Treat symptomatic members now and wait for symptoms in the other close contacts"
+            },
+            {
+              "id": "B",
+              "text": "Treat only the bed-sharing contact and omit other household members"
+            },
+            {
+              "id": "C",
+              "text": "Arrange simultaneous treatment of household members and close contacts, with the recommended clothing/bedding measures"
+            },
+            {
+              "id": "D",
+              "text": "Treat household members sequentially over several weeks"
+            },
+            {
+              "id": "E",
+              "text": "Arrange simultaneous contact treatment but defer clothing and bedding measures until recurrence"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "CDC recommends treating household members and close contacts at the same time as the infected person. The source also addresses items used in the 3 days before treatment.",
+          "distractorExplanations": {
+            "A": "CDC recommends simultaneous treatment of household members and close contacts.",
+            "B": "The source includes household members and close contacts, not only one bed-sharing contact.",
+            "D": "Sequential treatment does not implement the source's simultaneous approach.",
+            "E": "The source includes items used in the 3 days before treatment, rather than waiting for recurrence."
+          },
+          "sectionIds": [
+            "household-control"
+          ],
+          "sourceIds": [
+            "cdc-scabies-prevention-verified20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Use simultaneous household scabies control rather than symptom-by-symptom delay.",
+          "difficulty": "application"
         }
       ]
     },
@@ -490,6 +883,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Permethrin 1%; prescription alternatives; malathion precautions; treatment precautions",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-headlice-treatment-verified20261010",
+          "title": "Treatment of Head Lice",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/lice/treatment/index.html",
+          "kind": "official-recommendation",
+          "edition": "CDC treatment overview, November 12, 2024",
+          "publishedDate": "2024-11-12",
+          "checkedAt": "2026-10-10",
+          "locator": "Directions — slow lice at 8–12 hours; Treatment overview; Additional measures — avoid fumigants; Treatment issues — mayonnaise evidence",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Head lice only. No extrapolation to scabies or pubic lice; no insecticide doses, excessive retreatment or veterinary product instructions.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -516,6 +929,24 @@
           "sourceIds": [
             "cdc-headlice-care2025"
           ]
+        },
+        {
+          "id": "early-slow-lice",
+          "title": "Do not equate slow early movement with treatment failure",
+          "text": "CDC says that a few lice moving slowly 8–12 hours after treatment do not require immediate reapplication; medication can take time to kill lice. If no lice have died and they remain as active as before treatment at that time, discuss possible failure with the provider before retreatment. Follow the medication's actual retreatment instructions.",
+          "sourceIds": [
+            "cdc-headlice-treatment-verified20261010"
+          ],
+          "sourceLocator": "Directions, numbered items 4, 5 and 8."
+        },
+        {
+          "id": "no-fumigants",
+          "title": "Avoid environmental fumigant sprays and fogs",
+          "text": "CDC advises against fumigant sprays or fogs for head-lice control because they can be toxic if inhaled or absorbed through skin. Suggested additional measures include laundering appropriate recently used items and vacuuming. Environmental pesticide exposure is not a substitute for correct treatment of an active infestation. Animals do not get or spread head lice. CDC also reports no scientific evidence that mayonnaise or similar suffocating substances effectively treat head lice.",
+          "sourceIds": [
+            "cdc-headlice-treatment-verified20261010"
+          ],
+          "sourceLocator": "Treatment overview; Additional measures — laundering/vacuuming and no-fumigant bullets; Treatment issues — mayonnaise evidence statement."
         }
       ],
       "questions": [
@@ -604,6 +1035,92 @@
           "domain": "acute",
           "learningObjective": "Prevent a malathion-related ignition hazard.",
           "difficulty": "application"
+        },
+        {
+          "id": "pediculosis-capitis-q3",
+          "stem": "In a fictional head-lice treatment follow-up, a parent sees only a few lice moving slowly 10 hours after medication application. They ask whether to immediately apply another full treatment. Which response best follows CDC instructions?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Do not immediately reapply solely for slow movement at 8–12 hours; follow the medication instructions and remove remaining lice appropriately"
+            },
+            {
+              "id": "B",
+              "text": "Repeat the full application now rather than wait for the product-directed interval"
+            },
+            {
+              "id": "C",
+              "text": "Switch to another medication immediately because slow movement establishes failure"
+            },
+            {
+              "id": "D",
+              "text": "Use more of the current product than the instructions specify to speed killing"
+            },
+            {
+              "id": "E",
+              "text": "Treat slow movement as confirmed resistance requiring a medication change"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "CDC explains that some lice can move slowly early after treatment while medication takes effect. This differs from lice remaining fully active without evidence of killing.",
+          "distractorExplanations": {
+            "B": "Slow movement at 8–12 hours does not by itself call for immediate reapplication.",
+            "C": "CDC distinguishes slowly moving lice from lice remaining fully active, and does not establish failure from this early finding.",
+            "D": "CDC directs using medication as instructed; the source does not authorize an extra amount for slow early movement.",
+            "E": "The stated early response does not prove resistance."
+          },
+          "sectionIds": [
+            "early-slow-lice"
+          ],
+          "sourceIds": [
+            "cdc-headlice-treatment-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Distinguish early slow lice movement from immediate treatment failure.",
+          "difficulty": "application"
+        },
+        {
+          "id": "pediculosis-capitis-q4",
+          "stem": "A fictional family treating a confirmed head-lice infestation proposes using pesticide foggers throughout the home. What source-supported environmental advice should be given?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Fog the rooms after laundering to eliminate environmental lice"
+            },
+            {
+              "id": "B",
+              "text": "Treat the family pet as the reservoir instead of addressing the infestation"
+            },
+            {
+              "id": "C",
+              "text": "Use mayonnaise as a proven substitute for indicated infestation treatment"
+            },
+            {
+              "id": "D",
+              "text": "Avoid fumigant sprays or fogs; use appropriate laundering and vacuuming measures instead"
+            },
+            {
+              "id": "E",
+              "text": "Spray fumigant on bedding as a safer substitute for laundry"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "CDC warns that fumigant sprays and fogs can be toxic if inhaled or absorbed through skin and recommends other limited environmental measures.",
+          "distractorExplanations": {
+            "A": "CDC specifically advises against fumigant sprays and fogs because of toxicity.",
+            "B": "The source states that animals do not get or spread head lice.",
+            "C": "CDC reports no scientific evidence that this suffocating approach is effective.",
+            "E": "Changing the target surface does not remove the source's warning against fumigants."
+          },
+          "sectionIds": [
+            "no-fumigants"
+          ],
+          "sourceIds": [
+            "cdc-headlice-treatment-verified20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Choose safer limited environmental head-lice control rather than toxic fumigation.",
+          "difficulty": "application"
         }
       ]
     },
@@ -653,6 +1170,26 @@
           "checkedAt": "2026-10-09",
           "locator": "Appropriate use: topical antifungals and topical corticosteroids",
           "reuse": "original-summary-no-full-text"
+        },
+        {
+          "id": "cdc-ringworm-treatment-verified20261010",
+          "title": "Treatment of Ringworm",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/ringworm/treatment/index.html",
+          "kind": "official-recommendation",
+          "edition": "CDC treatment overview, February 9, 2026",
+          "publishedDate": "2026-02-09",
+          "checkedAt": "2026-10-10",
+          "locator": "Treatment types — Ringworm on the skin; Emerging and severe antifungal-resistant ringworm",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "This general skin-treatment summary is not a regimen for scalp, nail or invasive fungal infection. Failure prompts evaluation; it does not prove resistance or select a drug by travel history alone.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -680,6 +1217,24 @@
           "sourceIds": [
             "cdc-antifungal-care2026"
           ]
+        },
+        {
+          "id": "skin-topical-course",
+          "title": "Treat skin disease for the directed course",
+          "text": "CDC describes ringworm on the skin as usually treated with nonprescription topical antifungals, commonly for 2–4 weeks according to product instructions. Apply treatment for the directed duration even if symptoms improve. This skin-treatment approach must not be automatically substituted for scalp ringworm, which generally requires oral prescription treatment.",
+          "sourceIds": [
+            "cdc-ringworm-treatment-verified20261010"
+          ],
+          "sourceLocator": "Treatment types — Ringworm on the skin and Ringworm on the scalp."
+        },
+        {
+          "id": "persistent-widespread-review",
+          "title": "Persistent or widespread disease needs reassessment",
+          "text": "CDC advises health care evaluation for ringworm that is unusually severe or widespread, persists after treatment or follows contact with severe infection. Report relevant travel history. Emerging resistant disease may not respond to usual antifungals, but persistence or travel alone does not prove resistance or establish a specific alternative regimen.",
+          "sourceIds": [
+            "cdc-ringworm-treatment-verified20261010"
+          ],
+          "sourceLocator": "Emerging and severe antifungal-resistant ringworm; When to contact a healthcare provider."
         }
       ],
       "questions": [
@@ -768,6 +1323,92 @@
           ],
           "domain": "acute",
           "learningObjective": "Avoid unnecessary corticosteroids in dermatophyte treatment.",
+          "difficulty": "application"
+        },
+        {
+          "id": "tinea-corporis-q3",
+          "stem": "A fictional adult has confirmed localized tinea corporis and no relevant drug contraindication. Symptoms improve after several days of an appropriate topical antifungal. Which instruction follows CDC's skin-ringworm guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Stop the antifungal once itch improves even if the directed course is unfinished"
+            },
+            {
+              "id": "B",
+              "text": "Switch to an oral antifungal solely because symptoms are improving"
+            },
+            {
+              "id": "C",
+              "text": "Replace the antifungal with a topical steroid as maintenance for residual redness"
+            },
+            {
+              "id": "D",
+              "text": "Apply the antifungal only on days with visible symptoms rather than follow instructions"
+            },
+            {
+              "id": "E",
+              "text": "Continue the topical antifungal for the product-directed duration even when symptoms improve"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "CDC advises using skin antifungal treatment for as long as directed, commonly 2–4 weeks depending on the product. Early symptom improvement is not the sole stopping rule.",
+          "distractorExplanations": {
+            "A": "CDC says to apply the antifungal for as long as directed, despite early improvement.",
+            "B": "The described response does not replace the source's instruction to complete appropriate directed skin treatment.",
+            "C": "This replaces the antifungal rather than completing the product-directed course described by CDC.",
+            "D": "Intermittent symptom-triggered use does not implement the directed course in this vignette."
+          },
+          "sectionIds": [
+            "skin-topical-course"
+          ],
+          "sourceIds": [
+            "cdc-ringworm-treatment-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Retain the directed topical course after early improvement in confirmed skin ringworm.",
+          "difficulty": "application"
+        },
+        {
+          "id": "tinea-corporis-q4",
+          "stem": "A fictional adult develops extensive ringworm-like lesions that persist after correctly completed usual treatment following recent travel. What is the source-supported next step, without presuming resistance or choosing an unverified drug?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Repeat the same course without discussing the persistent extensive disease"
+            },
+            {
+              "id": "B",
+              "text": "Seek reassessment and report severity, treatment response and travel history"
+            },
+            {
+              "id": "C",
+              "text": "Add a topical steroid to suppress the persistent rash"
+            },
+            {
+              "id": "D",
+              "text": "Assume travel proves resistance and choose a new regimen without reassessment"
+            },
+            {
+              "id": "E",
+              "text": "Dismiss a fungal cause solely from treatment nonresponse"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "CDC recommends evaluation for severe/widespread or persistent disease and sharing travel history. Emerging resistant infections are a consideration, but the findings do not prove resistance.",
+          "distractorExplanations": {
+            "A": "Persistence or unusual extent is a source-listed reason for evaluation.",
+            "C": "This does not provide the reassessment CDC recommends for persistent or unusually extensive disease.",
+            "D": "Travel history informs assessment; it does not prove resistance or provide a regimen.",
+            "E": "The source recommends reassessment, not a definitive alternate diagnosis from nonresponse alone."
+          },
+          "sectionIds": [
+            "persistent-widespread-review"
+          ],
+          "sourceIds": [
+            "cdc-ringworm-treatment-verified20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Reassess persistent extensive ringworm without fabricating resistance or an alternative regimen.",
           "difficulty": "application"
         }
       ]

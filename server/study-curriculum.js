@@ -1,12 +1,15 @@
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
+import { verifiedStudySourceReuse, knownStudySourceReuseUrl } from '../shared/source-reuse.js';
 
 export const STUDY_DISCLAIMER = 'For study use only. Original educational summaries and practice questions, not medical advice or instructions for patient care. This app is independent of ABFM; source checks are not clinician approval.';
 export const STUDY_NO_EVIDENCE = 'The current study library does not establish an answer to that question. I cannot verify a guideline-based clinical answer from the available references. Choose a condition in Guidelines or check the linked official source. This app is for study only, not patient-care advice.';
 export const STUDY_REAL_CARE_REDIRECT = 'This app is only for independent family medicine board study. It cannot diagnose a real person, select treatment or advise patient care. Bring real-care questions to a qualified clinician or your clinical team. For study practice, choose a sourced topic and explicitly describe a fictional or hypothetical board vignette.';
 const DAY = 86400000;
-const FILES = new Set(['cardiometabolic.json', 'respiratory_infectious.json', 'neuro_msk_derm.json', 'women_children_prevention.json', 'common_additions.json']);
+export const STUDY_CONDITION_FILES = Object.freeze(['cardiometabolic.json', 'respiratory_infectious.json', 'neuro_msk_derm.json', 'women_children_prevention.json', 'common_additions.json', 'treatment_expansion.json', 'licensed_reference_expansion.json']);
+export const STUDY_OPTIONAL_CONDITION_FILES = Object.freeze(['treatment_expansion.json', 'licensed_reference_expansion.json']);
+const FILES = new Set(STUDY_CONDITION_FILES);
 const SOURCE_HOSTS = Object.freeze(['theabfm.org', 'aafp.org', 'cdc.gov', 'nih.gov', 'uspreventiveservicestaskforce.org', 'ahrq.gov', 'hrsa.gov', 'hhs.gov', 'fda.gov', 'va.gov', 'healthquality.va.gov', 'acc.org', 'heart.org', 'ahajournals.org', 'diabetes.org', 'diabetesjournals.org', 'kdigo.org', 'kidney.org', 'gi.org', 'gastro.org', 'asge.org', 'aasld.org', 'auanet.org', 'acog.org', 'aap.org', 'publications.aap.org', 'aapd.org', 'idsociety.org', 'thoracic.org', 'chestnet.org', 'goldcopd.org', 'ginasthma.org', 'entnet.org', 'aad.org', 'aao.org', 'rheumatology.org', 'aaos.org', 'aan.com', 'aanem.org', 'psychiatry.org', 'asam.org', 'samhsa.gov', 'endocrine.org', 'thyroid.org', 'sleepeducation.org', 'aasm.org', 'nice.org.uk', 'rcog.org.uk', 'acponline.org', 'jamanetwork.com', 'nejm.org', 'bmj.com', 'journals.lww.com', 'academic.oup.com', 'ucsf.edu', 'hse.ie', 'asrm.org']);
 const ADDITIONAL_OFFICIAL_HOSTS = Object.freeze(['hematology.org', 'aaaai.org', 'hiv.gov', 'menopause.org', 'asccp.org', 'medconnection.ucsfbenioffchildrens.org', 'internationalguideline.com', 'ameriburn.org', 'abcd.care', 'cariguidelines.org', 'medlineplus.gov']);
 const EXACT_SOURCE_HOSTS = new Set(['alz-journals.onlinelibrary.wiley.com', 'agsjournals.onlinelibrary.wiley.com', 'acrjournals.onlinelibrary.wiley.com']);
@@ -34,7 +37,7 @@ export function officialStudySourceUrl(value) {
   if (!bounded(value, 2048)) return false;
   try {
     const url = new URL(value);
-    return url.protocol === 'https:' && !url.username && !url.password && !url.port && (EXACT_SOURCE_URLS.has(value) || EXACT_SOURCE_HOSTS.has(url.hostname) || [...SOURCE_HOSTS, ...ADDITIONAL_OFFICIAL_HOSTS].some(host => url.hostname === host || url.hostname.endsWith(`.${host}`)));
+    return url.protocol === 'https:' && !url.username && !url.password && !url.port && (knownStudySourceReuseUrl(value) || EXACT_SOURCE_URLS.has(value) || EXACT_SOURCE_HOSTS.has(url.hostname) || [...SOURCE_HOSTS, ...ADDITIONAL_OFFICIAL_HOSTS].some(host => url.hostname === host || url.hostname.endsWith(`.${host}`)));
   } catch { return false; }
 }
 function strings(value, maxItems, maxLength) { return Array.isArray(value) && value.length <= maxItems && value.every(item => bounded(item, maxLength)); }
@@ -54,15 +57,20 @@ export function validateStudyCondition(record, { now = Date.now() } = {}) {
   const sourceIds = new Set(record.sources.map(source => source?.id));
   if (sourceIds.size !== record.sources.length) problems.push('Source IDs must be unique within a condition.');
   for (const source of record.sources) {
-    if (!object(source) || !id(source.id) || !bounded(source.title, 300) || !officialStudySourceUrl(source.url) || !bounded(source.organization, 200) || !bounded(source.edition, 160) || !bounded(source.locator, 500) || !['clinical-guideline', 'official-recommendation', 'official-clinical-reference'].includes(source.kind) || source.reuse !== 'original-summary-no-full-text' || !Number.isFinite(date(source.checkedAt)) || date(source.checkedAt) > clock(now) || (source.publishedDate !== null && (!Number.isFinite(date(source.publishedDate)) || date(source.publishedDate) > clock(now)))) problems.push('Complete, bounded official source metadata and valid dates required.');
+    if (source?.rights !== undefined && !verifiedStudySourceReuse(source, { now: clock(now) })) problems.push('Unrecognized or invalid source-specific reuse metadata.');
+    if (!object(source) || !id(source.id) || !bounded(source.title, 300) || !officialStudySourceUrl(source.url) || !bounded(source.organization, 200) || !bounded(source.edition, 160) || !bounded(source.locator, 500) || !['clinical-guideline', 'official-recommendation', 'official-clinical-reference'].includes(source.kind) || source.reuse !== 'original-summary-no-full-text' || !Number.isFinite(date(source.checkedAt)) || date(source.checkedAt) > clock(now) || (source.publishedDate !== null && (!Number.isFinite(date(source.publishedDate)) || date(source.publishedDate) > date(source.checkedAt)))) problems.push('Complete, bounded official source metadata and valid dates required.');
     if (source && ['withdrawn', 'unresolved-conflict', 'blocked', 'superseded'].includes(source.status)) problems.push('Withdrawn, conflicted or blocked source is ineligible.');
     if (source?.status !== undefined && !['withdrawn', 'unresolved-conflict', 'blocked', 'superseded'].includes(source.status)) problems.push('Unknown source status is ineligible.');
   }
   const sectionIds = new Set(Array.isArray(record.sections) ? record.sections.map(section => section?.id) : []);
   if (!Array.isArray(record.sections) || record.sections.length < 3 || record.sections.length > 12 || sectionIds.size !== record.sections.length) problems.push('Between three and twelve unique source sections required.');
-  else for (const section of record.sections) if (!object(section) || !id(section.id) || !bounded(section.title, 200) || !bounded(section.text, 3000) || !references(section.sourceIds, sourceIds)) problems.push('Invalid source-linked study section.');
+  else for (const section of record.sections) {
+    const expanded = Array.isArray(section?.sourceIds) && record.sources.some(source => section.sourceIds.includes(source?.id) && verifiedStudySourceReuse(source, { now: clock(now) }));
+    if (!object(section) || !id(section.id) || !bounded(section.title, 200) || !bounded(section.text, expanded ? 1600 : 3000) || !references(section.sourceIds, sourceIds)) problems.push('Invalid source-linked study section.');
+  }
   if (!Array.isArray(record.questions) || record.questions.length < 2 || record.questions.length > 12 || !unique(record.questions.map(question => question?.id))) problems.push('Between two and twelve unique practice questions required.');
   else for (const question of record.questions) {
+    if (question?.examScope !== undefined && !['us-board-study', 'comparative-study'].includes(question.examScope)) problems.push('Unknown question examination scope.');
     if (!object(question) || !id(question.id) || !bounded(question.stem, 2000) || !bounded(question.explanation, 2500) || !bounded(question.learningObjective, 300) || !references(question.sourceIds, sourceIds) || !references(question.sectionIds, sectionIds) || !['acute', 'chronic', 'emergent', 'preventive', 'foundations'].includes(question.domain) || !['application', 'recall', 'analysis'].includes(question.difficulty) || !Array.isArray(question.choices) || question.choices.length !== 5) { problems.push('Invalid source-linked practice question.'); continue; }
     if (!unique(question.choices.map(choice => choice?.id)) || !question.choices.some(choice => choice.id === question.correctChoiceId) || question.choices.some(choice => !object(choice) || !id(choice.id) || !bounded(choice.text, 600)) || !object(question.distractorExplanations) || question.choices.some(choice => choice.id !== question.correctChoiceId && !bounded(question.distractorExplanations[choice.id], 1200))) problems.push('Question must have one canonical answer and bounded distractor explanations.');
     if (`${question.stem}\n\n${question.choices.map(choice => `${choice.id}. ${choice.text}`).join('\n')}`.length > 2000) problems.push('Question and choices must fit a bounded recall-card front.');
@@ -73,7 +81,7 @@ function normalizeCondition(record) {
   return { ...record, title: record.name, summary: record.overview, sourceVerified: true, humanReview: false, checkedAt: record.review.checkedAt, learningObjectives: [...new Set(record.questions.map(question => question.learningObjective))], redFlags: [], chunks: record.sections.map(section => ({ ...section, heading: section.title })), questions: record.questions.map(question => ({ ...question, rationale: question.explanation, testedConcept: question.learningObjective, choices: question.choices.map(choice => ({ ...choice, explanation: choice.id === question.correctChoiceId ? question.explanation : question.distractorExplanations[choice.id] })) })) };
 }
 
-function sourceView(source) { return { id: source.id, title: source.title, url: source.url, publisher: source.organization, organization: source.organization, kind: source.kind, edition: source.edition, checkedAt: source.checkedAt, publishedDate: source.publishedDate, locator: source.locator, reuse: source.reuse, ...(bounded(source.jurisdiction, 160) ? { jurisdiction: source.jurisdiction } : {}), ...(bounded(source.limitations, 1000) ? { limitations: source.limitations } : {}) }; }
+function sourceView(source) { return { id: source.id, title: source.title, url: source.url, publisher: source.organization, organization: source.organization, kind: source.kind, edition: source.edition, checkedAt: source.checkedAt, publishedDate: source.publishedDate, locator: source.locator, reuse: source.reuse, ...(source.rights ? { rights: { ...source.rights } } : {}), ...(bounded(source.attribution, 1000) ? { attribution: source.attribution } : {}), ...(bounded(source.derivativeNotice, 600) ? { derivativeNotice: source.derivativeNotice } : {}), ...(bounded(source.jurisdiction, 160) ? { jurisdiction: source.jurisdiction } : {}), ...(bounded(source.limitations, 1000) ? { limitations: source.limitations } : {}) }; }
 function checkTimes(condition) { return [condition.checkedAt, ...condition.sources.map(source => source.checkedAt)].map(date); }
 function currency(condition, now) {
   const checked = Math.min(...checkTimes(condition));
@@ -81,7 +89,7 @@ function currency(condition, now) {
   return { checkedAt: new Date(checked).toISOString().slice(0, 10), expiresAt: new Date(expires).toISOString().slice(0, 10), current: checked <= clock(now) && expires > clock(now) };
 }
 function summary(condition, now) { return { id: condition.id, title: condition.title, name: condition.title, specialty: condition.specialty, overview: condition.summary, formalGuideline: condition.sources.some(source => ['clinical-guideline', 'official-recommendation'].includes(source.kind)), domain: condition.domain, aliases: [...condition.aliases], summary: condition.summary, sourceVerified: true, humanReview: false, ...currency(condition, now), questionCount: condition.questions.length }; }
-function questionView(question) { return { id: question.id, stem: question.stem, choices: question.choices.map(choice => ({ id: choice.id, text: choice.text })), domain: question.domain, testedConcept: question.testedConcept, sourceIds: [...question.sourceIds] }; }
+function questionView(question) { return { id: question.id, stem: question.stem, choices: question.choices.map(choice => ({ id: choice.id, text: choice.text })), domain: question.domain, testedConcept: question.testedConcept, sourceIds: [...question.sourceIds], ...(question.examScope ? { examScope: question.examScope } : {}) }; }
 function sourceCitations(condition, sourceIds, now) { return condition.sources.filter(source => sourceIds.includes(source.id)).map(source => ({ ...sourceView(source), id: `study_${createHash('sha256').update(`${condition.id}:${source.id}`).digest('hex').slice(0, 28)}`, reviewedAt: source.checkedAt, expiresAt: currency(condition, now).expiresAt })); }
 
 /** Accept a deliberately selected option, never a sentence beginning with “a”. */
@@ -211,7 +219,7 @@ export function createStudyCurriculum({ records = [], now = Date.now } = {}) {
     return { key: `${condition.id}:${question.id}`, fingerprint: createHash('sha256').update(JSON.stringify({ conditionId: condition.id, question, sections: condition.sections.filter(section => question.sectionIds.includes(section.id)), sources: condition.sources.filter(source => question.sourceIds.includes(source.id)), review: condition.review })).digest('hex') };
   }
   function boardQuestions() {
-    return accepted.filter(condition => currency(condition, now).current).flatMap(condition => condition.questions.map(question => ({ ...questionIdentity(condition, question), conditionId: condition.id, conditionTitle: condition.title, questionId: question.id, domain: question.domain, stem: question.stem, choices: question.choices.map(choice => ({ id: choice.id, text: choice.text })), sourceIds: [...question.sourceIds], ...currency(condition, now) })));
+    return accepted.filter(condition => currency(condition, now).current).flatMap(condition => condition.questions.filter(question => question.examScope !== 'comparative-study').map(question => ({ ...questionIdentity(condition, question), conditionId: condition.id, conditionTitle: condition.title, questionId: question.id, domain: question.domain, stem: question.stem, choices: question.choices.map(choice => ({ id: choice.id, text: choice.text })), sourceIds: [...question.sourceIds], ...currency(condition, now) })));
   }
   function gradeBoardQuestion(pending, choiceId) {
     if (!object(pending) || typeof pending.key !== 'string' || !/^[a-f0-9]{64}$/.test(pending.fingerprint || '') || !/^[A-E]$/.test(choiceId || '')) return null;
@@ -321,7 +329,7 @@ export function loadStudyCurriculum({ contentDir, now = Date.now } = {}) {
     totalBytes += size;
     if (size > 2 * 1024 * 1024 || totalBytes > 8 * 1024 * 1024) throw new Error('Study corpus exceeds its bounded file limits.');
     const parsed = JSON.parse(readFileSync(path, 'utf8'));
-    if (!object(parsed) || parsed.schemaVersion !== 1 || !Number.isFinite(date(parsed.checkedAt)) || !Array.isArray(parsed.conditions) || parsed.conditions.length > 125) throw new Error('Invalid study corpus envelope.');
+    if (!object(parsed) || parsed.schemaVersion !== 1 || !Number.isFinite(date(parsed.checkedAt)) || date(parsed.checkedAt) > clock(now) || !Array.isArray(parsed.conditions) || parsed.conditions.length > 125) throw new Error('Invalid study corpus envelope.');
     records.push(...parsed.conditions);
   }
   return createStudyCurriculum({ records, now });
@@ -332,7 +340,7 @@ export function loadStudyFoundations({ contentPath, now = Date.now } = {}) {
   if (!contentPath || !existsSync(contentPath)) return createStudyCurriculum({ now });
   if (statSync(contentPath).size > 2 * 1024 * 1024) throw new Error('Study foundations exceed their bounded file limit.');
   const parsed = JSON.parse(readFileSync(contentPath, 'utf8'));
-  if (!object(parsed) || parsed.schemaVersion !== 1 || parsed.topicType !== 'foundations' || !Number.isFinite(date(parsed.checkedAt)) || !Array.isArray(parsed.conditions) || parsed.conditions.length > 50 || parsed.conditions.some(record => record?.domain !== 'foundations' || record?.recordType !== 'foundation')) throw new Error('Invalid study foundations envelope.');
+  if (!object(parsed) || parsed.schemaVersion !== 1 || parsed.topicType !== 'foundations' || !Number.isFinite(date(parsed.checkedAt)) || date(parsed.checkedAt) > clock(now) || !Array.isArray(parsed.conditions) || parsed.conditions.length > 50 || parsed.conditions.some(record => record?.domain !== 'foundations' || record?.recordType !== 'foundation')) throw new Error('Invalid study foundations envelope.');
   return createStudyCurriculum({ records: parsed.conditions, now });
 }
 

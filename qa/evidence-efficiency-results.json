@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-10T03:51:35.508Z",
+  "baselineCommit": "a8c0700a51a33c46190e31569026f2e6c7c5ca2a",
+  "scope": "Serialized prompt bytes for one fixed source-backed pneumonic-plague context; not provider token counts, latency, cost or physical-device measurements.",
+  "evidenceChunks": 5,
+  "canonicalExcerptBytes": 2263,
+  "before": {
+    "authorBytes": 7985,
+    "reviewerBytes": 12274
+  },
+  "after": {
+    "authorBytes": 8910,
+    "reviewerBytes": 11161
+  },
+  "combinedByteReductionPercent": 0.93,
+  "paidCalls": 0,
+  "boardCatalog": {
+    "checkedAt": "2026-10-10T04:40:17.386Z",
+    "questionCount": 458,
+    "beforeBytes": 127666,
+    "afterBytes": 3692,
+    "reductionPercent": 97.11,
+    "fullAuditBytes": 125566,
+    "alignmentSummaryBytes": 1592,
+    "fingerprintsMatch": true,
+    "crosswalkAvailableViaAuthenticatedAudit": true,
+    "scope": "Expanded-bank local serialized JSON bytes, comparing full-crosswalk catalog with compact catalog; not measured phone latency or provider cost."
+  }
+}

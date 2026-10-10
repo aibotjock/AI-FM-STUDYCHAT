@@ -55,6 +55,26 @@
           "reuse": "original-summary-no-full-text",
           "jurisdiction": "United States",
           "limitations": "Definitions are applied to an original hypothetical study, not a claim about any vaccine or treatment."
+        },
+        {
+          "id": "cdc-glossary-expanded-20261010",
+          "title": "Epidemiology Glossary",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/reproductive-health/glossary/index.html",
+          "kind": "official-clinical-reference",
+          "edition": "Web page displays May 15, 2024; footer May 14, 2024",
+          "publishedDate": "2024-05-15",
+          "checkedAt": "2026-10-10",
+          "locator": "Case-control study; cohort study; incidence rate; point prevalence; case-fatality rate; median; sensitivity; specificity",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "CDC-authored statistical definitions, not a clinical treatment guideline. Study counts and encounters are original fictional examples. U.S. public-domain assessment excludes third-party materials and logos.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -80,6 +100,14 @@
           "text": "Observational comparisons may be distorted by confounding, selection bias or differences in information collection. A factor associated with both exposure and outcome can confound their measured relationship.",
           "sourceIds": [
             "cdc-observational-bias"
+          ]
+        },
+        {
+          "id": "study-design-and-frequency",
+          "title": "Study design and disease frequency",
+          "text": "Case-control studies enroll by outcome status and compare earlier exposures; cohort studies enroll by exposure and ascertain outcomes. Incidence concerns new cases among those at risk over time; point prevalence concerns existing cases at one time. Case-fatality rate divides deaths from a condition by its incident cases. The median separates ordered observations into equal halves. These definitions describe study measurements, not treatment decisions.",
+          "sourceIds": [
+            "cdc-glossary-expanded-20261010"
           ]
         }
       ],
@@ -170,6 +198,264 @@
           "domain": "foundations",
           "learningObjective": "Recognize a potential confounder in an observational comparison.",
           "difficulty": "application"
+        },
+        {
+          "id": "foundations-evidence-appraisal-q3",
+          "stem": "A fictional family medicine research team recruits people with a recent diagnosis and a comparison group without that diagnosis, then reviews their earlier exposures. Which study design is described?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Case-control study"
+            },
+            {
+              "id": "B",
+              "text": "Exposure-defined cohort study"
+            },
+            {
+              "id": "C",
+              "text": "Randomized intervention trial"
+            },
+            {
+              "id": "D",
+              "text": "Case report of one person"
+            },
+            {
+              "id": "E",
+              "text": "Repeated prevalence survey"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Enrollment is based on having or not having the outcome, followed by comparison of exposures: a case-control design.",
+          "distractorExplanations": {
+            "B": "A cohort instead begins with exposure-defined groups.",
+            "C": "No intervention is randomized in this scenario.",
+            "D": "The study includes two recruited groups, not one report.",
+            "E": "The study compares previous exposures rather than repeated population snapshots."
+          },
+          "learningObjective": "Recognize outcome-based recruitment in a case-control study.",
+          "domain": "foundations",
+          "difficulty": "application",
+          "sourceIds": [
+            "cdc-glossary-expanded-20261010"
+          ],
+          "sectionIds": [
+            "study-design-and-frequency"
+          ]
+        },
+        {
+          "id": "foundations-evidence-appraisal-q4",
+          "stem": "In an original hypothetical study, a practice groups participants by an exposure documented at enrollment and observes subsequent disease outcomes. Which design best fits this description?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Outcome-based case-control study"
+            },
+            {
+              "id": "B",
+              "text": "Single-person case report"
+            },
+            {
+              "id": "C",
+              "text": "Cohort study"
+            },
+            {
+              "id": "D",
+              "text": "Point-prevalence survey only"
+            },
+            {
+              "id": "E",
+              "text": "Randomized treatment trial"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "The groups are defined by exposure and subsequent outcomes are ascertained, which describes a cohort study.",
+          "distractorExplanations": {
+            "A": "Recruitment was by exposure, not by already having the outcome.",
+            "B": "This follows groups of participants rather than describing one person.",
+            "D": "The study follows later outcomes instead of only one time point.",
+            "E": "The scenario does not assign an intervention at random."
+          },
+          "learningObjective": "Recognize exposure-based enrollment and outcome follow-up in a cohort.",
+          "domain": "foundations",
+          "difficulty": "application",
+          "sourceIds": [
+            "cdc-glossary-expanded-20261010"
+          ],
+          "sectionIds": [
+            "study-design-and-frequency"
+          ]
+        },
+        {
+          "id": "foundations-evidence-appraisal-q5",
+          "stem": "A fictional practice measures newly diagnosed cases of condition X during one year among people initially at risk. Which measure is most directly being studied?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Point prevalence on one date"
+            },
+            {
+              "id": "B",
+              "text": "Case-fatality rate"
+            },
+            {
+              "id": "C",
+              "text": "Median age"
+            },
+            {
+              "id": "D",
+              "text": "Positive predictive value"
+            },
+            {
+              "id": "E",
+              "text": "Incidence"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Incidence concerns the occurrence of new cases in the population at risk during the stated time interval.",
+          "distractorExplanations": {
+            "A": "Point prevalence includes existing cases at one time.",
+            "B": "Case-fatality compares deaths with cases of the condition.",
+            "C": "Age distribution is not the outcome being counted.",
+            "D": "Predictive value concerns positive test results, which are not described."
+          },
+          "learningObjective": "Distinguish new-case incidence from existing-case prevalence.",
+          "domain": "foundations",
+          "difficulty": "application",
+          "sourceIds": [
+            "cdc-glossary-expanded-20261010"
+          ],
+          "sectionIds": [
+            "study-design-and-frequency"
+          ]
+        },
+        {
+          "id": "foundations-evidence-appraisal-q6",
+          "stem": "A fictional clinic counts everyone who currently has condition X on a specified date, including diagnoses made years earlier. Which measure matches this snapshot?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "One-year incidence"
+            },
+            {
+              "id": "B",
+              "text": "Point prevalence"
+            },
+            {
+              "id": "C",
+              "text": "Case-fatality rate"
+            },
+            {
+              "id": "D",
+              "text": "Sensitivity"
+            },
+            {
+              "id": "E",
+              "text": "Specificity"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Point prevalence describes the condition present in a population at one point in time and includes existing cases.",
+          "distractorExplanations": {
+            "A": "Incidence counts new cases over time.",
+            "C": "The snapshot contains no deaths-to-cases comparison.",
+            "D": "Sensitivity requires test results among people with disease.",
+            "E": "Specificity requires test results among people without disease."
+          },
+          "learningObjective": "Identify point prevalence from a dated population snapshot.",
+          "domain": "foundations",
+          "difficulty": "application",
+          "sourceIds": [
+            "cdc-glossary-expanded-20261010"
+          ],
+          "sectionIds": [
+            "study-design-and-frequency"
+          ]
+        },
+        {
+          "id": "foundations-evidence-appraisal-q7",
+          "stem": "An invented outbreak has 80 new cases and 4 deaths attributed to the disease among those cases. Which denominator is used for the case-fatality proportion?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "All residents in the county"
+            },
+            {
+              "id": "B",
+              "text": "All deaths from any cause"
+            },
+            {
+              "id": "C",
+              "text": "Only the 4 people who died"
+            },
+            {
+              "id": "D",
+              "text": "The 80 incident cases"
+            },
+            {
+              "id": "E",
+              "text": "All people with a positive screening test"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Case-fatality compares disease-attributed deaths with incident cases of that disease. Here, 4/80 equals 5%; the counts are invented.",
+          "distractorExplanations": {
+            "A": "All county residents would use a different population denominator.",
+            "B": "The measure concerns deaths from this disease among its cases.",
+            "C": "Using only deaths excludes surviving cases from the denominator.",
+            "E": "The denominator is disease cases, not necessarily screening-positive people."
+          },
+          "learningObjective": "Select the incident-case denominator for a case-fatality proportion.",
+          "domain": "foundations",
+          "difficulty": "application",
+          "sourceIds": [
+            "cdc-glossary-expanded-20261010"
+          ],
+          "sectionIds": [
+            "study-design-and-frequency"
+          ]
+        },
+        {
+          "id": "foundations-evidence-appraisal-q8",
+          "stem": "For an original practice audit, five ordered waiting times are 2, 3, 4, 5, and 36 minutes. Which value is the median?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "4 minutes"
+            },
+            {
+              "id": "B",
+              "text": "10 minutes"
+            },
+            {
+              "id": "C",
+              "text": "17 minutes"
+            },
+            {
+              "id": "D",
+              "text": "36 minutes"
+            },
+            {
+              "id": "E",
+              "text": "2 minutes"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "The middle observation in this ordered set of five is 4 minutes; two observations lie on each side.",
+          "distractorExplanations": {
+            "B": "10 minutes is the arithmetic mean, not the middle observation.",
+            "C": "17 minutes is half the range, not the middle observation.",
+            "D": "36 minutes is the largest observation.",
+            "E": "2 minutes is the smallest observation."
+          },
+          "learningObjective": "Find the median in an ordered original dataset.",
+          "domain": "foundations",
+          "difficulty": "application",
+          "sourceIds": [
+            "cdc-glossary-expanded-20261010"
+          ],
+          "sectionIds": [
+            "study-design-and-frequency"
+          ]
         }
       ]
     },
@@ -225,6 +511,26 @@
           "reuse": "original-summary-no-full-text",
           "jurisdiction": "United States",
           "limitations": "Official epidemiology teaching reference; no condition-specific testing recommendation is asserted."
+        },
+        {
+          "id": "cdc-glossary-expanded-20261010",
+          "title": "Epidemiology Glossary",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/reproductive-health/glossary/index.html",
+          "kind": "official-clinical-reference",
+          "edition": "Web page displays May 15, 2024; footer May 14, 2024",
+          "publishedDate": "2024-05-15",
+          "checkedAt": "2026-10-10",
+          "locator": "Case-control study; cohort study; incidence rate; point prevalence; case-fatality rate; median; sensitivity; specificity",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "CDC-authored statistical definitions, not a clinical treatment guideline. Study counts and encounters are original fictional examples. U.S. public-domain assessment excludes third-party materials and logos.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -250,6 +556,14 @@
           "text": "Interpretation considers sensitivity, specificity and disease prevalence. Check whether the population used to estimate test characteristics differs from the population being tested.",
           "sourceIds": [
             "cdc-laboratory-context"
+          ]
+        },
+        {
+          "id": "sensitivity-specificity-calculation",
+          "title": "Original sensitivity and specificity calculations",
+          "text": "Sensitivity divides true-positive results by all people with disease, including false negatives. Specificity divides true-negative results by all people without disease, including false positives. For hypothetical counts, determine disease status first to select the denominator; neither quantity uses all positive results as its denominator.",
+          "sourceIds": [
+            "cdc-glossary-expanded-20261010"
           ]
         }
       ],
@@ -340,6 +654,92 @@
           "domain": "foundations",
           "learningObjective": "Identify population context when interpreting diagnostic-test performance.",
           "difficulty": "application"
+        },
+        {
+          "id": "foundations-diagnostic-testing-q3",
+          "stem": "A fictional test evaluation has 48 true-positive and 12 false-negative results among people with disease. There are also 180 true-negative and 20 false-positive results. What is the sensitivity?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "90%"
+            },
+            {
+              "id": "B",
+              "text": "48%"
+            },
+            {
+              "id": "C",
+              "text": "71%"
+            },
+            {
+              "id": "D",
+              "text": "80%"
+            },
+            {
+              "id": "E",
+              "text": "20%"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Sensitivity is the proportion of people with disease correctly identified: 48/(48+12) = 80%.",
+          "distractorExplanations": {
+            "A": "90% is specificity in this dataset: 180/200.",
+            "B": "Dividing 48 by an unstated denominator of 100 is inappropriate.",
+            "C": "48/(48+20), about 71%, uses false positives rather than the 12 false negatives in the denominator.",
+            "E": "12/60 is the false-negative proportion among those with disease, not sensitivity."
+          },
+          "learningObjective": "Calculate sensitivity using the disease-positive denominator.",
+          "domain": "foundations",
+          "difficulty": "application",
+          "sourceIds": [
+            "cdc-glossary-expanded-20261010"
+          ],
+          "sectionIds": [
+            "sensitivity-specificity-calculation"
+          ]
+        },
+        {
+          "id": "foundations-diagnostic-testing-q4",
+          "stem": "An original hypothetical test dataset contains 170 true negatives and 30 false positives among people without disease, plus 45 true positives and 5 false negatives. What is the specificity?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "90%"
+            },
+            {
+              "id": "B",
+              "text": "85%"
+            },
+            {
+              "id": "C",
+              "text": "15%"
+            },
+            {
+              "id": "D",
+              "text": "45%"
+            },
+            {
+              "id": "E",
+              "text": "97%"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Specificity is the proportion without disease correctly identified: 170/(170+30) = 85%.",
+          "distractorExplanations": {
+            "A": "90% is sensitivity here: 45/50.",
+            "C": "15% is the false-positive proportion among those without disease.",
+            "D": "45% treats the true-positive count as a percentage; specificity instead uses 170/200.",
+            "E": "170/(170+5), about 97%, incorrectly adds the false negatives instead of the 30 false positives."
+          },
+          "learningObjective": "Calculate specificity using the disease-negative denominator.",
+          "domain": "foundations",
+          "difficulty": "application",
+          "sourceIds": [
+            "cdc-glossary-expanded-20261010"
+          ],
+          "sectionIds": [
+            "sensitivity-specificity-calculation"
+          ]
         }
       ]
     },
