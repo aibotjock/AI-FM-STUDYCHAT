@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/aibotjock/Conversation-Agent",
-  "version": "0.1.1",
-  "sourceRevision": "3ecd4c0aeef2cb3eacfe8d7ad2e1520c14941cae",
+  "version": "0.1.2",
+  "sourceRevision": "810c6de1be8280073eeda13abb9b721dfa459451",
   "files": {
     "NOTICE": "30e9aac9578adf3498b3710e92bac815cc0e14fc1f47b77a3518c8410c0e46e2",
     "index.d.ts": "c6ea8c03cdbde97ae5424f94710813d0060a5a8c0a1f36ab39605c0f99d956d6",
@@ -12,6 +12,6 @@
     "voice-circle.css": "84807dd65e0847577dbdf3bf0a4275640b36fd42983b21d4ce73e7abed608e52"
   },
   "serverFiles": {
-    "server/openai-transcription.js": "2901b3174a5a2e1e2e3cf4a8a36ee7483f5b03e2d80230c8b0c026186514e770"
+    "server/openai-transcription.js": "57812236fc00d69197d4582627dd5133c1836a017abee36eed3f4b7e6d7b20df"
   }
 }

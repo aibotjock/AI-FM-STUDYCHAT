@@ -118,7 +118,7 @@ test('session expiration, aggregate audio budget and cached transcript expiratio
 
 test('session starts and shutdown are bounded, and restart makes pending receipts uncertain', t => {
   const { service, db, session } = fixture(t, async () => transcript());
-  for (let i = 0; i < 5; i++) service.start({ conversationId: session.conversationId, ownerKey: 'owner-one' });
+  for (let i = 1; i < CONVERSATION_AUDIO_LIMITS.maxSessionsPerHour; i++) service.start({ conversationId: session.conversationId, ownerKey: 'owner-one' });
   assert.throws(() => service.start({ conversationId: session.conversationId, ownerKey: 'owner-one' }), { code: 'conversation_audio_session_limit' });
   service.close(); assert.equal(service.options().enabled, false);
   db.prepare('INSERT INTO conversation_audio_requests VALUES(?,?,?,?,?,?)').run(randomUUID(), 'hash', 'scope', 'pending', 1000, null);
@@ -241,3 +241,11 @@ test('HTTP streaming releases checked audio before provider EOF and disconnect c
   const receipt = await app.request('/api/voice/check/' + requestId, undefined, { cookie: app.cookie, method: 'GET' });
   assert.equal(receipt.body.status, 'uncertain'); assert.equal(receipt.body.metadata.billingOutcome, 'unknown'); assert.equal(receipt.body.cachedAudioAvailable, false); assert.equal(app.calls.length, 1);
 });
+
+ test('paid hourly budget survives short restarts and rejects before another provider request', async t => {
+  let calls = 0; const {service, db, input, session} = fixture(t, async () => {calls++; return transcript();});
+  for(let i=0;i<12;i++){const s=service.start({conversationId:session.conversationId,ownerKey:'owner-one'});service.end({...s,ownerKey:'owner-one'});}
+  const s=service.start({conversationId:session.conversationId,ownerKey:'owner-one'});
+  db.prepare('INSERT INTO conversation_audio_requests VALUES(?,?,?,?,?,?)').run(randomUUID(),'h','s','uncertain',Date.now(),JSON.stringify({durationMs:CONVERSATION_AUDIO_LIMITS.maxHourlyAudioMs}));
+  await assert.rejects(service.transcribe(input({sessionId:s.sessionId})),{code:'conversation_audio_hourly_usage_limit'});assert.equal(calls,0);
+ });

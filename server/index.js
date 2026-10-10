@@ -912,6 +912,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           const content = cleanText(input.content, 'message', 12000);
           if (input.conditionIds !== undefined && (!Array.isArray(input.conditionIds) || input.conditionIds.length > 3 || new Set(input.conditionIds).size !== input.conditionIds.length || input.conditionIds.some(conditionId => typeof conditionId !== 'string' || !studyReferences?.get(conditionId)))) fail(400, 'Choose at most three available study topics.');
           let conditionIds = input.conditionIds?.length ? input.conditionIds : conversation.curriculumConditionId ? [conversation.curriculumConditionId] : [];
+          if (!input.conditionIds?.length && isDialogueFollowup(content)) conditionIds = conversation.messages.findLast(message => message.role === 'user' && message.studyConditionIds?.length)?.studyConditionIds || conditionIds;
           const requestId = input.requestId === undefined ? null : cleanText(input.requestId, 'request id', 100);
           const voiceSessionId = input.voiceSessionId === undefined ? null : conversationAudioId(input.voiceSessionId);
           const voiceScope = voiceSessionId ? { sessionId: voiceSessionId, conversationId: conversation.id, ownerKey: voiceOwnerKey(req) } : null;
@@ -969,13 +970,14 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             const medicalRequested = !coachingRequested && needsStudyEvidence(content);
             const blockedFollowup = studyReferences && isDialogueFollowup(content) && priorAssistant?.unsupported === true && medicalRequested;
             const evidence = !generated && !blockedFollowup && studyReferences ? conversationalEvidence(studyReferences, conversation, content, { conditionIds, previousQueries }) : [];
+            if (evidence.length && !input.conditionIds?.length) user.studyConditionIds = [...new Set(evidence.map(item => item.conditionId))].slice(0, 3);
             if (pending && !generated && ((medicalRequested && !evidence.length && !isDialogueFollowup(content)) || (evidence.length && !evidence.some(item => item.conditionId === pendingConditionId)))) pending = null;
             const quizOptions = { previousQuestionKeys: conversation.messages.filter(message => message.role === 'assistant' && message.studyQuestion && !message.importedEvidence && !message.studyQuestion.imported).map(message => message.studyQuestion.key) };
             if (!generated && evidence.length && isStudyQuizRequest(content)) generated = studyReferences.quiz(evidence, quizOptions);
             if (!generated && studyReferences) {
               if (ai.configured) {
                 try {
-                  const tutorContext = { references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending, requireVersion3: true };
+                  const tutorContext = { references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending, requireVersion3: true, voiceTurn: Boolean(voiceScope) };
                   const primaryPrompt = buildNaturalTutorPrompt(tutorContext);
                   const primarySchema = buildNaturalTutorSchema(tutorContext);
                   aiCalls++;

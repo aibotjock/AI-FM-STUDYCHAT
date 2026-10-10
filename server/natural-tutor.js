@@ -100,6 +100,10 @@ export function validateNaturalDraft(parsed, { references, evidence }) {
     seen.add(segment.id); total += segment.text.length;
   }
   if (total > 7000) reject(203);
+  // Historical refusals cannot override the current server evidence. Let the
+  // caller render canonical cited passages rather than pay for reviewing a
+  // blanket source-absence claim. Specific unsupported details remain gaps.
+  if (available.size && parsed.segments.every(segment => !segment.sourceChunkIds.length) && parsed.segments.some(segment => /\b(?:no|do not have any|don't have any)\s+(?:(?:approved|verified|valid|usable|available|supporting)\s+)?(?:sources?|references?)\b|\bcannot teach factual clinical content\b/i.test(segment.text))) reject(308);
   return structuredClone(parsed);
 }
 
@@ -111,9 +115,10 @@ export function explicitAnswerReveal(content) {
   return !/\b(?:not|don't|don’t|never|without|avoid)\b[\s\S]{0,60}\b(?:reveal|show|give|tell|answer)\b/i.test(content) && /^(?:(?:please|can you|could you|i want you to|i would like you to)\s+)*(?:(?:reveal|show|give|tell)\b[\s\S]*\b(?:answer|rationale|explanation)\b|explain (?:the )?answer\b)/i.test(content.trim());
 }
 
-export function buildNaturalTutorPrompt({ references, evidence, conversation, settings, pendingQuestion = null }) {
-  return `You are a conversational companion and tutor for an independent family medicine board-study app. Respond naturally to the learner and recent conversation. Usually keep the reply within 80 words unless the learner asks for detail; answer a request for detail fully within the output limits. Preserve every clinically necessary qualifier and exception rather than shortening a fact inaccurately. Avoid canned navigation, routine narration and forced questions. Ask at most one useful question; do not request information already provided.
+export function buildNaturalTutorPrompt({ references, evidence, conversation, settings, pendingQuestion = null, voiceTurn = false }) {
+  return `You are a conversational companion and tutor for an independent family medicine board-study app. Respond naturally to the learner and recent conversation. ${voiceTurn ? 'This is a spoken conversation. Aim for 40–60 words and one or two short paragraphs per routine turn, keeping the first sentence directly useful.' : 'Usually keep the reply within 80 words'} unless the learner asks for detail; answer a request for detail fully within the output limits. Preserve every clinically necessary qualifier and exception rather than shortening a fact inaccurately. Avoid canned navigation, routine narration and forced questions. Ask at most one useful question; do not request information already provided.
 ${evidencePolicyInstructions('generator')}
+Evidence availability: The current sources below supersede historical statements about missing references. When they support part of the request, teach that supported part with sourceChunkIds and identify only the specific remaining gap. Never claim there are no sources for a topic when sources are supplied. A source title alone does not establish a treatment, dose or cutoff.
 Conversation pacing: presentation.status=interrupted or pending contains only completely presented audio segments, if any. Address the interruption and clarify or resume when requested.
 Study strategy: During study practice, invite the learner to commit to an answer and their reasoning before explaining. Accept uncertainty, a pass or a request for explanation without pressure. Ask one useful question at a time. Distinguish self-reported recall difficulty from interpretation confusion and next-step confusion using what the learner actually says or answers; clarify briefly only when needed, without presenting an inferred weakness as demonstrated.
 After a committed answer or a request for explanation, explain the cited decisive clue. Explain why an alternative differs only when the provided sources support both the clue and the comparison. Offer a fresh variation only through a server-owned original question, not a case composed in prose. Any medical case requires evidence that supports all medical case premises and relationships; do not invent case premises or fill evidence gaps. Otherwise return to a supported point or acknowledge the limit.

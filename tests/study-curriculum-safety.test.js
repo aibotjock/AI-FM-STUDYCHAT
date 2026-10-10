@@ -135,3 +135,23 @@ test('explicit ischemic-stroke comparisons and a newly named stroke syndrome rem
   }
   assert.deepEqual([...new Set(curriculum.retrieve('Study acute ischemic stroke',{conditionIds:['atrial-fibrillation']}).map(item=>item.conditionId))],['ischemic-stroke']);
 });
+
+ test('AUB follow-ups retain current evidence across treatment and workup turns without borrowing it for a new condition',()=>{
+ const refs=loadStudyCurriculum({contentDir:new URL('../content/conditions/',import.meta.url).pathname,now:()=>Date.parse('2026-10-10T12:00:00Z')});
+ const initial=refs.retrieve('Explain abnormal uterine bleeding');assert.ok(initial.length);
+ for(const [query,previousQueries] of [
+ ['What is the treatment?',['Explain abnormal uterine bleeding']],
+ ['What is the workup?',['Explain abnormal uterine bleeding','What is the treatment?']],
+ ['How do we manage it?',['What is the treatment?','What is the workup?']]
+ ]){const evidence=refs.retrieve(query,{conditionIds:['abnormal-uterine-bleeding'],previousQueries});assert.ok(evidence.length,query);assert.ok(evidence.every(item=>item.conditionId==='abnormal-uterine-bleeding'));}
+ assert.equal(refs.retrieve('What is the treatment for a fictional new syndrome?').length,0);
+ });
+
+test('AUB chat persists the named topic for multiple clinical follow-ups in an unlinked conversation', async t=>{
+ const {createApp}=await import('../server/index.js');const {mkdtempSync,rmSync}=await import('node:fs');const {tmpdir}=await import('node:os');const {join}=await import('node:path');const {once}=await import('node:events');
+ const dir=mkdtempSync(join(tmpdir(),'fm-aub-chat-'));const server=createApp({dataDir:dir,env:{}});server.listen(0,'127.0.0.1');await once(server,'listening');
+ t.after(async()=>{await new Promise(resolve=>server.close(resolve));rmSync(dir,{recursive:true,force:true});});const base=`http://127.0.0.1:${server.address().port}`;
+ const post=async(path,body)=>{const r=await fetch(base+path,{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:JSON.stringify(body)});assert.ok(r.ok,`${path}: ${r.status}`);return r.json();};
+ const conversation=await post('/api/conversations',{title:'AUB continuity'});
+ for(const content of ['Explain abnormal uterine bleeding','What is the treatment?','What is the workup?','How do we manage it?']){const reply=await post('/api/chat',{conversationId:conversation.id,content});assert.ok(reply.message.citations.length,content);assert.equal(reply.message.unsupported,undefined);assert.ok(reply.conversation.messages.filter(m=>m.role==='user').at(-1).studyConditionIds.includes('abnormal-uterine-bleeding'));}
+});

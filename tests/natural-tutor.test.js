@@ -124,3 +124,10 @@ test('a nonnative selected model receives complete privacy-safe author and revie
   assert.equal(reply.message.spokenText, authoredText);
   assert.equal(reply.message.ai.returnedModel, 'gpt-6-luna');
 });
+
+ test('current evidence prevents blanket no-source refusals but permits a specific unsupported detail', async()=>{
+ const {validateNaturalDraft}=await import('../server/natural-tutor.js');const context=fixture();
+ assert.throws(()=>validateNaturalDraft({segments:[{id:'s1',text:'I have no sources for asthma.',sourceChunkIds:[]}]},context),{reasonId:308});
+ assert.doesNotThrow(()=>validateNaturalDraft({segments:[{id:'s1',text:'These references do not establish an exact dose for that regimen.',sourceChunkIds:[]}]},context));
+ assert.match(buildNaturalTutorPrompt({...context,voiceTurn:true}),/40–60 words/);
+ });
