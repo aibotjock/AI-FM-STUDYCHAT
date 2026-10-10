@@ -110,3 +110,13 @@ The initial deployment approval action returned “Cancelled — the user did no
 ## Live deployment verification
 
 The owner applied the staged configuration directly in Railway. Deployment `46594ad7-e106-4d24-8f75-1ce28d549e79` reached SUCCESS from branch commit `dc3714062e9a47e418ca7feb2e8f36ada146c398`. The generated HTTPS domain is live. Both old and new services remained SUCCESS; no staged changes remained. Hosted sign-in, real chat streaming, study endpoints, and persistence after restarting only the new service passed. Actual-model observations and limitations are in validation.md and model-results.json.
+
+## Model selector and Ingenium update pending
+
+Tested runtime commit `2c1d48a052cbe58d5957716d883a6686b66d13fc` adds selectable OpenAI/Anthropic text models, server cost limits, and a separate Ingenium metadata account. The entire tested Git tree `cea70c9f163a561613aab0645070c3ca5e03fdb3` matched the pushed tree. All 117 automated checks and 15 browser workflows passed; the dedicated Ingenium receiver's 12 checks passed separately.
+
+Railway patch `d2443db4-9985-42c9-85ab-bf8aa83c5163` contains six non-destructive changes affecting only service `6f422cde-c9b9-4bdf-a8cc-3b41a31b6e1d`: the reviewed repository/branch/commit source fields and two private service variables, `INGENIUM_TELEMETRY_KEY` and `INGENIUM_TELEMETRY_ORGANIZATION_ID`. No volume or shared variable changes are staged. The app deployment approval tool returned “Cancelled — the user did not approve this action. No changes were made.” No alternative deployment path was used.
+
+Apply this reviewed patch in Railway's private-test environment. Then verify SUCCESS and the actual deployed commit before claiming the update is live. Confirm authenticated `/api/models`, saved preferences, `/api/telemetry`, and one small actual provider request; read back only its new test-account event in Ingenium. A private pre-update workspace checkpoint was captured; learner data must remain intact. The pre-existing app deployment remains live until the patch is applied.
+
+`ANTHROPIC_API_KEY` is not currently configured on the new service. Add it directly as a private service variable to enable Claude. Do not place it in the app, GitHub, or chat. OpenAI's existing server-only credential reference is retained. The Ingenium test receiver is already ACTIVE and its two simulated collector rows were independently verified, with no model calls or invented usage.
