@@ -73,6 +73,66 @@
           "pass": true
         }
       ]
+    },
+    {
+      "runAt": "2026-10-10T01:56:43.107Z",
+      "completedAt": "2026-10-10T01:56:43.122Z",
+      "durationMs": 15,
+      "reason": "Affected player media startup, stall recovery, pause and cancellation paths changed for reported mobile MP3 drain deadlock; unchanged service checks omitted.",
+      "selectedScopes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "paidProviderCalls": 0,
+      "scope": "Only new premium media-event, progress-watchdog, same-buffer resume, completion and cancellation paths. Fake media and clock; no physical-phone sound quality or volume claim.",
+      "results": [
+        {
+          "scope": 0,
+          "name": "pending play promise times out safely; gesture resume retains the exact prepared buffer without another request",
+          "pass": true
+        },
+        {
+          "scope": 1,
+          "name": "real time progress resets the bounded stall watchdog; waiting and stalled events show buffering without false completion",
+          "pass": true
+        },
+        {
+          "scope": 2,
+          "name": "external media pause offers same-buffer resume and preserves the user media volume",
+          "pass": true
+        },
+        {
+          "scope": 4,
+          "name": "stopwatch resets per operation; stop, abort and background discard stale media callbacks and watchdog timers",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "runAt": "2026-10-10T02:00:40.824Z",
+      "completedAt": "2026-10-10T02:00:40.836Z",
+      "durationMs": 12,
+      "reason": "Affected paused playback recovery now resets the audible-interval start notification so the conversation core exits preparing on resume; same-response decoder fallback branch unchanged.",
+      "selectedScopes": [
+        0,
+        2
+      ],
+      "paidProviderCalls": 0,
+      "scope": "Only new premium media-event, progress-watchdog, same-buffer resume, completion and cancellation paths. Fake media and clock; no physical-phone sound quality or volume claim.",
+      "results": [
+        {
+          "scope": 0,
+          "name": "pending play promise times out safely; gesture resume retains the exact prepared buffer without another request",
+          "pass": true
+        },
+        {
+          "scope": 2,
+          "name": "external media pause offers same-buffer resume and preserves the user media volume",
+          "pass": true
+        }
+      ]
     }
   ]
 }

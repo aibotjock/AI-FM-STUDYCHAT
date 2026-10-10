@@ -7,13 +7,14 @@ const voices = new Set(COACH_VOICES.map(voice => voice.id));
 const maxAudioBytes = 3 * 1024 * 1024;
 
 /** Audio is fetched only by authenticated message identity or a fixed preview. */
-export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = window, documentImpl = document, getVoice = () => DEFAULT_COACH_VOICE, onState = () => {}, onUnauthorized = () => {}, now = () => windowImpl.performance?.now?.() ?? Date.now(), playbackWatchdogMs = 12000 } = {}) {
+export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = window, documentImpl = document, getVoice = () => DEFAULT_COACH_VOICE, onState = () => {}, onUnauthorized = () => {}, now = () => windowImpl.performance?.now?.() ?? Date.now(), playbackWatchdogMs = 12000, streamStartupWatchdogMs = 3000 } = {}) {
   let generation = 0, operation = null, destroyed = false;
-  let snapshot = { phase: 'idle', active: false, kind: null, voice: DEFAULT_COACH_VOICE, audioBlocked: false, message: '', elapsedMs: 0, firstAudioMs: null, chunkIndex: 0, chunkCount: null, completedChunks: 0, currentTime: 0, duration: null, transport: 'buffered' };
+  let snapshot = { phase: 'idle', active: false, kind: null, voice: DEFAULT_COACH_VOICE, audioBlocked: false, blockReason: null, message: '', elapsedMs: 0, firstAudioMs: null, chunkIndex: 0, chunkCount: null, completedChunks: 0, currentTime: 0, duration: null, transport: 'buffered' };
   const previews = new Map();
   const setTimer = windowImpl.setTimeout?.bind(windowImpl) || setTimeout;
   const clearTimer = windowImpl.clearTimeout?.bind(windowImpl) || clearTimeout;
   const watchdogMs = Math.max(1000, Math.min(30000, Number(playbackWatchdogMs) || 12000));
+  const streamStartupMs = Math.max(500, Math.min(watchdogMs, Number(streamStartupWatchdogMs) || 3000));
   const label = id => COACH_VOICES.find(voice => voice.id === id)?.label || id;
   const valid = current => !destroyed && operation === current && current.generation === generation && !current.controller.signal.aborted && !documentImpl.hidden;
   const update = change => { snapshot = { ...snapshot, ...change }; onState({ ...snapshot }); operation?.callbacks.onProgress?.({ ...snapshot }); };
@@ -28,8 +29,9 @@ export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = wind
     current.clockTimer = setTimer(() => clock(current), 1000);
   }
   function clearWatchdog(current) { clearTimer(current?.watchdogTimer); if (current) current.watchdogTimer = null; }
+  function clearStreamStartup(current) { clearTimer(current?.streamStartupTimer); if (current) current.streamStartupTimer = null; }
   function disposeAudio(current) {
-    clearWatchdog(current);
+    clearWatchdog(current); clearStreamStartup(current);
     const audio = current?.audio;
     if (audio) {
       audio.onended = null; audio.onerror = null; audio.onplaying = null; audio.onwaiting = null; audio.onstalled = null; audio.onpause = null; audio.ontimeupdate = null; audio.onloadedmetadata = null;
@@ -46,7 +48,7 @@ export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = wind
     if (previous?.externalSignal && previous.abortListener) previous.externalSignal.removeEventListener('abort', previous.abortListener);
     disposeAudio(previous);
     if (clearCache) previews.clear();
-    update({ phase: 'idle', active: false, audioBlocked: false, kind: null, message: '', elapsedMs: 0, firstAudioMs: null, chunkIndex: 0, chunkCount: null, completedChunks: 0, currentTime: 0, duration: null, transport: 'buffered' });
+    update({ phase: 'idle', active: false, audioBlocked: false, blockReason: null, kind: null, message: '', elapsedMs: 0, firstAudioMs: null, chunkIndex: 0, chunkCount: null, completedChunks: 0, currentTime: 0, duration: null, transport: 'buffered' });
   }
   function fail(current, error) {
     if (!valid(current)) return;
@@ -60,14 +62,17 @@ export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = wind
     const callback = current.callbacks.onEnd;
     stop(); callback?.();
   }
-  function pausePrepared(current, message) {
+  function pausePrepared(current, message, blockReason = 'paused') {
     if (!valid(current) || !current.audio) return;
-    clearWatchdog(current); current.playVersion++;
+    clearWatchdog(current); clearStreamStartup(current); current.playVersion++;
     current.ignorePause = true;
     try { current.audio.pause(); } catch {}
     current.ignorePause = false;
-    update({ ...measured(current), phase: 'paused', active: true, audioBlocked: true, message });
-    current.callbacks.onBlocked?.(message);
+    // A resumed recording is a new audible interval. Its next native playing
+    // event must notify the conversation core, even though the bytes are reused.
+    current.audioStarted = false;
+    update({ ...measured(current), phase: 'paused', active: true, audioBlocked: true, blockReason, message });
+    current.callbacks.onBlocked?.(message, { reason: blockReason });
   }
   function armWatchdog(current) {
     clearWatchdog(current);
@@ -82,7 +87,8 @@ export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = wind
         else { update(measured(current)); armWatchdog(current); }
         return;
       }
-      pausePrepared(current, 'Audio did not advance. Tap Play audio to resume the prepared recording; no new voice request is needed.');
+      if (current.streamFailure) { current.streamFailure(); return; }
+      pausePrepared(current, 'Audio did not advance. Tap Play audio to resume the prepared recording; no new voice request is needed.', 'stalled');
     }, Math.max(0, watchdogMs - Math.max(0, now() - current.progressAt)));
   }
   function playing(current, audio) {
@@ -92,7 +98,7 @@ export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = wind
     const firstPlaying = !current.audioStarted;
     if (firstPlaying) { current.audioStarted = true; current.progressAt = now(); }
     if (current.firstAudioMs === null) current.firstAudioMs = Math.max(0, now() - current.startedAt);
-    update({ ...measured(current), phase: 'playing', active: true, audioBlocked: false, message: `Playing ${label(current.voice)} AI voice…` });
+    update({ ...measured(current), phase: 'playing', active: true, audioBlocked: false, blockReason: null, message: `Playing ${label(current.voice)} AI voice…` });
     armWatchdog(current); if (firstPlaying) current.callbacks.onStart?.();
   }
   function completeChunk(current, audio) {
@@ -110,18 +116,19 @@ export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = wind
     if (current.audio.ended === true) { completeChunk(current, current.audio); return; }
     const audio = current.audio, attempt = ++current.playVersion;
     current.progressAt = now();
-    update({ phase: 'starting', active: true, audioBlocked: false, message: `Starting ${label(current.voice)} AI voice…` });
+    update({ phase: 'starting', active: true, audioBlocked: false, blockReason: null, message: `Starting ${label(current.voice)} AI voice…` });
     armWatchdog(current);
     try { await audio.play(); }
     catch (error) {
       if (!valid(current) || current.audio !== audio || current.playVersion !== attempt) return;
-      if (error?.name === 'NotAllowedError') pausePrepared(current, 'Your browser paused audio. Tap Play audio to start the prepared recording.');
+      if (error?.name === 'NotAllowedError') pausePrepared(current, 'Your browser paused audio. Tap Play audio to start the prepared recording.', 'permission');
+      else if (current.streamFailure) current.streamFailure();
       else fail(current, error);
     }
   }
-  async function attachAudio(current, blob, { autoplay = true, seekAt = 0 } = {}) {
+  async function attachAudio(current, blob, { autoplay = true, seekAt = 0, preserveStarted = false } = {}) {
     if (!valid(current)) return;
-    disposeAudio(current); current.blob = blob; current.lastTime = 0; current.audioStarted = false;
+    disposeAudio(current); current.blob = blob; current.lastTime = 0; if (!preserveStarted) current.audioStarted = false;
     current.objectUrl = windowImpl.URL.createObjectURL(blob);
     const audio = new windowImpl.Audio(current.objectUrl); current.audio = audio;
     audio.preload = 'auto';
@@ -140,6 +147,7 @@ export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = wind
       if (audio.ended === true) { completeChunk(current, audio); return; }
       if (Number.isFinite(audio.currentTime) && audio.currentTime > current.lastTime) {
         current.lastTime = audio.currentTime;
+        clearStreamStartup(current);
         current.progressAt = now();
         if (snapshot.phase !== 'playing' && snapshot.phase !== 'paused') playing(current, audio);
         else if (snapshot.phase === 'playing') { update(measured(current)); armWatchdog(current); }
@@ -165,7 +173,7 @@ export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = wind
       streamFailed = true;
       seekAt = Number.isFinite(current.audio?.currentTime) ? Math.max(0, current.audio.currentTime) : 0;
       current.ignorePause = true; try { current.audio?.pause(); } catch {} current.ignorePause = false;
-      clearWatchdog(current); rejectPending?.(new Error('Streaming audio is unavailable on this device.'));
+      clearWatchdog(current); clearStreamStartup(current); rejectPending?.(new Error('Streaming audio is unavailable on this device.'));
       if (valid(current)) update({ ...measured(current), phase: 'loading', transport: 'buffered-fallback', message: 'Preparing the same recording for this browser…' });
     };
     const onAbort = () => { resolveOpen?.(); rejectPending?.(new Error('Audio stopped.')); void reader.cancel().catch(() => {}); };
@@ -202,7 +210,15 @@ export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = wind
         sourceBuffer.addEventListener('updateend', done, { once: true }); sourceBuffer.addEventListener('error', error, { once: true });
         try { sourceBuffer.appendBuffer(chunk); } catch (errorValue) { cleanup(); reject(errorValue); }
       });
-      if (!started && valid(current) && !streamFailed) { started = true; await playBuffer(current); }
+      if (!started && valid(current) && !streamFailed) {
+        started = true;
+        current.streamStartupTimer = setTimer(() => {
+          if (valid(current) && current.audio === audio && !snapshot.audioBlocked && !(audio.currentTime > 0)) current.streamFailure?.();
+        }, streamStartupMs);
+        // HTMLMediaElement.play() can wait for later MP3 frames. Awaiting it
+        // here would stop the reader that supplies those frames and deadlock.
+        void playBuffer(current);
+      }
     }
     try {
       while (valid(current)) {
@@ -216,11 +232,11 @@ export function createPremiumSpeechPlayer({ fetchImpl = fetch, windowImpl = wind
       if (!bytes) throw new Error('The AI voice response was empty.');
       const blob = new windowImpl.Blob(chunks, { type: 'audio/mpeg' });
       if (current.kind === 'preview') previews.set(current.voice, { blob, expiresAt: now() + 5 * 60 * 1000 });
-      if (streamFailed || !sourceBuffer || !started) { current.streamCleanup?.(); await attachAudio(current, blob, { seekAt }); }
+      if (streamFailed || !sourceBuffer || !started) { current.streamCleanup?.(); await attachAudio(current, blob, { seekAt, preserveStarted: true }); }
       else {
         current.blob = blob;
-        current.streamFailure = () => { failStream(); if (valid(current)) void attachAudio(current, blob, { seekAt }); };
-        try { if (mediaSource.readyState === 'open') mediaSource.endOfStream(); } catch { failStream(); await attachAudio(current, blob, { seekAt }); }
+        current.streamFailure = () => { failStream(); if (valid(current)) void attachAudio(current, blob, { seekAt, preserveStarted: true }); };
+        try { if (mediaSource.readyState === 'open') mediaSource.endOfStream(); } catch { failStream(); await attachAudio(current, blob, { seekAt, preserveStarted: true }); }
       }
     } finally {
       current.controller.signal.removeEventListener('abort', onAbort);

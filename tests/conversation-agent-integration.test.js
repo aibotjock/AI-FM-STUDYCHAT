@@ -25,6 +25,9 @@ const readoutStart = appText.indexOf('function trustedStudySpeech(');
 const readoutEnd = appText.indexOf('function renderMessage(', readoutStart);
 const readoutText = appText.slice(readoutStart, readoutEnd);
 const shippedCallback = new Function('api', 'state', 'currentConversationId', 'screen', 'render', readoutText + '\nreturn (' + callbackText + ');');
+const readMessageStart = appText.indexOf('async function readMessage(');
+const readMessageEnd = appText.indexOf('\nasync function ratingAction(', readMessageStart);
+const shippedReadMessage = new Function('conversation', 'premiumVoiceAvailable', 'readoutMessageAllowed', 'notify', 'stopDictation', 'voiceCoach', 'premiumSpeech', 'currentConversationId', appText.slice(readMessageStart, readMessageEnd) + '\nreturn readMessage;');
 const waitFor = async predicate => {
   const until = Date.now() + 5000;
   while (!predicate()) { if (Date.now() >= until) throw new Error('Integration condition timed out.'); await new Promise(resolve => setTimeout(resolve, 5)); }
@@ -158,4 +161,44 @@ test('checkpoint AbortSignal crosses the real adapter and a stalled report canno
   const stored = app.server.readOnlySnapshot().conversations.find(item => item.id === app.conversation.id);
   assert.equal(stored.messages[1].voicePlayback.status, 'pending');
   assert.equal(stored.messages[1].voicePlayback.presentedText, '');
+});
+
+test('manual Read aloud ends a blocked conversation before replacing its recording and rejects stale callbacks', async t => {
+  const app = await fixture(t); await app.agent.start({ conversationId: app.conversation.id });
+  await app.agent.sendText('Quiz me on asthma.');
+  const old = app.outputs[0].options;
+  old.onBlocked('Prepared audio stalled.', { reason: 'stalled' });
+  assert.equal(app.agent.state().audioBlocked, true);
+  const calls = [];
+  const manual = { play: async options => {
+    assert.equal(app.agent.active(), false, 'Manual playback must not inherit an active microphone or old core work.');
+    assert(app.capture.tracks.every(track => track.stopped));
+    calls.push(options);
+  } };
+  const run = shippedReadMessage(() => ({ messages: [{ id: 'manual-message' }] }), () => true, () => true, assert.fail, () => {}, app.agent, manual, app.conversation.id);
+  await run('manual-message');
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].messageId, 'manual-message');
+  assert.equal(calls[0].conversationId, app.conversation.id);
+  old.onStart(); old.onBlocked('Stale recording', { reason: 'permission' }); old.onEnd();
+  await app.agent.playAudio();
+  assert.equal(app.agent.state().audioBlocked, false);
+  assert.equal(app.agent.state().outputState, 'idle');
+  assert.equal(app.outputs.length, 1, 'Late callbacks cannot resume or submit another conversation reply.');
+  assert.equal(calls.length, 1);
+});
+
+test('circle recovery uses the actual host agent without submitting another study turn', async () => {
+  const begin = appText.indexOf('function updateVoiceCircle(');
+  const end = appText.indexOf('\nfunction updateVoiceUI(', begin);
+  let mounted, resumed = 0;
+  const container = {};
+  const blocked = { active: true, phase: 'paused', inputState: 'monitoring', outputState: 'blocked', audioBlocked: true };
+  const agent = { active: () => true, state: () => blocked, playAudio: () => { resumed++; }, stop: assert.fail };
+  const mount = options => { mounted = options; return { button: {}, update() {}, destroy() {} }; };
+  const run = new Function('$', 'mountVoiceCircle', 'voiceCoach', 'voiceState', 'startVoice', 'voiceSupported', 'canChat', 'currentConversationId', 'let voiceCircle=null, voiceCircleContainer=null, startVoiceBusy=false, chatBusy=false;\n' + appText.slice(begin, end) + '\nreturn updateVoiceCircle;');
+  run(selector => selector === '#conversation-circle' ? container : null, mount, agent, blocked, assert.fail, () => true, () => true, 'synthetic-conversation')();
+  await mounted.agent.playAudio();
+  assert.equal(resumed, 1);
+  assert.equal(mounted.showComposer, false);
 });
