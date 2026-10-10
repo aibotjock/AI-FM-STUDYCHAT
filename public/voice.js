@@ -1,8 +1,9 @@
 import { createBrowserAudioInput } from '/packages/conversation-agent/src/browser-audio.js';
 import { mountVoiceCircle } from '/packages/conversation-agent/src/voice-circle.js';
-import { el, actionId, notice } from '/app.js';
+import { el, actionId, updateSession } from '/app.js';
 
 let current = null;
+let openingGeneration = 0;
 function boundedSignal(signal, duration = 50000) {
   const controller = new AbortController(), timer = setTimeout(() => controller.abort(new Error('Voice request timed out.')), duration);
   return { signal: signal ? AbortSignal.any([signal, controller.signal]) : controller.signal, done: () => clearTimeout(timer) };
@@ -13,7 +14,7 @@ async function encodedAudio(blob) {
   for (let offset = 0; offset < bytes.length; offset += 0x8000) encoded += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
   return btoa(encoded);
 }
-function createPlayback({ voice, api }) {
+function createPlayback({ voice }) {
   let audio = null, url = null, controller = null, details = null, generation = 0, expiryTimer = null;
   function stop({ clearCache = false } = {}) { generation++; controller?.abort(); controller = null; clearTimeout(expiryTimer); expiryTimer = null; if (audio) { audio.pause(); audio.currentTime = 0; audio.onended = null; audio.onerror = null; audio.onwaiting = null; audio.onplaying = null; } if (clearCache) { if (url) URL.revokeObjectURL(url); url = null; audio = null; details = null; } }
   function handlers(epoch) {
@@ -35,7 +36,7 @@ function createPlayback({ voice, api }) {
       controller = new AbortController(); const bounded = boundedSignal(AbortSignal.any([value.signal, controller.signal]));
       value.onPreparing?.({ chunkIndex: 0 });
       try {
-        const response = await fetch('/api/voice/speech', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ conversationId: value.conversationId, messageId: value.messageId, requestId: actionId(), voice }), signal: bounded.signal });
+        const response = await fetch('/api/voice/speech', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ conversationId: value.conversationId, messageId: value.messageId, requestId: actionId(), voice: voice() }), signal: bounded.signal });
         if (!response.ok) { let body = {}; try { body = await response.json(); } catch {} throw new Error(body.error || 'Speech preparation failed. Use the displayed text.'); }
         const blob = await response.blob(); if (!blob.size || blob.size > 8 * 1024 * 1024) throw new Error('The speech reply could not be loaded. Use the displayed text.');
         if (epoch !== generation || value.signal.aborted) return;
@@ -50,31 +51,99 @@ function createPlayback({ voice, api }) {
   };
 }
 export async function open({ api, conversationId, setAgent, isBusy, isCurrent, onError }) {
-  if (current) { current.container.querySelector('button')?.focus(); return; }
+  if (current) { current.circle.button.focus(); return; }
+  const epoch = ++openingGeneration;
+  const valid = () => epoch === openingGeneration && (!isCurrent || isCurrent());
   const options = await api('/api/voice');
-  if (isCurrent && !isCurrent()) return;
+  if (!valid()) return;
   if (!options.enabled) { onError(new Error('Voice is unavailable. Continue with typed chat; practice and review are unaffected.')); return; }
   const preferences = await api('/api/settings');
-  if (isCurrent && !isCurrent()) return;
-  if (!preferences.voiceEnabled) { onError(new Error('Enable optional voice in Settings, then choose Voice again. Your microphone is off.')); return; }
+  if (!valid()) return;
   if (isBusy?.()) throw new Error('Stop the current reply before starting voice. Your displayed text remains available.');
+  const container = el('dialog', { class: 'voice-dialog', 'aria-label': 'Voice conversation', 'aria-describedby': 'voice-instructions' });
+  if (typeof container.showModal !== 'function') { onError(new Error('Open the app in an up-to-date browser to use voice. Typed chat remains available.')); return; }
   if (!document.querySelector('#voice-circle-style')) document.head.append(el('link', { id: 'voice-circle-style', rel: 'stylesheet', href: '/packages/conversation-agent/voice-circle.css' }));
+  const previousFocus = document.activeElement, settingsController = new AbortController();
+  const voices = ['marin', 'cedar', 'coral', 'sage', 'ash'].filter(voice => options.voices?.includes(voice));
+  if (voices.length !== 5) { onError(new Error('The voice list is unavailable. Continue with typed chat and try voice again later.')); return; }
+  let selectedVoice = voices.includes(preferences.voice) ? preferences.voice : 'marin';
+  let circle, agent, voiceSessionId = null, savingVoice = false, destroyed = false;
   const input = createBrowserAudioInput({ sampleRate: 16000, maxDurationMs: 60000 });
-  const playback = createPlayback({ voice: preferences.voice || 'marin', api });
-  const container = el('div', { class: 'voice-panel' }), circleContainer = el('div');
-  let circle, agent, voiceSessionId = null;
+  const playback = createPlayback({ voice: () => selectedVoice });
+  const circleContainer = el('div');
+  const voicePicker = el('select', { id: 'conversation-voice', 'aria-label': 'Conversation voice' }, voices.map(voice => el('option', { value: voice, text: voice[0].toUpperCase() + voice.slice(1) })));
+  voicePicker.value = selectedVoice;
+  const voiceFeedback = el('p', { class: 'voice-preference-status', role: 'status', 'aria-live': 'polite', text: 'Choose a voice before starting.' });
+  const update = state => {
+    if (destroyed) return;
+    circle?.update(state);
+    voicePicker.disabled = savingVoice || Boolean(state.active);
+    if (circle) circle.button.disabled = savingVoice;
+  };
   const host = {
     async startSession({ signal }) { const bounded = boundedSignal(signal); try { const value = await api('/api/voice/start', { method: 'POST', body: { conversationId }, signal: bounded.signal }); voiceSessionId = value.sessionId; return { ...value, conversationId }; } finally { bounded.done(); } },
     async transcribe(value) { const bounded = boundedSignal(value.signal); try { return await api('/api/voice/transcribe', { method: 'POST', body: { conversationId, sessionId: value.sessionId, requestId: value.requestId, audioBase64: await encodedAudio(value.audio) }, signal: bounded.signal, timeoutMs: 50000 }); } finally { bounded.done(); } },
     cancel(value) { return api('/api/voice/cancel', { method: 'POST', body: { conversationId, sessionId: voiceSessionId, requestId: value.requestId } }).catch(() => {}); },
     endSession(value) { return api('/api/voice/end', { method: 'POST', body: { conversationId, sessionId: value.sessionId } }).catch(() => {}); },
   };
-  const close = () => { cleanup(); setAgent(null); };
-  container.append(el('div', { class: 'row spread' }, el('div', { class: 'eyebrow', text: 'Optional voice · AI-generated speech' }), el('button', { type: 'button', class: 'subtle', text: 'Close voice', onclick: close })), notice('Tap Start conversation to allow microphone capture. Stop, close, or background the app to release it. Typed chat remains available.'), circleContainer);
-  document.querySelector('.chat-card')?.before(container);
-  agent = setAgent({ input, playback, host, onState: state => circle?.update(state) });
+  const view = { container, input, playback, settingsController, dispose: () => { destroyed = true; } };
+  const close = ({ typed = false } = {}) => {
+    if (current !== view) return;
+    const restoreAgent = !isCurrent || isCurrent();
+    cleanup();
+    if (!restoreAgent) return;
+    setAgent(null);
+    const target = typed ? document.querySelector('.composer textarea') : previousFocus;
+    if (target?.isConnected) target.focus({ preventScroll: true });
+  };
+  voicePicker.addEventListener('change', async () => {
+    if (destroyed || savingVoice || agent.active()) return;
+    const previous = selectedVoice, next = voicePicker.value, savedFocus = document.activeElement;
+    savingVoice = true; voiceFeedback.textContent = 'Saving voice…'; update(agent.state());
+    try {
+      const saved = await api('/api/settings', { method: 'POST', body: { actionId: actionId(), voice: next }, signal: settingsController.signal });
+      if (destroyed || current !== view || !valid()) return;
+      selectedVoice = saved.voice; voicePicker.value = selectedVoice;
+      updateSession({ settings: saved }); voiceFeedback.textContent = `${selectedVoice[0].toUpperCase() + selectedVoice.slice(1)} selected.`;
+    } catch (error) {
+      if (destroyed || current !== view || !valid()) return;
+      selectedVoice = previous; voicePicker.value = previous; voiceFeedback.textContent = `Voice change was not confirmed. ${error.message}`;
+    } finally {
+      savingVoice = false;
+      if (!destroyed) {
+        update(agent.state());
+        if (current === view && valid() && container.open && !container.contains(document.activeElement)) {
+          const target = container.contains(savedFocus) && !savedFocus.disabled ? savedFocus : circle.button;
+          target.focus({ preventScroll: true });
+        }
+      }
+    }
+  });
+  container.append(
+    el('header', { class: 'voice-dialog-header' }, el('div', {}, el('div', { class: 'eyebrow', text: 'Study Coach' }), el('h2', { text: 'Voice conversation' })), el('button', { type: 'button', class: 'subtle', text: 'Close voice', onclick: () => close() })),
+    el('p', { id: 'voice-instructions', class: 'voice-instructions', text: 'Choose one of five AI voices, then tap Start conversation. Speak naturally; Coach will listen and reply aloud.' }),
+    el('div', { class: 'voice-picker' }, el('label', { for: 'conversation-voice', text: 'Conversation voice' }), voicePicker), voiceFeedback, circleContainer,
+    el('footer', { class: 'voice-dialog-footer' }, el('button', { type: 'button', text: 'Use typed chat', onclick: () => close({ typed: true }) }), el('small', { text: 'AI-generated speech · Stop, close, or leave the app to turn the microphone off.' })),
+  );
+  container.addEventListener('cancel', event => { event.preventDefault(); close(); });
+  container.addEventListener('close', () => close());
+  container.addEventListener('click', event => {
+    if (event.target !== container) return;
+    const rect = container.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) close();
+  });
+  document.body.append(container);
+  agent = setAgent({ input, playback, host, onState: update });
   circle = mountVoiceCircle({ container: circleContainer, agent, showComposer: false, getStartOptions: () => ({ conversationId }) });
-  current = { container, circle, agent, input, playback }; circle.button.focus();
+  Object.assign(view, { circle, agent }); current = view; update(agent.state());
+  try { container.showModal(); circle.button.focus(); }
+  catch (error) { close(); onError(new Error('Voice could not open. Typed chat remains available.')); }
 }
 export function stopPlayback() { current?.playback.stop(); }
-export function cleanup() { const value = current; current = null; if (!value) return; value.agent.stop('Voice closed. Your microphone is off.'); value.circle.destroy(); value.input.destroy(); value.playback.destroy(); value.container.remove(); }
+export function cleanup() {
+  openingGeneration++; const value = current; current = null;
+  if (!value) return;
+  value.dispose(); value.settingsController.abort(); value.agent.destroy(); value.circle.destroy();
+  if (value.container.open) value.container.close();
+  value.container.remove();
+}

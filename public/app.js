@@ -35,10 +35,20 @@ export const pageIntro = (label, title, description, action) => el('div', { clas
 const root = document.querySelector('#app');
 const tabs = [['coach', 'Coach', '◌'], ['practice', 'Practice', '▤'], ['review', 'Review', '↻'], ['library', 'Library', '▥'], ['progress', 'Progress', '▥'], ['settings', 'Settings', '⚙']];
 let session = {}, currentTab = 'coach', page, globalNotice, agent, currentConversation = null, conversations = [], log, input, chatStatus, stopButton, nextTurnId = null, active = null, conversationReadOnly = false;
-let studyModule = null, voiceModule = null, voiceOpening = false;
+let studyModule = null, voiceModule = null, voiceOpening = false, navigationVersion = 0;
 let selectedModel = null, modelCataloguePromise = null, modelController = null, modelSaveQueue = Promise.resolve();
 const requests = new Map();
 const brand = () => el('div', { class: 'brand' }, el('span', { class: 'brand-mark', 'aria-hidden': 'true', text: '+' }), el('div', {}, 'StudyChat', el('small', { text: 'FAMILY MEDICINE' })));
+function voiceIcon() {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  for (const [name, value] of Object.entries({ viewBox: '0 0 24 24', width: '24', height: '24', 'aria-hidden': 'true', focusable: 'false' })) svg.setAttribute(name, value);
+  [8, 16, 22, 14, 6].forEach((height, index) => {
+    const bar = document.createElementNS(svg.namespaceURI, 'rect');
+    for (const [name, value] of Object.entries({ x: 2 + index * 4, y: (24 - height) / 2, width: 2.5, height, rx: 1.25, fill: 'currentColor' })) bar.setAttribute(name, String(value));
+    svg.append(bar);
+  });
+  return svg;
+}
 const navigation = className => el('nav', { class: className, 'aria-label': 'Main navigation' }, tabs.map(([id, label, symbol]) => el('button', { type: 'button', 'data-tab': id, 'aria-current': currentTab === id ? 'page' : null, onclick: () => navigate(id) }, el('span', { class: 'nav-icon', 'aria-hidden': 'true', text: symbol }), label)));
 function showStatus(text, busy = false) { if (chatStatus) { chatStatus.textContent = text; chatStatus.classList.toggle('loading', busy); } if (stopButton) stopButton.classList.toggle('hidden', !busy); }
 function logoutLocal() { agent?.destroy(); agent = null; voiceModule?.cleanup?.(); modelController?.abort(); modelController = null; modelCataloguePromise = null; selectedModel = null; modelSaveQueue = Promise.resolve(); session = { authenticated: false }; currentConversation = null; nextTurnId = null; active = null; showLogin(); }
@@ -71,10 +81,12 @@ async function loadConversations({ selectLatest = false } = {}) { try { const re
   const picker = document.querySelector('#conversation-picker'); if (picker) { picker.replaceChildren(el('option', { value: '', text: 'New conversation' }), conversations.map(conversation => el('option', { value: conversation.id, text: conversation.title || 'Study conversation' }))); picker.value = currentConversation || ''; }
 } catch (error) { showGlobalError(error); } }
 export async function navigate(id) {
+  navigationVersion++;
   studyModule?.cleanup?.();
+  voiceModule?.cleanup?.();
   currentTab = id; clearGlobalError();
   document.querySelectorAll('[data-tab]').forEach(button => button.setAttribute('aria-current', button.dataset.tab === id ? 'page' : 'false'));
-  if (id !== 'coach') { agent?.stop('Conversation paused.'); voiceModule?.cleanup?.(); }
+  if (id !== 'coach') agent?.stop('Conversation paused.');
   const nextPage = el('main', { id: 'main', class: 'page', tabindex: '-1' }); page.replaceWith(nextPage); page = nextPage;
   if (id === 'coach') return renderCoach();
   page.replaceChildren(pageIntro('Focused study', tabs.find(item => item[0] === id)[1], 'Your study tools are being connected.'), el('div', { class: 'panel empty' }, el('p', { text: 'Typed Coach is ready. The study tools will appear here when their integration is complete.' })));
@@ -223,10 +235,10 @@ async function renderCoach() {
   input = el('textarea', { id: 'chat-input', rows: '2', placeholder: 'Ask Coach, or just start a conversation…', 'aria-label': 'Message Coach', maxlength: String(session.limits?.maxInputChars || 8000), onkeydown: event => { if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); submit(); } } });
   stopButton = el('button', { type: 'button', class: 'subtle danger hidden', text: 'Stop', onclick: () => { agent?.interrupt(); voiceModule?.stopPlayback?.(); showStatus('Cancelled. Your typed input is ready.'); } });
   chatStatus = el('div', { class: 'chat-status', role: 'status', 'aria-live': 'polite', text: 'Ready for your next question.' });
-  const voiceButton = el('button', { type: 'button', class: 'subtle', id: 'voice-start', text: 'Voice', onclick: () => openVoice().catch(showGlobalError) });
+  const voiceButton = el('button', { type: 'button', class: 'voice-launch', id: 'voice-start', title: 'Start voice conversation', 'aria-label': 'Start voice conversation', 'aria-haspopup': 'dialog', onclick: () => { clearGlobalError(); openVoice().catch(showGlobalError); } }, voiceIcon());
   page.replaceChildren(pageIntro('Coach · clinical reasoning', 'Make room for understanding.', 'A concise tutor for thoughtful practice and useful conversation.'), !session.aiAvailable ? notice('AI is unavailable. Your messages receive a clear service outcome; practice, cards, and review remain available.') : document.createDocumentFragment(),
-    el('section', { class: 'panel chat-card', 'aria-label': 'Coach' }, el('div', { class: 'chat-toolbar' }, picker, el('div', { class: 'row' }, voiceButton, el('button', { type: 'button', class: 'subtle', text: '+ New chat', onclick: () => { agent?.stop('New conversation.'); voiceModule?.cleanup?.(); currentConversation = null; conversationReadOnly = false; input.readOnly = false; input.placeholder = 'Ask Coach, or just start a conversation…'; picker.value = ''; setupAgent(); welcome(); showStatus('New conversation.'); } }))), modelSelector(), log,
-      el('form', { class: 'composer', onsubmit: event => { event.preventDefault(); submit(); } }, el('div', { class: 'composer-box' }, input, el('button', { class: 'primary', type: 'submit', title: 'Send message', 'aria-label': 'Send message', text: '↑' })), el('div', { class: 'composer-footer' }, chatStatus, stopButton), el('div', { class: 'composer-footer' }, el('small', { text: 'Enter to send · Shift + Enter for a new line' }), el('small', { text: 'Private study workspace' })))), el('p', { class: 'bottom-note', text: 'For education and reflection. Coach can be wrong; reference links are distinguished from material actually consulted.' }));
+    el('section', { class: 'panel chat-card', 'aria-label': 'Coach' }, el('div', { class: 'chat-toolbar' }, picker, el('div', { class: 'row' }, el('button', { type: 'button', class: 'subtle', text: '+ New chat', onclick: () => { agent?.stop('New conversation.'); voiceModule?.cleanup?.(); currentConversation = null; conversationReadOnly = false; input.readOnly = false; input.placeholder = 'Ask Coach, or just start a conversation…'; picker.value = ''; setupAgent(); welcome(); showStatus('New conversation.'); } }))), modelSelector(), log,
+      el('form', { class: 'composer', onsubmit: event => { event.preventDefault(); submit(); } }, el('div', { class: 'composer-box' }, input, el('button', { class: 'primary', type: 'submit', title: 'Send message', 'aria-label': 'Send message', text: '↑' }), voiceButton), el('div', { class: 'composer-footer' }, chatStatus, stopButton), el('div', { class: 'composer-footer' }, el('small', { text: 'Enter to send · Shift + Enter for a new line' }), el('small', { text: 'Private study workspace' })))), el('p', { class: 'bottom-note', text: 'For education and reflection. Coach can be wrong; reference links are distinguished from material actually consulted.' }));
   setupAgent(); welcome();
   if (currentConversation) { try { await history(); } catch (error) { showGlobalError(error); } }
   if (voiceModule) voiceButton.classList.remove('hidden');
@@ -298,8 +310,8 @@ async function openVoice() {
   if (voiceOpening) return;
   if (conversationReadOnly) throw new Error('Start a new chat to use voice. Imported history remains read only.');
   if (active) throw new Error('Stop the current reply before starting voice. Your text remains visible.');
-  currentConversation ||= actionId(); const conversationId = currentConversation;
-  const isCurrent = () => currentTab === 'coach' && currentConversation === conversationId && session.authenticated;
+  currentConversation ||= actionId(); const conversationId = currentConversation, version = navigationVersion;
+  const isCurrent = () => currentTab === 'coach' && currentConversation === conversationId && session.authenticated && navigationVersion === version;
   voiceOpening = true;
   try { voiceModule ||= await import('/voice.js'); if (!isCurrent()) return;
     await voiceModule.open({ conversationId, api, setAgent: setupAgent, isBusy: () => Boolean(active), isCurrent, onError: showGlobalError });
