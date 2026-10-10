@@ -1,0 +1,45 @@
+{
+  "checkedAt": "2026-10-10",
+  "purpose": "Study-bank expansion and strategic learning workflow; not clinical validation",
+  "inventory": {
+    "conditions": 115,
+    "studyTopics": 7,
+    "foundationTopics": 6,
+    "inventoryQuestions": 558,
+    "currentQuestions": 550,
+    "comparativeStudyQuestions": 8,
+    "sections": 639,
+    "distinctSourceUrls": 252,
+    "annotatedDocumentReuseQuestions": 336,
+    "exactDocumentReuseAssessmentQuestions": 413
+  },
+  "legacyIdentity": {
+    "baselineUsQuestions": 458,
+    "preserved": 458,
+    "changed": [],
+    "removed": [],
+    "newUsQuestions": 92
+  },
+  "documentPolicyEntries": 149,
+  "editorialReview": {
+    "newQuestionsRead": 92,
+    "qualifiedClinicalReview": false,
+    "report": "docs/source-audit/GAP_EXPANSION_EDITORIAL_REVIEW.md"
+  },
+  "technicalChecks": {
+    "strictCurriculum": "passed",
+    "strictCombinedBank": "passed",
+    "expandedRealBank": 5,
+    "newGapIntegration": 3,
+    "statusInventory": 1,
+    "maintenance": 7,
+    "maintenanceChangedLabelAssertions": "only failing group repeated",
+    "unchangedSourceAndLearnerDates": "preserved; old 458 US fingerprints identical",
+    "syntax": "passed: app, server integration, tutor, practice, learning strategy, curriculum"
+  },
+  "paidCalls": 0,
+  "deployment": "not applied",
+  "physicalPhoneValidation": "pending",
+  "clinicalAccuracyCertified": false,
+  "commercialActivationApproved": false
+}

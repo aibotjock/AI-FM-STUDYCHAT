@@ -1876,6 +1876,350 @@
       "wordBudget": 2000,
       "audit": "docs/source-audit/LICENSED_GUIDELINE_EXPANSION.md",
       "scope": "Exact checked document text only, original study paraphrases/questions with required attribution and changes notice. Excludes third-party materials, global legal clearance and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7304a1.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-mmwr",
+      "policyUrl": "https://www.cdc.gov/mmwr/about.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7304a1_appendix.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-mmwr",
+      "policyUrl": "https://www.cdc.gov/mmwr/about.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7303a1.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-mmwr",
+      "policyUrl": "https://www.cdc.gov/mmwr/about.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/WH/up/VA-DOD-CPG-Pregnancy-Provider-Summary_final_508.pdf",
+      "organizations": [
+        "U.S. Department of Veterans Affairs and Department of Defense"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://department.va.gov/copyright-policy/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000
+    },
+    {
+      "url": "https://www.cdc.gov/act-early/milestones/key-points.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000
+    },
+    {
+      "url": "https://www.cdc.gov/act-early/milestones/6-months.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000
+    },
+    {
+      "url": "https://www.cdc.gov/act-early/milestones/9-months.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000
+    },
+    {
+      "url": "https://www.cdc.gov/act-early/milestones/18-months.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000
+    },
+    {
+      "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/CD/OA/Osteoarthritis-CPG_2026-Guideline_final_20260618.pdf",
+      "organizations": [
+        "Department of Veterans Affairs and Department of Defense"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://department.va.gov/copyright-policy/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2500,
+      "audit": "docs/source-audit/GERIATRIC_MSK_EXPANSION.md",
+      "scope": "Original government-authored text-based educational summaries and original hypothetical study questions only. Excludes third-party questionnaires/instruments, credited figures, graphics, logos, outside pharmacist tools and clinical approval; US reuse assessment, not worldwide commercialization."
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/Pain/lbp/VADODLBPCPGFinal508.pdf",
+      "organizations": [
+        "Department of Veterans Affairs and Department of Defense"
+      ],
+      "kinds": [
+        "clinical-guideline"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://department.va.gov/copyright-policy/",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/GERIATRIC_MSK_EXPANSION.md",
+      "scope": "Original government-authored text-based educational summaries and original hypothetical study questions only. Excludes third-party questionnaires/instruments, credited figures, graphics, logos, outside pharmacist tools and clinical approval; US reuse assessment, not worldwide commercialization."
+    },
+    {
+      "url": "https://www.cdc.gov/steadi/media/pdfs/steadi-algorithm-508.pdf",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/GERIATRIC_MSK_EXPANSION.md",
+      "scope": "Original government-authored text-based educational summaries and original hypothetical study questions only. Excludes third-party questionnaires/instruments, credited figures, graphics, logos, outside pharmacist tools and clinical approval; US reuse assessment, not worldwide commercialization."
+    },
+    {
+      "url": "https://www.cdc.gov/steadi/media/pdfs/steadi-factsheet-safemedreview-508.pdf",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/GERIATRIC_MSK_EXPANSION.md",
+      "scope": "Original government-authored text-based educational summaries and original hypothetical study questions only. Excludes third-party questionnaires/instruments, credited figures, graphics, logos, outside pharmacist tools and clinical approval; US reuse assessment, not worldwide commercialization."
+    },
+    {
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/adult-notes.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/IMMUNIZATION_EXPANSION.md",
+      "scope": "Individually reviewed original CDC recommendation text; original summaries only, no third-party material, images, logos or clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-notes.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/IMMUNIZATION_EXPANSION.md",
+      "scope": "Individually reviewed original CDC recommendation text; original summaries only, no third-party material, images, logos or clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-catch-up.html",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/IMMUNIZATION_EXPANSION.md",
+      "scope": "Individually reviewed original CDC recommendation text; original summaries only, no third-party material, images, logos or clinical approval."
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/retinal-detachment",
+      "organizations": [
+        "National Eye Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/EYE_SPORTS_EXPANSION.md",
+      "scope": "Agency-authored educational text checked on the exact page; original study paraphrases and fictional questions only. Excludes figures, photos, logos, credited third-party works, linked external works, endorsement, global rights guarantees and clinical approval."
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/glaucoma",
+      "organizations": [
+        "National Eye Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/EYE_SPORTS_EXPANSION.md",
+      "scope": "Agency-authored educational text checked on the exact page; original study paraphrases and fictional questions only. Excludes figures, photos, logos, credited third-party works, linked external works, endorsement, global rights guarantees and clinical approval."
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/glaucoma/types-glaucoma",
+      "organizations": [
+        "National Eye Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/EYE_SPORTS_EXPANSION.md",
+      "scope": "Agency-authored educational text checked on the exact page; original study paraphrases and fictional questions only. Excludes figures, photos, logos, credited third-party works, linked external works, endorsement, global rights guarantees and clinical approval."
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/cataracts",
+      "organizations": [
+        "National Eye Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/EYE_SPORTS_EXPANSION.md",
+      "scope": "Agency-authored educational text checked on the exact page; original study paraphrases and fictional questions only. Excludes figures, photos, logos, credited third-party works, linked external works, endorsement, global rights guarantees and clinical approval."
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/sports-injuries",
+      "organizations": [
+        "National Institute of Arthritis and Musculoskeletal and Skin Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niams.nih.gov/disclaimer",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/EYE_SPORTS_EXPANSION.md",
+      "scope": "Agency-authored educational text checked on the exact page; original study paraphrases and fictional questions only. Excludes figures, photos, logos, credited third-party works, linked external works, endorsement, global rights guarantees and clinical approval."
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/sports-injuries/diagnosis-treatment-and-steps-to-take",
+      "organizations": [
+        "National Institute of Arthritis and Musculoskeletal and Skin Diseases, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.niams.nih.gov/disclaimer",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/EYE_SPORTS_EXPANSION.md",
+      "scope": "Agency-authored educational text checked on the exact page; original study paraphrases and fictional questions only. Excludes figures, photos, logos, credited third-party works, linked external works, endorsement, global rights guarantees and clinical approval."
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/72/wr/mm7204a5.htm",
+      "organizations": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "kinds": [
+        "official-recommendation"
+      ],
+      "basis": "public-domain-mmwr",
+      "policyUrl": "https://www.cdc.gov/mmwr/about.html",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/ANTIBIOTIC_GAP_EXPANSION.md",
+      "scope": "Exact STI-2021 erratum; original study summaries of corrected availability/allergy alternatives only. No marks, source documents or clinical approval."
+    },
+    {
+      "url": "https://www.fda.gov/news-events/press-announcements/fda-approves-two-oral-therapies-treat-gonorrhea",
+      "organizations": [
+        "U.S. Food and Drug Administration"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://www.fda.gov/about-fda/about-website/website-policies",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 1000,
+      "audit": "docs/source-audit/ANTIBIOTIC_GAP_EXPANSION.md",
+      "scope": "Individually assessed FDA-authored news release, limited original regulatory-status teaching. No labels, third-party trials, dose tables, images, logos or guideline-priority inference."
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/healthy-vision/finding-eye-doctor/get-dilated-eye-exam",
+      "organizations": [
+        "National Eye Institute, NIH, HHS"
+      ],
+      "kinds": [
+        "official-clinical-reference"
+      ],
+      "basis": "public-domain-government",
+      "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+      "checkedAt": "2026-10-10",
+      "wordBudget": 2000,
+      "audit": "docs/source-audit/EYE_SPORTS_EXPANSION.md",
+      "scope": "Agency-authored educational text checked on the exact page; original study paraphrases and fictional questions only. Excludes figures, photos, logos, credited third-party works, linked external works, endorsement, global rights guarantees and clinical approval."
     }
   ]
 }

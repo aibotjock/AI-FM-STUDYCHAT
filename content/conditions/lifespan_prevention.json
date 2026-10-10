@@ -1,0 +1,1623 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-10",
+  "conditions": [
+    {
+      "id": "contraceptive-planning",
+      "name": "Contraceptive eligibility and reproductive planning",
+      "recordType": "study-topic",
+      "aliases": [
+        "contraception",
+        "birth control",
+        "reproductive planning",
+        "U.S. MEC",
+        "U.S. SPR"
+      ],
+      "specialty": "Lifespan prevention and maternity",
+      "domain": "preventive",
+      "keywords": [
+        "contraception",
+        "migraine aura",
+        "combined hormonal",
+        "smoking",
+        "hypertension",
+        "copper IUD",
+        "ulipristal",
+        "emergency contraception",
+        "pregnancy certainty"
+      ],
+      "overview": "An additional U.S. study topic on method-specific contraceptive eligibility and selected initiation decisions. This is not a disease or a complete contraception course. Original hypothetical practice; study only, no medical advice, clinical review or ABFM endorsement.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-10"
+      },
+      "sources": [
+        {
+          "id": "cdc-us-mec-2024",
+          "title": "U.S. Medical Eligibility Criteria for Contraceptive Use, 2024",
+          "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7304a1.htm",
+          "organization": "Centers for Disease Control and Prevention",
+          "kind": "clinical-guideline",
+          "edition": "MMWR Recommendations and Reports 73(4), August 8, 2024",
+          "publishedDate": "2024-08-08",
+          "checkedAt": "2026-10-10",
+          "locator": "Using U.S. MEC Categories in Practice; person-centered counseling.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "United States educational summaries only. No full text, third-party images, questionnaires or logos are imported. Official recommendations are not qualified clinical review or commercial activation approval.",
+          "rights": {
+            "basis": "public-domain-mmwr",
+            "policyUrl": "https://www.cdc.gov/mmwr/about.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-us-mec-2024-appendices",
+          "title": "Appendices for U.S. Medical Eligibility Criteria for Contraceptive Use, 2024",
+          "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7304a1_appendix.htm",
+          "organization": "Centers for Disease Control and Prevention",
+          "kind": "clinical-guideline",
+          "edition": "Appendices to MMWR Recommendations and Reports 73(4), August 8, 2024",
+          "publishedDate": "2024-08-08",
+          "checkedAt": "2026-10-10",
+          "locator": "Appendix D, Table D1: smoking, hypertension, headaches/migraine; method-specific clarifications.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "United States educational summaries only. No full text, third-party images, questionnaires or logos are imported. Official recommendations are not qualified clinical review or commercial activation approval.",
+          "rights": {
+            "basis": "public-domain-mmwr",
+            "policyUrl": "https://www.cdc.gov/mmwr/about.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-us-spr-2024",
+          "title": "U.S. Selected Practice Recommendations for Contraceptive Use, 2024",
+          "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7303a1.htm",
+          "organization": "Centers for Disease Control and Prevention",
+          "kind": "clinical-guideline",
+          "edition": "MMWR Recommendations and Reports 73(3), August 8, 2024",
+          "publishedDate": "2024-08-08",
+          "checkedAt": "2026-10-10",
+          "locator": "Pregnancy certainty; initiation of Cu-IUDs; emergency contraception; contraception after ulipristal acetate.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "United States educational summaries only. No full text, third-party images, questionnaires or logos are imported. Official recommendations are not qualified clinical review or commercial activation approval.",
+          "rights": {
+            "basis": "public-domain-mmwr",
+            "policyUrl": "https://www.cdc.gov/mmwr/about.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "eligibility-autonomy",
+          "title": "Safety categories and reproductive autonomy",
+          "text": "U.S. MEC category 1 means no restriction, 2 generally permits use, 3 usually discourages use unless alternatives are unavailable or unacceptable, and 4 indicates unacceptable health risk. Category 1 does not identify a universally best method. Method choice remains voluntary and preference-sensitive.",
+          "sourceIds": [
+            "cdc-us-mec-2024"
+          ],
+          "sourceLocator": "Using U.S. MEC Categories in Practice; person-centered counseling paragraphs."
+        },
+        {
+          "id": "migraine-aura",
+          "title": "Estrogen-containing methods and migraine aura",
+          "text": "For combined hormonal contraception, U.S. MEC classifies migraine with aura as category 4 and migraine without aura as category 2. The headache classification assumes no other stroke risk factors. Accurate diagnosis of aura matters; new or markedly changed headaches require evaluation.",
+          "sourceIds": [
+            "cdc-us-mec-2024-appendices"
+          ],
+          "sourceLocator": "Appendix D, Table D1 — Neurologic Conditions, Headaches; migraine rows and clarifications."
+        },
+        {
+          "id": "smoking-hypertension",
+          "title": "Smoking and blood pressure modify estrogen eligibility",
+          "text": "For combined hormonal contraception, smoking at age 35 or older is category 3 with fewer than 15 cigarettes daily and category 4 with at least 15. Properly measured systolic pressure at least 160 mm Hg or diastolic pressure at least 100 is category 4. One blood-pressure reading does not establish hypertension.",
+          "sourceIds": [
+            "cdc-us-mec-2024-appendices"
+          ],
+          "sourceLocator": "Appendix D, Table D1 — Smoking; Cardiovascular Disease, Hypertension, properly taken measurements and single-reading clarification."
+        },
+        {
+          "id": "pregnancy-certainty",
+          "title": "A negative test does not always establish pregnancy certainty",
+          "text": "CDC uses specific history criteria to determine whether pregnancy can reasonably be excluded. If none is met, a negative urine test alone does not establish certainty. When pregnancy remains uncertain, provide an appropriate method other than an IUD until certainty is established; evaluate emergency contraception when appropriate.",
+          "sourceIds": [
+            "cdc-us-spr-2024"
+          ],
+          "sourceLocator": "How To Be Reasonably Certain that a Patient Is Not Pregnant; Initiation of Cu-IUDs, Comments and Evidence Summary."
+        },
+        {
+          "id": "copper-emergency",
+          "title": "Copper IUD emergency timing and backup",
+          "text": "A copper IUD can be placed within 5 days of the first unprotected intercourse as emergency contraception. If ovulation can be estimated, later placement is permitted only when within 5 days of ovulation. No additional contraceptive protection is needed after copper-IUD placement. Eligibility and pregnancy assessment still apply.",
+          "sourceIds": [
+            "cdc-us-spr-2024"
+          ],
+          "sourceLocator": "Initiation of Emergency Contraception — Timing, Cu-IUD; Initiation of Cu-IUDs — Need for Back-Up Contraception."
+        },
+        {
+          "id": "ulipristal-follow-on",
+          "title": "Ulipristal and subsequent hormonal contraception",
+          "text": "After ulipristal acetate, CDC advises starting or resuming hormonal contraception no sooner than 5 days later. Then abstain or use barriers for 7 days after starting, or until the next menses, whichever occurs first. Provider-administered methods have a separate risk-benefit exception; nonhormonal methods can start immediately.",
+          "sourceIds": [
+            "cdc-us-spr-2024"
+          ],
+          "sourceLocator": "Use of Regular Contraception After ECPs — Ulipristal Acetate; all first three recommendation bullets and provider-administered-method exception."
+        }
+      ],
+      "questions": [
+        {
+          "id": "contraceptive-planning-q1",
+          "stem": "A 27-year-old nonsmoker with confirmed migraine with aura requests an estrogen-containing combined pill. No other stroke risk factors are identified. Which counseling statement matches U.S. MEC?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "The pill is category 1 because she is younger than 35"
+            },
+            {
+              "id": "B",
+              "text": "The pill is category 2 because she does not smoke"
+            },
+            {
+              "id": "C",
+              "text": "The pill is category 4; discuss acceptable alternative methods"
+            },
+            {
+              "id": "D",
+              "text": "The pill is category 3 only during an active headache"
+            },
+            {
+              "id": "E",
+              "text": "Every contraceptive method is category 4 for migraine aura"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Migraine with aura is category 4 for combined hormonal contraception. This classification is method-specific, so counseling should consider alternatives and preferences.",
+          "distractorExplanations": {
+            "A": "Age under 35 does not change the aura classification to 1.",
+            "B": "Absence of smoking does not change the aura classification to 2.",
+            "D": "The category applies to migraine with aura, not only headache-day use.",
+            "E": "The cited category is for combined hormonal methods, not every contraceptive method."
+          },
+          "sectionIds": [
+            "migraine-aura",
+            "eligibility-autonomy"
+          ],
+          "sourceIds": [
+            "cdc-us-mec-2024-appendices",
+            "cdc-us-mec-2024"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply method-specific eligibility in migraine with aura without prohibiting all contraception.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "contraceptive-planning-q2",
+          "stem": "A 38-year-old smokes 20 cigarettes daily and asks to start a combined oral contraceptive. Which U.S. MEC classification applies to this smoking history?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Category 4: unacceptable health risk"
+            },
+            {
+              "id": "B",
+              "text": "Category 1: no restriction"
+            },
+            {
+              "id": "C",
+              "text": "Category 2: advantages generally outweigh risks"
+            },
+            {
+              "id": "D",
+              "text": "Category 3 only if she smokes more than 40 cigarettes daily"
+            },
+            {
+              "id": "E",
+              "text": "Category 1 once an appointment for smoking cessation is scheduled"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "At age 35 or older with at least 15 cigarettes daily, combined hormonal contraception is category 4.",
+          "distractorExplanations": {
+            "B": "The age and cigarette threshold exclude category 1.",
+            "C": "This exceeds the category-2 smoking subgroup for age under 35.",
+            "D": "The cited threshold is 15 cigarettes, not 40.",
+            "E": "A planned cessation appointment does not change the current smoking classification."
+          },
+          "sectionIds": [
+            "smoking-hypertension",
+            "eligibility-autonomy"
+          ],
+          "sourceIds": [
+            "cdc-us-mec-2024-appendices",
+            "cdc-us-mec-2024"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Recognize the age and smoking-intensity threshold for combined hormonal contraception.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "contraceptive-planning-q3",
+          "stem": "A 31-year-old has established hypertension with repeated, properly measured pressures around 166/104 mm Hg. She requests a combined hormonal patch. Which U.S. MEC interpretation is supported?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "All contraceptive methods are prohibited"
+            },
+            {
+              "id": "B",
+              "text": "The patch is category 1 because it is not an oral pill"
+            },
+            {
+              "id": "C",
+              "text": "The patch is category 2 until symptoms occur"
+            },
+            {
+              "id": "D",
+              "text": "The patch is category 3 because her age is under 35"
+            },
+            {
+              "id": "E",
+              "text": "Combined hormonal contraception is category 4 at this blood-pressure level"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Systolic pressure at least 160 or diastolic pressure at least 100 makes combined hormonal contraception category 4. Repeated measurements avoid the single-reading limitation.",
+          "distractorExplanations": {
+            "A": "The restriction is method-specific.",
+            "B": "The combined hormonal category includes patches.",
+            "C": "Symptoms are not required by this blood-pressure criterion.",
+            "D": "Age under 35 does not lower this classification to 3."
+          },
+          "sectionIds": [
+            "smoking-hypertension",
+            "eligibility-autonomy"
+          ],
+          "sourceIds": [
+            "cdc-us-mec-2024-appendices",
+            "cdc-us-mec-2024"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply the hypertension threshold to a combined hormonal patch.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "contraceptive-planning-q4",
+          "stem": "A patient requests a copper IUD. No CDC history criterion establishes that she is not pregnant, and the urine pregnancy test is negative. Which next step follows U.S. SPR?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Insert the IUD because a negative urine test is always definitive"
+            },
+            {
+              "id": "B",
+              "text": "Offer an appropriate non-IUD method until pregnancy can reasonably be excluded"
+            },
+            {
+              "id": "C",
+              "text": "Insert the IUD if she signs a statement accepting uncertainty"
+            },
+            {
+              "id": "D",
+              "text": "Repeat the same urine test immediately and disregard the history"
+            },
+            {
+              "id": "E",
+              "text": "Avoid offering any contraceptive method until the next annual visit"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "A negative test alone does not establish certainty when none of the CDC history criteria is met. CDC recommends a method other than an IUD until certainty is established.",
+          "distractorExplanations": {
+            "A": "The source explicitly describes this test limitation.",
+            "C": "Consent does not establish pregnancy certainty.",
+            "D": "An immediate repeat does not remove the stated history limitation.",
+            "E": "CDC provides an interim contraceptive option rather than an annual delay."
+          },
+          "sectionIds": [
+            "pregnancy-certainty"
+          ],
+          "sourceIds": [
+            "cdc-us-spr-2024"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Distinguish pregnancy-test negativity from reasonable pregnancy exclusion before IUD placement.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "contraceptive-planning-q5",
+          "stem": "A medically eligible patient chooses copper-IUD emergency contraception 4 days after the first unprotected intercourse. Following placement, what additional contraceptive backup does U.S. SPR require?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Barrier contraception for 2 days"
+            },
+            {
+              "id": "B",
+              "text": "Barrier contraception for 7 days"
+            },
+            {
+              "id": "C",
+              "text": "Barrier contraception until the next menses"
+            },
+            {
+              "id": "D",
+              "text": "No additional contraceptive backup is required"
+            },
+            {
+              "id": "E",
+              "text": "Abstinence for 14 days for every copper-IUD user"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "The copper IUD is within the 5-day emergency window in this vignette. No additional contraceptive protection is needed after placement.",
+          "distractorExplanations": {
+            "A": "CDC specifies no additional copper-IUD backup.",
+            "B": "The 7-day rules for some other methods do not apply here.",
+            "C": "Waiting for menses is not the copper-IUD backup recommendation.",
+            "E": "A routine 14-day interval is not specified."
+          },
+          "sectionIds": [
+            "copper-emergency"
+          ],
+          "sourceIds": [
+            "cdc-us-spr-2024"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Separate copper-IUD emergency placement and backup rules from hormonal-method rules.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "contraceptive-planning-q6",
+          "stem": "A patient takes ulipristal emergency contraception and plans to restart her self-administered combined pill. Which sequence follows U.S. SPR, assuming the pill is medically eligible?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Restart today and use no backup"
+            },
+            {
+              "id": "B",
+              "text": "Wait at least 5 days, then restart; use barriers or abstain for 7 days after restarting or until next menses, whichever comes first"
+            },
+            {
+              "id": "C",
+              "text": "Wait 24 hours, then restart without backup"
+            },
+            {
+              "id": "D",
+              "text": "Restart today and use barriers for exactly 24 hours"
+            },
+            {
+              "id": "E",
+              "text": "Wait 30 days before every hormonal method, including provider-administered methods"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "For a self-administered hormonal method after ulipristal, CDC advises at least a 5-day delay followed by the stated backup interval.",
+          "distractorExplanations": {
+            "A": "Immediate hormonal restart does not follow this recommendation.",
+            "C": "A 24-hour delay is shorter than recommended.",
+            "D": "A 24-hour barrier interval does not match the recommendation.",
+            "E": "The source does not specify a universal 30-day delay and notes provider-method exceptions."
+          },
+          "sectionIds": [
+            "ulipristal-follow-on"
+          ],
+          "sourceIds": [
+            "cdc-us-spr-2024"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply the ulipristal-to-hormonal-contraception interval with its backup qualifier.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        }
+      ]
+    },
+    {
+      "id": "routine-prenatal-care",
+      "name": "Routine prenatal care continuum",
+      "recordType": "study-topic",
+      "aliases": [
+        "prenatal care",
+        "antenatal care",
+        "routine pregnancy care"
+      ],
+      "specialty": "Lifespan prevention and maternity",
+      "domain": "preventive",
+      "keywords": [
+        "prenatal",
+        "aneuploidy",
+        "NIPT",
+        "anatomy ultrasound",
+        "medication reconciliation",
+        "GBS",
+        "breech",
+        "external cephalic version",
+        "41 weeks"
+      ],
+      "overview": "An additional study topic on selected routine-pregnancy milestones in the U.S. VA/DoD 2023 provider summary. It supplements complication records and does not constitute comprehensive maternity training, clinical advice or procedural instruction.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-10"
+      },
+      "sources": [
+        {
+          "id": "va-dod-pregnancy-provider-2023",
+          "title": "VA/DoD Clinical Practice Guideline for the Management of Pregnancy — Provider Summary",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/WH/up/VA-DOD-CPG-Pregnancy-Provider-Summary_final_508.pdf",
+          "organization": "U.S. Department of Veterans Affairs and Department of Defense",
+          "kind": "clinical-guideline",
+          "edition": "Version 4.0, July 2023; listed on the current VA/DoD pregnancy-guideline page",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Original VA/DoD recommendations and Routine Pregnancy Care narrative; exact subsection locators accompany each summary.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original government guideline recommendations/narrative only. No quoted USPSTF passages, third-party screening questionnaires, borrowed scales, figures or tables are imported. The evidence-review cutoff is June 1, 2022. VA/DoD recommendations reflect this 2023 source and are not a universal civilian standard of care. The official page was checked, but no new evidence synthesis or qualified clinical review is claimed.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "aneuploidy-choice",
+          "title": "Aneuploidy screening is a choice",
+          "text": "VA/DoD recommends offering noninvasive prenatal testing as the screening test of choice for singleton pregnancies when the patient chooses aneuploidy screening. This is a strong recommendation. It does not require every patient to accept screening or turn a screening result into a definitive diagnosis. The summary distinguishes alpha-fetoprotein screening for neural tube defects and parental carrier testing from aneuploidy screening; diagnostic testing is a separate offered alternative.",
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "sourceLocator": "Table 1, Recommendation 1 (Strong for); Routine Pregnancy Care, A. Initial Prenatal Visit, c. Genetic Screening."
+        },
+        {
+          "id": "anatomy-ultrasound",
+          "title": "Midpregnancy anatomy evaluation",
+          "text": "The VA/DoD provider summary places the complete fetal anatomy ultrasound optimally between 18 and 22 weeks. The examination evaluates fetal anatomy and other obstetric features. Aneuploidy screening and an anatomic survey serve different purposes; prior screening does not eliminate the anatomy examination.",
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "sourceLocator": "Routine Pregnancy Care, B. Subsequent Prenatal Visits, e. Anatomy (Dating) Ultrasound; printed page 19."
+        },
+        {
+          "id": "medication-review",
+          "title": "Medication reconciliation is longitudinal",
+          "text": "The VA/DoD summary calls for medication review at every prenatal visit, including new prescriptions, over-the-counter medicines, vitamins, supplements and herbal products. Potentially teratogenic medicines warrant referral to maternal-fetal medicine. This section does not identify individual drugs as safe or unsafe.",
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "sourceLocator": "Routine Pregnancy Care, A. Initial Prenatal Visit, m. Medication Review; printed pages 16–17."
+        },
+        {
+          "id": "gbs-late-screen",
+          "title": "Late-pregnancy GBS screening has exceptions",
+          "text": "VA/DoD recommends vaginal-rectal GBS culture at 36 weeks 0 days through 37 weeks 6 days, except when urine culture or a previously affected infant already establishes prophylaxis candidacy. A positive screen leads to antibiotics in labor. This summary does not specify a drug or dose.",
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "sourceLocator": "Routine Pregnancy Care, B. Subsequent Prenatal Visits, g. 36 Weeks, 1. Group B Streptococcus Screening; printed page 21."
+        },
+        {
+          "id": "breech-version",
+          "title": "Breech presentation and version timing",
+          "text": "VA/DoD assesses presentation at 36 weeks, ideally with ultrasound confirmation. With breech presentation and no contraindication, offer external cephalic version at 37 weeks. This is an educational decision point; it does not teach procedural technique or establish eligibility from incomplete information.",
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "sourceLocator": "Routine Pregnancy Care, B. Subsequent Prenatal Visits, g. 36 Weeks, 2. Fetal Presentation; printed page 21."
+        },
+        {
+          "id": "late-term-plan",
+          "title": "Do not omit the 41-week decision point",
+          "text": "VA/DoD recommends offering scheduled delivery when pregnancy reaches 41 weeks 0 days without delivery. If not delivered, start antepartum fetal testing at that point. Recommendation 7 is strong, brought forward without a new evidence review and amended in the 2023 document.",
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "sourceLocator": "Table 1, Recommendation 7, Strength and Category columns."
+        }
+      ],
+      "questions": [
+        {
+          "id": "routine-prenatal-care-q1",
+          "stem": "A patient with a singleton pregnancy elects aneuploidy screening. Which test does VA/DoD Recommendation 1 identify as the screening test of choice?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Serum quad screening"
+            },
+            {
+              "id": "B",
+              "text": "Maternal serum alpha-fetoprotein alone"
+            },
+            {
+              "id": "C",
+              "text": "Noninvasive prenatal testing"
+            },
+            {
+              "id": "D",
+              "text": "Parental cystic-fibrosis carrier screening"
+            },
+            {
+              "id": "E",
+              "text": "Prenatal diagnostic testing instead of screening"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Recommendation 1 strongly favors offering noninvasive prenatal testing when singleton-pregnancy patients choose aneuploidy screening; screening and diagnostic testing are separate choices.",
+          "distractorExplanations": {
+            "A": "The source discusses serum screening, but Recommendation 1 names NIPT as the screening test of choice.",
+            "B": "The summary identifies alpha-fetoprotein as a neural-tube-defect screen, distinct from NIPT aneuploidy screening.",
+            "D": "Carrier testing is a separate genetic assessment, not the fetal aneuploidy screen designated here.",
+            "E": "Diagnostic testing is offered as a separate alternative, not the screening test named in Recommendation 1."
+          },
+          "sectionIds": [
+            "aneuploidy-choice"
+          ],
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply the source-specific singleton aneuploidy-screening recommendation while preserving patient choice.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "routine-prenatal-care-q2",
+          "stem": "After earlier aneuploidy screening, a patient schedules a complete fetal anatomy ultrasound. Which routine examination window is optimal in the VA/DoD provider summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "18–22 weeks"
+            },
+            {
+              "id": "B",
+              "text": "11–13 weeks"
+            },
+            {
+              "id": "C",
+              "text": "24–28 weeks"
+            },
+            {
+              "id": "D",
+              "text": "32–34 weeks"
+            },
+            {
+              "id": "E",
+              "text": "36–37 weeks"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "The complete anatomy examination is optimally scheduled at 18–22 weeks. Prior aneuploidy screening does not supply the separate anatomic survey.",
+          "distractorExplanations": {
+            "B": "This is earlier than the cited optimal anatomy window.",
+            "C": "This is later than the stated optimal anatomy window.",
+            "D": "The cited optimal window is in the second trimester at 18–22 weeks.",
+            "E": "The summary does not identify this as the routine optimal anatomy window."
+          },
+          "sectionIds": [
+            "anatomy-ultrasound",
+            "aneuploidy-choice"
+          ],
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Keep prenatal anatomy evaluation distinct from aneuploidy screening.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "routine-prenatal-care-q3",
+          "stem": "At a follow-up prenatal visit, a patient reports a new prescription and an herbal product. Which medication-review plan matches the VA/DoD provider summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Review only medicines present at the first visit"
+            },
+            {
+              "id": "B",
+              "text": "Ignore nonprescription products during reconciliation"
+            },
+            {
+              "id": "C",
+              "text": "Review only medicines prescribed by the obstetric clinician"
+            },
+            {
+              "id": "D",
+              "text": "Reconcile prescriptions, nonprescription medicines and supplements at each prenatal visit"
+            },
+            {
+              "id": "E",
+              "text": "Delay all review until the postpartum visit"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "The summary calls for medication reconciliation at every prenatal visit, including new prescriptions and herbal or dietary products.",
+          "distractorExplanations": {
+            "A": "New exposures make first-visit-only review insufficient.",
+            "B": "Nonprescription products are explicitly included.",
+            "C": "The source includes new medicines, not only obstetric prescriptions.",
+            "E": "The recommendation applies throughout prenatal care."
+          },
+          "sectionIds": [
+            "medication-review"
+          ],
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Recognize longitudinal prenatal medication reconciliation without inferring drug-specific safety.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "routine-prenatal-care-q4",
+          "stem": "A patient has no prior affected infant or urine-culture finding establishing GBS prophylaxis candidacy. Which routine vaginal-rectal GBS culture window follows the VA/DoD summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "24 weeks 0 days through 28 weeks 0 days"
+            },
+            {
+              "id": "B",
+              "text": "36 weeks 0 days through 37 weeks 6 days"
+            },
+            {
+              "id": "C",
+              "text": "32 weeks 0 days through 33 weeks 6 days"
+            },
+            {
+              "id": "D",
+              "text": "38 weeks 0 days through 39 weeks 6 days"
+            },
+            {
+              "id": "E",
+              "text": "Defer routine culture until labor begins"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "The source places routine culture at 36 weeks 0 days through 37 weeks 6 days, with the stated prophylaxis-candidacy exceptions.",
+          "distractorExplanations": {
+            "A": "This does not match the cited late-pregnancy culture window.",
+            "C": "This precedes the specified culture interval.",
+            "D": "This is later than the stated routine screening window.",
+            "E": "The summary recommends antenatal screening in the stated window."
+          },
+          "sectionIds": [
+            "gbs-late-screen"
+          ],
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply late-pregnancy GBS screening timing while retaining prophylaxis exceptions.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "routine-prenatal-care-q5",
+          "stem": "Breech presentation is confirmed near 36 weeks, with no contraindication to external cephalic version. Which scheduled offer time is identified by the VA/DoD summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "32 weeks"
+            },
+            {
+              "id": "B",
+              "text": "34 weeks"
+            },
+            {
+              "id": "C",
+              "text": "36 weeks"
+            },
+            {
+              "id": "D",
+              "text": "39 weeks"
+            },
+            {
+              "id": "E",
+              "text": "37 weeks"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "The summary identifies 37 weeks for offering external cephalic version when breech presentation is present and no contraindication exists.",
+          "distractorExplanations": {
+            "A": "This is earlier than the source's stated version timing.",
+            "B": "This is not the offer time identified in this recommendation.",
+            "C": "Presentation assessment occurs at 36 weeks; the stated version offer is at 37.",
+            "D": "This is later than the stated offer time; this item does not assert later version is always prohibited."
+          },
+          "sectionIds": [
+            "breech-version"
+          ],
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Identify the source-specific version decision point without teaching the procedure.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "routine-prenatal-care-q6",
+          "stem": "An undelivered patient reaches 41 weeks 0 days. Which scheduled-delivery and surveillance combination matches VA/DoD Recommendation 7?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Offer scheduled delivery now; begin antepartum testing now if not delivered"
+            },
+            {
+              "id": "B",
+              "text": "Offer delivery at 42 weeks and begin testing only then"
+            },
+            {
+              "id": "C",
+              "text": "Offer delivery now but omit testing if the patient continues pregnancy"
+            },
+            {
+              "id": "D",
+              "text": "Begin testing now but wait until 42 weeks to offer scheduled delivery"
+            },
+            {
+              "id": "E",
+              "text": "Wait until 43 weeks to offer delivery and begin testing"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Recommendation 7 specifies offering delivery at 41 weeks 0 days and starting antepartum testing at that point if undelivered.",
+          "distractorExplanations": {
+            "B": "Both decision points are later than Recommendation 7 specifies.",
+            "C": "The recommendation includes testing if the patient remains undelivered.",
+            "D": "The testing time matches, but the delivery offer is delayed beyond the stated point.",
+            "E": "Both decisions are deferred beyond the source's stated point."
+          },
+          "sectionIds": [
+            "late-term-plan"
+          ],
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply the 41-week delivery/testing decision and identify its source-specific scope.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        }
+      ]
+    },
+    {
+      "id": "postpartum-care-continuum",
+      "name": "Postpartum follow-up and primary-care transition",
+      "recordType": "study-topic",
+      "aliases": [
+        "postpartum care",
+        "postnatal care",
+        "postpartum follow-up"
+      ],
+      "specialty": "Lifespan prevention and maternity",
+      "domain": "preventive",
+      "keywords": [
+        "postpartum",
+        "three weeks",
+        "hypertension follow-up",
+        "72 hours",
+        "pelvic floor",
+        "lactation education",
+        "primary care transition"
+      ],
+      "overview": "An additional U.S. educational topic on selected postpartum follow-up, support and transition decisions from the VA/DoD 2023 summary. This is study material, not clinical follow-up software, patient-care advice or a complete postpartum protocol.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-10"
+      },
+      "sources": [
+        {
+          "id": "va-dod-pregnancy-provider-2023",
+          "title": "VA/DoD Clinical Practice Guideline for the Management of Pregnancy — Provider Summary",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/WH/up/VA-DOD-CPG-Pregnancy-Provider-Summary_final_508.pdf",
+          "organization": "U.S. Department of Veterans Affairs and Department of Defense",
+          "kind": "clinical-guideline",
+          "edition": "Version 4.0, July 2023; listed on the current VA/DoD pregnancy-guideline page",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Original VA/DoD recommendations and Routine Pregnancy Care narrative; exact subsection locators accompany each summary.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original government guideline recommendations/narrative only. No quoted USPSTF passages, third-party screening questionnaires, borrowed scales, figures or tables are imported. The evidence-review cutoff is June 1, 2022. VA/DoD recommendations reflect this 2023 source and are not a universal civilian standard of care. The official page was checked, but no new evidence synthesis or qualified clinical review is claimed.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "early-contact",
+          "title": "Postpartum care begins before the final visit",
+          "text": "The VA/DoD summary treats postpartum care as an individualized ongoing process. Initial obstetric-provider contact should ideally occur within 3 weeks after birth, in person or by telehealth, with a follow-up plan. Higher-risk circumstances may favor early in-person assessment.",
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "sourceLocator": "Routine Pregnancy Care, C. Postpartum, first three paragraphs; printed page 21."
+        },
+        {
+          "id": "hypertension-followup",
+          "title": "Hypertensive disorders require earlier review",
+          "text": "Under this source, hypertensive disorders of pregnancy need assessment no later than 7–10 days after delivery. Severe hypertension additionally calls for blood-pressure evaluation within 72 hours of discharge after birth. The delivery and discharge anchors are different.",
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "sourceLocator": "Routine Pregnancy Care, C. Postpartum, opening paragraph on printed page 22."
+        },
+        {
+          "id": "comprehensive-review",
+          "title": "The comprehensive visit is multidimensional",
+          "text": "The comprehensive postpartum visit should occur by 12 weeks after birth, individualized to needs. It addresses physical recovery, mood, feeding, sexual function, contraception, birth spacing, sleep, pelvic floor, chronic disease and maintenance. It supplements earlier contact rather than replacing it.",
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "sourceLocator": "Routine Pregnancy Care, C. Postpartum, comprehensive-visit paragraph; printed page 22."
+        },
+        {
+          "id": "pelvic-health",
+          "title": "Persistent postpartum incontinence deserves attention",
+          "text": "VA/DoD Recommendation 6 suggests pelvic-health rehabilitation referral for reported urinary incontinence postpartum. The recommendation is weak, not a guarantee of benefit. This module imports neither an examination scale nor a treatment protocol.",
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "sourceLocator": "Table 1, Recommendation 6 (Weak for; Reviewed, New-added)."
+        },
+        {
+          "id": "lactation-support",
+          "title": "Education and support remain individualized",
+          "text": "VA/DoD Recommendation 4 suggests offering lactation education to pregnant and postpartum patients through in-person, telemedicine or multimedia formats. It is a weak recommendation intended to improve initiation and continuation, not a guarantee or permission to pressure patients about feeding choices.",
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "sourceLocator": "Table 1, Recommendation 4 (Weak for; Reviewed, New-replaced); Patient-centered Care and Shared Decision Making sections."
+        },
+        {
+          "id": "primary-care-transition",
+          "title": "Transition includes pregnancy complications",
+          "text": "The summary calls for coordinated ongoing primary-care follow-up, especially after complications. Hypertensive pregnancy disorders, preterm delivery and gestational diabetes carry increased lifetime maternal cardiometabolic risk. Chronic conditions and ongoing mental-health or social needs should be communicated during the obstetric-to-primary-care transition.",
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "sourceLocator": "Routine Pregnancy Care, C. Postpartum, transition-to-primary-care paragraphs; printed page 22."
+        }
+      ],
+      "questions": [
+        {
+          "id": "postpartum-care-continuum-q1",
+          "stem": "After an uncomplicated birth, a clinician is scheduling ongoing postpartum follow-up. Which plan best implements the VA/DoD continuum?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "One routine visit at 6 weeks, with no earlier provider contact planned"
+            },
+            {
+              "id": "B",
+              "text": "Initial provider contact ideally within 3 weeks, followed by individualized care and a comprehensive visit by 12 weeks"
+            },
+            {
+              "id": "C",
+              "text": "First provider contact at 6 weeks, followed by a comprehensive visit by 12 weeks"
+            },
+            {
+              "id": "D",
+              "text": "First provider contact at 12 weeks, followed by a comprehensive visit at 18 weeks"
+            },
+            {
+              "id": "E",
+              "text": "Arrange provider contact only if the patient reports a new symptom"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "The source includes initial contact ideally within 3 weeks, individualized follow-up and a comprehensive visit by 12 weeks.",
+          "distractorExplanations": {
+            "A": "A single later visit omits the earlier contact and ongoing-care plan.",
+            "C": "The comprehensive visit is timely, but initial contact is later than the source's ideal interval.",
+            "D": "Both contacts are later than the corresponding source intervals.",
+            "E": "Routine ongoing postpartum care is not limited to symptom-triggered contact."
+          },
+          "sectionIds": [
+            "early-contact",
+            "comprehensive-review"
+          ],
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Distinguish early postpartum contact from the comprehensive visit.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "postpartum-care-continuum-q2",
+          "stem": "A clinically stable patient with severe hypertension after birth is discharged with a plan for follow-up. Which additional blood-pressure-evaluation deadline is specified by the VA/DoD summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Within 12 weeks of delivery only"
+            },
+            {
+              "id": "B",
+              "text": "At the next annual examination"
+            },
+            {
+              "id": "C",
+              "text": "Within 72 hours of hospital discharge after birth"
+            },
+            {
+              "id": "D",
+              "text": "Only after breastfeeding ends"
+            },
+            {
+              "id": "E",
+              "text": "Within 18 months of discharge"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "The severe-hypertension provision specifies blood-pressure evaluation within 72 hours after discharge, in addition to the hypertensive-disorder follow-up.",
+          "distractorExplanations": {
+            "A": "A comprehensive visit does not replace the earlier hypertension evaluation.",
+            "B": "An annual interval is not this recommendation.",
+            "D": "Feeding duration is not the timing anchor.",
+            "E": "The cited interval is hours, not months."
+          },
+          "sectionIds": [
+            "hypertension-followup"
+          ],
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Use the discharge-based severe-hypertension postpartum follow-up anchor.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "postpartum-care-continuum-q3",
+          "stem": "A stable postpartum patient had a hypertensive disorder of pregnancy without severe hypertension. Which maximum routine assessment interval is stated in the VA/DoD summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No later than 7–10 days after delivery"
+            },
+            {
+              "id": "B",
+              "text": "Only at 12 weeks after delivery"
+            },
+            {
+              "id": "C",
+              "text": "Only when the patient resumes menstruation"
+            },
+            {
+              "id": "D",
+              "text": "At the next annual appointment"
+            },
+            {
+              "id": "E",
+              "text": "After the next pregnancy is confirmed"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "The summary specifies assessment by 7–10 days after delivery for hypertensive disorders of pregnancy. Severe hypertension has an additional discharge-based requirement.",
+          "distractorExplanations": {
+            "B": "The 12-week comprehensive visit does not replace this earlier review.",
+            "C": "Menstrual return is not the cited anchor.",
+            "D": "Annual follow-up is later than the stated interval.",
+            "E": "A new pregnancy is not required for follow-up."
+          },
+          "sectionIds": [
+            "hypertension-followup"
+          ],
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Distinguish delivery-based hypertensive-disorder follow-up from the severe-hypertension discharge rule.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "postpartum-care-continuum-q4",
+          "stem": "A patient reports urinary leakage postpartum. Which next-step consideration is specifically suggested by VA/DoD Recommendation 6?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Provide reassurance alone without addressing the reported symptom"
+            },
+            {
+              "id": "B",
+              "text": "Start empiric antibiotics without assessing an infection indication"
+            },
+            {
+              "id": "C",
+              "text": "Arrange immediate corrective surgery before rehabilitation assessment"
+            },
+            {
+              "id": "D",
+              "text": "Consider pelvic-health rehabilitation referral"
+            },
+            {
+              "id": "E",
+              "text": "Defer addressing the symptom until a subsequent pregnancy"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Recommendation 6 weakly suggests pelvic-health rehabilitation referral for reported postpartum urinary incontinence. It does not guarantee benefit or provide a complete diagnostic protocol.",
+          "distractorExplanations": {
+            "A": "Reassurance alone does not implement the stated referral consideration.",
+            "B": "Recommendation 6 does not prescribe empiric antibiotics for this report.",
+            "C": "Immediate surgery is not the next-step consideration specified by Recommendation 6.",
+            "E": "The recommendation applies to current postpartum symptoms."
+          },
+          "sectionIds": [
+            "pelvic-health"
+          ],
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "domain": "acute",
+          "learningObjective": "Identify a qualified postpartum rehabilitation recommendation without overstating its strength.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "postpartum-care-continuum-q5",
+          "stem": "A postpartum patient prefers remote lactation education because attending a group is difficult. Which response best reflects VA/DoD Recommendation 4?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Only a face-to-face group can implement the recommendation"
+            },
+            {
+              "id": "B",
+              "text": "Remote education is excluded from all postpartum care"
+            },
+            {
+              "id": "C",
+              "text": "Education should be withheld unless feeding success is guaranteed"
+            },
+            {
+              "id": "D",
+              "text": "A multimedia option is allowed only during the next pregnancy"
+            },
+            {
+              "id": "E",
+              "text": "Offer an acceptable telemedicine or multimedia education option with individualized support"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "The recommendation permits in-person, telemedicine and multimedia lactation education. Its weak strength does not imply guaranteed feeding outcomes.",
+          "distractorExplanations": {
+            "A": "The source allows more than in-person groups.",
+            "B": "Telemedicine is expressly included.",
+            "C": "The guideline suggests education without guaranteeing outcomes.",
+            "D": "The scope includes postpartum patients."
+          },
+          "sectionIds": [
+            "lactation-support"
+          ],
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Match lactation-support format to patient access and preserve evidence strength.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "postpartum-care-continuum-q6",
+          "stem": "After gestational diabetes, a patient also reports fatigue and a continuing mood concern at the comprehensive postpartum visit. Which handoff plan best matches the VA/DoD summary?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Close obstetric care with routine annual follow-up only and no communication of ongoing concerns"
+            },
+            {
+              "id": "B",
+              "text": "Review recovery, mood and ongoing needs; coordinate primary-care follow-up and cardiometabolic-risk counseling"
+            },
+            {
+              "id": "C",
+              "text": "Coordinate infant follow-up alone and omit the maternal concerns"
+            },
+            {
+              "id": "D",
+              "text": "Communicate diabetes history alone, leaving mood and recovery out of the handoff"
+            },
+            {
+              "id": "E",
+              "text": "Defer the handoff until another pregnancy is planned"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "The comprehensive review covers physical and psychosocial needs. Pregnancy complications and ongoing mood or chronic-care needs warrant a coordinated primary-care transition.",
+          "distractorExplanations": {
+            "A": "This omits ongoing needs and the coordinated transition described by the source.",
+            "C": "The source calls for maternal as well as infant-care considerations.",
+            "D": "The source includes mood, physical recovery and other ongoing needs.",
+            "E": "Continuing primary care is not contingent on a later pregnancy."
+          },
+          "sectionIds": [
+            "comprehensive-review",
+            "primary-care-transition"
+          ],
+          "sourceIds": [
+            "va-dod-pregnancy-provider-2023"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Use a multidimensional postpartum review and communicate ongoing needs at the primary-care transition.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        }
+      ]
+    },
+    {
+      "id": "developmental-surveillance",
+      "name": "Developmental surveillance and early concern",
+      "recordType": "study-topic",
+      "aliases": [
+        "developmental milestones",
+        "child development",
+        "developmental surveillance",
+        "lost skills",
+        "developmental regression"
+      ],
+      "specialty": "Lifespan prevention and maternity",
+      "domain": "preventive",
+      "keywords": [
+        "development",
+        "milestones",
+        "six months",
+        "nine months",
+        "eighteen months",
+        "screening",
+        "surveillance",
+        "early intervention",
+        "regression"
+      ],
+      "overview": "An additional child-development study topic using CDC communication references, not a formal pediatric guideline or a complete well-child curriculum. Age examples support surveillance and next-step reasoning; they cannot diagnose disorders or establish clinical competence.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-10"
+      },
+      "sources": [
+        {
+          "id": "cdc-development-key-points",
+          "title": "Key Points about CDC's Developmental Milestone Checklists",
+          "url": "https://www.cdc.gov/act-early/milestones/key-points.html",
+          "organization": "Centers for Disease Control and Prevention",
+          "kind": "official-clinical-reference",
+          "edition": "CDC web reference, displayed February 16, 2026; Page Info reviewed February 17, 2026",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "About CDC's Developmental Milestone Checklists, points 1–4 and 6.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "CDC communication and developmental-surveillance reference, not a developmental guideline, screening test, diagnostic test or medical-necessity standard. Original CDC text only; no AAP article, externally linked tool, photograph, video or logo is imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-milestones-6-months",
+          "title": "Milestones by 6 Months",
+          "url": "https://www.cdc.gov/act-early/milestones/6-months.html",
+          "organization": "Centers for Disease Control and Prevention",
+          "kind": "official-clinical-reference",
+          "edition": "CDC milestone reference, displayed May 15, 2026",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "What most children do by 6 months; Keep in mind; Share with your child's doctor.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original CDC milestone text and concern/referral narrative only. Checklist ages describe what most children can do; they are not diagnostic cutoffs or a substitute for validated screening. External AAP content, images, videos, downloadable tools and logos are not imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-milestones-9-months",
+          "title": "Milestones by 9 Months",
+          "url": "https://www.cdc.gov/act-early/milestones/9-months.html",
+          "organization": "Centers for Disease Control and Prevention",
+          "kind": "official-clinical-reference",
+          "edition": "CDC milestone reference, displayed May 15, 2026",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "What most children do by 9 months; Keep in mind; Share with your child's doctor.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original CDC milestone text and concern/referral narrative only. Checklist ages describe what most children can do; they are not diagnostic cutoffs or a substitute for validated screening. External AAP content, images, videos, downloadable tools and logos are not imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-milestones-18-months",
+          "title": "Milestones by 18 Months",
+          "url": "https://www.cdc.gov/act-early/milestones/18-months.html",
+          "organization": "Centers for Disease Control and Prevention",
+          "kind": "official-clinical-reference",
+          "edition": "CDC milestone reference, displayed May 15, 2026",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "What most children do by 18 months; Keep in mind; Share with your child's doctor.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Original CDC milestone text and concern/referral narrative only. Checklist ages describe what most children can do; they are not diagnostic cutoffs or a substitute for validated screening. External AAP content, images, videos, downloadable tools and logos are not imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "surveillance-not-test",
+          "title": "Communication differs from screening and diagnosis",
+          "text": "CDC milestone checklists support conversations and identification of concerns. They are not developmental standards, validated screening tests or diagnostic tools. When concerns are identified, the next steps include formal screening and evaluation or referral. A checklist alone cannot establish or exclude a disorder.",
+          "sourceIds": [
+            "cdc-development-key-points"
+          ],
+          "sourceLocator": "About CDC's Developmental Milestone Checklists, points 1–3."
+        },
+        {
+          "id": "age-interpretation",
+          "title": "Age placement is not a universal deadline",
+          "text": "CDC selected milestones that about 75% or more of children are expected to demonstrate by the listed age. The checklists do not contain every possible milestone. Presence or absence must be discussed in context; an omitted skill is not automatically unimportant, and a missed item is not itself a diagnosis.",
+          "sourceIds": [
+            "cdc-development-key-points"
+          ],
+          "sourceLocator": "About CDC's Developmental Milestone Checklists, points 4, 5 and 6."
+        },
+        {
+          "id": "six-month-observations",
+          "title": "Selected six-month developmental observations",
+          "text": "CDC six-month examples include knowing familiar people, taking turns making sounds, making squealing noises, reaching for a desired toy and rolling from tummy to back. Physical examples also include pushing up with straight arms and leaning on hands when sitting. These support surveillance rather than a complete developmental assessment.",
+          "sourceIds": [
+            "cdc-milestones-6-months"
+          ],
+          "sourceLocator": "What most babies do by 6 months — Social/Emotional, Language/Communication, Cognitive, Movement/Physical Development; Keep in mind."
+        },
+        {
+          "id": "nine-month-observations",
+          "title": "Selected nine-month developmental observations",
+          "text": "CDC nine-month examples include looking when called by name, varied repeated sounds, raising arms to be picked up, looking for a dropped object, transferring an object between hands, getting into a sitting position and sitting without support. A concerning observation warrants discussion and screening, rather than an automatic disease label.",
+          "sourceIds": [
+            "cdc-milestones-9-months"
+          ],
+          "sourceLocator": "What most babies do by 9 months; Share with your child's doctor."
+        },
+        {
+          "id": "eighteen-month-observations",
+          "title": "Selected eighteen-month observations",
+          "text": "CDC eighteen-month examples include trying at least three words besides mama or dada, following a one-step verbal direction without gestures, pointing to show interest, walking without holding on, scribbling and trying a spoon. These examples are not a diagnostic threshold for autism or another disorder.",
+          "sourceIds": [
+            "cdc-milestones-18-months"
+          ],
+          "sourceLocator": "What most children do by 18 months — Language/Communication, Social/Emotional, Movement/Physical Development; Keep in mind."
+        },
+        {
+          "id": "concern-regression-referral",
+          "title": "Concerns and lost skills call for action",
+          "text": "CDC advises acting early when milestones are missed, skills are lost or caregivers have other concerns: discuss the concern and ask about developmental screening. If concern persists, seek specialist evaluation and contact the state or territory early-intervention program about eligibility. Do not infer a diagnosis from this advice alone.",
+          "sourceIds": [
+            "cdc-milestones-9-months",
+            "cdc-milestones-18-months"
+          ],
+          "sourceLocator": "Share with your child's doctor; If you or the doctor are still concerned, specialist-referral and early-intervention bullets."
+        }
+      ],
+      "questions": [
+        {
+          "id": "developmental-surveillance-q1",
+          "stem": "A clinician proposes using a completed CDC milestone checklist as the sole test to exclude developmental disorders. Which correction is supported by CDC?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Completing the checklist replaces every validated screening tool"
+            },
+            {
+              "id": "B",
+              "text": "Only the mobile version provides a definitive diagnosis"
+            },
+            {
+              "id": "C",
+              "text": "The checklist supports surveillance and conversation; concerns need formal screening, evaluation or referral"
+            },
+            {
+              "id": "D",
+              "text": "A missing item establishes autism without further assessment"
+            },
+            {
+              "id": "E",
+              "text": "A checklist determines medical necessity for continuing services"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "CDC explicitly separates its communication checklists from developmental standards, screening tests and diagnostic tools.",
+          "distractorExplanations": {
+            "A": "The checklist is not a validated screening substitute.",
+            "B": "Delivery format does not establish diagnostic validity.",
+            "D": "A missed item does not supply a disorder-specific diagnosis.",
+            "E": "CDC says milestones should not determine medical necessity."
+          },
+          "sectionIds": [
+            "surveillance-not-test"
+          ],
+          "sourceIds": [
+            "cdc-development-key-points"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Protect the boundary between developmental surveillance, screening and diagnosis.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "developmental-surveillance-q2",
+          "stem": "A caregiver asks whether every child must achieve every listed CDC milestone precisely at its listed age. Which explanation is most accurate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "The ages describe an evidence-informed expectation for about 75% or more, not a universal diagnostic deadline"
+            },
+            {
+              "id": "B",
+              "text": "Every listed age is a 100% cutoff for disability"
+            },
+            {
+              "id": "C",
+              "text": "The checklist lists every meaningful developmental skill"
+            },
+            {
+              "id": "D",
+              "text": "Any omitted skill is medically unimportant"
+            },
+            {
+              "id": "E",
+              "text": "Normal completion excludes every developmental concern"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "The CDC selection approach uses approximately 75% or more at an age. The checklist is incomplete and is not diagnostic.",
+          "distractorExplanations": {
+            "B": "CDC does not define a universal disability cutoff.",
+            "C": "The checklist does not include every possible milestone.",
+            "D": "Omission does not determine significance.",
+            "E": "Completion is not a diagnostic exclusion test."
+          },
+          "sectionIds": [
+            "age-interpretation",
+            "surveillance-not-test"
+          ],
+          "sourceIds": [
+            "cdc-development-key-points"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Interpret milestone age placement without making an absolute developmental claim.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "developmental-surveillance-q3",
+          "stem": "During a six-month surveillance discussion, a caregiver reports that the baby rolls from tummy to back. Which interpretation matches the CDC reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "This is a definitive autism-screening result"
+            },
+            {
+              "id": "B",
+              "text": "This observation replaces assessment of language and social behavior"
+            },
+            {
+              "id": "C",
+              "text": "This is outside all CDC physical-development examples at six months"
+            },
+            {
+              "id": "D",
+              "text": "This matches a listed six-month physical milestone, while broader surveillance still matters"
+            },
+            {
+              "id": "E",
+              "text": "This establishes that formal screening can never be needed"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Rolling from tummy to back is listed among six-month physical milestones. A single observation does not replace broader screening or assessment.",
+          "distractorExplanations": {
+            "A": "A physical milestone does not diagnose autism.",
+            "B": "The page includes multiple developmental domains.",
+            "C": "The behavior is expressly listed.",
+            "E": "The materials are not a validated screening substitute."
+          },
+          "sectionIds": [
+            "six-month-observations"
+          ],
+          "sourceIds": [
+            "cdc-milestones-6-months"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Use an age-specific motor observation without converting it into a diagnostic result.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "developmental-surveillance-q4",
+          "stem": "A nine-month surveillance note records object transfer between hands and sitting without support. Which source-based interpretation is best?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "These observations prove every developmental domain is normal"
+            },
+            {
+              "id": "B",
+              "text": "Both are listed nine-month physical-development examples, but do not replace validated screening"
+            },
+            {
+              "id": "C",
+              "text": "They establish a need to discontinue early-intervention services"
+            },
+            {
+              "id": "D",
+              "text": "They are only eighteen-month items in the CDC reference"
+            },
+            {
+              "id": "E",
+              "text": "They are diagnostic criteria for a specific neurologic disorder"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Both behaviors appear in the CDC nine-month physical-development examples. The page expressly says its materials do not substitute for validated screening.",
+          "distractorExplanations": {
+            "A": "Two physical observations do not establish every domain.",
+            "C": "CDC milestones do not establish service-discontinuation criteria.",
+            "D": "These behaviors are listed on the nine-month page.",
+            "E": "The reference lists observations, not disorder-specific diagnostic criteria."
+          },
+          "sectionIds": [
+            "nine-month-observations",
+            "surveillance-not-test"
+          ],
+          "sourceIds": [
+            "cdc-milestones-9-months",
+            "cdc-development-key-points"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Document nine-month observations while preserving the screening boundary.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "developmental-surveillance-q5",
+          "stem": "An eighteen-month-old walks and scribbles, but the caregiver describes only babbling and says no words besides mama or dada have been heard. Which additional history question targets the CDC eighteen-month language example?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Whether the child takes turns making sounds"
+            },
+            {
+              "id": "B",
+              "text": "Whether the child makes repeated mamamama or babababa sounds"
+            },
+            {
+              "id": "C",
+              "text": "Whether the child makes squealing noises"
+            },
+            {
+              "id": "D",
+              "text": "Whether the child raises arms to be picked up"
+            },
+            {
+              "id": "E",
+              "text": "Whether the child tries at least three words besides mama or dada"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "The eighteen-month reference includes trying three or more words besides mama or dada. Earlier sound behaviors and motor skills do not establish that this specific observation is present.",
+          "distractorExplanations": {
+            "A": "Turn-taking sounds are a six-month example, not this eighteen-month word target.",
+            "B": "Repeated syllables are a nine-month example, not the cited eighteen-month word target.",
+            "C": "Squealing is a six-month example rather than the eighteen-month word target.",
+            "D": "Raising arms is a nine-month communication example, not the cited eighteen-month word target."
+          },
+          "sectionIds": [
+            "six-month-observations",
+            "nine-month-observations",
+            "eighteen-month-observations"
+          ],
+          "sourceIds": [
+            "cdc-milestones-6-months",
+            "cdc-milestones-9-months",
+            "cdc-milestones-18-months"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Include a directly sourced language observation rather than inferring language from motor skills.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "developmental-surveillance-q6",
+          "stem": "A caregiver reports that a nine-month-old has lost a skill previously demonstrated. The rest of a milestone checklist is reassuring. Which next-step approach follows CDC?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Wait until school age because most checklist items are present"
+            },
+            {
+              "id": "B",
+              "text": "Assign a definitive diagnosis solely from the lost skill"
+            },
+            {
+              "id": "C",
+              "text": "Discuss the concern, ask about developmental screening and pursue evaluation or early-intervention referral if concern persists"
+            },
+            {
+              "id": "D",
+              "text": "Discontinue existing services based on the checklist"
+            },
+            {
+              "id": "E",
+              "text": "Treat the mobile checklist as the only needed diagnostic test"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "CDC advises acting early for lost skills even when there are other reassuring observations; persistent concern can prompt specialist evaluation and early-intervention contact.",
+          "distractorExplanations": {
+            "A": "Loss of skills is a stated reason to act early.",
+            "B": "The advice does not establish a diagnosis by itself.",
+            "D": "The milestones are not service-discontinuation criteria.",
+            "E": "A checklist does not replace validated screening or evaluation."
+          },
+          "sectionIds": [
+            "concern-regression-referral",
+            "surveillance-not-test"
+          ],
+          "sourceIds": [
+            "cdc-milestones-9-months",
+            "cdc-development-key-points"
+          ],
+          "domain": "acute",
+          "learningObjective": "Respond to developmental regression without false reassurance or an unsupported diagnosis.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        }
+      ]
+    }
+  ]
+}

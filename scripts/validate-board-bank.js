@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
-import { STUDY_CONDITION_FILES, loadStudyCurriculum, loadStudyFoundations, combineStudyCurricula } from '../server/study-curriculum.js';
+import { STUDY_CONDITION_FILES, loadStudyCurriculum, loadStudyFoundations, combineStudyCurricula, studyRecordType } from '../server/study-curriculum.js';
 import { buildBoardAlignment } from '../server/board-alignment.js';
 import { validateMaintenanceCorpus } from './validate-study-curriculum.js';
 import { verifiedStudySourceReuse, knownStudySourceReuseUrl } from '../shared/source-reuse.js';
@@ -41,8 +41,9 @@ export function validateBoardBank({ rootDir = ROOT, now = Date.now(), minimumQue
     manifest: {
       schemaVersion: 1, checkedAt: new Date(now).toISOString().slice(0, 10),
       purpose: 'Original family medicine board study only; not medical advice or clinical use.',
-      conditions: records.filter(record => record.recordType !== 'foundation').length,
-      foundationTopics: records.filter(record => record.recordType === 'foundation').length,
+      conditions: records.filter(record => studyRecordType(record) === 'condition').length,
+      studyTopics: records.filter(record => studyRecordType(record) === 'study-topic').length,
+      foundationTopics: records.filter(record => studyRecordType(record) === 'foundation').length,
       inventoryQuestions: result.manifest.questions, currentQuestions: questions.length,
       currentQuestionScope: 'U.S. board-study pool; comparative-study questions remain in the library.',
       comparativeStudyQuestions: records.reduce((sum, record) => sum + record.questions.filter(question => question.examScope === 'comparative-study').length, 0),

@@ -232,7 +232,7 @@ test('public status exposes only non-sensitive curriculum counts without requiri
   const status = await app.request('/api/status');
   assert.equal(status.status, 200);
   assert.equal(status.body.authenticated, false);
-  assert.deepEqual(status.body.curriculum, { conditions: 2, questions: 4, currentConditions: 1, formalGuidelineConditions: 1 });
+  assert.deepEqual(status.body.curriculum, { conditions: 2, studyTopics: 0, records: 2, questions: 4, currentConditions: 1, currentRecords: 1, formalGuidelineConditions: 1 });
   assert.equal(JSON.stringify(status.body).includes('never-expose-private-openai-key'), false);
   assert.equal(JSON.stringify(status.body).includes('Mock diagnosis fact'), false);
   assert.equal((await app.request('/api/curriculum')).status, 401);

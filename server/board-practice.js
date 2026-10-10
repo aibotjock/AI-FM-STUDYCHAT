@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { ABFM_BLUEPRINT, BLUEPRINT_VERSION, allocateMixedPractice } from '../shared/blueprint.js';
 import { STUDY_DISCLAIMER } from './study-curriculum.js';
 import { buildBoardAlignment } from './board-alignment.js';
+import { buildLearningPlan } from './learning-strategy.js';
 
 export const BOARD_PRACTICE_SIZES = Object.freeze([10, 20, 40, 80, 100]);
 export const BOARD_PRACTICE_HISTORY_LIMIT = 32;
@@ -9,12 +10,15 @@ const DOMAINS = new Set(ABFM_BLUEPRINT.map(item => item.id));
 const CHOICE = /^[A-E]$/;
 const KEY = /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}:[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/;
 const FINGERPRINT = /^[a-f0-9]{64}$/;
-const MODES = new Set(['mixed', 'domain', 'missed', 'weak']);
+const MODES = new Set(['mixed', 'domain', 'missed', 'weak', 'targeted']);
+const CONFIDENCE = new Set(['low', 'medium', 'high']);
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const clone = value => structuredClone(value);
 const own = (value, key) => Object.hasOwn(value, key);
 const validTime = value => Number.isSafeInteger(value) && value >= 0 && value <= 8640000000000000;
 const validId = value => typeof value === 'string' && value.length > 0 && value.length <= 100 && /^[A-Za-z0-9._-]+$/.test(value);
+const validCount = (mode, count) => mode === 'targeted' ? count === 1 : BOARD_PRACTICE_SIZES.includes(count);
+const validConfidence = value => value === undefined || value === null || CONFIDENCE.has(value);
 
 export class BoardPracticeError extends Error {
   constructor(code, message, { status = 400, ...details } = {}) {
@@ -52,7 +56,7 @@ function shuffle(items, random) {
 }
 function accuracy(correct, answered) { return answered ? Math.round(correct / answered * 10000) / 100 : null; }
 function summaryView(session) {
-  return { sessionId: session.id, mode: session.mode, domain: session.domain || null, count: session.count, total: session.count, timed: session.timed, feedback: session.feedback, createdAt: session.createdAt, completedAt: session.completedAt, status: 'completed', ...clone(session.summary), trusted: session.trusted !== false, imported: session.trusted === false, officialScore: false, blueprintVersion: session.blueprintVersion, disclaimer: STUDY_DISCLAIMER };
+  return { sessionId: session.id, mode: session.mode, domain: session.domain || null, conditionId: session.conditionId || null, count: session.count, total: session.count, timed: session.timed, feedback: session.feedback, createdAt: session.createdAt, completedAt: session.completedAt, status: 'completed', ...clone(session.summary), trusted: session.trusted !== false, imported: session.trusted === false, officialScore: false, blueprintVersion: session.blueprintVersion, disclaimer: STUDY_DISCLAIMER };
 }
 
 /** Local, source-linked study practice. This engine does not call any AI provider. */
@@ -89,7 +93,7 @@ export function createBoardPractice({ curricula = [], now = Date.now, random = M
   }
   function alignment() { return buildBoardAlignment([...pool().values()]); }
   function validSession(session) {
-    return object(session) && validId(session.id) && MODES.has(session.mode) && BOARD_PRACTICE_SIZES.includes(session.count) && typeof session.timed === 'boolean' && ['immediate', 'end'].includes(session.feedback) && validTime(session.createdAt) && (!session.timed || Number.isInteger(session.timeLimitSeconds) && session.timeLimitSeconds >= 60 && session.timeLimitSeconds <= 14400) && Array.isArray(session.selection) && session.selection.length === session.count && new Set(session.selection.map(item => item?.key)).size === session.count && session.selection.every(item => object(item) && KEY.test(item.key || '') && FINGERPRINT.test(item.fingerprint || '')) && object(session.answers) && Object.keys(session.answers).length <= session.count && Object.entries(session.answers).every(([key, answer]) => session.selection.some(item => item.key === key) && object(answer) && CHOICE.test(answer.choiceId || '') && validTime(answer.answeredAt));
+    return object(session) && validId(session.id) && MODES.has(session.mode) && validCount(session.mode, session.count) && (session.mode !== 'targeted' || validId(session.conditionId)) && typeof session.timed === 'boolean' && ['immediate', 'end'].includes(session.feedback) && validTime(session.createdAt) && (!session.timed || Number.isInteger(session.timeLimitSeconds) && session.timeLimitSeconds >= 60 && session.timeLimitSeconds <= 14400) && Array.isArray(session.selection) && session.selection.length === session.count && new Set(session.selection.map(item => item?.key)).size === session.count && session.selection.every(item => object(item) && KEY.test(item.key || '') && FINGERPRINT.test(item.fingerprint || '') && (session.mode !== 'targeted' || item.key.startsWith(`${session.conditionId}:`))) && object(session.answers) && Object.keys(session.answers).length <= session.count && Object.entries(session.answers).every(([key, answer]) => session.selection.some(item => item.key === key) && object(answer) && CHOICE.test(answer.choiceId || '') && validTime(answer.answeredAt) && validConfidence(answer.confidence));
   }
   function checkedSession(state, sessionId, { completed = false } = {}) {
     const container = stateContainer(state);
@@ -116,7 +120,7 @@ export function createBoardPractice({ curricula = [], now = Date.now, random = M
       // A skipped question still has a canonical rationale, shown only in finished review.
       const feedback = canonicalGrade(question, answer?.choiceId || 'A');
       if (!answer) feedback.correct = false;
-      return { ...publicQuestion(question), selectedChoiceId: answer?.choiceId || null, answered: Boolean(answer), feedback };
+      return { ...publicQuestion(question), selectedChoiceId: answer?.choiceId || null, selectedConfidence: answer?.confidence || null, answered: Boolean(answer), feedback };
     });
     const domainResults = ABFM_BLUEPRINT.map(domain => {
       const selected = items.filter(item => item.domain === domain.id);
@@ -126,7 +130,7 @@ export function createBoardPractice({ curricula = [], now = Date.now, random = M
     });
     const answered = items.filter(item => item.answered).length;
     const correct = items.filter(item => item.answered && item.feedback.correct).length;
-    return { sessionId: session.id, status: 'completed', mode: session.mode, domain: session.domain || null, total: session.count, count: session.count, answered, correct, skipped: session.count - answered, accuracy: accuracy(correct, answered), completionPercent: Math.round(answered / session.count * 10000) / 100, domainResults, questions: items, missedQuestionKeys: items.filter(item => !item.answered || !item.feedback.correct).map(item => item.key), timed: session.timed, createdAt: session.createdAt, completedAt: session.completedAt, trusted: true, officialScore: false, blueprintVersion: session.blueprintVersion, scoreMeaning: 'Accuracy describes answered questions in this practice session only. It is not an ABFM score, passing prediction, clinical competence assessment, or guarantee of complete exam coverage.', disclaimer: STUDY_DISCLAIMER };
+    return { sessionId: session.id, status: 'completed', mode: session.mode, domain: session.domain || null, conditionId: session.conditionId || null, total: session.count, count: session.count, answered, correct, skipped: session.count - answered, accuracy: accuracy(correct, answered), completionPercent: Math.round(answered / session.count * 10000) / 100, domainResults, questions: items, missedQuestionKeys: items.filter(item => !item.answered || !item.feedback.correct).map(item => item.key), timed: session.timed, createdAt: session.createdAt, completedAt: session.completedAt, trusted: true, officialScore: false, blueprintVersion: session.blueprintVersion, scoreMeaning: 'Accuracy describes answered questions in this practice session only. It is not an ABFM score, passing prediction, clinical competence assessment, or guarantee of complete exam coverage.', disclaimer: STUDY_DISCLAIMER };
   }
   function view(state, { sessionId, index } = {}) {
     const container = stateContainer(state);
@@ -143,45 +147,99 @@ export function createBoardPractice({ curricula = [], now = Date.now, random = M
     const question = questions.get(identity.key);
     const answer = session.answers[identity.key];
     const remainingSeconds = session.timed ? Math.max(0, Math.ceil((session.createdAt + session.timeLimitSeconds * 1000 - time()) / 1000)) : null;
-    return { sessionId: session.id, status: 'active', mode: session.mode, domain: session.domain || null, count: session.count, position, answeredCount: Object.keys(session.answers).length, remaining: session.count - Object.keys(session.answers).length, createdAt: session.createdAt, timed: session.timed, timeLimitSeconds: session.timed ? session.timeLimitSeconds : null, remainingSeconds, timeExpired: session.timed && remainingSeconds === 0, feedbackMode: session.feedback, allocation: clone(session.allocation), question: publicQuestion(question), selectedChoiceId: answer?.choiceId || null, ...(answer && session.feedback === 'immediate' ? { feedback: canonicalGrade(question, answer.choiceId) } : {}), officialScore: false, blueprintVersion: session.blueprintVersion, disclaimer: STUDY_DISCLAIMER };
+    return { sessionId: session.id, status: 'active', mode: session.mode, domain: session.domain || null, conditionId: session.conditionId || null, count: session.count, position, answeredCount: Object.keys(session.answers).length, remaining: session.count - Object.keys(session.answers).length, createdAt: session.createdAt, timed: session.timed, timeLimitSeconds: session.timed ? session.timeLimitSeconds : null, remainingSeconds, timeExpired: session.timed && remainingSeconds === 0, feedbackMode: session.feedback, allocation: clone(session.allocation), question: publicQuestion(question), selectedChoiceId: answer?.choiceId || null, selectedConfidence: answer?.confidence || null, ...(answer && session.feedback === 'immediate' ? { feedback: canonicalGrade(question, answer.choiceId) } : {}), officialScore: false, blueprintVersion: session.blueprintVersion, disclaimer: STUDY_DISCLAIMER };
+  }
+  function learningEvidence(container, questions) {
+    const observedAt = time();
+    const ids = new Map();
+    for (const session of container.history) if (object(session)) ids.set(session.id, (ids.get(session.id) || 0) + 1);
+    const sessions = [];
+    let ignoredSessions = 0;
+    let ignoredQuestions = 0;
+    for (const [historyIndex, session] of container.history.entries()) {
+      if (session?.trusted !== true || !validSession(session) || ids.get(session.id) !== 1 || !validTime(session.completedAt) || session.completedAt < session.createdAt || session.completedAt > observedAt || session.invalidatedAt !== undefined || Object.values(session.answers).some(answer => answer.answeredAt < session.createdAt || answer.answeredAt > session.completedAt || session.timed && answer.answeredAt >= session.createdAt + session.timeLimitSeconds * 1000)) {
+        ignoredSessions++;
+        continue;
+      }
+      const selection = [];
+      for (const identity of session.selection) {
+        const question = questions.get(identity.key);
+        if (!question || question.fingerprint !== identity.fingerprint || session.mode === 'targeted' && question.conditionId !== session.conditionId) {
+          ignoredQuestions++;
+          continue;
+        }
+        const answer = session.answers[identity.key];
+        let correct = null;
+        if (answer) {
+          try { correct = canonicalGrade(question, answer.choiceId).correct; }
+          catch (error) {
+            if (error?.code !== 'CONTENT_CHANGED') throw error;
+            ignoredQuestions++;
+            continue;
+          }
+        }
+        selection.push({ question, answer, correct });
+      }
+      if (selection.length) sessions.push({ session, selection, historyIndex });
+      else ignoredSessions++;
+    }
+    // History is stored newest first. Keep that chronology for sessions that
+    // finish within the same clock tick; random IDs carry no timing evidence.
+    sessions.sort((a, b) => a.session.createdAt - b.session.createdAt || a.session.completedAt - b.session.completedAt || b.historyIndex - a.historyIndex);
+    const exposedKeys = new Set();
+    const attempts = [];
+    for (const { session, selection } of sessions) {
+      for (const { question, answer, correct } of selection) {
+        if (answer) attempts.push({ key: question.key, conditionId: question.conditionId, title: question.conditionTitle, domain: question.domain, correct, confidence: answer.confidence || null, firstExposure: !exposedKeys.has(question.key), answeredAt: answer.answeredAt, sessionId: session.id });
+        // Finished review exposes even skipped questions. A later answer is a
+        // repeat exposure, while a skip supplies no evidence of knowledge.
+        exposedKeys.add(question.key);
+      }
+    }
+    return { sessions, attempts, exposedKeys, ignoredSessions, ignoredQuestions };
+  }
+  function learningPlan(state) {
+    const container = stateContainer(state);
+    const questions = pool();
+    const evidence = learningEvidence(container, questions);
+    const activeKeys = new Set(validSession(container.active) ? container.active.selection.filter(identity => questions.get(identity.key)?.fingerprint === identity.fingerprint).map(identity => identity.key) : []);
+    return buildLearningPlan({ evidence, questions: [...questions.values()], activeKeys, blueprint: ABFM_BLUEPRINT, historyLimit: BOARD_PRACTICE_HISTORY_LIMIT });
   }
   function missedKeys(container, questions) {
     const missed = new Set();
     const latest = new Map();
-    for (const session of container.history.filter(item => item.trusted !== false && validSession(item))) {
-      for (const identity of session.selection) {
-        const question = questions.get(identity.key);
-        if (!question || question.fingerprint !== identity.fingerprint) continue;
-        const answer = session.answers[identity.key];
-        const existing = latest.get(identity.key);
-        if (!existing || session.completedAt > existing.completedAt) latest.set(identity.key, { question, answer, completedAt: session.completedAt });
+    for (const { session, selection } of learningEvidence(container, questions).sessions) {
+      for (const { question, answer, correct } of selection) {
+        const existing = latest.get(question.key);
+        if (!existing || session.completedAt >= existing.completedAt) latest.set(question.key, { answer, correct, completedAt: session.completedAt });
       }
     }
-    for (const [key, entry] of latest) if (!entry.answer || !canonicalGrade(entry.question, entry.answer.choiceId).correct) missed.add(key);
+    for (const [key, entry] of latest) if (!entry.answer || !entry.correct) missed.add(key);
     return missed;
   }
-  function weakestDomain(container) {
+  function weakestDomain(container, questions) {
     const totals = new Map(ABFM_BLUEPRINT.map(domain => [domain.id, { answered: 0, correct: 0 }]));
-    for (const session of container.history.filter(item => item.trusted !== false && object(item.summary))) for (const result of session.summary.domainResults || []) {
+    for (const result of learningEvidence(container, questions).attempts.filter(attempt => attempt.firstExposure)) {
       const domain = totals.get(result.domain);
-      if (domain && Number.isInteger(result.answered) && Number.isInteger(result.correct) && result.answered >= result.correct && result.correct >= 0) { domain.answered += result.answered; domain.correct += result.correct; }
+      if (domain) { domain.answered++; if (result.correct) domain.correct++; }
     }
     return [...totals].filter(([, total]) => total.answered > 0).sort((a, b) => a[1].correct / a[1].answered - b[1].correct / b[1].answered || ABFM_BLUEPRINT.findIndex(domain => domain.id === a[0]) - ABFM_BLUEPRINT.findIndex(domain => domain.id === b[0]))[0]?.[0] || null;
   }
   function start(state, options = {}) {
     const container = stateContainer(state);
     if (container.active) fail('SESSION_ACTIVE', 'Resume the current study session or explicitly restart it.', { status: 409, sessionId: container.active.id });
-    if (!object(options) || Object.keys(options).some(key => !['count', 'mode', 'domain', 'timed', 'timeLimitSeconds', 'feedback'].includes(key))) fail('INVALID_OPTIONS', 'Use only supported study-practice options.');
+    if (!object(options) || Object.keys(options).some(key => !['count', 'mode', 'domain', 'conditionId', 'timed', 'timeLimitSeconds', 'feedback'].includes(key))) fail('INVALID_OPTIONS', 'Use only supported study-practice options.');
     const { count = 20, mode = 'mixed', timed = false, feedback = 'immediate' } = options;
-    if (!BOARD_PRACTICE_SIZES.includes(count) || !MODES.has(mode) || typeof timed !== 'boolean' || !['immediate', 'end'].includes(feedback) || timed && (!Number.isInteger(options.timeLimitSeconds) || options.timeLimitSeconds < 60 || options.timeLimitSeconds > 14400) || !timed && options.timeLimitSeconds !== undefined && options.timeLimitSeconds !== null) fail('INVALID_OPTIONS', 'Choose 10, 20, 40, 80 or 100 questions and valid optional practice timing.');
+    if (!validCount(mode, count) || !MODES.has(mode) || typeof timed !== 'boolean' || !['immediate', 'end'].includes(feedback) || timed && (!Number.isInteger(options.timeLimitSeconds) || options.timeLimitSeconds < 60 || options.timeLimitSeconds > 14400) || !timed && options.timeLimitSeconds !== undefined && options.timeLimitSeconds !== null || mode !== 'targeted' && options.conditionId !== undefined || mode === 'targeted' && (!validId(options.conditionId) || options.domain !== undefined)) fail('INVALID_OPTIONS', 'Choose a valid practice size, or one fresh question for a selected topic, and valid optional practice timing.');
     const questions = pool();
     let domain = options.domain || null;
-    if (mode === 'weak') domain = weakestDomain(container);
+    if (mode === 'weak') domain = weakestDomain(container, questions);
     if ((mode === 'domain' || mode === 'weak') && !DOMAINS.has(domain)) fail(mode === 'weak' ? 'NO_HISTORY' : 'INVALID_DOMAIN', mode === 'weak' ? 'Complete a study session before targeting your lowest practice domain accuracy.' : 'Choose a blueprint study domain.');
     if ((mode === 'mixed' || mode === 'missed') && domain) fail('INVALID_OPTIONS', 'A domain is only supported for domain-targeted practice.');
-    const candidates = [...questions.values()].filter(question => !domain || question.domain === domain);
+    const candidates = [...questions.values()].filter(question => (!domain || question.domain === domain) && (mode !== 'targeted' || question.conditionId === options.conditionId));
     const missed = mode === 'missed' ? missedKeys(container, questions) : null;
-    const eligible = missed ? candidates.filter(question => missed.has(question.key)) : candidates;
+    const exposed = mode === 'targeted' ? learningEvidence(container, questions).exposedKeys : null;
+    const eligible = missed ? candidates.filter(question => missed.has(question.key)) : exposed ? candidates.filter(question => !exposed.has(question.key)) : candidates;
     const allocation = mode === 'mixed' ? allocateMixedPractice(count) : domain ? ABFM_BLUEPRINT.map(item => ({ domain: item.id, count: item.id === domain ? count : 0 })) : ABFM_BLUEPRINT.map(item => ({ domain: item.id, count: 0 }));
     let selected;
     if (mode === 'mixed') {
@@ -189,17 +247,18 @@ export function createBoardPractice({ curricula = [], now = Date.now, random = M
       if (gaps.length) fail('INSUFFICIENT_COVERAGE', 'The current eligible question library cannot fill this blueprint allocation without repeats. Choose a smaller session or review the visible domain gaps.', { status: 409, gaps, count });
       selected = shuffle(allocation.flatMap(item => shuffle(eligible.filter(question => question.domain === item.domain), random).slice(0, item.count)), random);
     } else {
-      if (eligible.length < count) fail('INSUFFICIENT_COVERAGE', mode === 'missed' ? 'There are too few current missed questions for this session size. Complete more practice or choose another mode.' : 'There are too few current questions in this domain for this session size.', { status: 409, gaps: [{ domain: domain || 'missed', required: count, available: eligible.length }], count });
+      if (eligible.length < count) fail(mode === 'targeted' ? 'NO_FRESH_QUESTION' : 'INSUFFICIENT_COVERAGE', mode === 'targeted' ? 'There is no current board-study question without recorded exposure in retained history for this topic. Review its cited material and use later mixed practice; repeated questions do not establish transfer.' : mode === 'missed' ? 'There are too few current missed questions for this session size. Complete more practice or choose another mode.' : 'There are too few current questions in this domain for this session size.', { status: 409, gaps: [{ domain: domain || (mode === 'targeted' ? 'targeted' : 'missed'), required: count, available: eligible.length }], count });
       selected = shuffle(eligible, random).slice(0, count);
+      if (mode === 'targeted') domain = selected[0].domain;
       for (const item of allocation) item.count = selected.filter(question => question.domain === item.domain).length;
     }
     const id = createId();
     if (!validId(id) || container.history.some(session => session.id === id)) throw new Error('Study session IDs must be valid and unique.');
-    container.active = { id, mode, domain, count, timed, feedback, ...(timed ? { timeLimitSeconds: options.timeLimitSeconds } : {}), createdAt: time(), selection: selected.map(({ key, fingerprint }) => ({ key, fingerprint })), answers: {}, allocation, blueprintVersion: BLUEPRINT_VERSION, trusted: true };
+    container.active = { id, mode, domain, ...(mode === 'targeted' ? { conditionId: options.conditionId } : {}), count, timed, feedback, ...(timed ? { timeLimitSeconds: options.timeLimitSeconds } : {}), createdAt: time(), selection: selected.map(({ key, fingerprint }) => ({ key, fingerprint })), answers: {}, allocation, blueprintVersion: BLUEPRINT_VERSION, trusted: true };
     return view(state);
   }
-  function answer(state, { sessionId, questionKey, choiceId } = {}) {
-    if (!validId(sessionId) || !KEY.test(questionKey || '') || !CHOICE.test(choiceId || '')) fail('INVALID_ANSWER', 'Select A, B, C, D or E for a question in this study session.');
+  function answer(state, { sessionId, questionKey, choiceId, confidence } = {}) {
+    if (!validId(sessionId) || !KEY.test(questionKey || '') || !CHOICE.test(choiceId || '') || !validConfidence(confidence)) fail('INVALID_ANSWER', 'Select A, B, C, D or E and optionally low, medium or high confidence before feedback.');
     const { session } = checkedSession(state, sessionId);
     const position = session.selection.findIndex(identity => identity.key === questionKey);
     if (position < 0) fail('QUESTION_NOT_IN_SESSION', 'That question is not part of this study session.');
@@ -209,7 +268,7 @@ export function createBoardPractice({ curricula = [], now = Date.now, random = M
       return view(state, { sessionId, index: position });
     }
     if (session.timed && time() >= session.createdAt + session.timeLimitSeconds * 1000) fail('TIME_EXPIRED', 'The practice timer has ended. Finish the session to review answered and skipped questions.', { status: 409 });
-    session.answers[questionKey] = { choiceId, answeredAt: time() };
+    session.answers[questionKey] = { choiceId, answeredAt: time(), ...(confidence ? { confidence } : {}) };
     return view(state, { sessionId, index: position });
   }
   function finish(state, { sessionId } = {}) {
@@ -235,7 +294,7 @@ export function createBoardPractice({ curricula = [], now = Date.now, random = M
   function importHistory(state, payload, { replace = false } = {}) {
     if (!object(payload) || payload.schemaVersion !== 1 || !Array.isArray(payload.history) || payload.history.length > BOARD_PRACTICE_HISTORY_LIMIT) fail('INVALID_IMPORT', 'Import a bounded version-one study-practice history export.');
     const imported = payload.history.map(item => {
-      if (!object(item) || !validId(item.sessionId || item.id) || !BOARD_PRACTICE_SIZES.includes(item.total ?? item.count) || !MODES.has(item.mode) || !validTime(item.createdAt) || !validTime(item.completedAt) || item.completedAt < item.createdAt || !Number.isInteger(item.answered) || !Number.isInteger(item.correct) || item.correct < 0 || item.correct > item.answered || item.answered > (item.total ?? item.count) || !Array.isArray(item.domainResults) || item.domainResults.length !== 5) fail('INVALID_IMPORT', 'Imported history contains invalid practice counts or timestamps.');
+      if (!object(item) || !validId(item.sessionId || item.id) || !validCount(item.mode, item.total ?? item.count) || !MODES.has(item.mode) || item.mode === 'targeted' && !validId(item.conditionId) || !validTime(item.createdAt) || !validTime(item.completedAt) || item.completedAt < item.createdAt || !Number.isInteger(item.answered) || !Number.isInteger(item.correct) || item.correct < 0 || item.correct > item.answered || item.answered > (item.total ?? item.count) || !Array.isArray(item.domainResults) || item.domainResults.length !== 5) fail('INVALID_IMPORT', 'Imported history contains invalid practice counts or timestamps.');
       const total = item.total ?? item.count;
       const seen = new Set();
       const domainResults = item.domainResults.map(result => {
@@ -244,7 +303,7 @@ export function createBoardPractice({ curricula = [], now = Date.now, random = M
         return { domain: result.domain, title: ABFM_BLUEPRINT.find(domain => domain.id === result.domain).title, total: result.total, answered: result.answered, correct: result.correct, skipped: result.total - result.answered, accuracy: accuracy(result.correct, result.answered) };
       });
       if (domainResults.reduce((sum, result) => sum + result.total, 0) !== total || domainResults.reduce((sum, result) => sum + result.answered, 0) !== item.answered || domainResults.reduce((sum, result) => sum + result.correct, 0) !== item.correct) fail('INVALID_IMPORT', 'Imported domain counts do not match the session totals.');
-      return { id: item.sessionId || item.id, mode: item.mode, domain: DOMAINS.has(item.domain) ? item.domain : null, count: total, timed: item.timed === true, feedback: item.feedback === 'end' ? 'end' : 'immediate', createdAt: item.createdAt, completedAt: item.completedAt, trusted: false, blueprintVersion: typeof item.blueprintVersion === 'string' ? item.blueprintVersion.slice(0, 100) : 'Imported unverified practice', summary: { answered: item.answered, correct: item.correct, skipped: total - item.answered, accuracy: accuracy(item.correct, item.answered), completionPercent: Math.round(item.answered / total * 10000) / 100, domainResults } };
+      return { id: item.sessionId || item.id, mode: item.mode, domain: DOMAINS.has(item.domain) ? item.domain : null, ...(item.mode === 'targeted' ? { conditionId: item.conditionId } : {}), count: total, timed: item.timed === true, feedback: item.feedback === 'end' ? 'end' : 'immediate', createdAt: item.createdAt, completedAt: item.completedAt, trusted: false, blueprintVersion: typeof item.blueprintVersion === 'string' ? item.blueprintVersion.slice(0, 100) : 'Imported unverified practice', summary: { answered: item.answered, correct: item.correct, skipped: total - item.answered, accuracy: accuracy(item.correct, item.answered), completionPercent: Math.round(item.answered / total * 10000) / 100, domainResults } };
     });
     if (new Set(imported.map(item => item.id)).size !== imported.length) fail('INVALID_IMPORT', 'Imported session identities must be unique.');
     const container = stateContainer(state);
@@ -264,5 +323,5 @@ export function createBoardPractice({ curricula = [], now = Date.now, random = M
     state.boardPractice = replacement.boardPractice;
     return history(state);
   }
-  return { catalog, alignment, start, view, answer, finish, restart, history, exportHistory, importHistory, sanitizeImport };
+  return { catalog, alignment, learningPlan, start, view, answer, finish, restart, history, exportHistory, importHistory, sanitizeImport };
 }

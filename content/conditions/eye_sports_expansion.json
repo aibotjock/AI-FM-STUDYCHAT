@@ -1,0 +1,1624 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-10",
+  "conditions": [
+    {
+      "id": "retinal-detachment",
+      "name": "Retinal detachment",
+      "aliases": [
+        "detached retina",
+        "retinal tear warning symptoms"
+      ],
+      "specialty": "Ophthalmology",
+      "domain": "emergent",
+      "keywords": [
+        "floaters",
+        "flashes",
+        "curtain",
+        "retina",
+        "urgent eye evaluation",
+        "dilated examination",
+        "cryopexy"
+      ],
+      "overview": "Recognize retinal-detachment warnings, choose urgent evaluation and distinguish supported repair concepts. Original U.S. board-study material; official educational references do not establish a comprehensive guideline or patient-care protocol.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-10"
+      },
+      "sources": [
+        {
+          "id": "nei-retinal-detachment",
+          "title": "Retinal Detachment",
+          "organization": "National Eye Institute, NIH, HHS",
+          "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/retinal-detachment",
+          "kind": "official-clinical-reference",
+          "edition": "Page last updated November 5, 2025; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Symptoms; risk factors; How will my eye doctor check for retinal detachment?; treatment, small tear versus larger detachment. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Federal patient-education reference, not an AAO guideline. Supports emergency recognition, evaluation and broad procedural scope; does not establish operative timing, macula-specific algorithms or bedside diagnostic performance. No figures, photographs, logos, linked journal articles or credited third-party text are imported.",
+          "attribution": "Courtesy: National Eye Institute, National Institutes of Health (NEI/NIH).",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "nei-dilated-eye-exam",
+          "title": "Get a Dilated Eye Exam",
+          "organization": "National Eye Institute, NIH, HHS",
+          "url": "https://www.nei.nih.gov/eye-health-information/healthy-vision/finding-eye-doctor/get-dilated-eye-exam",
+          "kind": "official-clinical-reference",
+          "edition": "Page last updated November 26, 2025; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "What happens during a dilated eye exam? Visual acuity, visual field, eye muscle function, pupil response and tonometry descriptions.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Federal educational reference, not a validated diagnostic-performance or universal screening guideline. Only original text describing test purposes is used; no media, external works, automatic intervals or accuracy claims are imported.",
+          "attribution": "Courtesy: National Eye Institute, National Institutes of Health (NEI/NIH).",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "nei-glaucoma",
+          "title": "Glaucoma",
+          "organization": "National Eye Institute, NIH, HHS",
+          "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/glaucoma",
+          "kind": "official-clinical-reference",
+          "edition": "Page last updated August 19, 2026; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "What is glaucoma?; symptoms; diagnosis; treatment; When to get help right away. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Federal educational reference, not a treatment-selection guideline. Does not specify first-line drug class, doses, target pressure, monitoring intervals or universal screening policy. No media or linked external works are imported.",
+          "attribution": "Courtesy: National Eye Institute, National Institutes of Health (NEI/NIH).",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "nei-cataracts",
+          "title": "Cataracts",
+          "organization": "National Eye Institute, NIH, HHS",
+          "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/cataracts",
+          "kind": "official-clinical-reference",
+          "edition": "Page last updated August 19, 2026; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Definition; symptoms; risks; diagnosis; treatment, early adaptations and surgery when everyday activities are affected. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Federal educational reference, not an AAO surgical guideline. No universal visual-acuity threshold, surgical urgency, perioperative medication, complications protocol or outcome guarantee is established. No media or external articles are imported.",
+          "attribution": "Courtesy: National Eye Institute, National Institutes of Health (NEI/NIH).",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "recognition",
+          "title": "Sudden visual warning pattern",
+          "text": "Retinal detachment separates the retina from its usual position. A sudden increase in floaters, flashes of light, or a dark curtain or shadow across vision is a warning pattern. A small detachment can be asymptomatic; absence of the full pattern does not exclude it.",
+          "sourceIds": [
+            "nei-retinal-detachment"
+          ],
+          "sourceLocator": "What is retinal detachment?; What are the symptoms of retinal detachment?"
+        },
+        {
+          "id": "urgent-evaluation",
+          "title": "Emergency recognition",
+          "text": "NEI describes retinal detachment as a medical emergency. A hypothetical learner should choose immediate eye-doctor or emergency-department evaluation for its warning symptoms, because delay can allow more retina to detach and increase the risk of permanent vision loss.",
+          "sourceIds": [
+            "nei-retinal-detachment"
+          ],
+          "sourceLocator": "Symptoms, emergency and delayed-treatment paragraphs; At a glance urgent warning."
+        },
+        {
+          "id": "risk-context",
+          "title": "Risk modifies suspicion",
+          "text": "Prior personal or family retinal detachment, serious eye injury and prior eye surgery are risk factors. Severe myopia, diabetic retinopathy and posterior vitreous detachment can also increase risk. These associations raise suspicion but do not confirm detachment.",
+          "sourceIds": [
+            "nei-retinal-detachment"
+          ],
+          "sourceLocator": "Am I at risk for retinal detachment?"
+        },
+        {
+          "id": "diagnostic-assessment",
+          "title": "Retinal examination and additional imaging",
+          "text": "A dilated eye examination is used to inspect the retina for a tear or detachment. If the eye doctor needs more information after that examination, ocular ultrasound or optical coherence tomography can help show retinal position. The reference does not establish a substitute home assessment or a numerical test-accuracy claim. In NEI's examination overview, visual acuity checks clarity, a visual-field test checks side vision, eye-muscle testing checks muscle function and tonometry measures pressure. These test purposes differ from imaging the retinal position.",
+          "sourceIds": [
+            "nei-retinal-detachment",
+            "nei-dilated-eye-exam"
+          ],
+          "sourceLocator": "How will my eye doctor check for retinal detachment?; Get a Dilated Eye Exam: What happens during a dilated eye exam?, individual test descriptions."
+        },
+        {
+          "id": "treatment-extent",
+          "title": "Treatment depends on extent and type",
+          "text": "Small retinal holes or tears may be sealed with laser treatment or cryopexy. A larger detachment may require surgery to return the retina to position. The choice depends on extent and detachment type; this reference does not support selecting a particular operative method for every case. Other NEI references describe glaucoma drops and drainage-directed laser treatment for eye pressure, and cataract surgery to replace a clouded lens. These target different problems from sealing a retinal tear.",
+          "sourceIds": [
+            "nei-retinal-detachment",
+            "nei-glaucoma",
+            "nei-cataracts"
+          ],
+          "sourceLocator": "What is the treatment for retinal detachment?; freezing/laser and surgery paragraphs.; Glaucoma: medicines/laser paragraphs; Cataracts: Surgery paragraph."
+        }
+      ],
+      "questions": [
+        {
+          "id": "retinal-detachment-q1",
+          "stem": "A 63-year-old in a hypothetical vignette suddenly notices many new floaters and flashes, followed by a dark curtain across one eye. Which next step best matches the cited NEI reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Arrange immediate eye-doctor or emergency-department evaluation"
+            },
+            {
+              "id": "B",
+              "text": "Wait until the next routine annual eye examination"
+            },
+            {
+              "id": "C",
+              "text": "Observe at home until all three symptoms resolve"
+            },
+            {
+              "id": "D",
+              "text": "Change the eyeglass prescription before any examination"
+            },
+            {
+              "id": "E",
+              "text": "Reassure because floaters can occur without disease"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "The sudden curtain, new floaters and flashes warrant immediate evaluation for possible retinal detachment.",
+          "distractorExplanations": {
+            "B": "A routine future appointment does not match the emergency warning pattern.",
+            "C": "Waiting does not match the reference's immediate-evaluation instruction.",
+            "D": "An eyeglass change does not evaluate the retina in this emergency pattern.",
+            "E": "The warning is the sudden increase and associated curtain or flashes, not a few unchanged floaters."
+          },
+          "sectionIds": [
+            "recognition",
+            "urgent-evaluation"
+          ],
+          "sourceIds": [
+            "nei-retinal-detachment"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Recognize a retinal-detachment warning pattern and select urgent evaluation.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "retinal-detachment-q2",
+          "stem": "A dilated examination raises concern for retinal detachment, but the eye doctor still needs to define the position of the retina. Which additional assessment most directly matches that remaining question in the NEI reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Visual-acuity testing to measure clarity"
+            },
+            {
+              "id": "B",
+              "text": "Ocular ultrasound or optical coherence tomography to show retinal position"
+            },
+            {
+              "id": "C",
+              "text": "Visual-field testing to assess peripheral vision"
+            },
+            {
+              "id": "D",
+              "text": "Tonometry to measure eye pressure"
+            },
+            {
+              "id": "E",
+              "text": "Eye-muscle testing to assess movement"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "NEI describes ocular ultrasound or OCT when additional information about retinal position is needed after dilation. The other tests measure different aspects of eye function.",
+          "distractorExplanations": {
+            "A": "Visual acuity measures clarity rather than the retinal position asked about.",
+            "C": "Visual-field testing evaluates side vision rather than the retinal position asked about.",
+            "D": "Tonometry measures pressure rather than retinal position.",
+            "E": "Eye-muscle testing assesses muscle function rather than retinal position."
+          },
+          "sectionIds": [
+            "diagnostic-assessment"
+          ],
+          "sourceIds": [
+            "nei-retinal-detachment",
+            "nei-dilated-eye-exam"
+          ],
+          "domain": "acute",
+          "learningObjective": "Choose additional eye assessment according to the unresolved clinical question.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "retinal-detachment-q3",
+          "stem": "A specialist identifies a small retinal tear and considers a procedure intended to seal that tear. Which procedure and purpose match the NEI reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Prescription drops to lower eye pressure"
+            },
+            {
+              "id": "B",
+              "text": "Lens replacement for cataract-related visual impairment"
+            },
+            {
+              "id": "C",
+              "text": "Laser treatment or cryopexy to seal the retinal break"
+            },
+            {
+              "id": "D",
+              "text": "Surgical repositioning of a larger detached retinal area"
+            },
+            {
+              "id": "E",
+              "text": "Drainage-directed laser treatment for glaucoma"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "NEI describes laser or cryopexy for sealing a small retinal hole or tear. It separately describes reattachment surgery for larger detachments and treatments directed at lens clouding or eye pressure.",
+          "distractorExplanations": {
+            "A": "Pressure-lowering drops address glaucoma rather than the stated retinal tear.",
+            "B": "Lens replacement addresses cataract rather than sealing a retinal tear.",
+            "D": "This procedure addresses a larger detached area, rather than the small tear-sealing purpose specified.",
+            "E": "The glaucoma laser procedure improves fluid drainage; the requested procedure seals a retinal break."
+          },
+          "sectionIds": [
+            "treatment-extent"
+          ],
+          "sourceIds": [
+            "nei-retinal-detachment",
+            "nei-glaucoma",
+            "nei-cataracts"
+          ],
+          "domain": "acute",
+          "learningObjective": "Match the procedure to retinal tear sealing rather than another ocular treatment target.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "retinal-detachment-q4",
+          "stem": "After a serious eye injury, a hypothetical patient has no curtain, flashes or new floaters and asks why an eye examination still matters. Which explanation is supported by NEI?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "A few unchanged floaters establish a larger retinal detachment"
+            },
+            {
+              "id": "B",
+              "text": "Stable vision excludes all small retinal tears or detachments"
+            },
+            {
+              "id": "C",
+              "text": "Serious eye injury does not affect retinal-detachment risk"
+            },
+            {
+              "id": "D",
+              "text": "A small detachment may lack symptoms, and examination can detect early retinal tears or detachment"
+            },
+            {
+              "id": "E",
+              "text": "Evaluation becomes relevant only after a visual curtain has developed"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "NEI identifies serious eye injury as a risk factor, notes that a small detachment may lack symptoms and describes finding small tears or detachments before they affect vision.",
+          "distractorExplanations": {
+            "A": "The reference distinguishes usual floaters from new warning changes; unchanged floaters do not establish a larger detachment.",
+            "B": "A small detachment may be asymptomatic.",
+            "C": "Serious eye injury is a stated risk factor.",
+            "E": "The source describes evaluation after injury and early findings before visual symptoms, not waiting for a curtain."
+          },
+          "sectionIds": [
+            "risk-context",
+            "recognition",
+            "diagnostic-assessment"
+          ],
+          "sourceIds": [
+            "nei-retinal-detachment"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Explain why symptom absence after injury does not replace assessment for early retinal injury.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        }
+      ]
+    },
+    {
+      "id": "primary-open-angle-glaucoma",
+      "name": "Primary open-angle glaucoma",
+      "aliases": [
+        "open-angle glaucoma",
+        "POAG"
+      ],
+      "specialty": "Ophthalmology",
+      "domain": "chronic",
+      "keywords": [
+        "optic nerve",
+        "peripheral vision",
+        "eye pressure",
+        "visual field",
+        "eye drops",
+        "laser",
+        "normal-tension"
+      ],
+      "overview": "Study silent optic-nerve disease, evaluation and preservation of remaining vision; acute angle-closure has a separate emergency record. Original U.S. board-study material; official educational references do not establish a comprehensive guideline or patient-care protocol.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-10"
+      },
+      "sources": [
+        {
+          "id": "nei-glaucoma",
+          "title": "Glaucoma",
+          "organization": "National Eye Institute, NIH, HHS",
+          "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/glaucoma",
+          "kind": "official-clinical-reference",
+          "edition": "Page last updated August 19, 2026; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "What is glaucoma?; symptoms; diagnosis; treatment; When to get help right away. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Federal educational reference, not a treatment-selection guideline. Does not specify first-line drug class, doses, target pressure, monitoring intervals or universal screening policy. No media or linked external works are imported.",
+          "attribution": "Courtesy: National Eye Institute, National Institutes of Health (NEI/NIH).",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "nei-glaucoma-types",
+          "title": "Types of Glaucoma",
+          "organization": "National Eye Institute, NIH, HHS",
+          "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/glaucoma/types-glaucoma",
+          "kind": "official-clinical-reference",
+          "edition": "Page last updated December 5, 2024; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Primary glaucomas: Open-angle glaucoma; Normal-tension glaucoma; Angle-closure glaucoma. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Supports subtype distinctions and emergency versus chronic course. Broad medicine/laser descriptions do not establish an acute drug sequence, doses, contraindications or gonioscopy protocol. No external articles or media are imported.",
+          "attribution": "Courtesy: National Eye Institute, National Institutes of Health (NEI/NIH).",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "nei-retinal-detachment",
+          "title": "Retinal Detachment",
+          "organization": "National Eye Institute, NIH, HHS",
+          "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/retinal-detachment",
+          "kind": "official-clinical-reference",
+          "edition": "Page last updated November 5, 2025; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Symptoms; risk factors; How will my eye doctor check for retinal detachment?; treatment, small tear versus larger detachment. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Federal patient-education reference, not an AAO guideline. Supports emergency recognition, evaluation and broad procedural scope; does not establish operative timing, macula-specific algorithms or bedside diagnostic performance. No figures, photographs, logos, linked journal articles or credited third-party text are imported.",
+          "attribution": "Courtesy: National Eye Institute, National Institutes of Health (NEI/NIH).",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "nei-cataracts",
+          "title": "Cataracts",
+          "organization": "National Eye Institute, NIH, HHS",
+          "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/cataracts",
+          "kind": "official-clinical-reference",
+          "edition": "Page last updated August 19, 2026; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Definition; symptoms; risks; diagnosis; treatment, early adaptations and surgery when everyday activities are affected. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Federal educational reference, not an AAO surgical guideline. No universal visual-acuity threshold, surgical urgency, perioperative medication, complications protocol or outcome guarantee is established. No media or external articles are imported.",
+          "attribution": "Courtesy: National Eye Institute, National Institutes of Health (NEI/NIH).",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "course",
+          "title": "Often silent early disease",
+          "text": "Open-angle glaucoma is the most common glaucoma type in the United States. Glaucoma damages the optic nerve and can begin without noticeable symptoms. Later loss often affects peripheral vision gradually, so preserved day-to-day comfort does not establish absence of disease.",
+          "sourceIds": [
+            "nei-glaucoma",
+            "nei-glaucoma-types"
+          ],
+          "sourceLocator": "Glaucoma: What is glaucoma?; symptoms. Types of Glaucoma: Open-angle glaucoma."
+        },
+        {
+          "id": "assessment",
+          "title": "Evaluate the optic nerve and visual field",
+          "text": "NEI describes a comprehensive dilated eye examination that includes visual-field testing to assess side vision. Family history is a risk factor. Normal pressure alone does not exclude glaucoma: normal-tension glaucoma is an open-angle subtype.",
+          "sourceIds": [
+            "nei-glaucoma",
+            "nei-glaucoma-types"
+          ],
+          "sourceLocator": "Glaucoma: risk; How will my eye doctor check for glaucoma?; Did you know. Types: Normal-tension glaucoma."
+        },
+        {
+          "id": "treatment-goal",
+          "title": "Preserve remaining vision",
+          "text": "Glaucoma treatment cannot undo existing vision damage. Starting treatment early can help prevent further loss; lowering eye pressure helps slow disease. The cited reference does not supply an individualized target pressure or guarantee that treatment prevents every future deficit.",
+          "sourceIds": [
+            "nei-glaucoma",
+            "nei-glaucoma-types"
+          ],
+          "sourceLocator": "Glaucoma: What is glaucoma?; causes; What is the treatment for glaucoma?"
+        },
+        {
+          "id": "treatment-options",
+          "title": "Broad treatment options and escalation",
+          "text": "Prescription eye drops, laser treatment and surgery are glaucoma treatment options. Drops lower pressure; laser can improve fluid drainage. Surgery may be considered when medicines and laser do not work. This educational source does not determine a first-line drug class or a patient-specific escalation protocol. This differs from retinal tear sealing with laser or cryopexy, retinal reattachment surgery and cataract lens replacement; those procedures address the retinal or lens findings described in their separate NEI references.",
+          "sourceIds": [
+            "nei-glaucoma",
+            "nei-retinal-detachment",
+            "nei-cataracts"
+          ],
+          "sourceLocator": "Glaucoma: medicines, laser treatment and surgery paragraphs.; Retinal Detachment: treatment, freezing/laser and surgery paragraphs; Cataracts: Surgery paragraph."
+        },
+        {
+          "id": "follow-up",
+          "title": "Adherence and follow-up",
+          "text": "NEI advises taking prescribed glaucoma medicine daily, reporting side effects and attending regular eye follow-up. Early disease may be asymptomatic, so feeling well is not itself a reason to abandon treatment. This reference does not specify a universal visit interval.",
+          "sourceIds": [
+            "nei-glaucoma"
+          ],
+          "sourceLocator": "Glaucoma: What is the treatment for glaucoma?; Remember these tips."
+        }
+      ],
+      "questions": [
+        {
+          "id": "primary-open-angle-glaucoma-q1",
+          "stem": "A 59-year-old has a family history of glaucoma and reports no eye symptoms. Which interpretation and assessment best match the NEI reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No symptoms reliably exclude early glaucoma"
+            },
+            {
+              "id": "B",
+              "text": "Early glaucoma may be silent; a comprehensive dilated examination with visual-field assessment is relevant"
+            },
+            {
+              "id": "C",
+              "text": "Peripheral vision need not be assessed if reading remains comfortable"
+            },
+            {
+              "id": "D",
+              "text": "A family history establishes the diagnosis without an examination"
+            },
+            {
+              "id": "E",
+              "text": "Only pain establishes the need to assess for glaucoma"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Glaucoma can lack early symptoms; NEI describes dilated evaluation with a visual-field test and identifies family history as a risk factor.",
+          "distractorExplanations": {
+            "A": "Absence of symptoms does not exclude early disease in the source.",
+            "C": "The referenced assessment includes side vision, not only reading comfort.",
+            "D": "Risk history raises concern but is not an examination-based diagnosis.",
+            "E": "Early open-angle disease often lacks symptoms, so pain is not required."
+          },
+          "sectionIds": [
+            "course",
+            "assessment"
+          ],
+          "sourceIds": [
+            "nei-glaucoma",
+            "nei-glaucoma-types"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize asymptomatic glaucoma and the supported assessment.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "primary-open-angle-glaucoma-q2",
+          "stem": "A patient with confirmed open-angle glaucoma and existing peripheral visual loss asks what treatment can accomplish. Which explanation best matches the cited NEI teaching?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Treatment reliably restores all lost peripheral vision"
+            },
+            {
+              "id": "B",
+              "text": "Treatment is unnecessary until eye pain occurs"
+            },
+            {
+              "id": "C",
+              "text": "Treatment aims to protect remaining vision rather than undo existing damage"
+            },
+            {
+              "id": "D",
+              "text": "Treatment has no purpose once any vision loss is present"
+            },
+            {
+              "id": "E",
+              "text": "Normal daily comfort proves the optic nerve has recovered"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "NEI states that treatment cannot reverse existing visual damage but can help stop it from worsening.",
+          "distractorExplanations": {
+            "A": "The source does not claim reversal of lost vision.",
+            "B": "Pain is not the threshold for treating confirmed glaucoma in the source.",
+            "D": "Preventing further loss remains a treatment goal.",
+            "E": "Comfort does not establish reversal of optic-nerve damage."
+          },
+          "sectionIds": [
+            "course",
+            "treatment-goal"
+          ],
+          "sourceIds": [
+            "nei-glaucoma",
+            "nei-glaucoma-types"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Explain the glaucoma treatment goal without promising recovery.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "primary-open-angle-glaucoma-q3",
+          "stem": "A specialist confirms that medicines and drainage-directed laser treatment have not adequately controlled glaucoma. Which further procedure has the pressure-control purpose described by NEI?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Cryopexy to seal a retinal tear"
+            },
+            {
+              "id": "B",
+              "text": "Replacement of a clouded lens with an intraocular lens"
+            },
+            {
+              "id": "C",
+              "text": "Surgery to reposition a detached retina"
+            },
+            {
+              "id": "D",
+              "text": "Glaucoma surgery to help eye fluid drain"
+            },
+            {
+              "id": "E",
+              "text": "Laser sealing of a retinal break"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "NEI describes glaucoma surgery to help fluid drain when medicines and laser treatment do not work. The other procedures target a retinal break, retinal position or cataract.",
+          "distractorExplanations": {
+            "A": "Cryopexy seals a retinal break rather than providing the described glaucoma drainage procedure.",
+            "B": "Cataract lens replacement addresses the clouded lens rather than the source-described glaucoma escalation.",
+            "C": "Retinal reattachment addresses retinal position rather than the described glaucoma drainage target.",
+            "E": "Retinal laser sealing targets a break; it is distinct from glaucoma surgery to improve drainage."
+          },
+          "sectionIds": [
+            "treatment-options"
+          ],
+          "sourceIds": [
+            "nei-glaucoma",
+            "nei-retinal-detachment",
+            "nei-cataracts"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Match glaucoma escalation to fluid drainage rather than another ocular procedure.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "primary-open-angle-glaucoma-q4",
+          "stem": "A patient taking prescribed glaucoma drops says, \"My eyes feel fine, so I plan to stop them.\" Which response best follows the cited NEI education?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Agree that lack of symptoms means treatment is no longer relevant"
+            },
+            {
+              "id": "B",
+              "text": "Promise that glaucoma can no longer progress after drops are started"
+            },
+            {
+              "id": "C",
+              "text": "Recommend changing medication doses without evaluation"
+            },
+            {
+              "id": "D",
+              "text": "Say that side effects should never be reported"
+            },
+            {
+              "id": "E",
+              "text": "Explain that disease can be silent and reinforce prescribed daily treatment and eye follow-up"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Early glaucoma may be silent. NEI advises daily prescribed medicine, reporting side effects and regular follow-up.",
+          "distractorExplanations": {
+            "A": "Lack of symptoms does not establish resolution.",
+            "B": "The source does not give a guarantee against progression.",
+            "C": "The reference does not authorize an individualized dose change.",
+            "D": "NEI specifically advises reporting treatment side effects."
+          },
+          "sectionIds": [
+            "course",
+            "follow-up"
+          ],
+          "sourceIds": [
+            "nei-glaucoma",
+            "nei-glaucoma-types"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Address adherence in asymptomatic glaucoma with source-bounded counseling.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        }
+      ]
+    },
+    {
+      "id": "acute-angle-closure-glaucoma",
+      "name": "Acute angle-closure glaucoma",
+      "aliases": [
+        "acute glaucoma",
+        "acute narrow-angle glaucoma"
+      ],
+      "specialty": "Ophthalmology",
+      "domain": "emergent",
+      "keywords": [
+        "red eye",
+        "eye pain",
+        "nausea",
+        "blurred vision",
+        "iris",
+        "pressure",
+        "urgent eye evaluation"
+      ],
+      "overview": "Distinguish acute painful angle closure from silent chronic glaucoma and preserve the emergency treatment boundary. Original U.S. board-study material; official educational references do not establish a comprehensive guideline or patient-care protocol.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-10"
+      },
+      "sources": [
+        {
+          "id": "nei-glaucoma-types",
+          "title": "Types of Glaucoma",
+          "organization": "National Eye Institute, NIH, HHS",
+          "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/glaucoma/types-glaucoma",
+          "kind": "official-clinical-reference",
+          "edition": "Page last updated December 5, 2024; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Primary glaucomas: Open-angle glaucoma; Normal-tension glaucoma; Angle-closure glaucoma. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Supports subtype distinctions and emergency versus chronic course. Broad medicine/laser descriptions do not establish an acute drug sequence, doses, contraindications or gonioscopy protocol. No external articles or media are imported.",
+          "attribution": "Courtesy: National Eye Institute, National Institutes of Health (NEI/NIH).",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "acute-pattern",
+          "title": "Recognize an acute angle-closure pattern",
+          "text": "Sudden intense eye pain with a red eye, blurred vision and nausea is the acute angle-closure warning pattern described by NEI. It requires immediate medical evaluation. Symptoms support concern in a hypothetical case but do not establish a confirmed diagnosis without examination.",
+          "sourceIds": [
+            "nei-glaucoma-types"
+          ],
+          "sourceLocator": "Types of Glaucoma: Angle-closure glaucoma, emergency warning and symptom list."
+        },
+        {
+          "id": "mechanism",
+          "title": "Blocked drainage and rapid pressure rise",
+          "text": "In angle-closure glaucoma the outer edge of the iris obstructs fluid drainage from the front of the eye. Fluid accumulation can rapidly raise eye pressure. Untreated acute disease can cause blindness within days; the clinical teaching priority is urgent evaluation, not a home waiting period. NEI distinguishes other glaucoma mechanisms: new vessels can cover drainage structures in neovascular glaucoma; shed iris pigment can obstruct drainage in pigmentary glaucoma; deposited material can obstruct drainage in exfoliation glaucoma; inflammation or scarring may impair drainage in uveitic glaucoma. These are distinct from the acute iris-edge blockage described here.",
+          "sourceIds": [
+            "nei-glaucoma-types"
+          ],
+          "sourceLocator": "Types of Glaucoma: Angle-closure glaucoma, mechanism and untreated-course paragraph.; Secondary glaucomas: Neovascular, Pigmentary, Exfoliation and Uveitic glaucoma mechanism paragraphs."
+        },
+        {
+          "id": "treatment-scope",
+          "title": "Supported treatment scope",
+          "text": "NEI describes medicines and laser treatment to help fluid drain and reduce pressure in acute angle closure. The page does not establish a sequence of emergency drugs, doses or contraindications. Source-bounded study answers should preserve that limit while recognizing the emergency.",
+          "sourceIds": [
+            "nei-glaucoma-types"
+          ],
+          "sourceLocator": "Types of Glaucoma: Angle-closure glaucoma, Treatments and medicine/laser paragraph."
+        },
+        {
+          "id": "other-eye",
+          "title": "The other eye may also need prevention",
+          "text": "NEI states that a doctor may treat both eyes to prevent future problems even when angle-closure glaucoma has occurred in one eye. This possibility does not make every bilateral treatment obligatory; it establishes why the unaffected eye may also need specialist assessment.",
+          "sourceIds": [
+            "nei-glaucoma-types"
+          ],
+          "sourceLocator": "Types of Glaucoma: Angle-closure glaucoma, both-eyes prevention sentence."
+        },
+        {
+          "id": "acute-chronic-boundary",
+          "title": "Acute and chronic angle closure differ",
+          "text": "The same NEI reference also describes slow or chronic angle-closure glaucoma, which develops more gradually and may be asymptomatic. Do not transfer the slow course to a vignette with sudden painful visual symptoms or assume all angle closure has the same presentation.",
+          "sourceIds": [
+            "nei-glaucoma-types"
+          ],
+          "sourceLocator": "Types of Glaucoma: Angle-closure glaucoma, final slow/chronic paragraph."
+        }
+      ],
+      "questions": [
+        {
+          "id": "acute-angle-closure-glaucoma-q1",
+          "stem": "A 67-year-old in an educational vignette develops sudden severe eye pain, a red eye, blurred vision and nausea. Which next step best follows the NEI angle-closure reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Wait for the next routine annual eye examination"
+            },
+            {
+              "id": "B",
+              "text": "Assume the slow course of chronic angle closure applies"
+            },
+            {
+              "id": "C",
+              "text": "Immediate medical or emergency-department evaluation"
+            },
+            {
+              "id": "D",
+              "text": "Wait several days because vision loss cannot occur quickly"
+            },
+            {
+              "id": "E",
+              "text": "Change reading glasses before seeking evaluation"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "NEI identifies this acute symptom pattern as an emergency requiring immediate evaluation.",
+          "distractorExplanations": {
+            "A": "A routine future visit does not match the acute emergency warning.",
+            "B": "Chronic angle closure is a separate slower presentation.",
+            "D": "The reference warns that untreated acute disease can threaten vision within days.",
+            "E": "Reading-glass adjustment does not address the emergency pattern."
+          },
+          "sectionIds": [
+            "acute-pattern",
+            "mechanism",
+            "acute-chronic-boundary"
+          ],
+          "sourceIds": [
+            "nei-glaucoma-types"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Choose immediate evaluation for suspected acute angle closure.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "acute-angle-closure-glaucoma-q2",
+          "stem": "A specialist confirms acute angle-closure glaucoma with rapidly rising eye pressure. Which drainage-blocking mechanism matches that diagnosis in the NEI subtype descriptions?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "New blood vessels covering the fluid-drainage structures"
+            },
+            {
+              "id": "B",
+              "text": "Shed iris pigment blocking fluid drainage"
+            },
+            {
+              "id": "C",
+              "text": "Extra deposited material obstructing fluid drainage"
+            },
+            {
+              "id": "D",
+              "text": "The outer edge of the iris blocking front-of-eye drainage"
+            },
+            {
+              "id": "E",
+              "text": "Inflammation or scarring impairing fluid drainage"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "NEI attributes acute angle closure to the outer iris edge blocking drainage. Its other subtype descriptions associate the alternative mechanisms with neovascular, pigmentary, exfoliation or uveitic glaucoma.",
+          "distractorExplanations": {
+            "A": "NEI describes this mechanism in neovascular glaucoma rather than acute angle closure.",
+            "B": "NEI describes shed iris pigment in pigmentary glaucoma.",
+            "C": "NEI describes extra deposited material in exfoliation glaucoma.",
+            "E": "NEI describes possible inflammatory or scarring effects in uveitic glaucoma."
+          },
+          "sectionIds": [
+            "mechanism"
+          ],
+          "sourceIds": [
+            "nei-glaucoma-types"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Distinguish acute angle-closure drainage obstruction from other sourced glaucoma mechanisms.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "acute-angle-closure-glaucoma-q3",
+          "stem": "A patient with confirmed acute angle-closure glaucoma is undergoing urgent specialist assessment. Which broad treatment strategy is described by NEI?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Delay all treatment until the next annual eye examination"
+            },
+            {
+              "id": "B",
+              "text": "Use eyeglasses as definitive treatment for blocked fluid drainage"
+            },
+            {
+              "id": "C",
+              "text": "Exclude laser procedures because only observation is described"
+            },
+            {
+              "id": "D",
+              "text": "Wait for symptoms to disappear before addressing drainage"
+            },
+            {
+              "id": "E",
+              "text": "Use medicines and laser treatment to improve drainage and lower eye pressure"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "NEI describes medicines and laser treatment to help fluid drain and lower pressure. It does not specify a patient-specific acute drug sequence or doses.",
+          "distractorExplanations": {
+            "A": "The reference identifies acute angle closure as an emergency.",
+            "B": "Eyeglasses are not the drainage treatment described.",
+            "C": "Laser treatment is explicitly described.",
+            "D": "The source supports urgent evaluation and treatment rather than waiting for resolution."
+          },
+          "sectionIds": [
+            "acute-pattern",
+            "treatment-scope"
+          ],
+          "sourceIds": [
+            "nei-glaucoma-types"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Recognize the supported treatment purpose in acute angle closure without supplying an unsourced protocol.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "acute-angle-closure-glaucoma-q4",
+          "stem": "A patient has acute angle-closure glaucoma in one eye. A learner says the other eye can never need preventive treatment. Which correction is supported by NEI?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "A specialist may treat both eyes to prevent future problems even after a unilateral episode"
+            },
+            {
+              "id": "B",
+              "text": "A unilateral episode proves the other eye can never be affected"
+            },
+            {
+              "id": "C",
+              "text": "Both eyes must always receive the identical treatment without assessment"
+            },
+            {
+              "id": "D",
+              "text": "No follow-up is relevant after treatment of the symptomatic eye"
+            },
+            {
+              "id": "E",
+              "text": "The source guarantees prevention in every treated eye"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "NEI states that doctors may treat both eyes to prevent future problems, including after angle closure in only one eye.",
+          "distractorExplanations": {
+            "B": "The source specifically allows attention to both eyes.",
+            "C": "May treat both eyes is not an automatic identical-treatment mandate.",
+            "D": "The preventive assessment is not eliminated by unilateral treatment.",
+            "E": "The reference describes a preventive option, not a universal guarantee."
+          },
+          "sectionIds": [
+            "other-eye"
+          ],
+          "sourceIds": [
+            "nei-glaucoma-types"
+          ],
+          "domain": "emergent",
+          "learningObjective": "Recognize the potential need for fellow-eye prevention without overgeneralizing.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        }
+      ]
+    },
+    {
+      "id": "cataract",
+      "name": "Cataract",
+      "aliases": [
+        "cataracts",
+        "age-related cataract",
+        "lens opacity"
+      ],
+      "specialty": "Ophthalmology",
+      "domain": "chronic",
+      "keywords": [
+        "lens",
+        "cloudy vision",
+        "glare",
+        "night driving",
+        "intraocular lens",
+        "functional impairment"
+      ],
+      "overview": "Study lens clouding, evaluation, early visual support and function-based surgical discussion. Original U.S. board-study material; official educational references do not establish a comprehensive guideline or patient-care protocol.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-10"
+      },
+      "sources": [
+        {
+          "id": "nei-cataracts",
+          "title": "Cataracts",
+          "organization": "National Eye Institute, NIH, HHS",
+          "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/cataracts",
+          "kind": "official-clinical-reference",
+          "edition": "Page last updated August 19, 2026; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Definition; symptoms; risks; diagnosis; treatment, early adaptations and surgery when everyday activities are affected. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Federal educational reference, not an AAO surgical guideline. No universal visual-acuity threshold, surgical urgency, perioperative medication, complications protocol or outcome guarantee is established. No media or external articles are imported.",
+          "attribution": "Courtesy: National Eye Institute, National Institutes of Health (NEI/NIH).",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "nei-retinal-detachment",
+          "title": "Retinal Detachment",
+          "organization": "National Eye Institute, NIH, HHS",
+          "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/retinal-detachment",
+          "kind": "official-clinical-reference",
+          "edition": "Page last updated November 5, 2025; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Symptoms; risk factors; How will my eye doctor check for retinal detachment?; treatment, small tear versus larger detachment. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Federal patient-education reference, not an AAO guideline. Supports emergency recognition, evaluation and broad procedural scope; does not establish operative timing, macula-specific algorithms or bedside diagnostic performance. No figures, photographs, logos, linked journal articles or credited third-party text are imported.",
+          "attribution": "Courtesy: National Eye Institute, National Institutes of Health (NEI/NIH).",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "nei-glaucoma",
+          "title": "Glaucoma",
+          "organization": "National Eye Institute, NIH, HHS",
+          "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/glaucoma",
+          "kind": "official-clinical-reference",
+          "edition": "Page last updated August 19, 2026; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "What is glaucoma?; symptoms; diagnosis; treatment; When to get help right away. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Federal educational reference, not a treatment-selection guideline. Does not specify first-line drug class, doses, target pressure, monitoring intervals or universal screening policy. No media or linked external works are imported.",
+          "attribution": "Courtesy: National Eye Institute, National Institutes of Health (NEI/NIH).",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "nei-glaucoma-types",
+          "title": "Types of Glaucoma",
+          "organization": "National Eye Institute, NIH, HHS",
+          "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/glaucoma/types-glaucoma",
+          "kind": "official-clinical-reference",
+          "edition": "Page last updated December 5, 2024; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Primary glaucomas: Open-angle glaucoma; Normal-tension glaucoma; Angle-closure glaucoma. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Supports subtype distinctions and emergency versus chronic course. Broad medicine/laser descriptions do not establish an acute drug sequence, doses, contraindications or gonioscopy protocol. No external articles or media are imported.",
+          "attribution": "Courtesy: National Eye Institute, National Institutes of Health (NEI/NIH).",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://eyegene.nih.gov/about/policies/copyright",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "recognition",
+          "title": "Lens clouding and visual symptoms",
+          "text": "A cataract is clouding of the eye lens. Early cataracts may cause no symptoms; progression can produce cloudy or blurred vision, faded colors, glare or halos and trouble seeing at night. These symptoms can also occur with other eye problems and warrant eye assessment. The confirmed clouded lens differs from retinal detachment, where the retina separates from its usual position, and glaucoma, which damages the optic nerve. Open-angle, normal-tension and acute angle-closure glaucoma have their separate NEI descriptions; lens clouding alone does not establish those diagnoses. NEI identifies normal-tension glaucoma as an open-angle subtype at normal eye pressure and acute angle closure as iris-edge blockage of drainage.",
+          "sourceIds": [
+            "nei-cataracts",
+            "nei-retinal-detachment",
+            "nei-glaucoma",
+            "nei-glaucoma-types"
+          ],
+          "sourceLocator": "What are cataracts?; What are the symptoms of cataracts?; Retinal Detachment: definition; Glaucoma: definition; Types of Glaucoma: Open-angle, Normal-tension and Angle-closure headings."
+        },
+        {
+          "id": "assessment",
+          "title": "Confirm with eye examination",
+          "text": "NEI describes checking for cataracts during a dilated eye examination. Symptoms or age alone do not confirm lens clouding. This educational reference does not establish a visual-acuity threshold that mandates surgery in every patient.",
+          "sourceIds": [
+            "nei-cataracts"
+          ],
+          "sourceLocator": "How will my eye doctor check for cataracts?; symptoms caution; surgery paragraph."
+        },
+        {
+          "id": "risk",
+          "title": "Risk context",
+          "text": "Cataract risk rises with age. NEI also identifies diabetes, smoking, family history, eye injury or surgery, upper-body radiation and steroid use among risk factors. These factors inform study reasoning without diagnosing a cataract or determining a universal intervention.",
+          "sourceIds": [
+            "nei-cataracts"
+          ],
+          "sourceLocator": "Am I at risk for cataracts?"
+        },
+        {
+          "id": "early-support",
+          "title": "Early functional support",
+          "text": "For early cataracts, brighter lighting, anti-glare sunglasses, magnifying lenses and an updated glasses or contact prescription may help with daily visual tasks. Surgery is the only way to remove a cataract, but it need not occur immediately in every case.",
+          "sourceIds": [
+            "nei-cataracts"
+          ],
+          "sourceLocator": "What is the treatment for cataracts?; Home treatment; New glasses or contacts."
+        },
+        {
+          "id": "surgery-function",
+          "title": "Surgery follows functional impact and discussion",
+          "text": "NEI describes considering surgery when cataracts interfere with activities such as reading, driving or watching television. The clouded lens is removed and replaced with an artificial intraocular lens. Discussing options, risks and benefits is part of the cited education; outcome certainty and perioperative protocols are outside this source.",
+          "sourceIds": [
+            "nei-cataracts"
+          ],
+          "sourceLocator": "What is the treatment for cataracts?; Surgery; Talk about your options."
+        }
+      ],
+      "questions": [
+        {
+          "id": "cataract-q1",
+          "stem": "A 72-year-old has gradually worsening night-driving glare and cloudy vision. A dilated examination identifies a clouded lens. Which diagnosis corresponds to that confirmed anatomic finding?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Retinal detachment"
+            },
+            {
+              "id": "B",
+              "text": "Primary open-angle glaucoma"
+            },
+            {
+              "id": "C",
+              "text": "Acute angle-closure glaucoma"
+            },
+            {
+              "id": "D",
+              "text": "Cataract"
+            },
+            {
+              "id": "E",
+              "text": "Normal-tension glaucoma"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "NEI defines cataract as a cloudy area of the lens. Retinal detachment and glaucoma describe different anatomic disease processes.",
+          "distractorExplanations": {
+            "A": "NEI defines retinal detachment as separation of the retina, not lens clouding.",
+            "B": "Open-angle glaucoma is an optic-nerve disease; lens clouding is the defining cataract finding here.",
+            "C": "Acute angle closure involves iris-related drainage blockage rather than the confirmed lens-clouding finding.",
+            "E": "Normal-tension glaucoma is an open-angle subtype with normal pressure, not the lens-clouding diagnosis."
+          },
+          "sectionIds": [
+            "recognition",
+            "assessment"
+          ],
+          "sourceIds": [
+            "nei-cataracts",
+            "nei-retinal-detachment",
+            "nei-glaucoma",
+            "nei-glaucoma-types"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Identify the diagnosis from the confirmed ocular structure involved.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "cataract-q2",
+          "stem": "A person with a confirmed early cataract still performs usual daily activities comfortably and asks about interim support. Which option is described by NEI?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Every early cataract requires immediate surgery regardless of functional impact"
+            },
+            {
+              "id": "B",
+              "text": "A new glasses prescription removes the cataract itself"
+            },
+            {
+              "id": "C",
+              "text": "No visual adaptation can ever help an early cataract"
+            },
+            {
+              "id": "D",
+              "text": "Eye symptoms establish a universal surgical threshold without examination"
+            },
+            {
+              "id": "E",
+              "text": "Improved lighting and an updated glasses prescription may help while options are discussed"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "NEI describes early visual adaptations and updated prescriptions while distinguishing these from removal of the cataract.",
+          "distractorExplanations": {
+            "A": "The reference states surgery may not be needed immediately.",
+            "B": "Glasses may improve vision but do not remove lens clouding.",
+            "C": "Early adaptations are specifically described.",
+            "D": "The source supplies no universal symptom-only threshold."
+          },
+          "sectionIds": [
+            "early-support",
+            "surgery-function"
+          ],
+          "sourceIds": [
+            "nei-cataracts"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Choose source-supported early support without implying cataract removal.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "cataract-q3",
+          "stem": "A patient with confirmed cataracts reports that reading and driving remain difficult despite an updated glasses prescription. Which next discussion best matches the NEI reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Discuss cataract surgery, including replacement of the clouded lens with an intraocular lens"
+            },
+            {
+              "id": "B",
+              "text": "Promise that every cataract disappears with brighter lighting"
+            },
+            {
+              "id": "C",
+              "text": "Explain that surgery is never considered for functional impairment"
+            },
+            {
+              "id": "D",
+              "text": "Select an exact operation date from a universal acuity threshold supplied by this page"
+            },
+            {
+              "id": "E",
+              "text": "Promise a perfect outcome in every patient"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Interference with everyday activities is a reason to discuss surgery; NEI describes replacing the clouded lens with an artificial lens.",
+          "distractorExplanations": {
+            "B": "Lighting can help tasks but is not a way to remove the cataract.",
+            "C": "NEI explicitly identifies interference with daily activities as a reason to discuss surgery.",
+            "D": "No universal numerical operative threshold is supplied here.",
+            "E": "The source does not guarantee a perfect outcome for every patient."
+          },
+          "sectionIds": [
+            "early-support",
+            "surgery-function"
+          ],
+          "sourceIds": [
+            "nei-cataracts"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Connect persistent functional limitation to a cataract-surgery discussion.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "cataract-q4",
+          "stem": "A learner reviews cataract risk with an older adult who has diabetes and uses prescribed steroids. Which statement best matches the NEI reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Diabetes and steroid use prove cataract without examination"
+            },
+            {
+              "id": "B",
+              "text": "These are risk factors, but an eye examination is still needed to assess for cataract"
+            },
+            {
+              "id": "C",
+              "text": "Risk factors alone establish an immediate surgical indication"
+            },
+            {
+              "id": "D",
+              "text": "The reference guarantees cataract prevention through an eyeglass prescription"
+            },
+            {
+              "id": "E",
+              "text": "Cataract can be diagnosed from family history alone"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "NEI identifies diabetes and steroid use as risk factors and describes dilated eye assessment; risk is not a confirmed diagnosis.",
+          "distractorExplanations": {
+            "A": "Risk factors do not substitute for assessment of lens clouding.",
+            "C": "Risk alone is not the source's functional surgery indication.",
+            "D": "A glasses prescription is not a guaranteed preventive intervention.",
+            "E": "Family history is a risk factor rather than an examination-based diagnosis."
+          },
+          "sectionIds": [
+            "risk",
+            "assessment",
+            "surgery-function"
+          ],
+          "sourceIds": [
+            "nei-cataracts"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Separate cataract risk assessment from diagnosis and surgical indication.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        }
+      ]
+    },
+    {
+      "id": "ankle-sprain",
+      "name": "Ankle sprain",
+      "aliases": [
+        "sprained ankle",
+        "ankle ligament sprain"
+      ],
+      "specialty": "Musculoskeletal and sports medicine",
+      "domain": "acute",
+      "keywords": [
+        "ligament",
+        "ankle twist",
+        "swelling",
+        "weight bearing",
+        "rehabilitation",
+        "range of motion"
+      ],
+      "overview": "Study ligament injury, serious-injury warning signs and broad recovery principles; ankle-specific decision rules remain a documented gap. Original U.S. board-study material; official educational references do not establish a comprehensive guideline or patient-care protocol.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-10"
+      },
+      "sources": [
+        {
+          "id": "niams-sports-injuries",
+          "title": "Sports Injuries",
+          "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases, NIH, HHS",
+          "url": "https://www.niams.nih.gov/health-topics/sports-injuries",
+          "kind": "official-clinical-reference",
+          "edition": "Page last reviewed September 2024; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Types of Musculoskeletal Injuries: Sprain, Strain; Common Sports Injuries: Ankle Injuries; Symptoms of Sports Injuries. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Official general injury education, not an ankle-specific sports-medicine guideline. Supports ligament injury and warning signs; does not establish Ottawa ankle rules, stability grading, imaging thresholds or return-to-play clearance. No media or linked works are imported.",
+          "attribution": "Source: National Institute of Arthritis and Musculoskeletal and Skin Diseases, NIH, HHS.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niams.nih.gov/disclaimer",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "niams-sports-injury-treatment",
+          "title": "Sports Injuries: Diagnosis, Treatment, and Steps to Take",
+          "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases, NIH, HHS",
+          "url": "https://www.niams.nih.gov/health-topics/sports-injuries/diagnosis-treatment-and-steps-to-take",
+          "kind": "official-clinical-reference",
+          "edition": "Page last reviewed September 2024; original publication date not stated",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Diagnosis of Sports Injuries; Treatment for Serious Injuries; Treatment of Minor Injuries; Rehabilitation; Living With Sports Injuries. Section-specific locators are retained.",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "General NIAMS education, not an ankle-specific loading or rehabilitation protocol. Its 2024 minor-injury advice is not represented as a complete contemporary guideline; exact analgesic dosing, thromboprophylaxis and clearance criteria remain unsupported. No media or linked works are imported.",
+          "attribution": "Source: National Institute of Arthritis and Musculoskeletal and Skin Diseases, NIH, HHS.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.niams.nih.gov/disclaimer",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "mechanism",
+          "title": "Ligament injury after a twist",
+          "text": "An ankle sprain occurs when an awkward roll, twist or turn stretches or tears joint ligaments. A sprain is a ligament injury; a strain affects muscle, the muscle-tendon junction or tendon. An awkward landing or pivot can cause a sprain, but a twist alone does not establish injury severity.",
+          "sourceIds": [
+            "niams-sports-injuries"
+          ],
+          "sourceLocator": "Types of Musculoskeletal Injuries: Sprain and Strain; Common Sports Injuries: Ankle Injuries."
+        },
+        {
+          "id": "severity-assessment",
+          "title": "Assess before labeling a minor sprain",
+          "text": "NIAMS lists severe pain, marked swelling or bruising, inability to tolerate weight and obvious deformity as reasons for medical assessment of a serious sports injury. Persistent or worsening symptoms also warrant assessment. These warning findings should not be dismissed as a minor sprain without evaluation.",
+          "sourceIds": [
+            "niams-sports-injury-treatment"
+          ],
+          "sourceLocator": "Treatment for Serious Injuries, symptom list; Treatment of Minor Injuries, persistent/worsening symptoms."
+        },
+        {
+          "id": "evaluation",
+          "title": "History, examination and indicated imaging",
+          "text": "Sports-injury evaluation includes the mechanism, activity context and a comprehensive examination. Imaging such as radiography or MRI can assess bone or soft tissue when needed. The cited NIAMS reference does not provide Ottawa ankle rules, identify which patient needs each scan or establish that every sprain requires imaging.",
+          "sourceIds": [
+            "niams-sports-injury-treatment"
+          ],
+          "sourceLocator": "Diagnosis of Sports Injuries."
+        },
+        {
+          "id": "initial-support",
+          "title": "Protection and symptom support",
+          "text": "NIAMS describes rest, ice, compression and elevation as supportive measures for a minor injury without serious warning findings. Pain-provoking activity should stop. This general educational description is not a complete ankle-specific guideline and does not determine immobilization duration, early-loading targets or medication doses.",
+          "sourceIds": [
+            "niams-sports-injury-treatment"
+          ],
+          "sourceLocator": "Treatment of Sports Injuries, stop painful activity; Treatment of Minor Injuries, R-I-C-E."
+        },
+        {
+          "id": "rehabilitation",
+          "title": "Recovery before return to activity",
+          "text": "After healing, rehabilitation may be needed before resuming the activity that caused the injury. NIAMS describes rebuilding strength and range of motion and reducing reinjury risk. A fixed return-to-sport date or formal clearance test cannot be inferred from this general reference.",
+          "sourceIds": [
+            "niams-sports-injury-treatment"
+          ],
+          "sourceLocator": "Rehabilitation; Living With Sports Injuries."
+        }
+      ],
+      "questions": [
+        {
+          "id": "ankle-sprain-q1",
+          "stem": "A basketball player rolls an ankle on landing. Evaluation confirms stretching and tearing of ligaments stabilizing the joint. Which term matches the NIAMS reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Muscle strain"
+            },
+            {
+              "id": "B",
+              "text": "Tendon strain"
+            },
+            {
+              "id": "C",
+              "text": "Joint dislocation"
+            },
+            {
+              "id": "D",
+              "text": "Bone fracture"
+            },
+            {
+              "id": "E",
+              "text": "Ankle sprain"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "NIAMS defines a sprain as stretching or tearing of ligaments; strains involve muscle or tendon structures.",
+          "distractorExplanations": {
+            "A": "NIAMS distinguishes muscle strain from ligament injury.",
+            "B": "NIAMS distinguishes tendon strain from ligament injury.",
+            "C": "The vignette confirms ligament stretching or tearing; it does not describe displaced joint surfaces.",
+            "D": "The confirmed structure is ligament rather than a broken bone."
+          },
+          "sectionIds": [
+            "mechanism"
+          ],
+          "sourceIds": [
+            "niams-sports-injuries"
+          ],
+          "domain": "acute",
+          "learningObjective": "Distinguish a confirmed ligament sprain from muscle or tendon strain.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "ankle-sprain-q2",
+          "stem": "After twisting an ankle, a runner has severe swelling, cannot tolerate weight and notices an obvious deformity. Which next step best matches NIAMS education?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Seek medical assessment for a potentially serious injury"
+            },
+            {
+              "id": "B",
+              "text": "Treat the injury as minor solely because the mechanism was a twist"
+            },
+            {
+              "id": "C",
+              "text": "Resume running to work through the pain"
+            },
+            {
+              "id": "D",
+              "text": "Wait for a fixed sports season date before any assessment"
+            },
+            {
+              "id": "E",
+              "text": "Assume that every twisted ankle has identical severity"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "NIAMS lists inability to tolerate weight, deformity and severe swelling among serious-injury findings that warrant medical assessment.",
+          "distractorExplanations": {
+            "B": "The mechanism does not override serious warning findings.",
+            "C": "NIAMS advises stopping painful activity rather than working through injury pain.",
+            "D": "The warning findings call for assessment rather than a calendar delay.",
+            "E": "Sprains vary in severity, and these findings need evaluation."
+          },
+          "sectionIds": [
+            "severity-assessment",
+            "initial-support"
+          ],
+          "sourceIds": [
+            "niams-sports-injuries",
+            "niams-sports-injury-treatment"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize serious-injury findings instead of presuming a minor sprain.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "ankle-sprain-q3",
+          "stem": "A recreational runner twists an ankle. The clinician has not yet determined which bone or soft-tissue structures are injured. Which diagnostic approach is supported by the NIAMS reference?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Order MRI for every ankle twist before obtaining a history"
+            },
+            {
+              "id": "B",
+              "text": "Obtain the mechanism and examine the injury, with imaging considered to evaluate bone or soft tissue"
+            },
+            {
+              "id": "C",
+              "text": "Skip examination because twisting confirms the injury severity"
+            },
+            {
+              "id": "D",
+              "text": "Exclude all imaging regardless of examination findings"
+            },
+            {
+              "id": "E",
+              "text": "Infer a complete ankle-specific imaging rule from a general injury overview"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "NIAMS describes injury history, a comprehensive examination and imaging options for bone and soft-tissue assessment; it does not supply an ankle-specific imaging rule.",
+          "distractorExplanations": {
+            "A": "A general imaging list is not a mandate for immediate MRI in every sprain.",
+            "C": "The reference includes examination; the mechanism alone does not establish severity.",
+            "D": "Imaging is a possible component of evaluation in the source.",
+            "E": "The cited page does not provide an ankle-specific decision rule."
+          },
+          "sectionIds": [
+            "evaluation"
+          ],
+          "sourceIds": [
+            "niams-sports-injury-treatment"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select a source-supported injury assessment without inventing an imaging threshold.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "ankle-sprain-q4",
+          "stem": "A recreational athlete is recovering after an evaluated ankle sprain. Which recovery focus best matches the cited NIAMS reference before resuming the provoking activity?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "A universal return date independent of recovery"
+            },
+            {
+              "id": "B",
+              "text": "Return to full activity solely because a bandage was applied"
+            },
+            {
+              "id": "C",
+              "text": "Rehabilitation to rebuild strength and range of motion as needed"
+            },
+            {
+              "id": "D",
+              "text": "Avoid any discussion of reinjury risk"
+            },
+            {
+              "id": "E",
+              "text": "Continue painful activity to prove readiness"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "NIAMS describes rehabilitation before return, aimed at strength, motion and reduction of reinjury risk.",
+          "distractorExplanations": {
+            "A": "The reference does not give a universal calendar return date.",
+            "B": "Applying a bandage alone does not establish recovery or readiness.",
+            "D": "Reducing reinjury risk is a cited rehabilitation goal.",
+            "E": "NIAMS advises against working through injury pain."
+          },
+          "sectionIds": [
+            "initial-support",
+            "rehabilitation"
+          ],
+          "sourceIds": [
+            "niams-sports-injury-treatment"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize rehabilitation goals without inventing return-to-sport clearance criteria.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        }
+      ]
+    }
+  ]
+}

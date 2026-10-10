@@ -650,3 +650,27 @@ The actual-corpus HTTP test's first attempt required a source-level limitations 
 [Curriculum gaps](CURRICULUM_GAPS.md) reports missing topics, treatment/antibiotic depth, source restrictions, task balance and review needs. The first-of-month 08:00 America/New_York maintenance task now includes both manifests, exact rights, primary-source replacements/corrections, comparative scope, honest quarantine and this gap report. Its next configured occurrence is November 1, 2026; a scheduled future check is not evidence that sources have already been clinically refreshed.
 
 Publication target: `feature/conversation-agent`, with a lease against the known parent commit. Private Railway source deployment must be observed at the exact new revision before claiming it is live. Preserve current build, volume, domain, credentials, voices and saved data. App-store publication and commercial activation remain held; the question count and software checks do not establish a complete syllabus, clinical competence or ABFM score equivalence.
+
+
+## 2026-10-10 — gap filling and strategic learning
+
+The new frozen inventory is **115 disease conditions, seven additional study topics and six foundation topics; 558 questions overall, 550 in the U.S. practice pool and eight comparative-library items**. Strict curriculum and combined-bank validators passed. There are 639 teaching sections, 252 distinct source URLs and 149 exact-document policy entries. 413 items cite assessed documents; 336 carry complete reuse annotations; 145 legacy item rights assessments remain unresolved. No qualified clinical approval or commercial activation was recorded.
+
+| Changed scope | Evidence | Result and limit |
+|---|---|---|
+| New 92-question source packets | Editorial reading and revised-scope checks | No unresolved local key/packet mismatch identified; not clinician, pharmacist or psychometric review. |
+| Legacy identity | Prior 458 U.S. fingerprints vs final 550 pool | All 458 preserved; 92 added. Existing dates and learner history retained. |
+| Actual corpus and new modules | Five affected real-bank groups and three new gap-integration groups | Passed; all five options/citations, weighted 100-question session, sign-in, grade/card, precise STI retrieval, absent eye-dose withholding and original expiry covered. |
+| Inventory/public status | One affected status group | Passed; disease, study-topic and total records remain distinct; topics cannot meet disease quota. |
+| Maintenance/quarantine | Seven affected groups | Passed. Two outdated output-label assertions were fixed within one failing group; only that group was repeated. |
+| Learning engine | Ten new focused groups; 14 affected existing engine groups | Passed; confidence/first-exposure/repeat signals, untrusted/stale exclusion, canonical regrading, same-millisecond chronology, active conflict and targeted exhaustion. |
+| Learning API | Two new authenticated HTTP groups | Passed; confidence→finish→priority→fresh case→no-fresh loop, no answer leaks, imported/expired exclusion and commercial gate. |
+| Strategic tutor | One new prompt-contract group | Passed; learner reasoning and optional practice, current source context and pending quiz protections. Live model teaching behavior not evaluated. |
+| Changed client/server JavaScript | Final parse checks | Passed; shell-v14 serves changed assets. UI review is separate from actual browser/device verification. |
+| New UI state races | Two focused runtime checks using actual UI functions and held API responses | Passed once; historical review preserves unrelated active state and post-finish refresh supersedes the stale request. This is not DOM or phone validation. |
+| Phone/browser flow | Existing browser executable absent | Pending; no installer, fake browser result or repeated availability probe. |
+| Voice, billing, auth internals, provider selection and Ingenium | Earlier passing evidence reused | Unchanged implementations; no duplicate paid calls or broad reruns. New practice/plan account guards are included above. |
+
+Evidence is in `qa/gap-fill-results.json` and `qa/learning-strategy-results.json`. Intermediate policy fragments were consolidated into the canonical document policy without deleting source audits or learner data. Local diagnostics add no AI calls and do not send answer/confidence bodies to Ingenium. The existing spaced scheduler and monthly maintenance schedule were retained. App-store publication and commercial activation remain held.
+
+Private test preparation publishes the exact GitHub revision and stages only that source commit in Railway's existing private-test environment. A staged source is not a deployment; a terminal SUCCESS and revision read-back are required before claiming the new workflow is live. Use [PHONE_TEST.md](PHONE_TEST.md) for the new, limited acceptance session.

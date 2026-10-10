@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-10",
+  "conditions": [
+    {
+      "id": "older-adult-falls",
+      "recordType": "study-topic",
+      "name": "Older adult falls and medication review",
+      "aliases": [
+        "geriatric falls",
+        "recurrent falls",
+        "fall risk assessment",
+        "polypharmacy and falls"
+      ],
+      "specialty": "Geriatrics and preventive care",
+      "domain": "preventive",
+      "keywords": [
+        "falls",
+        "medication review",
+        "orthostatic blood pressure",
+        "gait",
+        "balance",
+        "home hazards",
+        "polypharmacy"
+      ],
+      "overview": "Study of CDC fall-risk assessment, individualized prevention and medication review for community-dwelling adults aged 65 or older; not a complete geriatric prescribing or acute-injury algorithm.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-10"
+      },
+      "sources": [
+        {
+          "id": "cdc-steadi-algorithm-2019-20261010",
+          "title": "STEADI Algorithm for Fall Risk Screening, Assessment, and Intervention among Community-Dwelling Adults 65 Years and Older",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/steadi/media/pdfs/steadi-algorithm-508.pdf",
+          "kind": "official-recommendation",
+          "edition": "2019 displayed on PDF",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Page 2, assessment, interventions and follow-up; no screening-tool or balance-test reproduction",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          },
+          "attribution": "Source: CDC. The original material is available free on CDC.gov. Reference does not imply endorsement by CDC, HHS or the United States Government.",
+          "derivativeNotice": "Original study summaries and hypothetical questions preserve the cited recommendations; no CDC graphics, logos, borrowed scales or original outside tools are reproduced.",
+          "jurisdiction": "United States; community-dwelling adults aged 65 or older"
+        },
+        {
+          "id": "cdc-steadi-safe-medreview-2017-20261010",
+          "title": "STEADI SAFE Medication Review Framework",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/steadi/media/pdfs/steadi-factsheet-safemedreview-508.pdf",
+          "kind": "official-recommendation",
+          "edition": "2017 displayed on PDF",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Page 2, general medication review and education narrative, footnotes 1–3; underlying pharmacist tools excluded",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          },
+          "attribution": "Source: CDC. The original material is available free on CDC.gov. Reference does not imply endorsement by CDC, HHS or the United States Government.",
+          "derivativeNotice": "Original study summaries and hypothetical questions preserve the cited recommendations; no CDC graphics, logos, borrowed scales or original outside tools are reproduced.",
+          "jurisdiction": "United States; community-dwelling adults aged 65 or older"
+        }
+      ],
+      "sections": [
+        {
+          "id": "falls-assess",
+          "title": "Assess the contributors rather than attributing falls to age alone",
+          "text": "For a community-dwelling older adult found to be at fall risk, CDC STEADI proceeds to assessment of modifiable contributors and fall history. This includes gait, strength and balance; medication risks; orthostatic blood pressure; vision; footwear; home hazards; and relevant comorbidities. These educational categories do not replace evaluation of an acute injury, syncope or another serious cause. The source also calls for reassessment when an acute fall occurs.",
+          "sourceIds": [
+            "cdc-steadi-algorithm-2019-20261010"
+          ],
+          "sourceLocator": "Page 2, Screen and Assess steps; community-dwelling age-65-or-older scope."
+        },
+        {
+          "id": "falls-match-intervention",
+          "title": "Match prevention to the identified impairment",
+          "text": "CDC STEADI pairs gait, strength or balance impairment with physical therapy or an evidence-based exercise/fall-prevention program. Suspected home hazards support an occupational-therapy home-safety evaluation. Visual impairment supports referral to an eye-care professional. Multiple contributors can need an individualized combined plan; choosing one risk factor does not prove that the others are absent.",
+          "sourceIds": [
+            "cdc-steadi-algorithm-2019-20261010"
+          ],
+          "sourceLocator": "Page 2, Intervene step: gait/strength/balance, home hazards and visual impairment."
+        },
+        {
+          "id": "falls-medication-optimization",
+          "title": "Medication optimization is part of a broader fall plan",
+          "text": "When medications are likely to increase fall risk, CDC STEADI includes stopping, switching or reducing the implicated medication as appropriate. Orthostatic hypotension also calls for medication review alongside other suitable interventions. The SAFE framework adds review of treatment goals, adverse effects, nonpharmacologic options, preferences and adherence barriers. It emphasizes monitoring and education; these sources do not provide a drug-by-drug taper or renal-dose table.",
+          "sourceIds": [
+            "cdc-steadi-algorithm-2019-20261010",
+            "cdc-steadi-safe-medreview-2017-20261010"
+          ],
+          "sourceLocator": "Algorithm page 2, medication and orthostatic interventions; SAFE page 2, Assess and Formulate."
+        },
+        {
+          "id": "falls-medication-history",
+          "title": "Reconcile the actual exposure before changing treatment",
+          "text": "The CDC SAFE medication-review narrative includes prescription and over-the-counter medicines, supplements, allergies, alcohol and recreational substances in the review. Consider age, kidney and liver function, possible interactions, experienced adverse effects and treatment goals. A plan can simplify dosing or use suitable nonpharmacologic measures, and should explain the reasons for changes. Gradual dose reduction may be advisable in some circumstances; this summary does not invent a taper regimen or authorize abrupt discontinuation.",
+          "sourceIds": [
+            "cdc-steadi-safe-medreview-2017-20261010"
+          ],
+          "sourceLocator": "Page 2, Screen, Assess, Formulate, Educate; footnotes 1–3."
+        },
+        {
+          "id": "falls-follow-up",
+          "title": "Review whether the individualized plan is working",
+          "text": "After risk assessment and individualized intervention, the CDC STEADI algorithm specifies follow-up in 30–90 days. This is an algorithmic follow-up interval, not permission to defer new acute symptoms or injuries. The SAFE framework includes a monitoring plan for medication adverse effects and education of the older adult and caregiver regarding changes and other fall-prevention strategies.",
+          "sourceIds": [
+            "cdc-steadi-algorithm-2019-20261010",
+            "cdc-steadi-safe-medreview-2017-20261010"
+          ],
+          "sourceLocator": "Algorithm page 2, final Follow Up step; SAFE page 2, Formulate and Educate."
+        }
+      ],
+      "questions": [
+        {
+          "id": "older-adult-falls-q1",
+          "stem": "A 72-year-old community-dwelling study patient reports repeated unsteadiness and a recent fall. The acute encounter has found no injury or other urgent cause. Which next step best follows the CDC STEADI fall-risk pathway?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Proceed directly to one supplement without assessing other contributors"
+            },
+            {
+              "id": "B",
+              "text": "Focus only on chronological age and leave medication review for later"
+            },
+            {
+              "id": "C",
+              "text": "Repeat reassurance because no injury was found"
+            },
+            {
+              "id": "D",
+              "text": "Assess modifiable contributors, including gait/balance, medications, orthostatic blood pressure and home hazards"
+            },
+            {
+              "id": "E",
+              "text": "Treat the absence of injury as evidence that future fall risk is absent"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "An older adult identified as at risk proceeds to assessment of modifiable factors and fall history. An uninjured fall does not replace that assessment.",
+          "distractorExplanations": {
+            "A": "The algorithm assesses contributing factors before choosing individualized interventions.",
+            "B": "Medication risk and other modifiable factors belong in the assessment.",
+            "C": "Reassurance alone omits the assessment step in this at-risk case.",
+            "E": "The at-risk pathway depends on fall risk and history, not only whether an injury occurred."
+          },
+          "sectionIds": [
+            "falls-assess"
+          ],
+          "sourceIds": [
+            "cdc-steadi-algorithm-2019-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Assess modifiable contributors after identifying an older adult at fall risk.",
+          "difficulty": "application"
+        },
+        {
+          "id": "older-adult-falls-q2",
+          "stem": "A 74-year-old community-dwelling study patient has no acute injury. The fall assessment identifies impaired gait, strength and balance; vision, footwear, home hazards and medications have also been reviewed. Which intervention most directly addresses the identified impairment in the CDC algorithm?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Physical therapy or an evidence-based exercise/fall-prevention program"
+            },
+            {
+              "id": "B",
+              "text": "Eye-care referral as the sole response despite no identified visual impairment"
+            },
+            {
+              "id": "C",
+              "text": "An occupational-therapy home-safety assessment as the sole response to gait weakness"
+            },
+            {
+              "id": "D",
+              "text": "Medication simplification as the sole response when no medication contributor was identified"
+            },
+            {
+              "id": "E",
+              "text": "Wait for another fall before offering a targeted intervention"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "CDC pairs poor gait, strength and balance with physical therapy or an evidence-based exercise/fall-prevention program.",
+          "distractorExplanations": {
+            "B": "Eye-care referral addresses identified visual impairment, not the stated principal deficit.",
+            "C": "Home-safety review addresses hazards and does not directly replace intervention for impaired strength and balance.",
+            "D": "Medication review remains useful, but this case identifies a gait/strength/balance impairment needing a targeted response.",
+            "E": "The algorithm intervenes on identified risk factors rather than requiring another fall."
+          },
+          "sectionIds": [
+            "falls-match-intervention"
+          ],
+          "sourceIds": [
+            "cdc-steadi-algorithm-2019-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Match a fall-prevention intervention to gait, strength and balance impairment.",
+          "difficulty": "application"
+        },
+        {
+          "id": "older-adult-falls-q3",
+          "stem": "A 79-year-old community-dwelling study patient with recurrent falls brings a list containing only prescribed pills. They also use two nonprescription sleep products and a supplement. Which review most closely follows the CDC SAFE framework before deciding on medication changes?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Review the prescribed list only because nonprescription products cannot affect the plan"
+            },
+            {
+              "id": "B",
+              "text": "Review only products dispensed by the same pharmacy"
+            },
+            {
+              "id": "C",
+              "text": "Reconcile prescription and nonprescription medicines, supplements, allergies and relevant alcohol/substance exposure, with adverse effects and treatment goals"
+            },
+            {
+              "id": "D",
+              "text": "Stop all prescribed medicines before obtaining the missing history"
+            },
+            {
+              "id": "E",
+              "text": "Exclude kidney and liver function because the framework considers age alone"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "SAFE includes a complete exposure history, interaction and organ-function considerations, adverse effects and goals; the prescription-only list is incomplete.",
+          "distractorExplanations": {
+            "A": "SAFE expressly includes over-the-counter medicines and supplements.",
+            "B": "The framework reviews the actual exposure rather than limiting it to one dispensing source.",
+            "D": "Changes follow review of suitability, goals and monitoring; this is not a blanket discontinuation instruction.",
+            "E": "SAFE explicitly includes kidney and liver function alongside age."
+          },
+          "sectionIds": [
+            "falls-medication-history"
+          ],
+          "sourceIds": [
+            "cdc-steadi-safe-medreview-2017-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Reconcile the full medication and substance history before planning changes.",
+          "difficulty": "application"
+        },
+        {
+          "id": "older-adult-falls-q4",
+          "stem": "An older study patient has orthostatic hypotension and recurrent falls. The assessment identifies a medicine likely to contribute, and its original indication and alternatives are being reviewed. Which medication approach best fits the CDC fall algorithm?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Increase the implicated medicine solely because falls occurred"
+            },
+            {
+              "id": "B",
+              "text": "Preserve the dose without reviewing its indication or alternatives"
+            },
+            {
+              "id": "C",
+              "text": "Choose eye-care referral as the only intervention despite a medication contributor"
+            },
+            {
+              "id": "D",
+              "text": "Stop every medicine abruptly without individual assessment"
+            },
+            {
+              "id": "E",
+              "text": "Consider stopping, switching or reducing the implicated medicine as appropriate within an individualized monitored plan"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "The CDC algorithm includes medication optimization for fall-risk medicines and orthostatic hypotension. SAFE supports an individualized action and monitoring plan, with gradual reduction when appropriate.",
+          "distractorExplanations": {
+            "A": "The cited medication-risk intervention does not call for automatic dose escalation.",
+            "B": "The source includes review and optimization of implicated medicines.",
+            "C": "Eye-care referral addresses visual impairment and does not replace medication review in this case.",
+            "D": "The framework does not direct stopping all medicines abruptly; some changes may require tapering."
+          },
+          "sectionIds": [
+            "falls-medication-optimization",
+            "falls-medication-history"
+          ],
+          "sourceIds": [
+            "cdc-steadi-algorithm-2019-20261010",
+            "cdc-steadi-safe-medreview-2017-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Address a medication-related fall contributor without inventing a universal discontinuation rule.",
+          "difficulty": "application"
+        },
+        {
+          "id": "older-adult-falls-q5",
+          "stem": "A 70-year-old study patient has completed fall-risk assessment and begun an individualized prevention plan. There are no new acute symptoms or injuries. Which follow-up interval is specified at the end of the CDC STEADI algorithm?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Wait until the next fall before arranging any review"
+            },
+            {
+              "id": "B",
+              "text": "Follow up in 30–90 days"
+            },
+            {
+              "id": "C",
+              "text": "Follow up only after a year, regardless of the intervention"
+            },
+            {
+              "id": "D",
+              "text": "No review is needed once a medication has been changed"
+            },
+            {
+              "id": "E",
+              "text": "Defer follow-up until every contributor has fully resolved"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "The algorithm specifies follow-up in 30–90 days after the individualized intervention plan. New acute symptoms require separate timely reassessment.",
+          "distractorExplanations": {
+            "A": "The algorithm provides a follow-up step without requiring another fall.",
+            "C": "Annual rescreening is distinct from this post-intervention follow-up interval.",
+            "D": "The plan includes follow-up, and medication changes also warrant monitoring.",
+            "E": "The purpose is to review the plan rather than wait for all contributors to disappear."
+          },
+          "sectionIds": [
+            "falls-follow-up"
+          ],
+          "sourceIds": [
+            "cdc-steadi-algorithm-2019-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Distinguish post-intervention follow-up from annual fall-risk rescreening.",
+          "difficulty": "application"
+        },
+        {
+          "id": "older-adult-falls-q6",
+          "stem": "A 75-year-old study patient has an identified home-hazard contributor to falls, including a slippery bathing area. Acute injury and other causes have been assessed. Which referral most directly addresses that finding in the CDC algorithm?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Occupational therapy for a home-safety evaluation"
+            },
+            {
+              "id": "B",
+              "text": "An eye-care referral as the only response to the documented home hazard"
+            },
+            {
+              "id": "C",
+              "text": "A medication-dose change without reviewing any medication contributor"
+            },
+            {
+              "id": "D",
+              "text": "Physical therapy as a substitute for assessing the home environment"
+            },
+            {
+              "id": "E",
+              "text": "No intervention because a home hazard is outside the fall-prevention plan"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "CDC STEADI pairs likely home hazards with an occupational-therapy evaluation of home safety; other contributors can still require additional interventions.",
+          "distractorExplanations": {
+            "B": "Eye-care referral targets visual impairment and does not directly address this documented environmental hazard.",
+            "C": "Medication changes target medication risks and require their own assessment.",
+            "D": "Physical therapy addresses gait, strength and balance and does not replace the home-safety response.",
+            "E": "The algorithm explicitly includes home hazards and a corresponding intervention."
+          },
+          "sectionIds": [
+            "falls-match-intervention"
+          ],
+          "sourceIds": [
+            "cdc-steadi-algorithm-2019-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Select an environmental fall-prevention intervention for identified home hazards.",
+          "difficulty": "application"
+        }
+      ]
+    }
+  ]
+}

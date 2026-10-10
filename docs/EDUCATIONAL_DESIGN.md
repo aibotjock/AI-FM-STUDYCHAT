@@ -21,9 +21,29 @@ Both curricula can share a condition, source fingerprint and learner goal. Their
 
 The existing scheduler is an SM-2-inspired heuristic with Again, Hard, Good and Easy ratings. It is not FSRS and does not calculate a validated probability of retention. This policy does not change that scheduler or claim new confidence-aware behavior is already implemented.
 
-An eventual confidence-aware layer should record confidence separately from correctness and scheduling ratings. Wrong answers with high confidence deserve an explicit source-linked correction and further review; correct answers with low confidence can receive additional recall practice. A confident statement is never evidence that it is true. The learner should be able to correct a rating, inspect the review history and opt out of preference memory. Do not silently convert confidence into competence, grant an answer credit for an imported claim, or present an unvalidated interval as a scientific retention estimate.
+The implemented confidence layer records an optional low/medium/high choice before board feedback. Submission replay preserves the original choice and confidence. Confidence remains distinct from correctness and the existing Again/Hard/Good/Easy scheduling ratings; the scheduler has not been replaced or represented as a validated retention model.
 
-Transfer exercises should test a fresh hypothetical context rather than reproduce a memorized question. The context change must remain within the populations, indications, exceptions and limits supported by the cited evidence. Feedback on factual premises follows the normal review boundary; free-text reasoning must not receive an invented authoritative score. A qualified educator must review a proposed rubric and the meaning of its results before an assessment is described as validated.
+## Learning diagnostics and correction
+
+Authenticated `/api/learning-plan` derives bounded topic priorities from current canonical questions and the last 32 trusted completed practice sessions. It regrades actual choices instead of trusting stored score summaries. Imported, malformed, duplicate/conflicted, future, invalidated, stale and active-session evidence cannot establish a learning gap. Finished skipped questions count as exposure because review shows their answers, but skips are not knowledge errors. “First” and “fresh” mean no recorded exposure in retained current history, not lifetime novelty.
+
+| Learning signal | Interpretation | Teaching response |
+|---|---|---|
+| No first-exposure evidence | Unassessed, not mastered | Offer a blueprint-based mixed block; the learner chooses size and feedback timing. |
+| One first-exposure miss | Provisional topic signal | Review the exact cited rationale and decisive clue; ask whether recall, interpretation or the next step was difficult. |
+| Two or more distinct first-exposure misses | Repeated errors on the sampled topic, not a validated deficiency | Prioritize focused source review and a different supported case. |
+| Wrong with high confidence | Possible calibration problem | Make the correction explicit and compare the chosen alternative only with source support. |
+| Correct with low confidence | Reinforce recall, not an error | Ask for optional teach-back and later recall; actual errors retain priority. |
+| Correct repeat after seeing an answer | Recognition may contribute | Keep repeated performance separate from first exposure. |
+| Correct later fresh same-topic response | A limited encouraging follow-up | Revisit after a delay; it is not proof of durable learning or same-concept transfer. |
+
+The correction loop is **commit → cited feedback → different same-topic case → spaced recall → later mixed practice**. Today, Progress and completed practice display priorities with honest evidence labels. A one-question targeted session selects a server-known current item without recorded exposure, keeps normal grading/history, and refuses to overwrite an unfinished session. Exhaustion is visible; it does not trigger invented questions or paid retries. Existing sourced-card saving and the spaced scheduler remain available. The learner chooses whether to save or review; the app does not silently schedule every mistake.
+
+The conversational tutor invites a committed answer and reasoning, then addresses the decisive clue and supported alternatives one question at a time. It offers source-supported variations and neutral teach-back without forcing exercises in ordinary chat. Self-reported recall, interpretation and next-step difficulties can guide the conversation, but are not automatically or independently diagnosed. All medical premises in a new scenario need current evidence and the unchanged whole-reply review. Pending canonical questions retain their answer-leak protection.
+
+The immediate implementation prioritizes topics, not independently validated subskill or concept mastery. No free-text reasoning rubric, observed clinical-performance assessment, pass probability, percentile, lifetime exposure record or official ABFM score is produced. Independent educator review of task tags, distractors and concept mappings is the next step before claiming finer diagnostics. Learning-plan derivation adds no model calls or provider telemetry; learner confidence and answer bodies are not sent to Ingenium.
+
+Educational evidence informs this design, while outcomes remain unverified for this app. A medical-education randomized trial of repeated key-feature questions reported higher retained item performance than repeated case narratives; it did not evaluate this product, U.S. ABFM outcomes or professional competence. [Primary study abstract](https://pubmed.ncbi.nlm.nih.gov/27295475/). A randomized spaced-learning trial assessed medical students' knowledge retention; using its result as an app-design rationale is an inference, not proof of the scheduler or score improvement. [Primary trial abstract](https://pubmed.ncbi.nlm.nih.gov/17209889/). These links support design research only; no protected article content enters the clinical RAG.
 
 ## Canonical evidence and ethical tutoring policy
 

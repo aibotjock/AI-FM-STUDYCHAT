@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
-import { createStudyCurriculum, validateStudyCondition, STUDY_CONDITION_FILES, STUDY_OPTIONAL_CONDITION_FILES } from '../server/study-curriculum.js';
+import { createStudyCurriculum, validateStudyCondition, studyRecordType, STUDY_CONDITION_FILES, STUDY_OPTIONAL_CONDITION_FILES } from '../server/study-curriculum.js';
 import { sourceEditorialWordBudget, CONCISE_SOURCE_WORD_BUDGET } from '../shared/source-reuse.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -59,11 +59,13 @@ export function validateMaintenanceCorpus({ records, files = [], now = Date.now(
   }).filter(Boolean);
   const quarantinedIds = new Set(quarantine.map(item => item.id));
   const currentRecords = structuralRecords.filter(record => detailById.get(record.id)?.current && !quarantinedIds.has(record.id));
-  const formal = record => record.sources.some(source => ['clinical-guideline', 'official-recommendation'].includes(source.kind));
+  const diseaseRecords = records.filter(record => studyRecordType(record) === 'condition');
+  const currentDiseases = currentRecords.filter(record => studyRecordType(record) === 'condition');
+  const formal = record => studyRecordType(record) === 'condition' && record.sources.some(source => ['clinical-guideline', 'official-recommendation'].includes(source.kind));
   const formalCount = structuralRecords.filter(formal).length;
   const currentFormalCount = currentRecords.filter(formal).length;
-  if (records.length < minimumConditions) problems.push(`Expected at least ${minimumConditions} conditions in the inventory.`);
-  if (!allowQuarantine && (catalog.total < minimumConditions || catalog.currentCount !== records.length)) problems.push('Expected all inventory conditions to be accepted and currently eligible.');
+  if (diseaseRecords.length < minimumConditions) problems.push(`Expected at least ${minimumConditions} disease conditions in the inventory; study topics do not count as diagnoses.`);
+  if (!allowQuarantine && (currentDiseases.length < minimumConditions || catalog.currentCount !== records.length)) problems.push('Expected all inventory records to be accepted and currently eligible, including the minimum disease conditions.');
   if (formalCount < minimumFormalConditions || (!allowQuarantine && currentFormalCount < minimumFormalConditions)) problems.push(`Expected at least ${minimumFormalConditions} conditions with formal guideline or official recommendation evidence; reference-only gaps must remain explicit.`);
 
   const questionKeys = new Set();
@@ -103,7 +105,7 @@ export function validateMaintenanceCorpus({ records, files = [], now = Date.now(
   }
   if (questionCount < 2 * records.length) problems.push('Expected at least two original questions for every condition.');
   if (Object.values(positions).some(count => count < questionCount * minimumCorrectPositionShare)) problems.push('Correct-answer positions have a severe distribution bias.');
-  const referenceOnly = structuralRecords.filter(record => !formal(record)).map(record => ({ id: record.id, name: record.name }));
+  const referenceOnly = structuralRecords.filter(record => studyRecordType(record) === 'condition' && !formal(record)).map(record => ({ id: record.id, name: record.name }));
   const sources = new Map();
   const sourceWords = new Map();
   const sourceBudgets = new Map();
@@ -138,8 +140,10 @@ export function validateMaintenanceCorpus({ records, files = [], now = Date.now(
   const manifest = {
     schemaVersion: 1, checkedAt: structuralRecords.map(record => record.review.checkedAt).sort()[0] || null,
     purpose: 'Educational board-study tool only; not medical advice or for clinical use. Source checks are not clinician approval, rights clearance or a medical accuracy certification.',
-    scope: 'Disease-reference curriculum: at least 100 curated common or high-yield family medicine conditions, not a prevalence ranking or the complete exam syllabus.',
-    conditions: records.length, acceptedConditions: catalog.total, currentConditions: currentRecords.length, quarantinedConditions: quarantine.length,
+    scope: 'Disease-reference curriculum plus separate preventive/lifespan study topics: at least 100 diagnoses, not a prevalence ranking or the complete exam syllabus.',
+    conditions: diseaseRecords.length, acceptedConditions: structuralRecords.filter(record => studyRecordType(record) === 'condition' && detailById.get(record.id)).length, currentConditions: currentDiseases.length, quarantinedConditions: quarantine.filter(record => diseaseRecords.some(disease => disease.id === record.id)).length,
+    studyTopics: records.filter(record => studyRecordType(record) === 'study-topic').length, currentStudyTopics: currentRecords.filter(record => studyRecordType(record) === 'study-topic').length,
+    foundationTopics: records.filter(record => studyRecordType(record) === 'foundation').length, inventoryRecords: records.length, acceptedRecords: catalog.total, currentRecords: currentRecords.length, quarantinedRecords: quarantine.length,
     questions: questionCount, currentQuestions: currentRecords.reduce((sum, record) => sum + record.questions.length, 0), quarantinedQuestions: quarantine.reduce((sum, record) => sum + record.questionCount, 0), sections,
     formalGuidelineConditions: formalCount, currentFormalGuidelineConditions: currentFormalCount, officialReferenceOnlyConditions: referenceOnly, quarantine,
     distinctSourceUrls: sources.size, maximumAttributedFactualWordsPerUrl: Math.max(0, ...sourceWords.values()), questionDomains: domains, correctAnswerPositions: positions,
@@ -169,11 +173,10 @@ function readCorpus(rootDir, now) {
 
 function writeReports(rootDir, manifest, validatedRecords) {
   writeFileSync(resolve(rootDir, 'content/curriculum-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
-  const lines = ['# Condition coverage', '', `Source checks begin: ${manifest.checkedAt}. Inventory: ${manifest.conditions} conditions, ${manifest.questions} original questions and ${manifest.sections} original teaching sections.`, '', `Currently eligible: ${manifest.currentConditions} conditions and ${manifest.currentQuestions} questions. Quarantined: ${manifest.quarantinedConditions} conditions and ${manifest.quarantinedQuestions} questions. Validation mode: ${manifest.validationMode}; fully current: ${manifest.fullyCurrent}.`, '', `Formal guideline or official recommendation evidence: ${manifest.formalGuidelineConditions} inventory conditions (${manifest.currentFormalGuidelineConditions} current). Official clinical reference only: ${manifest.officialReferenceOnlyConditions.length}. These labels do not establish independent clinician review or commercial rights.`, '', 'Study tool only; not medical advice or for clinical use. This is a curated high-yield selection, not an epidemiological ranking or a proportionally balanced ABFM mock examination. Source links are free at their originating sites; the app is independent and does not imply endorsement.', '', '| Condition | Primary domain | Questions | Source coverage | Eligibility |', '| --- | --- | ---: | --- | --- |'];
+  const lines = ['# Condition coverage', '', `Source checks begin: ${manifest.checkedAt}. Inventory: ${manifest.conditions} disease conditions and ${manifest.studyTopics} additional study topics, ${manifest.questions} original questions and ${manifest.sections} original teaching sections.`, '', `Currently eligible: ${manifest.currentConditions} disease conditions, ${manifest.currentStudyTopics} study topics and ${manifest.currentQuestions} questions. Quarantined: ${manifest.quarantinedRecords} records and ${manifest.quarantinedQuestions} questions. Validation mode: ${manifest.validationMode}; fully current: ${manifest.fullyCurrent}.`, '', `Formal guideline or official recommendation evidence: ${manifest.formalGuidelineConditions} inventory conditions (${manifest.currentFormalGuidelineConditions} current). Official clinical reference only: ${manifest.officialReferenceOnlyConditions.length}. These labels do not establish independent clinician review or commercial rights.`, '', 'Study tool only; not medical advice or for clinical use. This is a curated high-yield selection, not an epidemiological ranking or a proportionally balanced ABFM mock examination. Source links are free at their originating sites; the app is independent and does not imply endorsement.', '', '| Condition or study topic | Primary domain | Questions | Source coverage | Eligibility |', '| --- | --- | ---: | --- | --- |'];
   const records = [...validatedRecords].sort((a, b) => a.name.localeCompare(b.name));
-  const referenceIds = new Set(manifest.officialReferenceOnlyConditions.map(record => record.id));
   const quarantine = new Map(manifest.quarantine.map(record => [record.id, record.reasons]));
-  for (const condition of records) lines.push(`| ${condition.name.replaceAll('|', '/')} | ${condition.domain} | ${condition.questions.length} | ${referenceIds.has(condition.id) ? '**Official reference only — guideline gap**' : 'Guideline / official recommendation'} | ${quarantine.has(condition.id) ? `**Quarantined:** ${quarantine.get(condition.id).join('; ').replaceAll('|', '/')}` : 'Current source check; clinician review pending'} |`);
+  for (const condition of records) lines.push(`| ${condition.name.replaceAll('|', '/')} | ${condition.domain} | ${condition.questions.length} | ${condition.sources.some(source => ['clinical-guideline', 'official-recommendation'].includes(source.kind)) ? 'Guideline / official recommendation' : '**Official reference only — guideline gap**'} | ${quarantine.has(condition.id) ? `**Quarantined:** ${quarantine.get(condition.id).join('; ').replaceAll('|', '/')}` : 'Current source check; clinician review pending'} |`);
   lines.push('', 'Detailed editions, populations, locators, jurisdictions and limitations are stored in each condition record and displayed in the app. See the source-audit reports for blocked and excluded sources. Quarantined records remain in the inventory but cannot supply current RAG evidence or current canonical grading/cards.');
   writeFileSync(resolve(rootDir, 'docs/CONDITION_COVERAGE.md'), `${lines.join('\n')}\n`);
 }

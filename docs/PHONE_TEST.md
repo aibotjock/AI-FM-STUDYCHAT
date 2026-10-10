@@ -33,3 +33,18 @@ Commercial mode is optional and separate from the personal pilot. Private pilot 
 Google Play pricing is shown only from actual Play product details in the installed Android app. A purchase unlocks coaching only after server verification. There is no local subscription simulation. Do not test live billing until the owner has configured the product, eligible offers, and a Play license-testing account.
 
 Privacy and account-deletion disclosures are available at `/privacy.html` and `/account-deletion.html`. In commercial mode, the website deletion link lets you sign in, review the deletion message, and confirm with DELETE. Account deletion and Google Play subscription cancellation are separate actions.
+
+
+## Strategic learning test — October 10 build
+
+Run after the private test service reports the exact new revision as deployed. Open the existing HTTPS phone link in Chrome and refresh once to load shell-v14. This is fictional board study only; do not enter real-patient information.
+
+1. On Today, find **Your learning priorities**. A new account should show no completed evidence and unassessed domains. Existing eligible history may already supply priorities; imported summaries must not.
+2. Open Board practice and start a 20-question mixed session. Keep timing off and choose immediate feedback. Ten-question practice rounds Foundations to zero; 20 samples all five domains.
+3. Choose an answer and optional low/medium/high confidence before submitting. Check that the cited rationale appears afterward, confidence becomes fixed, and leaving/returning resumes the same session.
+4. Finish when ready. Unanswered items are skipped, not diagnosed as errors. Read the learning priorities: a single miss is limited evidence; confident mistakes and uncertain correct answers have distinct interpretations.
+5. Review a priority's cited learning point. Tap **Practice a fresh case** when available. Confirm one different same-topic question opens, can be answered/finished, and refreshes the plan. If exhausted, the app must disclose no fresh question. It must preserve any unfinished session.
+6. Save a useful cited question as a recall card and confirm it appears in Review. Due timing follows the existing scheduler; an immediate correct repeat must not become a mastery claim.
+7. In Coach ask: “Help me reason through this fictional study topic. Ask one question at a time, let me commit, then explain the cited decisive clue.” Check conversational pacing and source links. Unsupported medical details must remain withheld. Ordinary conversation should stay natural.
+
+Report the step, exact on-screen error, selected session mode and whether refresh changes it. Include no access token, API key or identifying patient information. Real-phone geometry, focus behavior, tutor behavior and audio remain device acceptance checks; server tests alone do not verify them.

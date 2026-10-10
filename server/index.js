@@ -436,7 +436,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
         if (req.method === 'GET' && path === '/api/public-info') return json(res, 200, { mode: 'personal', privatePilot: true, publicRelease: false, operatorName: typeof env.PUBLIC_OPERATOR_NAME === 'string' ? env.PUBLIC_OPERATOR_NAME.trim().slice(0, 200) || null : null, operatorContact: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(env.PUBLIC_SUPPORT_EMAIL || '') ? env.PUBLIC_SUPPORT_EMAIL : null });
         if (req.method === 'GET' && path === '/api/status') {
           const studyList = curriculum?.list();
-          const curriculumSummary = studyList ? { conditions: studyList.total, questions: studyList.questionCount, currentConditions: studyList.currentCount, formalGuidelineConditions: studyList.conditions.filter(condition => condition.formalGuideline).length } : null;
+          const curriculumSummary = studyList ? { conditions: studyList.diseaseConditions, studyTopics: studyList.studyTopics, records: studyList.total, questions: studyList.questionCount, currentConditions: studyList.conditions.filter(condition => condition.recordType === 'condition' && condition.current).length, currentRecords: studyList.currentCount, formalGuidelineConditions: studyList.conditions.filter(condition => condition.recordType === 'condition' && condition.formalGuideline).length } : null;
           const boardCatalog = boardPractice?.catalog();
           return json(res, 200, { authenticated: session(req), authRequired: Boolean(accessToken), aiConfigured: ai.configured, provider: ai.configured ? ai.label : 'offline', providerId: ai.providerId, model: modelSelectionEnabled || ai.configured ? ai.model : null, modelWarning: ai.unavailableReason || null, modelSelectionEnabled, voiceEnabled, voiceModel: null, sourcedVoiceEnabled: curriculumEnabled, voiceMode: curriculumEnabled ? speech?.configured ? 'validated-openai-speech' : 'canonical-browser' : null, premiumSpeechEnabled: Boolean(speech?.configured), conversationAgentEnabled: Boolean(conversationAudio?.options().enabled), prohibitedModels: ['Astra'], evidencePolicy: curriculumEnabled ? publicEvidencePolicy() : null, curriculum: curriculumSummary, boardPractice: boardCatalog ? { questions: boardCatalog.questionCount, availableMixedSizes: boardCatalog.availableSizes } : null });
         }
@@ -554,6 +554,11 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           } finally { req.off('aborted', abort); res.off('close', disconnect); }
         }
         if (['/api/voice/session', '/api/voice/transcript', '/api/voice/stop'].includes(path)) fail(403, 'Unvalidated model-generated speech is disabled. Use sourced voice to hear the canonical study text returned by Coach; this app is for study only.');
+        if (path === '/api/learning-plan') {
+          if (!boardPractice) fail(403, 'Learning priorities are available with original board practice in the personal study pilot.');
+          if (req.method !== 'GET') fail(405, 'Use GET to view your server-derived learning priorities.');
+          return json(res, 200, boardOperation(() => boardPractice.learningPlan(state)));
+        }
         if (path === '/api/board-practice' || path.startsWith('/api/board-practice/')) {
           if (!boardPractice) fail(403, 'Original board practice is available in the personal study pilot. Commercial clinical review remains separate.');
           if (req.method === 'GET' && path === '/api/board-practice/alignment') return json(res, 200, boardOperation(() => boardPractice.alignment()), { 'Content-Disposition': 'attachment; filename="family-medicine-blueprint-alignment.json"' });
@@ -585,7 +590,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             rateLimit(req, 'board-practice', 120, 60000);
             const input = await readJson(req);
             if (!isObject(input)) fail(400, 'Use a valid original board-practice request.');
-            const result = boardOperation(() => match[2] === 'answer' ? boardPractice.answer(state, { sessionId: match[1], questionKey: input.questionKey, choiceId: input.choiceId }) : boardPractice.finish(state, { sessionId: match[1] }));
+            const result = boardOperation(() => match[2] === 'answer' ? boardPractice.answer(state, { sessionId: match[1], questionKey: input.questionKey, choiceId: input.choiceId, confidence: input.confidence }) : boardPractice.finish(state, { sessionId: match[1] }));
             return json(res, 200, result);
           }
           fail(404, 'Board-practice route not found.');

@@ -2,15 +2,22 @@
   "schemaVersion": 1,
   "checkedAt": "2026-10-09",
   "purpose": "Educational board-study tool only; not medical advice or for clinical use. Source checks are not clinician approval, rights clearance or a medical accuracy certification.",
-  "scope": "Disease-reference curriculum: at least 100 curated common or high-yield family medicine conditions, not a prevalence ranking or the complete exam syllabus.",
-  "conditions": 110,
-  "acceptedConditions": 110,
-  "currentConditions": 110,
+  "scope": "Disease-reference curriculum plus separate preventive/lifespan study topics: at least 100 diagnoses, not a prevalence ranking or the complete exam syllabus.",
+  "conditions": 115,
+  "acceptedConditions": 115,
+  "currentConditions": 115,
   "quarantinedConditions": 0,
-  "questions": 446,
-  "currentQuestions": 446,
+  "studyTopics": 7,
+  "currentStudyTopics": 7,
+  "foundationTopics": 0,
+  "inventoryRecords": 122,
+  "acceptedRecords": 122,
+  "currentRecords": 122,
+  "quarantinedRecords": 0,
+  "questions": 538,
+  "currentQuestions": 538,
   "quarantinedQuestions": 0,
-  "sections": 526,
+  "sections": 619,
   "formalGuidelineConditions": 105,
   "currentFormalGuidelineConditions": 105,
   "officialReferenceOnlyConditions": [
@@ -33,24 +40,44 @@
     {
       "id": "vitamin-b12-deficiency",
       "name": "Vitamin B12 deficiency"
+    },
+    {
+      "id": "retinal-detachment",
+      "name": "Retinal detachment"
+    },
+    {
+      "id": "primary-open-angle-glaucoma",
+      "name": "Primary open-angle glaucoma"
+    },
+    {
+      "id": "acute-angle-closure-glaucoma",
+      "name": "Acute angle-closure glaucoma"
+    },
+    {
+      "id": "cataract",
+      "name": "Cataract"
+    },
+    {
+      "id": "ankle-sprain",
+      "name": "Ankle sprain"
     }
   ],
   "quarantine": [],
-  "distinctSourceUrls": 215,
-  "maximumAttributedFactualWordsPerUrl": 1271,
+  "distinctSourceUrls": 239,
+  "maximumAttributedFactualWordsPerUrl": 1900,
   "questionDomains": {
-    "acute": 179,
-    "chronic": 182,
-    "emergent": 47,
-    "preventive": 38,
+    "acute": 213,
+    "chronic": 199,
+    "emergent": 53,
+    "preventive": 73,
     "foundations": 0
   },
   "correctAnswerPositions": {
-    "A": 91,
-    "B": 88,
-    "C": 88,
-    "D": 91,
-    "E": 88
+    "A": 110,
+    "B": 108,
+    "C": 108,
+    "D": 108,
+    "E": 104
   },
   "sourceEditorialBudgets": [
     {
@@ -359,6 +386,16 @@
       "clinicalApproval": false
     },
     {
+      "url": "https://www.cdc.gov/mmwr/volumes/72/wr/mm7204a5.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.fda.gov/news-events/press-announcements/fda-approves-two-oral-therapies-treat-gonorrhea",
+      "wordBudget": 1000,
+      "clinicalApproval": false
+    },
+    {
       "url": "https://newsinhealth.nih.gov/2025/09/tension-headaches-migraine-more",
       "wordBudget": 2000,
       "clinicalApproval": false
@@ -434,8 +471,18 @@
       "clinicalApproval": false
     },
     {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/Pain/lbp/VADODLBPCPGFinal508.pdf",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
       "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/CD/OA/Osteoarthritis-CPG_2026-Provider-Summary_final_20260618.pdf",
       "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/CD/OA/Osteoarthritis-CPG_2026-Guideline_final_20260618.pdf",
+      "wordBudget": 2500,
       "clinicalApproval": false
     },
     {
@@ -672,6 +719,106 @@
       "url": "https://ascopubs.org/doi/10.1200/GO.23.00285",
       "wordBudget": 2000,
       "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7304a1.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7304a1_appendix.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7303a1.htm",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/WH/up/VA-DOD-CPG-Pregnancy-Provider-Summary_final_508.pdf",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/act-early/milestones/key-points.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/act-early/milestones/6-months.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/act-early/milestones/9-months.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/act-early/milestones/18-months.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/steadi/media/pdfs/steadi-algorithm-508.pdf",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/steadi/media/pdfs/steadi-factsheet-safemedreview-508.pdf",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/retinal-detachment",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/healthy-vision/finding-eye-doctor/get-dilated-eye-exam",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/glaucoma",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/cataracts",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/glaucoma/types-glaucoma",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/sports-injuries",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/sports-injuries/diagnosis-treatment-and-steps-to-take",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/adult-notes.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-notes.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
+    },
+    {
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-catch-up.html",
+      "wordBudget": 2000,
+      "clinicalApproval": false
     }
   ],
   "validationMode": "strict-current-readiness",
@@ -686,11 +833,11 @@
     },
     {
       "path": "content/conditions/respiratory_infectious.json",
-      "sha256": "4b0105efea31b381d175d40ab5695627f0b692aa9085218de3dd56d63e320f2a"
+      "sha256": "4dfaa8505a650f26fdf0755c39673182c57d02fc170060cae44d665f813bf396"
     },
     {
       "path": "content/conditions/neuro_msk_derm.json",
-      "sha256": "dcc9d18713f517b16fd4cc195f49032947d9bfb660d46fec2dee24dc2a67dd42"
+      "sha256": "a8155e1cf9a193f09831109c3f6c53e871e4e62a4fcf72b99e1d47deff8d51fc"
     },
     {
       "path": "content/conditions/women_children_prevention.json",
@@ -698,7 +845,7 @@
     },
     {
       "path": "content/conditions/common_additions.json",
-      "sha256": "ef333f3e18d9749ff539d925917f938525eec6f43e469d1c671751e221e25244"
+      "sha256": "72cc68b0ca2016a69d65c2a182c9d3cfb1e363b047d557f46935e8aa461a6bb6"
     },
     {
       "path": "content/conditions/treatment_expansion.json",
@@ -707,6 +854,22 @@
     {
       "path": "content/conditions/licensed_reference_expansion.json",
       "sha256": "d3521ac41f9ece6d2825032aaf467ef2a4533bf886254c5239d7045329641c34"
+    },
+    {
+      "path": "content/conditions/lifespan_prevention.json",
+      "sha256": "344e9e9fb4c6ab6f1e3e9eabb91c518a64f4b8469231831e06ecb5fd710ff95f"
+    },
+    {
+      "path": "content/conditions/geriatric_care.json",
+      "sha256": "823b9e4719558d77bc4889226091f46f5a9ae4f19c3575ca1255ec55e45a7ae3"
+    },
+    {
+      "path": "content/conditions/eye_sports_expansion.json",
+      "sha256": "ff8ebeb27e3c3819a75b684c960ccd07baaf2e99a57cc2ad015cadb2ebec9558"
+    },
+    {
+      "path": "content/conditions/immunization_prevention.json",
+      "sha256": "4887953bb46d5b866536302144aba3d455be8dbb53a0ce45c0522478abf8318c"
     }
   ],
   "sources": [
@@ -844,6 +1007,14 @@
       "kind": "official-recommendation",
       "conditions": [
         "peptic-ulcer-h-pylori"
+      ]
+    },
+    {
+      "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/CD/OA/Osteoarthritis-CPG_2026-Guideline_final_20260618.pdf",
+      "organization": "Department of Veterans Affairs and Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "osteoarthritis"
       ]
     },
     {
@@ -1361,6 +1532,38 @@
       ]
     },
     {
+      "url": "https://www.cdc.gov/act-early/milestones/18-months.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "developmental-surveillance"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/act-early/milestones/6-months.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "developmental-surveillance"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/act-early/milestones/9-months.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "developmental-surveillance"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/act-early/milestones/key-points.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "developmental-surveillance"
+      ]
+    },
+    {
       "url": "https://www.cdc.gov/acute-bronchitis/about/index.html",
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
@@ -1472,6 +1675,7 @@
       "kind": "official-recommendation",
       "conditions": [
         "streptococcal-pharyngitis",
+        "streptococcal-pharyngitis",
         "streptococcal-pharyngitis"
       ]
     },
@@ -1531,6 +1735,38 @@
       "kind": "clinical-guideline",
       "conditions": [
         "plague"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/72/wr/mm7204a5.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "gonorrhea"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7303a1.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "contraceptive-planning"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7304a1_appendix.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "contraceptive-planning"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/mmwr/volumes/73/rr/rr7304a1.htm",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "contraceptive-planning"
       ]
     },
     {
@@ -1632,6 +1868,7 @@
       "kind": "clinical-guideline",
       "conditions": [
         "chlamydia",
+        "chlamydia",
         "chlamydia"
       ]
     },
@@ -1641,6 +1878,7 @@
       "kind": "clinical-guideline",
       "conditions": [
         "epididymitis",
+        "epididymitis",
         "epididymitis"
       ]
     },
@@ -1649,6 +1887,7 @@
       "organization": "Centers for Disease Control and Prevention",
       "kind": "clinical-guideline",
       "conditions": [
+        "gonorrhea",
         "gonorrhea",
         "gonorrhea"
       ]
@@ -1722,6 +1961,22 @@
       ]
     },
     {
+      "url": "https://www.cdc.gov/steadi/media/pdfs/steadi-algorithm-508.pdf",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "older-adult-falls"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/steadi/media/pdfs/steadi-factsheet-safemedreview-508.pdf",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "older-adult-falls"
+      ]
+    },
+    {
       "url": "https://www.cdc.gov/stroke/signs-symptoms/index.html",
       "organization": "Centers for Disease Control and Prevention",
       "kind": "official-recommendation",
@@ -1785,6 +2040,30 @@
       ]
     },
     {
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/adult-notes.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "adult-immunization"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-catch-up.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "child-adolescent-immunization"
+      ]
+    },
+    {
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-notes.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "kind": "official-recommendation",
+      "conditions": [
+        "child-adolescent-immunization"
+      ]
+    },
+    {
       "url": "https://www.endocrine.org/clinical-practice-guidelines/high-risk-for-hypoglycemia",
       "organization": "Endocrine Society",
       "kind": "official-recommendation",
@@ -1807,6 +2086,14 @@
       "kind": "official-recommendation",
       "conditions": [
         "allergic-rhinitis"
+      ]
+    },
+    {
+      "url": "https://www.fda.gov/news-events/press-announcements/fda-approves-two-oral-therapies-treat-gonorrhea",
+      "organization": "U.S. Food and Drug Administration",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "gonorrhea"
       ]
     },
     {
@@ -1855,12 +2142,29 @@
       ]
     },
     {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/Pain/lbp/VADODLBPCPGFinal508.pdf",
+      "organization": "Department of Veterans Affairs and Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "acute-low-back-pain"
+      ]
+    },
+    {
       "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/Pain/lbp/VADODLBPCPGProviderSummaryFinal508.pdf",
       "organization": "Department of Veterans Affairs and Department of Defense",
       "kind": "clinical-guideline",
       "conditions": [
         "acute-low-back-pain",
         "acute-low-back-pain"
+      ]
+    },
+    {
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/WH/up/VA-DOD-CPG-Pregnancy-Provider-Summary_final_508.pdf",
+      "organization": "U.S. Department of Veterans Affairs and Department of Defense",
+      "kind": "clinical-guideline",
+      "conditions": [
+        "routine-prenatal-care",
+        "postpartum-care-continuum"
       ]
     },
     {
@@ -1941,6 +2245,54 @@
       "kind": "clinical-guideline",
       "conditions": [
         "pressure-injury"
+      ]
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/cataracts",
+      "organization": "National Eye Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "retinal-detachment",
+        "primary-open-angle-glaucoma",
+        "cataract"
+      ]
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/glaucoma",
+      "organization": "National Eye Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "retinal-detachment",
+        "primary-open-angle-glaucoma",
+        "cataract"
+      ]
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/glaucoma/types-glaucoma",
+      "organization": "National Eye Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "primary-open-angle-glaucoma",
+        "acute-angle-closure-glaucoma",
+        "cataract"
+      ]
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/retinal-detachment",
+      "organization": "National Eye Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "retinal-detachment",
+        "primary-open-angle-glaucoma",
+        "cataract"
+      ]
+    },
+    {
+      "url": "https://www.nei.nih.gov/eye-health-information/healthy-vision/finding-eye-doctor/get-dilated-eye-exam",
+      "organization": "National Eye Institute, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "retinal-detachment"
       ]
     },
     {
@@ -2103,6 +2455,22 @@
       "kind": "official-clinical-reference",
       "conditions": [
         "rheumatoid-arthritis"
+      ]
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/sports-injuries",
+      "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "ankle-sprain"
+      ]
+    },
+    {
+      "url": "https://www.niams.nih.gov/health-topics/sports-injuries/diagnosis-treatment-and-steps-to-take",
+      "organization": "National Institute of Arthritis and Musculoskeletal and Skin Diseases, NIH, HHS",
+      "kind": "official-clinical-reference",
+      "conditions": [
+        "ankle-sprain"
       ]
     },
     {

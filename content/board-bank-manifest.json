@@ -2,27 +2,28 @@
   "schemaVersion": 1,
   "checkedAt": "2026-10-10",
   "purpose": "Original family medicine board study only; not medical advice or clinical use.",
-  "conditions": 110,
+  "conditions": 115,
+  "studyTopics": 7,
   "foundationTopics": 6,
-  "inventoryQuestions": 466,
-  "currentQuestions": 458,
+  "inventoryQuestions": 558,
+  "currentQuestions": 550,
   "currentQuestionScope": "U.S. board-study pool; comparative-study questions remain in the library.",
   "comparativeStudyQuestions": 8,
   "minimumQuestions": 400,
   "satisfiesMinimum": true,
   "minimumBasis": "current-us-board-study",
   "currentMeetsMinimum": true,
-  "sections": 546,
-  "distinctSourceUrls": 228,
+  "sections": 639,
+  "distinctSourceUrls": 252,
   "correctAnswerPositions": {
-    "A": 95,
-    "B": 93,
-    "C": 91,
-    "D": 96,
-    "E": 91
+    "A": 114,
+    "B": 113,
+    "C": 111,
+    "D": 113,
+    "E": 107
   },
-  "annotatedDocumentReuseQuestions": 244,
-  "exactDocumentReuseAssessmentQuestions": 321,
+  "annotatedDocumentReuseQuestions": 336,
+  "exactDocumentReuseAssessmentQuestions": 413,
   "unresolvedDocumentReuseQuestionKeys": [
     "hypertension:hypertension-q1",
     "hypertension:hypertension-q2",
@@ -183,11 +184,11 @@
     },
     {
       "path": "content/conditions/respiratory_infectious.json",
-      "sha256": "4b0105efea31b381d175d40ab5695627f0b692aa9085218de3dd56d63e320f2a"
+      "sha256": "4dfaa8505a650f26fdf0755c39673182c57d02fc170060cae44d665f813bf396"
     },
     {
       "path": "content/conditions/neuro_msk_derm.json",
-      "sha256": "dcc9d18713f517b16fd4cc195f49032947d9bfb660d46fec2dee24dc2a67dd42"
+      "sha256": "a8155e1cf9a193f09831109c3f6c53e871e4e62a4fcf72b99e1d47deff8d51fc"
     },
     {
       "path": "content/conditions/women_children_prevention.json",
@@ -195,7 +196,7 @@
     },
     {
       "path": "content/conditions/common_additions.json",
-      "sha256": "ef333f3e18d9749ff539d925917f938525eec6f43e469d1c671751e221e25244"
+      "sha256": "72cc68b0ca2016a69d65c2a182c9d3cfb1e363b047d557f46935e8aa461a6bb6"
     },
     {
       "path": "content/conditions/treatment_expansion.json",
@@ -204,6 +205,22 @@
     {
       "path": "content/conditions/licensed_reference_expansion.json",
       "sha256": "d3521ac41f9ece6d2825032aaf467ef2a4533bf886254c5239d7045329641c34"
+    },
+    {
+      "path": "content/conditions/lifespan_prevention.json",
+      "sha256": "344e9e9fb4c6ab6f1e3e9eabb91c518a64f4b8469231831e06ecb5fd710ff95f"
+    },
+    {
+      "path": "content/conditions/geriatric_care.json",
+      "sha256": "823b9e4719558d77bc4889226091f46f5a9ae4f19c3575ca1255ec55e45a7ae3"
+    },
+    {
+      "path": "content/conditions/eye_sports_expansion.json",
+      "sha256": "ff8ebeb27e3c3819a75b684c960ccd07baaf2e99a57cc2ad015cadb2ebec9558"
+    },
+    {
+      "path": "content/conditions/immunization_prevention.json",
+      "sha256": "4887953bb46d5b866536302144aba3d455be8dbb53a0ce45c0522478abf8318c"
     },
     {
       "path": "content/board-foundations.json",
@@ -218,8 +235,8 @@
       "https://www.theabfm.org/family-medicine-exam-blueprint/",
       "https://www.theabfm.org/app/uploads/2025/10/2026-FMCE-Examination-Information-Booklet-v.1.0.pdf"
     ],
-    "questionCount": 458,
-    "poolFingerprint": "3100b82aaa2e99e2270c79b544e6fb317a892f13e2019cd05f80b67fa133fae9",
+    "questionCount": 550,
+    "poolFingerprint": "142af10533f6f66beb7fa68a09602e19a196fa3debdb262bc1e3b04eeae41714",
     "mappingBasis": "Publisher-authored question primary-domain metadata; not independently adjudicated alignment.",
     "crosswalk": [
       {
@@ -300,6 +317,46 @@
         "primaryDomain": "acute",
         "sourceIds": [
           "acne-vulgaris-gov-expansion-20261010"
+        ]
+      },
+      {
+        "key": "acute-angle-closure-glaucoma:acute-angle-closure-glaucoma-q1",
+        "fingerprint": "d5fa18dee283d339958daa99dd5f35c421ee5afa02e776c03b1904bc9ad4e675",
+        "conditionId": "acute-angle-closure-glaucoma",
+        "questionId": "acute-angle-closure-glaucoma-q1",
+        "primaryDomain": "emergent",
+        "sourceIds": [
+          "nei-glaucoma-types"
+        ]
+      },
+      {
+        "key": "acute-angle-closure-glaucoma:acute-angle-closure-glaucoma-q2",
+        "fingerprint": "3eb52a64020cf2cd0ff088cea9ca1219e03a5f1923bf2c9192a1a89c56ccd1ab",
+        "conditionId": "acute-angle-closure-glaucoma",
+        "questionId": "acute-angle-closure-glaucoma-q2",
+        "primaryDomain": "emergent",
+        "sourceIds": [
+          "nei-glaucoma-types"
+        ]
+      },
+      {
+        "key": "acute-angle-closure-glaucoma:acute-angle-closure-glaucoma-q3",
+        "fingerprint": "0bac69ec8bce6ac279ffce341bc93d247e249afebe6714199c62c651c99ae4f3",
+        "conditionId": "acute-angle-closure-glaucoma",
+        "questionId": "acute-angle-closure-glaucoma-q3",
+        "primaryDomain": "emergent",
+        "sourceIds": [
+          "nei-glaucoma-types"
+        ]
+      },
+      {
+        "key": "acute-angle-closure-glaucoma:acute-angle-closure-glaucoma-q4",
+        "fingerprint": "31797e90cf5b598e36becddca44d952b8d5aeeed3d116f9588c6814bcefcc11b",
+        "conditionId": "acute-angle-closure-glaucoma",
+        "questionId": "acute-angle-closure-glaucoma-q4",
+        "primaryDomain": "emergent",
+        "sourceIds": [
+          "nei-glaucoma-types"
         ]
       },
       {
@@ -553,6 +610,16 @@
         ]
       },
       {
+        "key": "acute-low-back-pain:acute-low-back-pain-q10",
+        "fingerprint": "6dfb7e185a1c72a2f211b4ce86ce6b8dff2545a4fe88d44c62a013d96f6e97bd",
+        "conditionId": "acute-low-back-pain",
+        "questionId": "acute-low-back-pain-q10",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "lbp-va2022-full-treatment-20261010"
+        ]
+      },
+      {
         "key": "acute-low-back-pain:acute-low-back-pain-q2",
         "fingerprint": "386f0ee287747a234a0f927333a3536c73f753545881592e52431ad4a89667d4",
         "conditionId": "acute-low-back-pain",
@@ -580,6 +647,56 @@
         "primaryDomain": "acute",
         "sourceIds": [
           "acute-low-back-pain-gov-expansion-20261010"
+        ]
+      },
+      {
+        "key": "acute-low-back-pain:acute-low-back-pain-q5",
+        "fingerprint": "95eb5be91f3a6e85c05ffe04b62e4eb9f99faec1da7a3b2889e9469075f0dafe",
+        "conditionId": "acute-low-back-pain",
+        "questionId": "acute-low-back-pain-q5",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "lbp-va2022-full-treatment-20261010"
+        ]
+      },
+      {
+        "key": "acute-low-back-pain:acute-low-back-pain-q6",
+        "fingerprint": "da50d29c2e2475577daae608eb7a2c94dd9463200e6ee7b3cdaf6ab3d83827b4",
+        "conditionId": "acute-low-back-pain",
+        "questionId": "acute-low-back-pain-q6",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "lbp-va2022-full-treatment-20261010"
+        ]
+      },
+      {
+        "key": "acute-low-back-pain:acute-low-back-pain-q7",
+        "fingerprint": "3a651d16965b0c9abe84e841b58103fbdaaf76554e1eeb0c3a485f02d9d92167",
+        "conditionId": "acute-low-back-pain",
+        "questionId": "acute-low-back-pain-q7",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "lbp-va2022-full-treatment-20261010"
+        ]
+      },
+      {
+        "key": "acute-low-back-pain:acute-low-back-pain-q8",
+        "fingerprint": "8f4c5e0f7f8e9d9b876c1e369b5d09a2e76e85146aaa99b253fd725f6da35132",
+        "conditionId": "acute-low-back-pain",
+        "questionId": "acute-low-back-pain-q8",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "lbp-va2022-full-treatment-20261010"
+        ]
+      },
+      {
+        "key": "acute-low-back-pain:acute-low-back-pain-q9",
+        "fingerprint": "5673fbb058079756c372523d43f3f497fb9871c2d4beccf782420c1d4426b04b",
+        "conditionId": "acute-low-back-pain",
+        "questionId": "acute-low-back-pain-q9",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "lbp-va2022-full-treatment-20261010"
         ]
       },
       {
@@ -620,6 +737,66 @@
         "primaryDomain": "acute",
         "sourceIds": [
           "cdc-pediatric-aom-verified20261010"
+        ]
+      },
+      {
+        "key": "adult-immunization:adult-immunization-q1",
+        "fingerprint": "9f2aef439795f4a0fe2e2e7b90ca28296885fb463dab88fa9fed7ddca0e204f1",
+        "conditionId": "adult-immunization",
+        "questionId": "adult-immunization-q1",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-adult-immunization-notes-20261010"
+        ]
+      },
+      {
+        "key": "adult-immunization:adult-immunization-q2",
+        "fingerprint": "0f8ab486cb16b6cc1de323a8fe059f1787e11077eb017af022e5bc959ba02cd8",
+        "conditionId": "adult-immunization",
+        "questionId": "adult-immunization-q2",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-adult-immunization-notes-20261010"
+        ]
+      },
+      {
+        "key": "adult-immunization:adult-immunization-q3",
+        "fingerprint": "86af08e50efd8f9b55a49e0632b62a673c78f59d3653b5f7f43c99ec5f9fd2d7",
+        "conditionId": "adult-immunization",
+        "questionId": "adult-immunization-q3",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-adult-immunization-notes-20261010"
+        ]
+      },
+      {
+        "key": "adult-immunization:adult-immunization-q4",
+        "fingerprint": "1f9b4c36fcf42da07bc62f77bf9fffafe7f333e249bcc9e6baa3a46617f6b243",
+        "conditionId": "adult-immunization",
+        "questionId": "adult-immunization-q4",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-adult-immunization-notes-20261010"
+        ]
+      },
+      {
+        "key": "adult-immunization:adult-immunization-q5",
+        "fingerprint": "d251a34cd21d8f894e6744c69a24e0630c5fcfdaaa38ec9a48f1a65aa85cad9b",
+        "conditionId": "adult-immunization",
+        "questionId": "adult-immunization-q5",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-adult-immunization-notes-20261010"
+        ]
+      },
+      {
+        "key": "adult-immunization:adult-immunization-q6",
+        "fingerprint": "c3e0657a071348402a506af7133dc3298e443501c4b76d82c9cef4c8bc967094",
+        "conditionId": "adult-immunization",
+        "questionId": "adult-immunization-q6",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-adult-immunization-notes-20261010"
         ]
       },
       {
@@ -780,6 +957,47 @@
         "primaryDomain": "preventive",
         "sourceIds": [
           "cdc-vaccine-anaphylaxis-narrative-expanded-2026"
+        ]
+      },
+      {
+        "key": "ankle-sprain:ankle-sprain-q1",
+        "fingerprint": "67a02af6e1a6e7097bd2f5a0d5fe6c1cdafe8a45b86ecde21db67fd67d2d3509",
+        "conditionId": "ankle-sprain",
+        "questionId": "ankle-sprain-q1",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "niams-sports-injuries"
+        ]
+      },
+      {
+        "key": "ankle-sprain:ankle-sprain-q2",
+        "fingerprint": "74fcb9c401743a14a9a117c0df2d8edd3aae9aed3163a662487d073406f51b5e",
+        "conditionId": "ankle-sprain",
+        "questionId": "ankle-sprain-q2",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "niams-sports-injuries",
+          "niams-sports-injury-treatment"
+        ]
+      },
+      {
+        "key": "ankle-sprain:ankle-sprain-q3",
+        "fingerprint": "9c30d8cfe27666fc44593ddf17376add90d4641300114fb16a59961640e1a365",
+        "conditionId": "ankle-sprain",
+        "questionId": "ankle-sprain-q3",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "niams-sports-injury-treatment"
+        ]
+      },
+      {
+        "key": "ankle-sprain:ankle-sprain-q4",
+        "fingerprint": "22348d3db115d003d2857399ccd6d3c450939b37f73a676bdc28ae5d3e80d1b7",
+        "conditionId": "ankle-sprain",
+        "questionId": "ankle-sprain-q4",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "niams-sports-injury-treatment"
         ]
       },
       {
@@ -1243,6 +1461,49 @@
         ]
       },
       {
+        "key": "cataract:cataract-q1",
+        "fingerprint": "e5809eeb9b45207260405e4b5bf5c367498db9a4d2190d12e8aab542db9a5ce0",
+        "conditionId": "cataract",
+        "questionId": "cataract-q1",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nei-cataracts",
+          "nei-glaucoma",
+          "nei-glaucoma-types",
+          "nei-retinal-detachment"
+        ]
+      },
+      {
+        "key": "cataract:cataract-q2",
+        "fingerprint": "81bc6e86a36fe89097f4ac19670ac7b532831e1d38d523372fd1e674f77e18b1",
+        "conditionId": "cataract",
+        "questionId": "cataract-q2",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nei-cataracts"
+        ]
+      },
+      {
+        "key": "cataract:cataract-q3",
+        "fingerprint": "f90359cee7996575bfca949fa4f36eee0b309404d782c1e880c3867ecf370a54",
+        "conditionId": "cataract",
+        "questionId": "cataract-q3",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nei-cataracts"
+        ]
+      },
+      {
+        "key": "cataract:cataract-q4",
+        "fingerprint": "d04a3940c5deb379eb305504bf83c852a00742d2af157a6ee9b12cd1c6c940c8",
+        "conditionId": "cataract",
+        "questionId": "cataract-q4",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nei-cataracts"
+        ]
+      },
+      {
         "key": "cellulitis:cellulitis-q1",
         "fingerprint": "04bb24c67ccac96235cf48b4e1fde9d60f1ff80eb520df49c03a24b743c0c774",
         "conditionId": "cellulitis",
@@ -1323,6 +1584,66 @@
         ]
       },
       {
+        "key": "child-adolescent-immunization:child-adolescent-immunization-q1",
+        "fingerprint": "ec643fe145141c675d07fb99c8da398ab980ba4e434300d4f8b4bdea13666384",
+        "conditionId": "child-adolescent-immunization",
+        "questionId": "child-adolescent-immunization-q1",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-child-immunization-notes-20261010"
+        ]
+      },
+      {
+        "key": "child-adolescent-immunization:child-adolescent-immunization-q2",
+        "fingerprint": "21163e6d0bffdafde4446abcd1ca684446875cd5b5555e54bdcb8bf6dd77597d",
+        "conditionId": "child-adolescent-immunization",
+        "questionId": "child-adolescent-immunization-q2",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-child-immunization-notes-20261010"
+        ]
+      },
+      {
+        "key": "child-adolescent-immunization:child-adolescent-immunization-q3",
+        "fingerprint": "f8d02fd0202948cf3c002d4039fb6ece98c4c2b8210802096c70fe8529ebe9a4",
+        "conditionId": "child-adolescent-immunization",
+        "questionId": "child-adolescent-immunization-q3",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-child-immunization-notes-20261010"
+        ]
+      },
+      {
+        "key": "child-adolescent-immunization:child-adolescent-immunization-q4",
+        "fingerprint": "471708b561ff15238c92d890dabc310bbc17ff60b83157fa0b39759251c2b383",
+        "conditionId": "child-adolescent-immunization",
+        "questionId": "child-adolescent-immunization-q4",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-child-immunization-notes-20261010"
+        ]
+      },
+      {
+        "key": "child-adolescent-immunization:child-adolescent-immunization-q5",
+        "fingerprint": "feee56eba27378c87352b6e46000b7eb490f8e90ef5c5f75f451b4fef755ed4c",
+        "conditionId": "child-adolescent-immunization",
+        "questionId": "child-adolescent-immunization-q5",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-child-immunization-notes-20261010"
+        ]
+      },
+      {
+        "key": "child-adolescent-immunization:child-adolescent-immunization-q6",
+        "fingerprint": "951ec0ea621ba9109fbb2eebab579445c432facd9655bea0e3d0fe04ad0f30d4",
+        "conditionId": "child-adolescent-immunization",
+        "questionId": "child-adolescent-immunization-q6",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-child-immunization-notes-20261010"
+        ]
+      },
+      {
         "key": "chlamydia:chlamydia-q1",
         "fingerprint": "7d6306fadb2adb181bc8fdacb53dbe8347ea978aa24ea649563107b2301b6d3b",
         "conditionId": "chlamydia",
@@ -1360,6 +1681,56 @@
         "primaryDomain": "preventive",
         "sourceIds": [
           "cdc-chlamydia-verified20261010"
+        ]
+      },
+      {
+        "key": "chlamydia:chlamydia-q5",
+        "fingerprint": "9bdd7c6b921125225af4c02483ab0595e4d00d7443f053911564576f821bb257",
+        "conditionId": "chlamydia",
+        "questionId": "chlamydia-q5",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-chlamydia-treatment-depth-20261010"
+        ]
+      },
+      {
+        "key": "chlamydia:chlamydia-q6",
+        "fingerprint": "6a90410b71a0e90e1da95ecf89d70b7333b7f985201d9cf075a76d89899b1fb4",
+        "conditionId": "chlamydia",
+        "questionId": "chlamydia-q6",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-chlamydia-treatment-depth-20261010"
+        ]
+      },
+      {
+        "key": "chlamydia:chlamydia-q7",
+        "fingerprint": "8daf73ed9123cfc131afe0b713bd5f5b8013adff3b1b231e5350575a0e75c563",
+        "conditionId": "chlamydia",
+        "questionId": "chlamydia-q7",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-chlamydia-treatment-depth-20261010"
+        ]
+      },
+      {
+        "key": "chlamydia:chlamydia-q8",
+        "fingerprint": "730f2aceb8dcddae81ec35375bf9282f5c90210f2c211bb5d4b90ae5d32e49bf",
+        "conditionId": "chlamydia",
+        "questionId": "chlamydia-q8",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-chlamydia-treatment-depth-20261010"
+        ]
+      },
+      {
+        "key": "chlamydia:chlamydia-q9",
+        "fingerprint": "3850c5db2603687d91b3494485f9ab09593ad65e67f81c1bdcbce9ba97b2f083",
+        "conditionId": "chlamydia",
+        "questionId": "chlamydia-q9",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-chlamydia-treatment-depth-20261010"
         ]
       },
       {
@@ -1521,6 +1892,69 @@
         "primaryDomain": "acute",
         "sourceIds": [
           "nhlbi-pneumonia-diagnosis-verified20261010"
+        ]
+      },
+      {
+        "key": "contraceptive-planning:contraceptive-planning-q1",
+        "fingerprint": "a4c7b07b38ce1256165467031b1095f2d2580e01ebb8c46d561fd7de4ed18666",
+        "conditionId": "contraceptive-planning",
+        "questionId": "contraceptive-planning-q1",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-us-mec-2024",
+          "cdc-us-mec-2024-appendices"
+        ]
+      },
+      {
+        "key": "contraceptive-planning:contraceptive-planning-q2",
+        "fingerprint": "fe2acb9b3b3bb78434865fcd23a848b465506f12f651928f327d4510bbd828d6",
+        "conditionId": "contraceptive-planning",
+        "questionId": "contraceptive-planning-q2",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-us-mec-2024",
+          "cdc-us-mec-2024-appendices"
+        ]
+      },
+      {
+        "key": "contraceptive-planning:contraceptive-planning-q3",
+        "fingerprint": "e85bd3b3d4ab1692125614add9750b9316285f2116b445f825496624d3e45670",
+        "conditionId": "contraceptive-planning",
+        "questionId": "contraceptive-planning-q3",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-us-mec-2024",
+          "cdc-us-mec-2024-appendices"
+        ]
+      },
+      {
+        "key": "contraceptive-planning:contraceptive-planning-q4",
+        "fingerprint": "b1fed4223c43276f94373de8d0fe39e13c5013fdd3d7f8c42f7278445446d89d",
+        "conditionId": "contraceptive-planning",
+        "questionId": "contraceptive-planning-q4",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-us-spr-2024"
+        ]
+      },
+      {
+        "key": "contraceptive-planning:contraceptive-planning-q5",
+        "fingerprint": "4a35188140d5bd87215d054fd4c75a15306517b3612f60dbdf95a3bbf8471054",
+        "conditionId": "contraceptive-planning",
+        "questionId": "contraceptive-planning-q5",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-us-spr-2024"
+        ]
+      },
+      {
+        "key": "contraceptive-planning:contraceptive-planning-q6",
+        "fingerprint": "55e833b620b3bbb5bd81ce0e499f18d4052c00e15f2028c1cf2e1b04328fcf8e",
+        "conditionId": "contraceptive-planning",
+        "questionId": "contraceptive-planning-q6",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-us-spr-2024"
         ]
       },
       {
@@ -1724,6 +2158,70 @@
         ]
       },
       {
+        "key": "developmental-surveillance:developmental-surveillance-q1",
+        "fingerprint": "f4b0e1eb7557af85a999ef990f6036ea557da03a8583dce20419fb828878cefb",
+        "conditionId": "developmental-surveillance",
+        "questionId": "developmental-surveillance-q1",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-development-key-points"
+        ]
+      },
+      {
+        "key": "developmental-surveillance:developmental-surveillance-q2",
+        "fingerprint": "f1fea852d6243b3fccd39cac964f6934851cb63edf3c3071c33d28fb43787ae0",
+        "conditionId": "developmental-surveillance",
+        "questionId": "developmental-surveillance-q2",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-development-key-points"
+        ]
+      },
+      {
+        "key": "developmental-surveillance:developmental-surveillance-q3",
+        "fingerprint": "c5a0a20ea796e787fd1597d17d58aa5697ade2f8f69db7ff2acc5774760dcef6",
+        "conditionId": "developmental-surveillance",
+        "questionId": "developmental-surveillance-q3",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-milestones-6-months"
+        ]
+      },
+      {
+        "key": "developmental-surveillance:developmental-surveillance-q4",
+        "fingerprint": "d3749c7c116ff14ddc288140b7cc5dc032624024d01ac9f1e2f1ca17e467e9a3",
+        "conditionId": "developmental-surveillance",
+        "questionId": "developmental-surveillance-q4",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-development-key-points",
+          "cdc-milestones-9-months"
+        ]
+      },
+      {
+        "key": "developmental-surveillance:developmental-surveillance-q5",
+        "fingerprint": "6dd46526e40ca0b9f6163f811c9a332bb9fa31a2a7670d6bcc06928f9351edc9",
+        "conditionId": "developmental-surveillance",
+        "questionId": "developmental-surveillance-q5",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-milestones-18-months",
+          "cdc-milestones-6-months",
+          "cdc-milestones-9-months"
+        ]
+      },
+      {
+        "key": "developmental-surveillance:developmental-surveillance-q6",
+        "fingerprint": "9f4d7b7b9b1867e8c98991205616e67fdc373911957b04931140956fa186ef0f",
+        "conditionId": "developmental-surveillance",
+        "questionId": "developmental-surveillance-q6",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-development-key-points",
+          "cdc-milestones-9-months"
+        ]
+      },
+      {
         "key": "diabetic-ketoacidosis:diabetic-ketoacidosis-q1",
         "fingerprint": "84af2e9a163fd5443d1b713b4351f3e49a3c7239f30335226a1d943db77f3cf1",
         "conditionId": "diabetic-ketoacidosis",
@@ -1922,6 +2420,56 @@
         "primaryDomain": "acute",
         "sourceIds": [
           "cdc-epididymitis-verified20261010"
+        ]
+      },
+      {
+        "key": "epididymitis:epididymitis-q5",
+        "fingerprint": "c5e0a56f6c8aa2bbfc11bc15de423d6af5cec6df952efd4368982ae5221c6742",
+        "conditionId": "epididymitis",
+        "questionId": "epididymitis-q5",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-epididymitis-treatment-depth-20261010"
+        ]
+      },
+      {
+        "key": "epididymitis:epididymitis-q6",
+        "fingerprint": "292721de855f18f283608d9d8545f96120a28590075c561c135290bb62e956e9",
+        "conditionId": "epididymitis",
+        "questionId": "epididymitis-q6",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-epididymitis-treatment-depth-20261010"
+        ]
+      },
+      {
+        "key": "epididymitis:epididymitis-q7",
+        "fingerprint": "b9c6608078e991d8b8bb3792e17a88d764e9a64467466fcd46e5497291918e4b",
+        "conditionId": "epididymitis",
+        "questionId": "epididymitis-q7",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-epididymitis-treatment-depth-20261010"
+        ]
+      },
+      {
+        "key": "epididymitis:epididymitis-q8",
+        "fingerprint": "9705349a6cdbc8c9942a5edfcba73c8f51d25f91c0aec9cf7811b0314136d4d9",
+        "conditionId": "epididymitis",
+        "questionId": "epididymitis-q8",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-epididymitis-treatment-depth-20261010"
+        ]
+      },
+      {
+        "key": "epididymitis:epididymitis-q9",
+        "fingerprint": "ab5f7aac1a3d6c0a9a75b1389cc0d7e8aa932cc671a2889d5862105e69733b86",
+        "conditionId": "epididymitis",
+        "questionId": "epididymitis-q9",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-epididymitis-treatment-depth-20261010"
         ]
       },
       {
@@ -2362,6 +2910,57 @@
         "primaryDomain": "acute",
         "sourceIds": [
           "cdc-gonorrhea-verified20261010"
+        ]
+      },
+      {
+        "key": "gonorrhea:gonorrhea-q5",
+        "fingerprint": "c3cda066fd5e39998bc21c6761bd5eeb33b58deb51078c260a8a995a60653b26",
+        "conditionId": "gonorrhea",
+        "questionId": "gonorrhea-q5",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-gonorrhea-treatment-depth-20261010"
+        ]
+      },
+      {
+        "key": "gonorrhea:gonorrhea-q6",
+        "fingerprint": "17b8f9e84ad0c37cff3ab0afd47ef9c2df0bae83104411e50b0b2b2c5eb0120f",
+        "conditionId": "gonorrhea",
+        "questionId": "gonorrhea-q6",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-gonorrhea-treatment-depth-20261010",
+          "cdc-sti-erratum2023-treatments-20261010"
+        ]
+      },
+      {
+        "key": "gonorrhea:gonorrhea-q7",
+        "fingerprint": "67f99a2cbd904c6cad0280c7e3eedc29891a06888faee246cf14599eb6ddcec4",
+        "conditionId": "gonorrhea",
+        "questionId": "gonorrhea-q7",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-gonorrhea-treatment-depth-20261010"
+        ]
+      },
+      {
+        "key": "gonorrhea:gonorrhea-q8",
+        "fingerprint": "7a1d03268a178f8af09f9d9243fd14ee9681bcf336bdde045a7bbd6d824b2b62",
+        "conditionId": "gonorrhea",
+        "questionId": "gonorrhea-q8",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-gonorrhea-treatment-depth-20261010"
+        ]
+      },
+      {
+        "key": "gonorrhea:gonorrhea-q9",
+        "fingerprint": "d30ebf0c31c4ef083fd73da578e6db887438b6d72810913cd37ff976d8ad95cb",
+        "conditionId": "gonorrhea",
+        "questionId": "gonorrhea-q9",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-gonorrhea-treatment-depth-20261010"
         ]
       },
       {
@@ -3248,6 +3847,67 @@
         ]
       },
       {
+        "key": "older-adult-falls:older-adult-falls-q1",
+        "fingerprint": "3c47d264dcf9ee4f6ecee4ebd182e7a68a54d1d12ee9256914742889ada1ad03",
+        "conditionId": "older-adult-falls",
+        "questionId": "older-adult-falls-q1",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-steadi-algorithm-2019-20261010"
+        ]
+      },
+      {
+        "key": "older-adult-falls:older-adult-falls-q2",
+        "fingerprint": "8b211674673ec6bd9edb9f05c99128e136e29a57275950a3ce1a8952e327e49f",
+        "conditionId": "older-adult-falls",
+        "questionId": "older-adult-falls-q2",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-steadi-algorithm-2019-20261010"
+        ]
+      },
+      {
+        "key": "older-adult-falls:older-adult-falls-q3",
+        "fingerprint": "c046d4717745ba67edb3dd4e042f3c8af0b7ecd02f27eb4124768881f97d1d0f",
+        "conditionId": "older-adult-falls",
+        "questionId": "older-adult-falls-q3",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-steadi-safe-medreview-2017-20261010"
+        ]
+      },
+      {
+        "key": "older-adult-falls:older-adult-falls-q4",
+        "fingerprint": "abf1f7bcbba0f47b2bf03c5066045437b9f78438065577610b67d9035366a30a",
+        "conditionId": "older-adult-falls",
+        "questionId": "older-adult-falls-q4",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-steadi-algorithm-2019-20261010",
+          "cdc-steadi-safe-medreview-2017-20261010"
+        ]
+      },
+      {
+        "key": "older-adult-falls:older-adult-falls-q5",
+        "fingerprint": "4621fe00af1ff5a228d2aa104dd85cfc2cd02d93c28ee8d7acf375aeaf2e775a",
+        "conditionId": "older-adult-falls",
+        "questionId": "older-adult-falls-q5",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-steadi-algorithm-2019-20261010"
+        ]
+      },
+      {
+        "key": "older-adult-falls:older-adult-falls-q6",
+        "fingerprint": "aec5ed99d0a004532e09f4555b1fb3d5b23781f89d13f1bccf9142b614e876e8",
+        "conditionId": "older-adult-falls",
+        "questionId": "older-adult-falls-q6",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "cdc-steadi-algorithm-2019-20261010"
+        ]
+      },
+      {
         "key": "opioid-use-disorder:opioid-use-disorder-q1",
         "fingerprint": "0f57a7f77f518f2cd6eaaa9b594b12e7920a1c6e8ae0319f9b852792cb51e277",
         "conditionId": "opioid-use-disorder",
@@ -3299,6 +3959,16 @@
         ]
       },
       {
+        "key": "osteoarthritis:osteoarthritis-q10",
+        "fingerprint": "370731ec9dba7849da44bfae42eaae2ff333d413ffb749138801a870a485a7f2",
+        "conditionId": "osteoarthritis",
+        "questionId": "osteoarthritis-q10",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "oa-va2026-full-treatment-20261010"
+        ]
+      },
+      {
         "key": "osteoarthritis:osteoarthritis-q2",
         "fingerprint": "c1a2d0eb7c0aa10ee959f3c4e869f6d022b804ccf66c3e0d147ff42ce8ba2042",
         "conditionId": "osteoarthritis",
@@ -3326,6 +3996,56 @@
         "primaryDomain": "chronic",
         "sourceIds": [
           "osteoarthritis-gov-expansion-20261010"
+        ]
+      },
+      {
+        "key": "osteoarthritis:osteoarthritis-q5",
+        "fingerprint": "b8b52b2f7724a1b066cabe275540a7140a85ae7ccfc42a7b6d27a41c7f9fcf64",
+        "conditionId": "osteoarthritis",
+        "questionId": "osteoarthritis-q5",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "oa-va2026-full-treatment-20261010"
+        ]
+      },
+      {
+        "key": "osteoarthritis:osteoarthritis-q6",
+        "fingerprint": "da6b6c0f47493e1b396964558d0421ed4f5a5d388d975ab8f9ad4807240341d1",
+        "conditionId": "osteoarthritis",
+        "questionId": "osteoarthritis-q6",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "oa-va2026-full-treatment-20261010"
+        ]
+      },
+      {
+        "key": "osteoarthritis:osteoarthritis-q7",
+        "fingerprint": "5a1889bd8c1f3b0d07954995918b3b5133eab5b6c592ab6fab1478d1237d4500",
+        "conditionId": "osteoarthritis",
+        "questionId": "osteoarthritis-q7",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "oa-va2026-full-treatment-20261010"
+        ]
+      },
+      {
+        "key": "osteoarthritis:osteoarthritis-q8",
+        "fingerprint": "82b00cff6fa415c187bfd32140d480f488ebd8f3a8ddcb848d89fab6a2464678",
+        "conditionId": "osteoarthritis",
+        "questionId": "osteoarthritis-q8",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "oa-va2026-full-treatment-20261010"
+        ]
+      },
+      {
+        "key": "osteoarthritis:osteoarthritis-q9",
+        "fingerprint": "ef3b7b1866427b9f1611ce52ef4dfc11cc617233cadfcdf6daf1542019fe8e50",
+        "conditionId": "osteoarthritis",
+        "questionId": "osteoarthritis-q9",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "oa-va2026-full-treatment-20261010"
         ]
       },
       {
@@ -3729,6 +4449,66 @@
         ]
       },
       {
+        "key": "postpartum-care-continuum:postpartum-care-continuum-q1",
+        "fingerprint": "6ac9234259bc8da876f4f8411c78b00769a824784f77c5fc1e5604d445d3461c",
+        "conditionId": "postpartum-care-continuum",
+        "questionId": "postpartum-care-continuum-q1",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "va-dod-pregnancy-provider-2023"
+        ]
+      },
+      {
+        "key": "postpartum-care-continuum:postpartum-care-continuum-q2",
+        "fingerprint": "2070cd273d6180bfae75faa0a1481f8adab4a10c91130e3156a0cd684471f95b",
+        "conditionId": "postpartum-care-continuum",
+        "questionId": "postpartum-care-continuum-q2",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "va-dod-pregnancy-provider-2023"
+        ]
+      },
+      {
+        "key": "postpartum-care-continuum:postpartum-care-continuum-q3",
+        "fingerprint": "eff320dca435546d09fa27ddc26f631aec5b2ceb2fb0ec83f818dd971bb68c02",
+        "conditionId": "postpartum-care-continuum",
+        "questionId": "postpartum-care-continuum-q3",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "va-dod-pregnancy-provider-2023"
+        ]
+      },
+      {
+        "key": "postpartum-care-continuum:postpartum-care-continuum-q4",
+        "fingerprint": "778abaafa9448c204d3bdce642a06a35df86d0592588ef87024dda32364bee6c",
+        "conditionId": "postpartum-care-continuum",
+        "questionId": "postpartum-care-continuum-q4",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "va-dod-pregnancy-provider-2023"
+        ]
+      },
+      {
+        "key": "postpartum-care-continuum:postpartum-care-continuum-q5",
+        "fingerprint": "623324a59cae003f49bdfa3f44b6eb567eb8a7195c09d18754c5e98e3219a2d0",
+        "conditionId": "postpartum-care-continuum",
+        "questionId": "postpartum-care-continuum-q5",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "va-dod-pregnancy-provider-2023"
+        ]
+      },
+      {
+        "key": "postpartum-care-continuum:postpartum-care-continuum-q6",
+        "fingerprint": "0d434aee3b089c237402806ac855b62e1c8dc2be149768054e359590733a681e",
+        "conditionId": "postpartum-care-continuum",
+        "questionId": "postpartum-care-continuum-q6",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "va-dod-pregnancy-provider-2023"
+        ]
+      },
+      {
         "key": "prediabetes:prediabetes-q1",
         "fingerprint": "37f02c6574b4ad94650f8da0480cec3c34f113c87095ab31cb3bdafd7bbd8d67",
         "conditionId": "prediabetes",
@@ -3846,6 +4626,51 @@
         "primaryDomain": "acute",
         "sourceIds": [
           "nlm-pressure-summary-expanded-2026"
+        ]
+      },
+      {
+        "key": "primary-open-angle-glaucoma:primary-open-angle-glaucoma-q1",
+        "fingerprint": "218179d43d4cdd3c6e48d26a81bb6f3e918dde91a3ddc3d7250877082df22007",
+        "conditionId": "primary-open-angle-glaucoma",
+        "questionId": "primary-open-angle-glaucoma-q1",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nei-glaucoma",
+          "nei-glaucoma-types"
+        ]
+      },
+      {
+        "key": "primary-open-angle-glaucoma:primary-open-angle-glaucoma-q2",
+        "fingerprint": "ce051c3808515ddfc3afb2a490cfccb4b908f1c557acac4e72933f238bd0bf05",
+        "conditionId": "primary-open-angle-glaucoma",
+        "questionId": "primary-open-angle-glaucoma-q2",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nei-glaucoma",
+          "nei-glaucoma-types"
+        ]
+      },
+      {
+        "key": "primary-open-angle-glaucoma:primary-open-angle-glaucoma-q3",
+        "fingerprint": "5f5ae58da375f1204a54e139a2e8948862817a5dc4c72715c77a1d2f258b0ae0",
+        "conditionId": "primary-open-angle-glaucoma",
+        "questionId": "primary-open-angle-glaucoma-q3",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nei-cataracts",
+          "nei-glaucoma",
+          "nei-retinal-detachment"
+        ]
+      },
+      {
+        "key": "primary-open-angle-glaucoma:primary-open-angle-glaucoma-q4",
+        "fingerprint": "a3a208e0ac9bdc58ec65a51b918f052e1b3c563f6c5347c0b9b399f16690fad6",
+        "conditionId": "primary-open-angle-glaucoma",
+        "questionId": "primary-open-angle-glaucoma-q4",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nei-glaucoma",
+          "nei-glaucoma-types"
         ]
       },
       {
@@ -3990,6 +4815,49 @@
         ]
       },
       {
+        "key": "retinal-detachment:retinal-detachment-q1",
+        "fingerprint": "f8dd3e8916f576b434821e22ac4286b3099d67a17d1f8fbb7a4dfca4c27ea500",
+        "conditionId": "retinal-detachment",
+        "questionId": "retinal-detachment-q1",
+        "primaryDomain": "emergent",
+        "sourceIds": [
+          "nei-retinal-detachment"
+        ]
+      },
+      {
+        "key": "retinal-detachment:retinal-detachment-q2",
+        "fingerprint": "85a8c3485ff0b75d8fa35dd1c2756363b34705cdd29ee847a57a348e59db8da5",
+        "conditionId": "retinal-detachment",
+        "questionId": "retinal-detachment-q2",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "nei-dilated-eye-exam",
+          "nei-retinal-detachment"
+        ]
+      },
+      {
+        "key": "retinal-detachment:retinal-detachment-q3",
+        "fingerprint": "612c93c21dbb83e3519ca76664de0f7fa9bffa1828a47c6e0a78245aeb46cc46",
+        "conditionId": "retinal-detachment",
+        "questionId": "retinal-detachment-q3",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "nei-cataracts",
+          "nei-glaucoma",
+          "nei-retinal-detachment"
+        ]
+      },
+      {
+        "key": "retinal-detachment:retinal-detachment-q4",
+        "fingerprint": "6c00ed406cb50bc9f75622d891ecd3d4ed5ede600638e2b9acc18b85e6848f0c",
+        "conditionId": "retinal-detachment",
+        "questionId": "retinal-detachment-q4",
+        "primaryDomain": "emergent",
+        "sourceIds": [
+          "nei-retinal-detachment"
+        ]
+      },
+      {
         "key": "rheumatoid-arthritis:rheumatoid-arthritis-q1",
         "fingerprint": "3310b64c0517e4ba77137689cbd50bb9855b0bd208a9daa1144f574597305a40",
         "conditionId": "rheumatoid-arthritis",
@@ -4027,6 +4895,66 @@
         "primaryDomain": "chronic",
         "sourceIds": [
           "rheumatoid-arthritis-gov-expansion-20261010"
+        ]
+      },
+      {
+        "key": "routine-prenatal-care:routine-prenatal-care-q1",
+        "fingerprint": "9008431c33b4d26dfb94131a874bb3910255293e56348e15d13546b5f77b4e50",
+        "conditionId": "routine-prenatal-care",
+        "questionId": "routine-prenatal-care-q1",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "va-dod-pregnancy-provider-2023"
+        ]
+      },
+      {
+        "key": "routine-prenatal-care:routine-prenatal-care-q2",
+        "fingerprint": "b5d65335387cf673e1e53c0b6cd8410deac900314e43aaf74f4d5e7e952de890",
+        "conditionId": "routine-prenatal-care",
+        "questionId": "routine-prenatal-care-q2",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "va-dod-pregnancy-provider-2023"
+        ]
+      },
+      {
+        "key": "routine-prenatal-care:routine-prenatal-care-q3",
+        "fingerprint": "894881601a8292db1ec4f4b7fd5c614384c139eca6939426de66ccb1eba326eb",
+        "conditionId": "routine-prenatal-care",
+        "questionId": "routine-prenatal-care-q3",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "va-dod-pregnancy-provider-2023"
+        ]
+      },
+      {
+        "key": "routine-prenatal-care:routine-prenatal-care-q4",
+        "fingerprint": "19754b7a5b77422e221d9cd364f6e9d29db641cccec098facdf3d05246c851b4",
+        "conditionId": "routine-prenatal-care",
+        "questionId": "routine-prenatal-care-q4",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "va-dod-pregnancy-provider-2023"
+        ]
+      },
+      {
+        "key": "routine-prenatal-care:routine-prenatal-care-q5",
+        "fingerprint": "c60cf0f4e335da292ff009804330fefbc8e03fde20be73650c324adb6fe8de48",
+        "conditionId": "routine-prenatal-care",
+        "questionId": "routine-prenatal-care-q5",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "va-dod-pregnancy-provider-2023"
+        ]
+      },
+      {
+        "key": "routine-prenatal-care:routine-prenatal-care-q6",
+        "fingerprint": "d1ba98758bd96b4925ca3300990d17377ebaabc2eeb13a17fe17233e39179c0b",
+        "conditionId": "routine-prenatal-care",
+        "questionId": "routine-prenatal-care-q6",
+        "primaryDomain": "preventive",
+        "sourceIds": [
+          "va-dod-pregnancy-provider-2023"
         ]
       },
       {
@@ -4147,6 +5075,36 @@
         "primaryDomain": "acute",
         "sourceIds": [
           "cdc-strep-verified20261010"
+        ]
+      },
+      {
+        "key": "streptococcal-pharyngitis:streptococcal-pharyngitis-q5",
+        "fingerprint": "6a2ebe990e81f93641bbaf037ab4aa196affd49b57194a7e92eb87017eefeb1c",
+        "conditionId": "streptococcal-pharyngitis",
+        "questionId": "streptococcal-pharyngitis-q5",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-strep-treatment-depth-20261010"
+        ]
+      },
+      {
+        "key": "streptococcal-pharyngitis:streptococcal-pharyngitis-q6",
+        "fingerprint": "492987b54062d77f309fe20ba5ec6fd0e4285ee946189b085b4335896865eebf",
+        "conditionId": "streptococcal-pharyngitis",
+        "questionId": "streptococcal-pharyngitis-q6",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-strep-treatment-depth-20261010"
+        ]
+      },
+      {
+        "key": "streptococcal-pharyngitis:streptococcal-pharyngitis-q7",
+        "fingerprint": "8c499abeea557a4ea192e87bf4ed0f7a43d4305273dcce27b31720ff0e3b1047",
+        "conditionId": "streptococcal-pharyngitis",
+        "questionId": "streptococcal-pharyngitis-q7",
+        "primaryDomain": "acute",
+        "sourceIds": [
+          "cdc-strep-treatment-depth-20261010"
         ]
       },
       {
@@ -4817,37 +5775,37 @@
         "domain": "acute",
         "title": "Acute Care and Diagnosis",
         "targetPercent": 35,
-        "availableQuestions": 177,
-        "coveredTopics": 67,
-        "bankPercent": 38.65,
-        "deviationPercentagePoints": 3.65
+        "availableQuestions": 211,
+        "coveredTopics": 72,
+        "bankPercent": 38.36,
+        "deviationPercentagePoints": 3.36
       },
       {
         "domain": "chronic",
         "title": "Chronic Care Management",
         "targetPercent": 25,
-        "availableQuestions": 176,
-        "coveredTopics": 58,
-        "bankPercent": 38.43,
-        "deviationPercentagePoints": 13.43
+        "availableQuestions": 193,
+        "coveredTopics": 62,
+        "bankPercent": 35.09,
+        "deviationPercentagePoints": 10.09
       },
       {
         "domain": "emergent",
         "title": "Emergent and Urgent Care",
         "targetPercent": 20,
-        "availableQuestions": 47,
-        "coveredTopics": 27,
-        "bankPercent": 10.26,
-        "deviationPercentagePoints": -9.74
+        "availableQuestions": 53,
+        "coveredTopics": 29,
+        "bankPercent": 9.64,
+        "deviationPercentagePoints": -10.36
       },
       {
         "domain": "preventive",
         "title": "Preventive Care",
         "targetPercent": 15,
-        "availableQuestions": 38,
-        "coveredTopics": 24,
-        "bankPercent": 8.3,
-        "deviationPercentagePoints": -6.7
+        "availableQuestions": 73,
+        "coveredTopics": 31,
+        "bankPercent": 13.27,
+        "deviationPercentagePoints": -1.73
       },
       {
         "domain": "foundations",
@@ -4855,8 +5813,8 @@
         "targetPercent": 5,
         "availableQuestions": 20,
         "coveredTopics": 6,
-        "bankPercent": 4.37,
-        "deviationPercentagePoints": -0.63
+        "bankPercent": 3.64,
+        "deviationPercentagePoints": -1.36
       }
     ],
     "scope": "Current inventory and primary-domain distribution only. Topic completeness, item difficulty, medical accuracy and exam readiness are not evaluated.",

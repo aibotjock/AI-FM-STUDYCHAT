@@ -135,8 +135,8 @@ test('CLI writes honest partial coverage only under explicit quarantine mode', (
     assert.equal(manifest.files.length, 5);
     assert.equal(manifest.checkedAt, '2026-10-09');
     const coverage = readFileSync(join(directory, 'docs/CONDITION_COVERAGE.md'), 'utf8');
-    assert.match(coverage, /Currently eligible: 103 conditions and 206 questions/);
-    assert.match(coverage, /Quarantined: 2 conditions and 4 questions/);
+    assert.match(coverage, /Currently eligible: 103 disease conditions, 0 study topics and 206 questions/);
+    assert.match(coverage, /Quarantined: 2 records and 4 questions/);
     assert.match(coverage, /Study tool only; not medical advice or for clinical use/);
     assert.match(coverage, /\*\*Quarantined:\*\*/);
     assert.equal(output.at(-1).paidCalls, 0);

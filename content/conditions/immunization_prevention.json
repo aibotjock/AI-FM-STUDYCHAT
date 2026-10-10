@@ -1,0 +1,747 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-10",
+  "conditions": [
+    {
+      "id": "adult-immunization",
+      "name": "Adult immunization and catch-up",
+      "recordType": "study-topic",
+      "aliases": [
+        "adult vaccination",
+        "adult immunization",
+        "vaccine catch-up in adults"
+      ],
+      "specialty": "Prevention across the lifespan",
+      "domain": "preventive",
+      "keywords": [
+        "vaccination",
+        "catch-up",
+        "immunization",
+        "prevention"
+      ],
+      "overview": "Selected adult catch-up, HPV, pregnancy Tdap and recombinant-zoster decisions from CDC professional notes. This is a preventive study topic, not an additional diagnosis.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-10"
+      },
+      "sources": [
+        {
+          "id": "cdc-adult-immunization-notes-20261010",
+          "title": "Adult Immunization Schedule Notes",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/adult-notes.html",
+          "kind": "official-recommendation",
+          "edition": "CDC professional schedule notes/addendum dated July 2, 2025; selected recommendations checked October 10, 2026",
+          "publishedDate": "2025-07-02",
+          "checkedAt": "2026-10-10",
+          "locator": "Administer recommended vaccines; Human papillomavirus vaccination; Tetanus, diphtheria and pertussis vaccination; Zoster vaccination",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Selected original CDC text only; not a complete schedule, product dosing guide or patient-care protocol. Follow current notes, contraindications and addenda. No COVID-19, RSV or season-specific influenza regimen is taught by this record. No logos, tables, images or third-party works imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          },
+          "attribution": "Original CDC recommendation text is freely available at the linked source. This independent study app and its original summaries are not endorsed by CDC."
+        }
+      ],
+      "sections": [
+        {
+          "id": "series-lapse",
+          "title": "Interrupted adult series",
+          "text": "For incomplete or unknown adult vaccination histories, give recommended vaccines. Extended intervals do not require restarting a vaccine series or adding extra doses solely because of the delay.",
+          "sourceIds": [
+            "cdc-adult-immunization-notes-20261010"
+          ],
+          "sourceLocator": "Administer recommended vaccines"
+        },
+        {
+          "id": "hpv-age-boundary",
+          "title": "HPV age and prior-series boundaries",
+          "text": "CDC recommends completing HPV vaccination through age 26. Starting at age 15 or older uses three doses at 0, 1\u20132 and 6 months. For ages 27\u201345, vaccination is based on shared clinical decision-making, rather than automatic catch-up for every adult. A valid completed HPV series needs no additional dose. Contraindications and special situations still apply.",
+          "sourceIds": [
+            "cdc-adult-immunization-notes-20261010"
+          ],
+          "sourceLocator": "Human papillomavirus vaccination: Routine vaccination; Shared clinical decision-making"
+        },
+        {
+          "id": "hpv-immunity",
+          "title": "HPV and immunocompromising conditions",
+          "text": "People with immunocompromising conditions, including HIV, complete a three-dose HPV series even if the series begins at ages 9\u201314. Age eligibility and special-situation recommendations still apply.",
+          "sourceIds": [
+            "cdc-adult-immunization-notes-20261010"
+          ],
+          "sourceLocator": "Human papillomavirus vaccination: Special situations"
+        },
+        {
+          "id": "tdap-pregnancy",
+          "title": "Tdap in each pregnancy",
+          "text": "CDC specifies one Tdap dose during each pregnancy, preferably in the early part of gestational weeks 27\u201336. A dose in a previous pregnancy does not replace the dose for the current pregnancy.",
+          "sourceIds": [
+            "cdc-adult-immunization-notes-20261010"
+          ],
+          "sourceLocator": "Tetanus, diphtheria, and pertussis vaccination: Special situations"
+        },
+        {
+          "id": "recombinant-zoster",
+          "title": "Recombinant zoster after previous shingles",
+          "text": "For adults age 50 or older, CDC specifies a two-dose recombinant-zoster series, normally 2\u20136 months apart, regardless of prior herpes zoster. This product does not prevent primary varicella; pregnancy and immunocompromising conditions have separate considerations.",
+          "sourceIds": [
+            "cdc-adult-immunization-notes-20261010"
+          ],
+          "sourceLocator": "Zoster vaccination: Routine vaccination; Special situations"
+        }
+      ],
+      "questions": [
+        {
+          "id": "adult-immunization-q1",
+          "stem": "A fictional 25-year-old adult has never received HPV vaccine and has no contraindication or immunocompromising condition. Which CDC age-based category applies?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Routine/catch-up completion through age 26"
+            },
+            {
+              "id": "B",
+              "text": "Shared decision-making category for ages 27\u201345"
+            },
+            {
+              "id": "C",
+              "text": "No vaccination because adulthood has begun"
+            },
+            {
+              "id": "D",
+              "text": "Single-dose completion regardless of age at initiation"
+            },
+            {
+              "id": "E",
+              "text": "Repeat a previously completed series"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "At age 25, HPV vaccination falls in routine/catch-up completion through age 26. Starting at age 15 or older uses a three-dose series.",
+          "distractorExplanations": {
+            "B": "The 27\u201345 shared-decision category does not describe this 25-year-old.",
+            "C": "CDC includes adults through age 26.",
+            "D": "Initiation at age 15 or older requires three doses, not an assumed single dose.",
+            "E": "The vignette describes an unvaccinated adult, not a completed series."
+          },
+          "sectionIds": [
+            "hpv-age-boundary"
+          ],
+          "sourceIds": [
+            "cdc-adult-immunization-notes-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply the HPV routine/catch-up age boundary.",
+          "difficulty": "application"
+        },
+        {
+          "id": "adult-immunization-q2",
+          "stem": "A fictional healthy 34-year-old adult has never received HPV vaccine. Which approach matches the CDC age category?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Automatic catch-up for every adult over age 26"
+            },
+            {
+              "id": "B",
+              "text": "Shared clinical decision-making about HPV vaccination"
+            },
+            {
+              "id": "C",
+              "text": "A blanket contraindication solely because of age 34"
+            },
+            {
+              "id": "D",
+              "text": "Use the adolescent two-dose schedule regardless of starting age"
+            },
+            {
+              "id": "E",
+              "text": "Require an additional dose for anyone with a completed valid series"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "For adults age 27\u201345, HPV vaccination is based on shared clinical decision-making. If first initiated at age 34, the adult notes specify a three-dose series.",
+          "distractorExplanations": {
+            "A": "Automatic routine catch-up through age 26 does not extend to everyone age 34.",
+            "C": "The notes provide a shared-decision category at this age, not an age-only contraindication.",
+            "D": "Age at initial vaccination determines the series; starting at 34 is not the 9\u201314 category.",
+            "E": "CDC does not recommend additional doses after a valid completed series."
+          },
+          "sectionIds": [
+            "hpv-age-boundary"
+          ],
+          "sourceIds": [
+            "cdc-adult-immunization-notes-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Distinguish HPV shared decision-making from routine adult catch-up.",
+          "difficulty": "application"
+        },
+        {
+          "id": "adult-immunization-q3",
+          "stem": "A fictional 20-year-old adult with HIV diagnosed before age 12 began HPV vaccination at age 12 while already immunocompromised. Two valid doses of the prescribed three-dose course have been received. Which total series length is specified by the CDC special-situation rule?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "One dose"
+            },
+            {
+              "id": "B",
+              "text": "Two doses because all age-12 initiations use two"
+            },
+            {
+              "id": "C",
+              "text": "Three doses because an immunocompromising condition is present"
+            },
+            {
+              "id": "D",
+              "text": "Annual HPV boosters indefinitely"
+            },
+            {
+              "id": "E",
+              "text": "No HPV vaccine at any age in people with HIV"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "CDC specifies three doses with immunocompromising conditions, including HIV, even when initiation occurred at ages 9\u201314.",
+          "distractorExplanations": {
+            "A": "The immunocompromising-condition recommendation is a three-dose series.",
+            "B": "The three-dose special-situation rule overrides the usual two-dose initiation category.",
+            "D": "The cited notes specify a series, not indefinite annual boosters.",
+            "E": "The notes explicitly address HPV vaccination in people with HIV."
+          },
+          "sectionIds": [
+            "hpv-immunity"
+          ],
+          "sourceIds": [
+            "cdc-adult-immunization-notes-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply the HPV immunocompromising-condition exception.",
+          "difficulty": "application"
+        },
+        {
+          "id": "adult-immunization-q4",
+          "stem": "In a fictional pregnancy vignette, a 29-year-old is at 28 weeks and received Tdap in a previous pregnancy two years ago. There is no contraindication. Which plan matches the CDC notes?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Wait ten years from the previous dose"
+            },
+            {
+              "id": "B",
+              "text": "Omit Tdap because any previous pregnancy dose is sufficient"
+            },
+            {
+              "id": "C",
+              "text": "Give Tdap only after delivery"
+            },
+            {
+              "id": "D",
+              "text": "Give one Tdap dose in this pregnancy within the preferred 27\u201336-week window"
+            },
+            {
+              "id": "E",
+              "text": "Give a new three-dose primary series solely because of pregnancy"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "CDC recommends one Tdap dose during each pregnancy, preferably early in gestational weeks 27\u201336. A previous pregnancy dose does not remove this recommendation.",
+          "distractorExplanations": {
+            "A": "The pregnancy-specific recommendation is a dose during each pregnancy.",
+            "B": "Each pregnancy is addressed separately.",
+            "C": "This vignette is within the preferred gestational window.",
+            "E": "Pregnancy alone is not the cited indication to restart a primary series."
+          },
+          "sectionIds": [
+            "tdap-pregnancy"
+          ],
+          "sourceIds": [
+            "cdc-adult-immunization-notes-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply the each-pregnancy Tdap recommendation.",
+          "difficulty": "application"
+        },
+        {
+          "id": "adult-immunization-q5",
+          "stem": "A fictional immunocompetent 62-year-old has recovered from previous shingles and has never received recombinant zoster vaccine. Which CDC routine recommendation applies?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No vaccination because prior shingles replaces vaccination"
+            },
+            {
+              "id": "B",
+              "text": "One dose because shingles counts as dose one"
+            },
+            {
+              "id": "C",
+              "text": "Live zoster vaccine is the only relevant product"
+            },
+            {
+              "id": "D",
+              "text": "Wait until age 80 solely because of prior shingles"
+            },
+            {
+              "id": "E",
+              "text": "Two recombinant-zoster doses normally 2\u20136 months apart"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "CDC recommends two recombinant-zoster doses for adults age 50 or older regardless of previous herpes zoster.",
+          "distractorExplanations": {
+            "A": "Previous shingles does not remove the routine recommendation.",
+            "B": "Prior illness is not counted as a vaccine dose in the cited recommendation.",
+            "C": "The routine recommendation cited here is recombinant-zoster vaccination.",
+            "D": "The age threshold in these notes is 50, not a prior-shingles rule to wait until 80."
+          },
+          "sectionIds": [
+            "recombinant-zoster"
+          ],
+          "sourceIds": [
+            "cdc-adult-immunization-notes-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Recognize that previous shingles does not replace recombinant-zoster vaccination.",
+          "difficulty": "application"
+        },
+        {
+          "id": "adult-immunization-q6",
+          "stem": "A fictional adult missed the next dose of a previously started, still-indicated vaccine series by several years. Earlier doses were valid, and no product-specific exception applies. What general CDC principle governs this delay?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Complete the indicated remaining doses without restarting solely for the extended interval"
+            },
+            {
+              "id": "B",
+              "text": "Repeat every earlier valid dose"
+            },
+            {
+              "id": "C",
+              "text": "Add an extra dose solely to compensate for elapsed time"
+            },
+            {
+              "id": "D",
+              "text": "Declare the series complete despite missing indicated doses"
+            },
+            {
+              "id": "E",
+              "text": "Stop using the documented earlier doses"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "CDC adult notes say not to restart or add doses to a series because of extended intervals. The remaining schedule must still follow the relevant vaccine notes.",
+          "distractorExplanations": {
+            "B": "Extended intervals alone do not require repeating valid previous doses.",
+            "C": "The notes prohibit extra doses solely because of a prolonged interval.",
+            "D": "Missing indicated doses still require completion.",
+            "E": "The stated prior doses are valid; their documentation remains relevant."
+          },
+          "sectionIds": [
+            "series-lapse"
+          ],
+          "sourceIds": [
+            "cdc-adult-immunization-notes-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply the adult no-restart rule without ignoring vaccine-specific exceptions.",
+          "difficulty": "application"
+        }
+      ]
+    },
+    {
+      "id": "child-adolescent-immunization",
+      "name": "Child and adolescent immunization and catch-up",
+      "recordType": "study-topic",
+      "aliases": [
+        "child vaccination",
+        "pediatric immunization",
+        "adolescent vaccination",
+        "child vaccine catch-up"
+      ],
+      "specialty": "Prevention across the lifespan",
+      "domain": "preventive",
+      "keywords": [
+        "vaccination",
+        "catch-up",
+        "immunization",
+        "prevention"
+      ],
+      "overview": "Selected age-specific catch-up, HPV, rotavirus, meningococcal and newborn HepB objectives. This is not a complete well-child schedule or an additional disease.",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-10"
+      },
+      "sources": [
+        {
+          "id": "cdc-child-immunization-notes-20261010",
+          "title": "Child Immunization Schedule Notes",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-notes.html",
+          "kind": "official-recommendation",
+          "edition": "CDC professional schedule notes/addendum dated July 2, 2025; selected recommendations checked October 10, 2026",
+          "publishedDate": "2025-07-02",
+          "checkedAt": "2026-10-10",
+          "locator": "Hepatitis B vaccination; Human papillomavirus vaccination; Meningococcal ACWY vaccination; Rotavirus vaccination",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Selected original CDC text only; not a complete schedule, product dosing guide or patient-care protocol. Follow current notes, contraindications and addenda. No COVID-19, RSV or season-specific influenza regimen is taught by this record. No logos, tables, images or third-party works imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          },
+          "attribution": "Original CDC recommendation text is freely available at the linked source. This independent study app and its original summaries are not endorsed by CDC."
+        },
+        {
+          "id": "cdc-child-catch-up-20261010",
+          "title": "Catch-up Immunization Schedule for Children and Adolescents (Addendum updated July 2, 2025)",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-catch-up.html",
+          "kind": "official-recommendation",
+          "edition": "CDC professional schedule notes/addendum dated July 2, 2025; selected recommendations checked October 10, 2026",
+          "publishedDate": "2025-07-02",
+          "checkedAt": "2026-10-10",
+          "locator": "Children age 4 months through 6 years: introductory no-restart statement and Hepatitis B row",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Selected original CDC text only; not a complete schedule, product dosing guide or patient-care protocol. Follow current notes, contraindications and addenda. No COVID-19, RSV or season-specific influenza regimen is taught by this record. No logos, tables, images or third-party works imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          },
+          "attribution": "Original CDC recommendation text is freely available at the linked source. This independent study app and its original summaries are not endorsed by CDC."
+        }
+      ],
+      "sections": [
+        {
+          "id": "catch-up-no-restart",
+          "title": "Delayed childhood series",
+          "text": "The CDC catch-up table says a vaccine series does not need restarting regardless of elapsed time between doses. Catch-up still requires checking each vaccine\u2019s minimum age, intervals, maximum age and notes.",
+          "sourceIds": [
+            "cdc-child-catch-up-20261010"
+          ],
+          "sourceLocator": "Children age 4 months through 6 years: opening no-restart statement"
+        },
+        {
+          "id": "child-hpv",
+          "title": "Adolescent HPV series",
+          "text": "For immunocompetent adolescents who start HPV vaccination at ages 9\u201314, CDC uses two doses at 0 and 6\u201312 months, with at least five months between doses. Starting at age 15 or older uses three doses. Immunocompromising conditions require three doses even with younger initiation.",
+          "sourceIds": [
+            "cdc-child-immunization-notes-20261010"
+          ],
+          "sourceLocator": "Human papillomavirus vaccination: Routine and catch-up vaccination; Special situations"
+        },
+        {
+          "id": "rotavirus-age",
+          "title": "Rotavirus catch-up age limits",
+          "text": "Do not begin a rotavirus series on or after age 15 weeks, 0 days. The final dose cannot be given after age 8 months, 0 days. Delayed-series principles do not override these vaccine-specific maximum ages.",
+          "sourceIds": [
+            "cdc-child-immunization-notes-20261010"
+          ],
+          "sourceLocator": "Rotavirus vaccination: Catch-up vaccination"
+        },
+        {
+          "id": "menacwy",
+          "title": "MenACWY adolescent booster boundary",
+          "text": "CDC routine MenACWY vaccination uses doses at ages 11\u201312 and 16. A first catch-up dose at ages 16\u201318 is a one-dose catch-up schedule; a first dose at 13\u201315 needs a booster at 16\u201318, at least eight weeks later. Risk-based indications have separate schedules.",
+          "sourceIds": [
+            "cdc-child-immunization-notes-20261010"
+          ],
+          "sourceLocator": "Meningococcal serogroup A, C, W, Y vaccination: Routine vaccination; Catch-up vaccination"
+        },
+        {
+          "id": "hepb-final-age",
+          "title": "Infant hepatitis B final-dose minimum age",
+          "text": "For routine infant hepatitis B vaccination, the final dose has a minimum age of 24 weeks. Validating a final dose also requires checking minimum intervals, not age alone.",
+          "sourceIds": [
+            "cdc-child-immunization-notes-20261010"
+          ],
+          "sourceLocator": "Hepatitis B vaccination: Routine vaccination; final dose and minimum intervals"
+        },
+        {
+          "id": "hepb-exposed-newborn",
+          "title": "Newborn maternal hepatitis B exposure",
+          "text": "For a fictional newborn whose mother is HBsAg-positive, the CDC notes specify monovalent hepatitis B vaccine and hepatitis B immune globulin in separate limbs within 12 hours of birth regardless of birth weight. Low birth weight changes the subsequent series; this section does not supply that entire pathway.",
+          "sourceIds": [
+            "cdc-child-immunization-notes-20261010"
+          ],
+          "sourceLocator": "Hepatitis B vaccination: Mother is HBsAg-positive"
+        }
+      ],
+      "questions": [
+        {
+          "id": "child-adolescent-immunization-q1",
+          "stem": "A fictional immunocompetent 13-year-old received the first HPV dose six months ago at age 12. The dose was valid and there is no contraindication. Which series plan matches the CDC adolescent notes?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Restart the series after the six-month interval"
+            },
+            {
+              "id": "B",
+              "text": "Give three additional doses because the learner is now 13"
+            },
+            {
+              "id": "C",
+              "text": "Give the second dose to complete the two-dose series"
+            },
+            {
+              "id": "D",
+              "text": "No second dose is needed"
+            },
+            {
+              "id": "E",
+              "text": "Change to annual boosters"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Starting at age 9\u201314 uses two doses at 0 and 6\u201312 months for an immunocompetent adolescent. Six months exceeds the five-month minimum.",
+          "distractorExplanations": {
+            "A": "This recommended interval does not trigger a restart.",
+            "B": "The immunocompetent 9\u201314 initiation category is two total doses.",
+            "D": "The cited category requires a second dose.",
+            "E": "The notes specify completion of a series, not annual boosters."
+          },
+          "sectionIds": [
+            "child-hpv"
+          ],
+          "sourceIds": [
+            "cdc-child-immunization-notes-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply HPV initiation age and minimum interval together.",
+          "difficulty": "application"
+        },
+        {
+          "id": "child-adolescent-immunization-q2",
+          "stem": "A fictional healthy infant is 17 weeks old and has never received rotavirus vaccine. Which catch-up principle is correct?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Start the series now because all catch-up vaccines have no maximum age"
+            },
+            {
+              "id": "B",
+              "text": "Wait until the first birthday to start"
+            },
+            {
+              "id": "C",
+              "text": "Restart a nonexistent prior series"
+            },
+            {
+              "id": "D",
+              "text": "Do not initiate because the first-dose maximum age has passed"
+            },
+            {
+              "id": "E",
+              "text": "Give the first dose anytime before age 8 months"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "CDC says not to start rotavirus vaccination on or after 15 weeks, 0 days. The eight-month final-dose limit is not the initiation limit.",
+          "distractorExplanations": {
+            "A": "Rotavirus has a specific maximum initiation age.",
+            "B": "Waiting until the first birthday does not satisfy the stated initiation limit.",
+            "C": "The vignette describes no prior rotavirus doses.",
+            "E": "The eight-month maximum concerns the final dose, not starting the series."
+          },
+          "sectionIds": [
+            "rotavirus-age"
+          ],
+          "sourceIds": [
+            "cdc-child-immunization-notes-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Distinguish rotavirus initiation and final-dose maximum ages.",
+          "difficulty": "application"
+        },
+        {
+          "id": "child-adolescent-immunization-q3",
+          "stem": "A fictional healthy 16-year-old received MenACWY at age 11 and has no risk-based indication requiring a different schedule. Which routine plan is supported?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No further dose because the age-11 dose completes routine adolescent vaccination"
+            },
+            {
+              "id": "B",
+              "text": "Restart the entire childhood series"
+            },
+            {
+              "id": "C",
+              "text": "Give an annual MenACWY booster indefinitely"
+            },
+            {
+              "id": "D",
+              "text": "Wait until age 25 for the routine adolescent booster"
+            },
+            {
+              "id": "E",
+              "text": "Give the routine MenACWY booster at age 16"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "CDC routine MenACWY vaccination includes a dose at ages 11\u201312 and a booster at age 16.",
+          "distractorExplanations": {
+            "A": "The routine adolescent schedule includes the age-16 booster.",
+            "B": "This is a scheduled booster, not a series restart.",
+            "C": "The cited routine schedule does not require indefinite annual boosters.",
+            "D": "Age 16 is the routine booster age in this vignette."
+          },
+          "sectionIds": [
+            "menacwy"
+          ],
+          "sourceIds": [
+            "cdc-child-immunization-notes-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Apply the routine adolescent MenACWY booster age.",
+          "difficulty": "application"
+        },
+        {
+          "id": "child-adolescent-immunization-q4",
+          "stem": "A fictional healthy 17-year-old has never received MenACWY and has no risk-based indication for a different schedule. Which catch-up plan is specified for an initial dose at this age?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "One MenACWY catch-up dose"
+            },
+            {
+              "id": "B",
+              "text": "Two doses four weeks apart for every healthy 17-year-old"
+            },
+            {
+              "id": "C",
+              "text": "First dose now and routine booster at age 16"
+            },
+            {
+              "id": "D",
+              "text": "Restart a childhood series that was never started"
+            },
+            {
+              "id": "E",
+              "text": "Postpone initial catch-up until age 21"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "CDC specifies one catch-up MenACWY dose when the first dose is at age 16\u201318, absent a separate risk-based indication.",
+          "distractorExplanations": {
+            "B": "The cited healthy age-16\u201318 catch-up category is one dose.",
+            "C": "A future plan cannot place a booster at an age already passed.",
+            "D": "No prior series exists to restart.",
+            "E": "The stated catch-up category covers this adolescent now."
+          },
+          "sectionIds": [
+            "menacwy"
+          ],
+          "sourceIds": [
+            "cdc-child-immunization-notes-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Distinguish initial MenACWY catch-up at 16\u201318 from earlier initiation.",
+          "difficulty": "application"
+        },
+        {
+          "id": "child-adolescent-immunization-q5",
+          "stem": "In a fictional infant immunization vignette, minimum dose-to-dose intervals for hepatitis B are satisfied, but a planned final dose would be given at age 20 weeks. What additional age constraint must the learner recognize?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Final doses have no minimum age"
+            },
+            {
+              "id": "B",
+              "text": "The final dose cannot be valid before age 24 weeks"
+            },
+            {
+              "id": "C",
+              "text": "Age 12 weeks is the final-dose minimum"
+            },
+            {
+              "id": "D",
+              "text": "Every infant must wait until age two years"
+            },
+            {
+              "id": "E",
+              "text": "The minimum age is waived solely because dose-to-dose intervals are valid"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "The CDC infant HepB notes specify a minimum final-dose age of 24 weeks. Satisfying dose-to-dose intervals does not remove that age requirement.",
+          "distractorExplanations": {
+            "A": "The final dose has an explicit age minimum.",
+            "C": "The cited minimum is 24 weeks, not 12.",
+            "D": "The notes do not impose an age-two-years minimum.",
+            "E": "Age and minimum intervals are separate requirements."
+          },
+          "sectionIds": [
+            "hepb-final-age"
+          ],
+          "sourceIds": [
+            "cdc-child-immunization-notes-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Validate hepatitis B final-dose age independently of dose intervals.",
+          "difficulty": "application"
+        },
+        {
+          "id": "child-adolescent-immunization-q6",
+          "stem": "A fictional newborn has a mother with a documented positive HBsAg result. Which combination and timing are specified in the CDC newborn notes, regardless of birth weight?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Hepatitis B vaccine alone at age six months"
+            },
+            {
+              "id": "B",
+              "text": "HBIG alone after discharge"
+            },
+            {
+              "id": "C",
+              "text": "Monovalent HepB vaccine and HBIG in separate limbs within 12 hours of birth"
+            },
+            {
+              "id": "D",
+              "text": "Only maternal antiviral treatment counts as newborn prophylaxis"
+            },
+            {
+              "id": "E",
+              "text": "Wait for the first routine outpatient visit before either product"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "The CDC notes specify monovalent HepB vaccine plus HBIG in separate limbs within 12 hours of birth for an infant of an HBsAg-positive mother. Subsequent doses depend in part on birth weight.",
+          "distractorExplanations": {
+            "A": "This omits immediate prophylaxis and HBIG.",
+            "B": "The specified combination includes vaccine and HBIG within 12 hours.",
+            "D": "The newborn recommendation still specifies both products.",
+            "E": "Delaying until a later visit does not meet the stated timing."
+          },
+          "sectionIds": [
+            "hepb-exposed-newborn"
+          ],
+          "sourceIds": [
+            "cdc-child-immunization-notes-20261010"
+          ],
+          "domain": "preventive",
+          "learningObjective": "Recognize the documented maternal-HBsAg-positive newborn prevention pathway.",
+          "difficulty": "application"
+        }
+      ]
+    }
+  ]
+}

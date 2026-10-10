@@ -47,7 +47,7 @@
           "edition": "CDC page displays May 14 and May 15, 2024 dates",
           "publishedDate": null,
           "checkedAt": "2026-10-10",
-          "locator": "For non-pregnant patients — Combining treatments; E-cigarettes and pregnancy",
+          "locator": "For non-pregnant patients \u2014 Combining treatments; E-cigarettes and pregnancy",
           "reuse": "original-summary-no-full-text",
           "jurisdiction": "United States",
           "limitations": "CDC-authored adult cessation guidance. No medication doses or blanket pregnancy medication safety claims; the conflicting displayed day dates are not resolved by inventing one.",
@@ -91,12 +91,12 @@
           "sourceIds": [
             "cdc-tobacco-verified20261010"
           ],
-          "sourceLocator": "For non-pregnant patients — Combining treatments."
+          "sourceLocator": "For non-pregnant patients \u2014 Combining treatments."
         },
         {
           "id": "ecig-pregnancy-boundary",
           "title": "E-cigarettes are not a safe pregnancy cessation substitute",
-          "text": "CDC says e-cigarettes are not safe during pregnancy, are not FDA-approved smoking-cessation aids and lack sufficient evidence to establish smoking-cessation benefit. Behavioral counseling and support are the initial pregnancy approach; medication decisions require individualized benefit–harm consideration.",
+          "text": "CDC says e-cigarettes are not safe during pregnancy, are not FDA-approved smoking-cessation aids and lack sufficient evidence to establish smoking-cessation benefit. Behavioral counseling and support are the initial pregnancy approach; medication decisions require individualized benefit\u2013harm consideration.",
           "sourceIds": [
             "cdc-tobacco-verified20261010"
           ],
@@ -294,7 +294,7 @@
         "NAAT",
         "follow-up"
       ],
-      "overview": "Study acute scrotal assessment, infection testing and response reassessment. Antibiotic dosing, chronic orchialgia and uncommon etiologies are outside this module.",
+      "overview": "Study acute scrotal assessment, pathogen-risk-specific adult antibiotic regimens, partner care and response reassessment. Dose vignettes assume normal renal function and no relevant contraindication; renal adjustment, pediatric regimens, chronic orchialgia and uncommon etiologies remain outside scope.",
       "review": {
         "kind": "automated-source-check",
         "humanReviewed": false,
@@ -316,17 +316,37 @@
         },
         {
           "id": "cdc-epididymitis-verified20261010",
-          "title": "Epididymitis — STI Treatment Guidelines",
+          "title": "Epididymitis \u2014 STI Treatment Guidelines",
           "organization": "Centers for Disease Control and Prevention",
           "url": "https://www.cdc.gov/std/treatment-guidelines/epididymitis.htm",
           "kind": "clinical-guideline",
           "edition": "CDC STI Treatment Guidelines, 2021; chapter reviewed July 22, 2021",
           "publishedDate": "2021-07-22",
           "checkedAt": "2026-10-10",
-          "locator": "Diagnostic Considerations — ultrasound limitations; Treatment — insertive anal sex and combined STI/enteric risk",
+          "locator": "Diagnostic Considerations \u2014 ultrasound limitations; Treatment \u2014 insertive anal sex and combined STI/enteric risk",
           "reuse": "original-summary-no-full-text",
           "jurisdiction": "United States",
           "limitations": "Adult acute-epididymitis guidance. These questions do not substitute ultrasound for torsion assessment, prescribe doses or assume enteric-only risk without the source-required exclusion of gonorrhea.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-epididymitis-treatment-depth-20261010",
+          "title": "Epididymitis \u2014 STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/epididymitis.htm",
+          "kind": "clinical-guideline",
+          "edition": "CDC STI Treatment Guidelines, 2021; chapter reviewed July 22, 2021",
+          "publishedDate": "2021-07-22",
+          "checkedAt": "2026-10-10",
+          "locator": "Treatment \u2014 Recommended Regimens and gonorrhea-exclusion condition; Follow-Up; Special Considerations \u2014 Drug Allergy",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Adult acute-epididymitis study regimens only. Enteric monotherapy requires the chapter's gonorrhea-exclusion assessment and culture/susceptibility guidance. Dose questions assume normal renal function and no relevant contraindication; renal adjustment, pediatric regimens and chronic orchialgia remain outside scope. Original study paraphrases only; CDC originals are freely available. Attribution does not imply endorsement by CDC, HHS or the U.S. Government. No linked third-party work, figure, logo or full source document is imported.",
           "rights": {
             "basis": "public-domain-government",
             "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
@@ -376,7 +396,43 @@
           "sourceIds": [
             "cdc-epididymitis-verified20261010"
           ],
-          "sourceLocator": "Treatment — presumptive therapy; Recommended Regimens — likely chlamydia/gonorrhea, combined STI/enteric risk and enteric-only monotherapy conditions."
+          "sourceLocator": "Treatment \u2014 presumptive therapy; Recommended Regimens \u2014 likely chlamydia/gonorrhea, combined STI/enteric risk and enteric-only monotherapy conditions."
+        },
+        {
+          "id": "sti-dose-duration-20261010",
+          "title": "STI regimen is a 10-day combination",
+          "text": "For acute epididymitis most likely caused by chlamydia or gonorrhea, CDC specifies ceftriaxone 500 mg IM once plus doxycycline 100 mg orally twice daily for 10 days. At 150 kg or more, the ceftriaxone dose is 1 g once. The doxycycline duration differs from uncomplicated chlamydia.",
+          "sourceIds": [
+            "cdc-epididymitis-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Treatment \u2014 first Recommended Regimen and weight footnote."
+        },
+        {
+          "id": "enteric-dose-duration-20261010",
+          "title": "Combined risk versus enteric-only treatment",
+          "text": "For STI plus enteric risk associated with insertive anal sex, use ceftriaxone 500 mg IM once (1 g at 150 kg or more) plus levofloxacin 500 mg orally daily for 10 days. Enteric-only levofloxacin monotherapy uses the same daily dose/duration, but requires gonorrhea ruled out by Gram, MB or GV stain assessment; bacterial culture and susceptibilities guide treatment.",
+          "sourceIds": [
+            "cdc-epididymitis-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Treatment \u2014 second and third Recommended Regimens; weight footnote and monotherapy-qualification paragraph."
+        },
+        {
+          "id": "alternative-regimen-consult-20261010",
+          "title": "An allergy alternative needs consultation",
+          "text": "Alternative epididymitis regimens have not been studied in the CDC chapter; if an alternative is required because of drug allergy or intolerance, consult an infectious-disease specialist. Do not automatically transfer a gonorrhea-only alternative to epididymitis.",
+          "sourceIds": [
+            "cdc-epididymitis-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Special Considerations \u2014 Drug Allergy, Intolerance, and Adverse Reactions."
+        },
+        {
+          "id": "persistent-postcourse-swelling-20261010",
+          "title": "Persistent swelling after therapy",
+          "text": "Pain can take weeks to fully resolve, but persistent swelling and tenderness after completing antimicrobial treatment requires assessment for alternative diagnoses such as tumor, abscess, infarction, testicular cancer, tuberculosis or fungal infection. Lack of improvement within 72 hours separately requires earlier reassessment.",
+          "sourceIds": [
+            "cdc-epididymitis-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Treatment \u2014 adjunctive-therapy paragraph; Follow-Up."
         }
       ],
       "questions": [
@@ -551,6 +607,227 @@
           "domain": "acute",
           "learningObjective": "Match combined STI/enteric epididymitis risk to the source regimen without an unsupported monotherapy shortcut.",
           "difficulty": "application"
+        },
+        {
+          "id": "epididymitis-q5",
+          "stem": "A 70-kg adult man has acute epididymitis most likely caused by chlamydia or gonorrhea, without the combined enteric-risk context. Torsion has been appropriately assessed. Renal function is normal, and no relevant drug contraindication is present. Which regimen matches CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Ceftriaxone 500 mg IM once plus doxycycline 100 mg orally twice daily for 7 days"
+            },
+            {
+              "id": "B",
+              "text": "Doxycycline 100 mg orally twice daily for 10 days alone"
+            },
+            {
+              "id": "C",
+              "text": "Ceftriaxone 500 mg IM once plus doxycycline 100 mg orally twice daily for 10 days"
+            },
+            {
+              "id": "D",
+              "text": "Ceftriaxone 500 mg IM once alone"
+            },
+            {
+              "id": "E",
+              "text": "Ceftriaxone 250 mg IM once plus doxycycline 100 mg twice daily for 10 days"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "The STI epididymitis regimen combines ceftriaxone with 10 days of doxycycline.",
+          "distractorExplanations": {
+            "A": "This substitutes the uncomplicated-chlamydia duration for the 10-day epididymitis course.",
+            "B": "This omits ceftriaxone from the likely-STI combination.",
+            "D": "This omits the 10-day doxycycline component.",
+            "E": "The chapter specifies ceftriaxone 500 mg below 150 kg."
+          },
+          "sectionIds": [
+            "sti-dose-duration-20261010"
+          ],
+          "sourceIds": [
+            "cdc-epididymitis-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Distinguish the STI epididymitis combination and duration from uncomplicated chlamydia.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "epididymitis-q6",
+          "stem": "An adult develops acute epididymitis after urinary instrumentation. Enteric-only infection is judged most likely; urethral Gram-stain assessment has ruled out gonorrhea, and the bacterial isolate is susceptible to levofloxacin. Torsion is excluded, renal function is normal and there are no drug contraindications. Which listed regimen fits CDC's qualified monotherapy pathway?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Levofloxacin 500 mg orally daily for 10 days"
+            },
+            {
+              "id": "B",
+              "text": "Levofloxacin 500 mg orally once as the complete course"
+            },
+            {
+              "id": "C",
+              "text": "Levofloxacin 500 mg orally daily for 7 days"
+            },
+            {
+              "id": "D",
+              "text": "Doxycycline 100 mg orally twice daily for 10 days alone"
+            },
+            {
+              "id": "E",
+              "text": "Ceftriaxone 500 mg IM once alone"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "The source-qualified enteric-only regimen is levofloxacin 500 mg daily for 10 days, guided by culture and susceptibility.",
+          "distractorExplanations": {
+            "B": "CDC specifies a 10-day course, not one dose.",
+            "C": "The epididymitis course is 10 days.",
+            "D": "This is not the listed enteric-only regimen.",
+            "E": "This omits the source-specified enteric-only course."
+          },
+          "sectionIds": [
+            "enteric-dose-duration-20261010"
+          ],
+          "sourceIds": [
+            "cdc-epididymitis-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select enteric-only epididymitis treatment only after the required pathogen assessment.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "epididymitis-q7",
+          "stem": "A 160-kg adult man has acute epididymitis after insertive anal sex, with possible STI and enteric causes. Gonorrhea is not excluded. Torsion has been assessed; renal function is normal and there are no relevant drug contraindications. Which regimen fits the combined-risk and weight recommendations?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Levofloxacin 500 mg orally daily for 10 days alone"
+            },
+            {
+              "id": "B",
+              "text": "Ceftriaxone 500 mg IM once plus levofloxacin 500 mg orally daily for 10 days"
+            },
+            {
+              "id": "C",
+              "text": "Ceftriaxone 1 g IM once plus doxycycline 100 mg orally twice daily for 10 days"
+            },
+            {
+              "id": "D",
+              "text": "Ceftriaxone 1 g IM once plus levofloxacin 500 mg orally daily for 10 days"
+            },
+            {
+              "id": "E",
+              "text": "Ceftriaxone 1 g IM once plus levofloxacin 500 mg orally once"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Combined risk calls for ceftriaxone plus a 10-day levofloxacin course; weight at least 150 kg increases ceftriaxone to 1 g.",
+          "distractorExplanations": {
+            "A": "Monotherapy does not satisfy the unexcluded-gonorrhea combined-risk pathway.",
+            "B": "The ceftriaxone dose must be 1 g at this weight.",
+            "C": "The combined STI/enteric-risk category specifies levofloxacin rather than the STI-only doxycycline pair.",
+            "E": "The levofloxacin component is daily for 10 days, not one dose."
+          },
+          "sectionIds": [
+            "enteric-dose-duration-20261010"
+          ],
+          "sourceIds": [
+            "cdc-epididymitis-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Combine pathogen-risk category, weight threshold and duration in acute epididymitis.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "epididymitis-q8",
+          "stem": "An adult with likely STI-related acute epididymitis cannot receive the recommended combination because of a documented severe drug reaction. Which next step is supported by CDC rather than an assumed substitute regimen?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Automatically prescribe the uncomplicated gonorrhea allergy regimen as a validated epididymitis substitute"
+            },
+            {
+              "id": "B",
+              "text": "Consult an infectious-disease specialist because alternative epididymitis regimens have not been studied"
+            },
+            {
+              "id": "C",
+              "text": "Use any single oral antibiotic regardless of pathogen risk"
+            },
+            {
+              "id": "D",
+              "text": "Omit antibiotic treatment because an allergy is present"
+            },
+            {
+              "id": "E",
+              "text": "Use an enteric-only regimen despite unexcluded gonorrhea"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "CDC recommends consultation when an alternative epididymitis regimen is needed.",
+          "distractorExplanations": {
+            "A": "The chapter does not validate transferring gonorrhea-only alternatives to epididymitis.",
+            "C": "Selection depends on pathogens and contraindications, not any available oral agent.",
+            "D": "An allergy requires an alternative-treatment assessment, not abandonment of indicated treatment.",
+            "E": "The enteric-only pathway requires gonorrhea exclusion."
+          },
+          "sectionIds": [
+            "alternative-regimen-consult-20261010",
+            "enteric-dose-duration-20261010"
+          ],
+          "sourceIds": [
+            "cdc-epididymitis-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Recognize when drug intolerance requires expert-guided epididymitis treatment.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "epididymitis-q9",
+          "stem": "An adult completed the prescribed acute epididymitis antimicrobial course. Although pain improved initially, focal swelling and tenderness remain. Which next step follows CDC's postcourse follow-up guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Assume complete cure from completion of antibiotics alone"
+            },
+            {
+              "id": "B",
+              "text": "Repeat the same antibiotic indefinitely without reassessing the diagnosis"
+            },
+            {
+              "id": "C",
+              "text": "Treat persistent swelling as proof of gonorrhea resistance"
+            },
+            {
+              "id": "D",
+              "text": "Dismiss the findings because pain may take weeks to resolve"
+            },
+            {
+              "id": "E",
+              "text": "Evaluate for alternative diagnoses such as tumor, abscess or infarction"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Persistent swelling/tenderness after treatment warrants alternative-diagnosis assessment even though discomfort can resolve slowly.",
+          "distractorExplanations": {
+            "A": "Course completion does not remove the need to assess persistent swelling.",
+            "B": "CDC specifies reassessment rather than indefinite repetition.",
+            "C": "Persistent swelling is not itself proof of a particular resistant pathogen.",
+            "D": "Slow pain resolution does not negate the separate postcourse swelling recommendation."
+          },
+          "sectionIds": [
+            "persistent-postcourse-swelling-20261010"
+          ],
+          "sourceIds": [
+            "cdc-epididymitis-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Separate slow symptom recovery from persistent findings requiring diagnostic reassessment.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
         }
       ]
     },
@@ -598,7 +875,7 @@
           "edition": "CDC clinical-care page, December 18, 2023",
           "publishedDate": "2023-12-18",
           "checkedAt": "2026-10-10",
-          "locator": "Classic scabies — oral ivermectin safety boundaries",
+          "locator": "Classic scabies \u2014 oral ivermectin safety boundaries",
           "reuse": "original-summary-no-full-text",
           "jurisdiction": "United States",
           "limitations": "No ivermectin dose or claim of established pregnancy safety; oral ivermectin is not FDA-approved for scabies. Source-defined lack of safety data is distinct from a universal contraindication.",
@@ -618,7 +895,7 @@
           "edition": "CDC prevention page, December 18, 2023",
           "publishedDate": "2023-12-18",
           "checkedAt": "2026-10-10",
-          "locator": "Overview — simultaneous household/close-contact treatment and clothing/bedding measures",
+          "locator": "Overview \u2014 simultaneous household/close-contact treatment and clothing/bedding measures",
           "reuse": "original-summary-no-full-text",
           "jurisdiction": "United States",
           "limitations": "Human scabies household prevention only; no pesticide fumigation, veterinary extrapolation or copied images.",
@@ -662,7 +939,7 @@
           "sourceIds": [
             "cdc-scabies-care-verified20261010"
           ],
-          "sourceLocator": "Classic scabies — Ivermectin oral tablet bullet."
+          "sourceLocator": "Classic scabies \u2014 Ivermectin oral tablet bullet."
         },
         {
           "id": "household-control",
@@ -671,7 +948,7 @@
           "sourceIds": [
             "cdc-scabies-prevention-verified20261010"
           ],
-          "sourceLocator": "Overview — simultaneous treatment and clothing/bedding bullets."
+          "sourceLocator": "Overview \u2014 simultaneous treatment and clothing/bedding bullets."
         }
       ],
       "questions": [
@@ -893,7 +1170,7 @@
           "edition": "CDC treatment overview, November 12, 2024",
           "publishedDate": "2024-11-12",
           "checkedAt": "2026-10-10",
-          "locator": "Directions — slow lice at 8–12 hours; Treatment overview; Additional measures — avoid fumigants; Treatment issues — mayonnaise evidence",
+          "locator": "Directions \u2014 slow lice at 8\u201312 hours; Treatment overview; Additional measures \u2014 avoid fumigants; Treatment issues \u2014 mayonnaise evidence",
           "reuse": "original-summary-no-full-text",
           "jurisdiction": "United States",
           "limitations": "Head lice only. No extrapolation to scabies or pubic lice; no insecticide doses, excessive retreatment or veterinary product instructions.",
@@ -933,7 +1210,7 @@
         {
           "id": "early-slow-lice",
           "title": "Do not equate slow early movement with treatment failure",
-          "text": "CDC says that a few lice moving slowly 8–12 hours after treatment do not require immediate reapplication; medication can take time to kill lice. If no lice have died and they remain as active as before treatment at that time, discuss possible failure with the provider before retreatment. Follow the medication's actual retreatment instructions.",
+          "text": "CDC says that a few lice moving slowly 8\u201312 hours after treatment do not require immediate reapplication; medication can take time to kill lice. If no lice have died and they remain as active as before treatment at that time, discuss possible failure with the provider before retreatment. Follow the medication's actual retreatment instructions.",
           "sourceIds": [
             "cdc-headlice-treatment-verified20261010"
           ],
@@ -946,7 +1223,7 @@
           "sourceIds": [
             "cdc-headlice-treatment-verified20261010"
           ],
-          "sourceLocator": "Treatment overview; Additional measures — laundering/vacuuming and no-fumigant bullets; Treatment issues — mayonnaise evidence statement."
+          "sourceLocator": "Treatment overview; Additional measures \u2014 laundering/vacuuming and no-fumigant bullets; Treatment issues \u2014 mayonnaise evidence statement."
         }
       ],
       "questions": [
@@ -1042,7 +1319,7 @@
           "choices": [
             {
               "id": "A",
-              "text": "Do not immediately reapply solely for slow movement at 8–12 hours; follow the medication instructions and remove remaining lice appropriately"
+              "text": "Do not immediately reapply solely for slow movement at 8\u201312 hours; follow the medication instructions and remove remaining lice appropriately"
             },
             {
               "id": "B",
@@ -1064,7 +1341,7 @@
           "correctChoiceId": "A",
           "explanation": "CDC explains that some lice can move slowly early after treatment while medication takes effect. This differs from lice remaining fully active without evidence of killing.",
           "distractorExplanations": {
-            "B": "Slow movement at 8–12 hours does not by itself call for immediate reapplication.",
+            "B": "Slow movement at 8\u201312 hours does not by itself call for immediate reapplication.",
             "C": "CDC distinguishes slowly moving lice from lice remaining fully active, and does not establish failure from this early finding.",
             "D": "CDC directs using medication as instructed; the source does not authorize an extra amount for slow early movement.",
             "E": "The stated early response does not prove resistance."
@@ -1180,7 +1457,7 @@
           "edition": "CDC treatment overview, February 9, 2026",
           "publishedDate": "2026-02-09",
           "checkedAt": "2026-10-10",
-          "locator": "Treatment types — Ringworm on the skin; Emerging and severe antifungal-resistant ringworm",
+          "locator": "Treatment types \u2014 Ringworm on the skin; Emerging and severe antifungal-resistant ringworm",
           "reuse": "original-summary-no-full-text",
           "jurisdiction": "United States",
           "limitations": "This general skin-treatment summary is not a regimen for scalp, nail or invasive fungal infection. Failure prompts evaluation; it does not prove resistance or select a drug by travel history alone.",
@@ -1221,11 +1498,11 @@
         {
           "id": "skin-topical-course",
           "title": "Treat skin disease for the directed course",
-          "text": "CDC describes ringworm on the skin as usually treated with nonprescription topical antifungals, commonly for 2–4 weeks according to product instructions. Apply treatment for the directed duration even if symptoms improve. This skin-treatment approach must not be automatically substituted for scalp ringworm, which generally requires oral prescription treatment.",
+          "text": "CDC describes ringworm on the skin as usually treated with nonprescription topical antifungals, commonly for 2\u20134 weeks according to product instructions. Apply treatment for the directed duration even if symptoms improve. This skin-treatment approach must not be automatically substituted for scalp ringworm, which generally requires oral prescription treatment.",
           "sourceIds": [
             "cdc-ringworm-treatment-verified20261010"
           ],
-          "sourceLocator": "Treatment types — Ringworm on the skin and Ringworm on the scalp."
+          "sourceLocator": "Treatment types \u2014 Ringworm on the skin and Ringworm on the scalp."
         },
         {
           "id": "persistent-widespread-review",
@@ -1351,7 +1628,7 @@
             }
           ],
           "correctChoiceId": "E",
-          "explanation": "CDC advises using skin antifungal treatment for as long as directed, commonly 2–4 weeks depending on the product. Early symptom improvement is not the sole stopping rule.",
+          "explanation": "CDC advises using skin antifungal treatment for as long as directed, commonly 2\u20134 weeks depending on the product. Early symptom improvement is not the sole stopping rule.",
           "distractorExplanations": {
             "A": "CDC says to apply the antifungal for as long as directed, despite early improvement.",
             "B": "The described response does not replace the source's instruction to complete appropriate directed skin treatment.",

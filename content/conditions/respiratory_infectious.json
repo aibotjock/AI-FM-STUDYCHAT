@@ -28,26 +28,26 @@
       "sources": [
         {
           "id": "nhlbi-asthma-2020-clinician",
-          "title": "2020 Focused Updates to the Asthma Management Guidelines: Clinician’s Guide",
+          "title": "2020 Focused Updates to the Asthma Management Guidelines: Clinician\u2019s Guide",
           "organization": "NHLBI / National Asthma Education and Prevention Program",
           "url": "https://www.nhlbi.nih.gov/sites/default/files/publications/Asthma%20Clinicians%20Guide%20508_02-03-21.pdf",
           "kind": "clinical-guideline",
           "edition": "2020 focused update; clinician guide PDF revised February 2021",
           "publishedDate": null,
           "checkedAt": "2026-10-09",
-          "locator": "Pages 3–5: ages 4+, SMART, and long-acting muscarinic antagonists",
+          "locator": "Pages 3\u20135: ages 4+, SMART, and long-acting muscarinic antagonists",
           "reuse": "original-summary-no-full-text"
         },
         {
           "id": "nhlbi-asthma-clinician-verified20261010",
-          "title": "2020 Focused Updates to the Asthma Management Guidelines: Clinician’s Guide",
+          "title": "2020 Focused Updates to the Asthma Management Guidelines: Clinician\u2019s Guide",
           "organization": "National Heart, Lung, and Blood Institute / NAEPP",
           "url": "https://www.nhlbi.nih.gov/sites/default/files/publications/Asthma%20Clinicians%20Guide%20508_02-03-21.pdf",
           "kind": "clinical-guideline",
           "edition": "2020 focused update; clinician guide PDF revised February 2021",
           "publishedDate": null,
           "checkedAt": "2026-10-10",
-          "locator": "Printed pages 8–9: FeNO testing in diagnosis and management",
+          "locator": "Printed pages 8\u20139: FeNO testing in diagnosis and management",
           "reuse": "original-summary-no-full-text",
           "jurisdiction": "United States",
           "limitations": "Selected focused-update recommendations, not a complete asthma guideline. Only original educational summaries are added; the formatted publication is not modified or redistributed. No dose tables or society journal text is imported.",
@@ -111,7 +111,7 @@
           "sourceIds": [
             "nhlbi-asthma-clinician-verified20261010"
           ],
-          "sourceLocator": "Printed pages 8–9; FeNO diagnostic recommendations and management key points."
+          "sourceLocator": "Printed pages 8\u20139; FeNO diagnostic recommendations and management key points."
         },
         {
           "id": "allergen-multicomponent-20261010",
@@ -325,14 +325,14 @@
       "sources": [
         {
           "id": "vadod-copd-2026",
-          "title": "VA/DOD Clinical Practice Guideline for the Management of Chronic Obstructive Pulmonary Disease – Provider Summary",
+          "title": "VA/DOD Clinical Practice Guideline for the Management of Chronic Obstructive Pulmonary Disease \u2013 Provider Summary",
           "organization": "US Department of Veterans Affairs / Department of Defense",
           "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/CD/copd/COPD-CPG_2026-Provider-Summary_final_20261007.pdf",
           "kind": "clinical-guideline",
           "edition": "September 2026; official file posted October 7, 2026",
           "publishedDate": null,
           "checkedAt": "2026-10-09",
-          "locator": "Recommendations 1, 4, 8 and 9; summary tables, pages 5–7",
+          "locator": "Recommendations 1, 4, 8 and 9; summary tables, pages 5\u20137",
           "reuse": "original-summary-no-full-text"
         },
         {
@@ -532,7 +532,7 @@
         },
         {
           "id": "copd-q4",
-          "stem": "A patient with COPD continues smoking and asks which lifestyle change deserves highest priority while continuing the existing treatment plan. Which answer best follows CDC’s management overview?",
+          "stem": "A patient with COPD continues smoking and asks which lifestyle change deserves highest priority while continuing the existing treatment plan. Which answer best follows CDC\u2019s management overview?",
           "choices": [
             {
               "id": "A",
@@ -613,7 +613,7 @@
         },
         {
           "id": "nhlbi-pneumonia-diagnosis-verified20261010",
-          "title": "Pneumonia — Diagnosis",
+          "title": "Pneumonia \u2014 Diagnosis",
           "organization": "National Heart, Lung, and Blood Institute",
           "url": "https://www.nhlbi.nih.gov/health/pneumonia/diagnosis",
           "kind": "official-recommendation",
@@ -721,7 +721,7 @@
           "id": "community-acquired-pneumonia-q1"
         },
         {
-          "stem": "An adult is hospitalized with nonsevere CAP and has no MRSA or Pseudomonas risk factors, medication allergies or relevant contraindications. Which pair matches the pathway’s preferred regimen class?",
+          "stem": "An adult is hospitalized with nonsevere CAP and has no MRSA or Pseudomonas risk factors, medication allergies or relevant contraindications. Which pair matches the pathway\u2019s preferred regimen class?",
           "choices": [
             {
               "id": "A",
@@ -954,7 +954,7 @@
         {
           "id": "imaging-boundary-20261010",
           "title": "Chest imaging in uncomplicated cough",
-          "text": "CDC describes pneumonia as uncommon in otherwise healthy adults without abnormal vital signs or focal lung findings. Relevant abnormalities include heart rate at least 100, respiratory rate at least 24, oral temperature at least 38°C, or focal consolidation, egophony or fremitus. Chest radiography is not indicated in most uncomplicated bronchitis cases.",
+          "text": "CDC describes pneumonia as uncommon in otherwise healthy adults without abnormal vital signs or focal lung findings. Relevant abnormalities include heart rate at least 100, respiratory rate at least 24, oral temperature at least 38\u00b0C, or focal consolidation, egophony or fremitus. Chest radiography is not indicated in most uncomplicated bronchitis cases.",
           "sourceIds": [
             "cdc-bronchitis-adult-verified20261010"
           ],
@@ -1060,7 +1060,7 @@
         },
         {
           "id": "acute-bronchitis-q3",
-          "stem": "A healthy adult has several days of cough. Heart rate is 78/min, respiratory rate 16/min and oral temperature 37.0°C. There is no focal consolidation, egophony or fremitus. Uncomplicated bronchitis is the working diagnosis. Which imaging approach best fits CDC guidance?",
+          "stem": "A healthy adult has several days of cough. Heart rate is 78/min, respiratory rate 16/min and oral temperature 37.0\u00b0C. There is no focal consolidation, egophony or fremitus. Uncomplicated bronchitis is the working diagnosis. Which imaging approach best fits CDC guidance?",
           "choices": [
             {
               "id": "A",
@@ -1103,7 +1103,7 @@
         },
         {
           "id": "acute-bronchitis-q4",
-          "stem": "A healthy adult with uncomplicated acute bronchitis asks whether an over-the-counter cough medicine will cure the illness. Which counseling statement is most consistent with CDC’s educational guidance?",
+          "stem": "A healthy adult with uncomplicated acute bronchitis asks whether an over-the-counter cough medicine will cure the illness. Which counseling statement is most consistent with CDC\u2019s educational guidance?",
           "choices": [
             {
               "id": "A",
@@ -1334,7 +1334,7 @@
         },
         {
           "id": "bacterial-rhinosinusitis-q3",
-          "stem": "A nonpregnant adult has uncomplicated bacterial rhinosinusitis, no penicillin allergy and no relevant contraindication. After discussing observation, the clinician and patient choose antibiotic treatment. Which option matches CDC’s first-line list?",
+          "stem": "A nonpregnant adult has uncomplicated bacterial rhinosinusitis, no penicillin allergy and no relevant contraindication. After discussing observation, the clinician and patient choose antibiotic treatment. Which option matches CDC\u2019s first-line list?",
           "choices": [
             {
               "id": "A",
@@ -1474,6 +1474,26 @@
             "checkedAt": "2026-10-10",
             "commercialClinicalApproval": false
           }
+        },
+        {
+          "id": "cdc-strep-treatment-depth-20261010",
+          "title": "Clinical Guidance for Group A Streptococcal Pharyngitis",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html",
+          "kind": "official-recommendation",
+          "edition": "CDC clinical guidance dated November 18, 2025",
+          "publishedDate": "2025-11-18",
+          "checkedAt": "2026-10-10",
+          "locator": "Treatment \u2014 Recommended antibiotics: oral penicillin V, oral amoxicillin and IM benzathine penicillin G",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Confirmed uncomplicated GAS pharyngitis; dose vignettes exclude relevant allergies, contraindications and renal impairment. Only agency-authored dose guidance is summarized; linked IDSA, AAP and AHA publications, Red Book-derived return-to-school footnote, images and source tables are not imported. Source: CDC, freely available; no CDC/HHS/U.S.-Government endorsement is implied.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -1518,6 +1538,33 @@
             "cdc-strep-verified20261010"
           ],
           "sourceLocator": "Other options for patients with a penicillin allergy; Antibiotic resistance."
+        },
+        {
+          "id": "oral-penicillin-dose-20261010",
+          "title": "Oral penicillin course",
+          "text": "For confirmed GAS pharyngitis, CDC lists oral penicillin V for 10 days: children 250 mg twice or three times daily; adolescents/adults 250 mg four times daily or 500 mg twice daily. Use the population-specific regimen.",
+          "sourceIds": [
+            "cdc-strep-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Treatment \u2014 Recommended antibiotics \u2014 Penicillin V, oral."
+        },
+        {
+          "id": "amoxicillin-dose-cap-20261010",
+          "title": "Amoxicillin dose and maximum",
+          "text": "CDC lists amoxicillin 50 mg/kg orally once daily, capped at 1,000 mg, for 10 days. The alternative is 25 mg/kg per dose twice daily, capped at 500 mg per dose, for 10 days.",
+          "sourceIds": [
+            "cdc-strep-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Treatment \u2014 Recommended antibiotics \u2014 Amoxicillin, oral."
+        },
+        {
+          "id": "benzathine-weight-dose-20261010",
+          "title": "Single-dose IM alternative",
+          "text": "The listed benzathine penicillin G regimen is one IM dose: 600,000 units below 27 kg, or 1,200,000 units at 27 kg or more. This is a distinct formulation and weight-based regimen, not an oral penicillin course.",
+          "sourceIds": [
+            "cdc-strep-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Treatment \u2014 Recommended antibiotics \u2014 Benzathine penicillin G, intramuscular."
         }
       ],
       "questions": [
@@ -1692,6 +1739,138 @@
           "domain": "acute",
           "learningObjective": "Apply the immediate-hypersensitivity boundary to GAS allergy alternatives.",
           "difficulty": "application"
+        },
+        {
+          "id": "streptococcal-pharyngitis-q5",
+          "stem": "An otherwise healthy adult has confirmed uncomplicated GAS pharyngitis and chooses oral penicillin V. There is no relevant allergy or contraindication, and renal function is normal. Which listed twice-daily regimen matches CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "500 mg twice daily for 3 days"
+            },
+            {
+              "id": "B",
+              "text": "250 mg twice daily for 10 days"
+            },
+            {
+              "id": "C",
+              "text": "500 mg twice daily for 10 days"
+            },
+            {
+              "id": "D",
+              "text": "500 mg once daily for 10 days"
+            },
+            {
+              "id": "E",
+              "text": "500 mg twice daily for 5 days"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "CDC lists oral penicillin V 500 mg twice daily for 10 days in adolescents/adults. Another listed adult schedule is 250 mg four times daily for 10 days.",
+          "distractorExplanations": {
+            "A": "This shortens the specified 10-day course.",
+            "B": "Twice-daily 250 mg is a listed child schedule, not the requested adult twice-daily regimen.",
+            "D": "CDC lists twice-daily 500 mg, not this once-daily schedule.",
+            "E": "This shortens the specified course."
+          },
+          "sectionIds": [
+            "oral-penicillin-dose-20261010"
+          ],
+          "sourceIds": [
+            "cdc-strep-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select the adult oral penicillin V schedule and duration.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "streptococcal-pharyngitis-q6",
+          "stem": "A 21-kg child has confirmed uncomplicated GAS pharyngitis. Oral amoxicillin once daily is selected; there is no relevant allergy or contraindication and renal function is normal. Which dose applies the CDC weight-based schedule and maximum?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "1,050 mg once daily for 10 days"
+            },
+            {
+              "id": "B",
+              "text": "1,000 mg once daily for 10 days"
+            },
+            {
+              "id": "C",
+              "text": "525 mg once daily for 10 days"
+            },
+            {
+              "id": "D",
+              "text": "1,000 mg twice daily for 10 days"
+            },
+            {
+              "id": "E",
+              "text": "1,000 mg once daily for 5 days"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Although 50 mg/kg calculates to 1,050 mg, the once-daily dose is capped at 1,000 mg and continues for 10 days.",
+          "distractorExplanations": {
+            "A": "This exceeds the 1,000-mg once-daily maximum.",
+            "C": "The once-daily schedule uses 50 mg/kg; 25 mg/kg belongs to the twice-daily alternative with its own cap.",
+            "D": "This doubles the capped once-daily schedule and exceeds the separate twice-daily per-dose cap.",
+            "E": "The listed course is 10 days."
+          },
+          "sectionIds": [
+            "amoxicillin-dose-cap-20261010"
+          ],
+          "sourceIds": [
+            "cdc-strep-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply a pediatric amoxicillin maximum after calculating the weight-based dose.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "streptococcal-pharyngitis-q7",
+          "stem": "A 26-kg child has confirmed uncomplicated GAS pharyngitis and cannot reliably complete an oral course. After allergy and contraindication assessment, single-dose IM benzathine penicillin G is selected. Which listed regimen follows the CDC weight threshold?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "600,000 units IM daily for 10 days"
+            },
+            {
+              "id": "B",
+              "text": "1,200,000 units IM once"
+            },
+            {
+              "id": "C",
+              "text": "1,200,000 units orally once"
+            },
+            {
+              "id": "D",
+              "text": "600,000 units IM once"
+            },
+            {
+              "id": "E",
+              "text": "600,000 units orally twice daily for 10 days"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Below 27 kg, the listed benzathine penicillin G regimen is 600,000 units IM once.",
+          "distractorExplanations": {
+            "A": "CDC specifies one IM dose, not daily injections.",
+            "B": "The 1,200,000-unit dose applies at 27 kg or more.",
+            "C": "This is an IM formulation/regimen and the higher weight-category dose.",
+            "E": "This substitutes an oral schedule for the specified IM regimen."
+          },
+          "sectionIds": [
+            "benzathine-weight-dose-20261010"
+          ],
+          "sourceIds": [
+            "cdc-strep-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Use the correct benzathine penicillin G formulation, route and weight-based dose.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
         }
       ]
     },
@@ -1787,7 +1966,7 @@
         {
           "id": "zanamivir-airways-20261010",
           "title": "Inhaled zanamivir boundary",
-          "text": "CDC’s antiviral table and footnote state that inhaled zanamivir is contraindicated in underlying airway disease such as asthma or COPD because of bronchospasm risk. The table identifies activity against both influenza A and B. Airway disease affects drug choice rather than excluding influenza infection or all antiviral treatment. CDC separately advises against amantadine and rimantadine because of high resistance among circulating influenza A viruses.",
+          "text": "CDC\u2019s antiviral table and footnote state that inhaled zanamivir is contraindicated in underlying airway disease such as asthma or COPD because of bronchospasm risk. The table identifies activity against both influenza A and B. Airway disease affects drug choice rather than excluding influenza infection or all antiviral treatment. CDC separately advises against amantadine and rimantadine because of high resistance among circulating influenza A viruses.",
           "sourceIds": [
             "cdc-influenza-antivirals-verified20261010"
           ],
@@ -1885,7 +2064,7 @@
         },
         {
           "id": "influenza-q3",
-          "stem": "A pregnant adult has confirmed influenza and is being assessed promptly for antiviral treatment. No relevant contraindication prevents the preferred oral agent. Which option matches CDC’s pregnancy preference?",
+          "stem": "A pregnant adult has confirmed influenza and is being assessed promptly for antiviral treatment. No relevant contraindication prevents the preferred oral agent. Which option matches CDC\u2019s pregnancy preference?",
           "choices": [
             {
               "id": "A",
@@ -1955,9 +2134,9 @@
           "correctChoiceId": "B",
           "explanation": "Inhaled zanamivir is contraindicated in asthma or COPD because of bronchospasm risk.",
           "distractorExplanations": {
-            "A": "CDC does not list asthma as this agent’s airway-disease contraindication.",
-            "C": "CDC does not list asthma as this agent’s airway-disease contraindication.",
-            "D": "CDC does not list asthma as this agent’s airway-disease contraindication.",
+            "A": "CDC does not list asthma as this agent\u2019s airway-disease contraindication.",
+            "C": "CDC does not list asthma as this agent\u2019s airway-disease contraindication.",
+            "D": "CDC does not list asthma as this agent\u2019s airway-disease contraindication.",
             "E": "CDC does not recommend amantadine because of viral resistance; that is different from the specified zanamivir airway contraindication."
           },
           "sectionIds": [
@@ -2162,7 +2341,7 @@
         },
         {
           "id": "covid-19-q3",
-          "stem": "A vaccinated seventy-eight-year-old has mild COVID-19 on symptom day two. The patient assumes vaccination makes outpatient treatment irrelevant. Which response best follows CDC’s risk-based approach?",
+          "stem": "A vaccinated seventy-eight-year-old has mild COVID-19 on symptom day two. The patient assumes vaccination makes outpatient treatment irrelevant. Which response best follows CDC\u2019s risk-based approach?",
           "choices": [
             {
               "id": "A",
@@ -2205,7 +2384,7 @@
         },
         {
           "id": "covid-19-q4",
-          "stem": "An adult improves after COVID-19, then develops mild recurrent symptoms and a new positive test three days after testing negative. No severe features are described. Which interpretation and next action best fit CDC’s rebound guidance?",
+          "stem": "An adult improves after COVID-19, then develops mild recurrent symptoms and a new positive test three days after testing negative. No severe features are described. Which interpretation and next action best fit CDC\u2019s rebound guidance?",
           "choices": [
             {
               "id": "A",
@@ -2439,7 +2618,7 @@
         },
         {
           "id": "allergic-rhinitis-q3",
-          "stem": "An adult with allergic rhinitis asks to start montelukast because a friend likes it. The patient has not tried alternative allergy therapies and has no stated intolerance to them. Which selection principle follows FDA’s warning?",
+          "stem": "An adult with allergic rhinitis asks to start montelukast because a friend likes it. The patient has not tried alternative allergy therapies and has no stated intolerance to them. Which selection principle follows FDA\u2019s warning?",
           "choices": [
             {
               "id": "A",
@@ -2468,7 +2647,7 @@
             "A": "FDA still reserves allergic-rhinitis use for inadequate response or intolerance to alternatives.",
             "B": "FDA advises counseling all montelukast recipients.",
             "C": "FDA advises counseling all recipients about mental-health side effects.",
-            "D": "This does not apply FDA’s reserve-use restriction."
+            "D": "This does not apply FDA\u2019s reserve-use restriction."
           },
           "sectionIds": [
             "montelukast-reserve-20261010"
@@ -2477,7 +2656,7 @@
             "fda-montelukast-warning-verified20261010"
           ],
           "domain": "chronic",
-          "learningObjective": "Apply FDA’s reserve-use restriction for montelukast in allergic rhinitis.",
+          "learningObjective": "Apply FDA\u2019s reserve-use restriction for montelukast in allergic rhinitis.",
           "difficulty": "application"
         },
         {
@@ -2747,7 +2926,7 @@
         },
         {
           "id": "tuberculosis-q3",
-          "stem": "An adult has latent TB infection after active disease is excluded. Drug susceptibility, medical conditions and interactions permit rifampin treatment. Among these options, which matches CDC’s preferred short-course approach?",
+          "stem": "An adult has latent TB infection after active disease is excluded. Drug susceptibility, medical conditions and interactions permit rifampin treatment. Among these options, which matches CDC\u2019s preferred short-course approach?",
           "choices": [
             {
               "id": "A",
@@ -2917,11 +3096,11 @@
         {
           "id": "observation-age-laterality",
           "title": "Age and laterality in mild AOM",
-          "text": "CDC says mild unilateral AOM in children aged 6–23 months, or mild unilateral or bilateral AOM in children older than 2 years, may be appropriate for watchful waiting through shared decision-making. This is selected observation, not a rule to observe every severity or age. The same AOM row says not to use prophylactic antibiotics to reduce recurrent AOM frequency.",
+          "text": "CDC says mild unilateral AOM in children aged 6\u201323 months, or mild unilateral or bilateral AOM in children older than 2 years, may be appropriate for watchful waiting through shared decision-making. This is selected observation, not a rule to observe every severity or age. The same AOM row says not to use prophylactic antibiotics to reduce recurrent AOM frequency.",
           "sourceIds": [
             "cdc-pediatric-aom-verified20261010"
           ],
-          "sourceLocator": "Acute otitis media — Management: watchful waiting and prophylactic-antibiotic bullets."
+          "sourceLocator": "Acute otitis media \u2014 Management: watchful waiting and prophylactic-antibiotic bullets."
         }
       ],
       "questions": [
@@ -3037,12 +3216,12 @@
             }
           ],
           "correctChoiceId": "A",
-          "explanation": "The CDC AOM summary allows watchful waiting for selected mild unilateral cases at 6–23 months. Eligibility must not be generalized to every presentation.",
+          "explanation": "The CDC AOM summary allows watchful waiting for selected mild unilateral cases at 6\u201323 months. Eligibility must not be generalized to every presentation.",
           "distractorExplanations": {
-            "B": "CDC allows observation for selected mild unilateral AOM at 6–23 months; bilateral disease is not the eligibility criterion in this age group.",
-            "C": "The source includes selected mild unilateral cases aged 6–23 months.",
+            "B": "CDC allows observation for selected mild unilateral AOM at 6\u201323 months; bilateral disease is not the eligibility criterion in this age group.",
+            "C": "The source includes selected mild unilateral cases aged 6\u201323 months.",
             "D": "Prior antibiotic failure is not part of the source observation criterion for this selected mild unilateral case.",
-            "E": "Recurrent episodes are not required by CDC’s selected mild unilateral observation criterion at this age."
+            "E": "Recurrent episodes are not required by CDC\u2019s selected mild unilateral observation criterion at this age."
           },
           "sectionIds": [
             "observation-age-laterality"
@@ -3103,7 +3282,7 @@
       "id": "otitis-externa",
       "name": "Acute otitis externa",
       "aliases": [
-        "swimmer’s ear",
+        "swimmer\u2019s ear",
         "external ear infection"
       ],
       "specialty": "Respiratory, infectious and gastrointestinal",
@@ -3131,7 +3310,7 @@
           "edition": "Ireland; Version 2.0 reviewed March 2026",
           "publishedDate": null,
           "checkedAt": "2026-10-09",
-          "locator": "Pages 1–3: examination; treatment; urgent referral",
+          "locator": "Pages 1\u20133: examination; treatment; urgent referral",
           "reuse": "original-summary-no-full-text"
         },
         {
@@ -3187,7 +3366,7 @@
           "sourceIds": [
             "cdc-swimmers-ear-verified20261010"
           ],
-          "sourceLocator": "Prevention steps — Check with your healthcare provider about using ear-drying drops; Treatment."
+          "sourceLocator": "Prevention steps \u2014 Check with your healthcare provider about using ear-drying drops; Treatment."
         },
         {
           "id": "protective-wax",
@@ -3196,7 +3375,7 @@
           "sourceIds": [
             "cdc-swimmers-ear-verified20261010"
           ],
-          "sourceLocator": "Prevention steps — Don't put objects in ear canal; Don't try to remove ear wax."
+          "sourceLocator": "Prevention steps \u2014 Don't put objects in ear canal; Don't try to remove ear wax."
         }
       ],
       "questions": [
@@ -3999,7 +4178,7 @@
           "edition": "2022 clinical practice update",
           "publishedDate": "2022-03-23",
           "checkedAt": "2026-10-09",
-          "locator": "Best practice advice 1–3 and 5–7 in official commissioned publication abstract",
+          "locator": "Best practice advice 1\u20133 and 5\u20137 in official commissioned publication abstract",
           "reuse": "original-summary-no-full-text"
         },
         {
@@ -4609,7 +4788,7 @@
         },
         {
           "id": "niddk-gastroenteritis-treatment-verified20261010",
-          "title": "Treatment of Viral Gastroenteritis (“Stomach Flu”)",
+          "title": "Treatment of Viral Gastroenteritis (\u201cStomach Flu\u201d)",
           "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
           "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/viral-gastroenteritis/treatment",
           "kind": "official-clinical-reference",
@@ -5172,7 +5351,7 @@
           "edition": "2021 clinical practice update",
           "publishedDate": null,
           "checkedAt": "2026-10-09",
-          "locator": "Best practice advice 1–3 and 6–8",
+          "locator": "Best practice advice 1\u20133 and 6\u20138",
           "reuse": "original-summary-no-full-text"
         },
         {
@@ -5305,7 +5484,7 @@
           "id": "acute-diverticulitis-q1"
         },
         {
-          "stem": "Colonoscopy is indicated after a patient’s first diverticulitis episode. Symptoms resolved two weeks ago, and there are no alarm features. Which timing principle best follows AGA advice?",
+          "stem": "Colonoscopy is indicated after a patient\u2019s first diverticulitis episode. Symptoms resolved two weeks ago, and there are no alarm features. Which timing principle best follows AGA advice?",
           "choices": [
             {
               "id": "A",
@@ -5832,7 +6011,7 @@
       ],
       "questions": [
         {
-          "stem": "An adult’s hepatitis C antibody is reactive. No RNA test has been performed. Which test determines whether infection is currently present?",
+          "stem": "An adult\u2019s hepatitis C antibody is reactive. No RNA test has been performed. Which test determines whether infection is currently present?",
           "choices": [
             {
               "id": "A",
@@ -6326,7 +6505,7 @@
           "edition": "Published May 15, 2024; updated and reviewed August 17, 2026",
           "publishedDate": "2024-05-15",
           "checkedAt": "2026-10-10",
-          "locator": "Key points: routine screening ages 13–64; ongoing-risk annual screening; opt-out approach",
+          "locator": "Key points: routine screening ages 13\u201364; ongoing-risk annual screening; opt-out approach",
           "reuse": "original-summary-no-full-text",
           "jurisdiction": "United States",
           "limitations": "CDC-authored testing guidance, not blanket permission for linked coauthored NIH guideline PDFs. Retain age/risk and consent scope; no images or linked proprietary materials.",
@@ -6339,7 +6518,7 @@
         },
         {
           "id": "cdc-hiv-sti-verified20261010",
-          "title": "HIV — STI Treatment Guidelines",
+          "title": "HIV \u2014 STI Treatment Guidelines",
           "organization": "Centers for Disease Control and Prevention",
           "url": "https://www.cdc.gov/std/treatment-guidelines/hiv.htm",
           "kind": "clinical-guideline",
@@ -6386,7 +6565,7 @@
         {
           "id": "routine-opt-out-screening",
           "title": "Routine HIV screening and consent",
-          "text": "CDC recommends that all patients aged 13–64 receive HIV testing at least once as part of routine health care, with at least annual screening for ongoing risk factors. An opt-out approach means informing the patient that testing will be included and allowing the patient to decline; it does not mean testing secretly or without the opportunity to refuse.",
+          "text": "CDC recommends that all patients aged 13\u201364 receive HIV testing at least once as part of routine health care, with at least annual screening for ongoing risk factors. An opt-out approach means informing the patient that testing will be included and allowing the patient to decline; it does not mean testing secretly or without the opportunity to refuse.",
           "sourceIds": [
             "cdc-hiv-testing-verified20261010"
           ],
@@ -6404,7 +6583,7 @@
       ],
       "questions": [
         {
-          "stem": "An asymptomatic adult with confirmed HIV has a CD4 count of 720 cells/mm³ and is ready to engage in care. Which approach follows federal guidelines?",
+          "stem": "An asymptomatic adult with confirmed HIV has a CD4 count of 720 cells/mm\u00b3 and is ready to engage in care. Which approach follows federal guidelines?",
           "choices": [
             {
               "id": "A",
@@ -6558,7 +6737,7 @@
             }
           ],
           "correctChoiceId": "C",
-          "explanation": "CDC recommends at least one routine HIV test for ages 13–64. Opt-out screening informs the patient and permits refusal; risk disclosure is not required for the first routine screen.",
+          "explanation": "CDC recommends at least one routine HIV test for ages 13\u201364. Opt-out screening informs the patient and permits refusal; risk disclosure is not required for the first routine screen.",
           "distractorExplanations": {
             "A": "CDC recommends at least one routine screen in this age group without requiring an STI diagnosis.",
             "B": "The first routine age-based screen is not conditional on an identified ongoing risk factor.",
@@ -6602,7 +6781,7 @@
       "sources": [
         {
           "id": "cdc-chlamydia-2021",
-          "title": "Chlamydial Infections – STI Treatment Guidelines",
+          "title": "Chlamydial Infections \u2013 STI Treatment Guidelines",
           "organization": "Centers for Disease Control and Prevention",
           "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
           "kind": "clinical-guideline",
@@ -6614,17 +6793,37 @@
         },
         {
           "id": "cdc-chlamydia-verified20261010",
-          "title": "Chlamydial Infections — STI Treatment Guidelines",
+          "title": "Chlamydial Infections \u2014 STI Treatment Guidelines",
           "organization": "Centers for Disease Control and Prevention",
           "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
           "kind": "clinical-guideline",
           "edition": "CDC STI Treatment Guidelines, 2021; chapter reviewed July 22, 2021",
           "publishedDate": "2021-07-22",
           "checkedAt": "2026-10-10",
-          "locator": "Chlamydial Infection Among Adolescents and Adults: screening and Diagnostic Considerations; Special Considerations — Pregnancy",
+          "locator": "Chlamydial Infection Among Adolescents and Adults: screening and Diagnostic Considerations; Special Considerations \u2014 Pregnancy",
           "reuse": "original-summary-no-full-text",
           "jurisdiction": "United States",
           "limitations": "CDC-authored chapter, with pregnancy and age-specific scope preserved. New questions do not import doses, neonatal protocols or third-party studies; no linked publication license is assumed.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-chlamydia-treatment-depth-20261010",
+          "title": "Chlamydial Infections \u2014 STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
+          "kind": "clinical-guideline",
+          "edition": "CDC STI Treatment Guidelines, 2021; chapter reviewed July 22, 2021",
+          "publishedDate": "2021-07-22",
+          "checkedAt": "2026-10-10",
+          "locator": "Adolescent/adult Treatment and alternatives; Other Management Considerations; Follow-Up; Management of Sex Partners; Special Considerations \u2014 Pregnancy",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Bounded adolescent/adult and pregnancy treatment details from the 2021 chapter, still linked as current CDC guidance on the check date. Pregnancy regimens are distinct. No neonatal dosing or renal dose-adjustment algorithm is supplied. Original study paraphrases only; CDC originals are freely available. Attribution does not imply endorsement by CDC, HHS or the U.S. Government. No linked third-party work, figure, logo or full source document is imported.",
           "rights": {
             "basis": "public-domain-government",
             "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
@@ -6665,7 +6864,7 @@
           "sourceIds": [
             "cdc-chlamydia-verified20261010"
           ],
-          "sourceLocator": "Special Considerations — Pregnancy, test-of-cure and retesting paragraph."
+          "sourceLocator": "Special Considerations \u2014 Pregnancy, test-of-cure and retesting paragraph."
         },
         {
           "id": "screening-and-self-swab",
@@ -6675,6 +6874,51 @@
             "cdc-chlamydia-verified20261010"
           ],
           "sourceLocator": "Chlamydial Infection Among Adolescents and Adults, annual-screening paragraph; Diagnostic Considerations, vaginal-swab NAAT paragraphs."
+        },
+        {
+          "id": "adult-alternative-adherence-20261010",
+          "title": "Adult alternatives and adherence",
+          "text": "For uncomplicated infection outside pregnancy, doxycycline 100 mg orally twice daily for 7 days is recommended. Alternatives are azithromycin 1 g orally once or levofloxacin 500 mg orally daily for 7 days. Substantial concern about completing doxycycline can favor single-dose azithromycin, but lower rectal efficacy may require posttreatment evaluation/testing.",
+          "sourceIds": [
+            "cdc-chlamydia-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Treatment \u2014 recommended and alternative adult regimens; paragraph beginning \"When nonadherence\"."
+        },
+        {
+          "id": "pregnancy-regimens-20261010",
+          "title": "Pregnancy-specific treatment",
+          "text": "In pregnancy, CDC recommends azithromycin 1 g orally once; amoxicillin 500 mg orally three times daily for 7 days is an alternative. Doxycycline is contraindicated during the second and third trimesters. These pregnancy recommendations are separate from the ordinary adult regimen.",
+          "sourceIds": [
+            "cdc-chlamydia-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Special Considerations \u2014 Pregnancy; recommended and alternative regimens and doxycycline qualification."
+        },
+        {
+          "id": "abstinence-interval-20261010",
+          "title": "Abstinence after treatment",
+          "text": "After single-dose chlamydia therapy, abstain from intercourse for 7 days; after a 7-day course, wait until completion and symptom resolution. Also wait until sex partners have been treated.",
+          "sourceIds": [
+            "cdc-chlamydia-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Other Management Considerations \u2014 first paragraph."
+        },
+        {
+          "id": "partner-lookback-20261010",
+          "title": "Partner lookback and its exception",
+          "text": "Refer sex partners from the 60 days before symptom onset or diagnosis for evaluation, testing and presumptive treatment. Evaluate and treat the most recent partner even when the last contact was more than 60 days earlier.",
+          "sourceIds": [
+            "cdc-chlamydia-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Management of Sex Partners \u2014 first paragraph."
+        },
+        {
+          "id": "early-naat-20261010",
+          "title": "Avoid premature NAAT interpretation",
+          "text": "Chlamydia NAAT within 4 weeks after treatment can detect nonviable organisms and give a false-positive result. Routine test of cure is not advised for adherent nonpregnant patients without persistent symptoms or suspected reinfection; it is a separate pregnancy requirement.",
+          "sourceIds": [
+            "cdc-chlamydia-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Follow-Up \u2014 first paragraph; Special Considerations \u2014 Pregnancy."
         }
       ],
       "questions": [
@@ -6849,6 +7093,226 @@
           "domain": "preventive",
           "learningObjective": "Choose recommended asymptomatic chlamydia screening and an acceptable patient-collected specimen.",
           "difficulty": "application"
+        },
+        {
+          "id": "chlamydia-q5",
+          "stem": "A 24-week pregnant adult has NAAT-confirmed uncomplicated chlamydia and no relevant medication allergy. Which listed regimen is the CDC-recommended pregnancy treatment rather than an alternative?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Doxycycline 100 mg orally twice daily for 7 days"
+            },
+            {
+              "id": "B",
+              "text": "Amoxicillin 500 mg orally three times daily for 7 days"
+            },
+            {
+              "id": "C",
+              "text": "Azithromycin 1 g orally once"
+            },
+            {
+              "id": "D",
+              "text": "Azithromycin 1 g orally daily for 7 days"
+            },
+            {
+              "id": "E",
+              "text": "Amoxicillin 500 mg orally once"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Azithromycin 1 g once is recommended in pregnancy; amoxicillin is an alternative.",
+          "distractorExplanations": {
+            "A": "Doxycycline is contraindicated in the second and third trimesters.",
+            "B": "This is the listed pregnancy alternative, not the requested recommended regimen.",
+            "D": "CDC specifies a single dose, not this repeated schedule.",
+            "E": "The pregnancy alternative is three daily doses for 7 days, not one dose."
+          },
+          "sectionIds": [
+            "pregnancy-regimens-20261010"
+          ],
+          "sourceIds": [
+            "cdc-chlamydia-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Distinguish recommended from alternative chlamydia treatment during pregnancy.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "chlamydia-q6",
+          "stem": "A nonpregnant adult has uncomplicated chlamydia and substantial difficulty completing a multiday regimen. Rectal infection is also documented. No drug contraindication is present. Which alternative plan best preserves the CDC adherence and efficacy qualifications?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Use azithromycin 1 g orally once and consider posttreatment evaluation/testing because rectal efficacy is lower"
+            },
+            {
+              "id": "B",
+              "text": "Use azithromycin 1 g once and guarantee that rectal efficacy equals doxycycline"
+            },
+            {
+              "id": "C",
+              "text": "Use levofloxacin 500 mg orally once as the complete alternative course"
+            },
+            {
+              "id": "D",
+              "text": "Withhold treatment until reliable multiday adherence is guaranteed"
+            },
+            {
+              "id": "E",
+              "text": "Use doxycycline 100 mg orally once as the complete recommended course"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Single-dose azithromycin is an adherence alternative; the rectal-efficacy caveat must remain visible.",
+          "distractorExplanations": {
+            "B": "CDC describes lower rectal efficacy with azithromycin.",
+            "C": "The adult levofloxacin alternative is daily for 7 days.",
+            "D": "CDC calls for prompt treatment and provides an adherence alternative.",
+            "E": "The recommended doxycycline regimen is twice daily for 7 days."
+          },
+          "sectionIds": [
+            "adult-alternative-adherence-20261010"
+          ],
+          "sourceIds": [
+            "cdc-chlamydia-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply an adherence-driven alternative without erasing site-specific efficacy limits.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "chlamydia-q7",
+          "stem": "An adult with newly diagnosed chlamydia reports no sexual contact in the past 60 days. The most recent partner was 80 days ago. Which partner-management decision follows CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Exclude that partner from evaluation because contact was over 60 days ago"
+            },
+            {
+              "id": "B",
+              "text": "Evaluate that partner only if symptoms develop"
+            },
+            {
+              "id": "C",
+              "text": "Require proof of a positive test before arranging any presumptive partner treatment"
+            },
+            {
+              "id": "D",
+              "text": "Refer the most recent partner for evaluation and treatment despite the longer interval"
+            },
+            {
+              "id": "E",
+              "text": "Wait for the patient's 3-month retest before deciding whether the partner needs care"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "The most-recent-partner exception extends beyond the usual 60-day lookback.",
+          "distractorExplanations": {
+            "A": "CDC explicitly includes the most recent partner beyond 60 days.",
+            "B": "Partner evaluation is not restricted to symptomatic partners.",
+            "C": "CDC includes presumptive treatment in partner management.",
+            "E": "Patient reinfection retesting does not replace timely partner care."
+          },
+          "sectionIds": [
+            "partner-lookback-20261010"
+          ],
+          "sourceIds": [
+            "cdc-chlamydia-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply the most-recent-partner exception to the chlamydia exposure lookback.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "chlamydia-q8",
+          "stem": "An adult receives single-dose azithromycin for uncomplicated chlamydia. Symptoms have resolved, but the sex partner has not yet been treated. What counseling best follows the treatment and partner intervals?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Resume intercourse immediately because a single-dose regimen is complete"
+            },
+            {
+              "id": "B",
+              "text": "Wait at least 7 days after single-dose treatment and until partners have been treated"
+            },
+            {
+              "id": "C",
+              "text": "Wait only until the first symptom-free day"
+            },
+            {
+              "id": "D",
+              "text": "Wait 7 days regardless of whether the partner receives treatment"
+            },
+            {
+              "id": "E",
+              "text": "Wait only until the partner schedules a visit"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Both the 7-day single-dose interval and partner-treatment condition apply.",
+          "distractorExplanations": {
+            "A": "CDC still requires a 7-day interval after single-dose therapy.",
+            "C": "Symptom resolution alone does not fulfill the interval or partner condition.",
+            "D": "The partner-treatment condition remains necessary.",
+            "E": "Scheduling alone is not partner treatment."
+          },
+          "sectionIds": [
+            "abstinence-interval-20261010"
+          ],
+          "sourceIds": [
+            "cdc-chlamydia-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Combine the treatment interval with partner management to prevent reinfection.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "chlamydia-q9",
+          "stem": "A nonpregnant adult completed recommended chlamydia treatment with reliable adherence, has no symptoms or new exposure, and obtained a repeat NAAT 10 days after completion. It is positive. Which interpretation best matches CDC guidance?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "The early result establishes antimicrobial resistance"
+            },
+            {
+              "id": "B",
+              "text": "Any posttreatment NAAT establishes reinfection"
+            },
+            {
+              "id": "C",
+              "text": "Routine daily NAAT is the preferred cure assessment"
+            },
+            {
+              "id": "D",
+              "text": "The early result removes the need to assess symptoms or exposure"
+            },
+            {
+              "id": "E",
+              "text": "Testing before 4 weeks can detect nonviable organisms and cannot alone establish treatment failure"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "A premature NAAT can be falsely positive from nonviable organisms; the result alone does not establish failure.",
+          "distractorExplanations": {
+            "A": "The early NAAT can reflect nonviable organisms; it does not prove resistance.",
+            "B": "CDC describes false-positive early NAATs, not inevitable reinfection.",
+            "C": "CDC discourages NAAT before 4 weeks for this purpose.",
+            "D": "Symptoms, adherence and reinfection concern remain relevant to follow-up."
+          },
+          "sectionIds": [
+            "early-naat-20261010"
+          ],
+          "sourceIds": [
+            "cdc-chlamydia-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Interpret an early posttreatment NAAT without falsely diagnosing treatment failure.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
         }
       ]
     },
@@ -6877,7 +7341,7 @@
       "sources": [
         {
           "id": "cdc-gonorrhea-2021",
-          "title": "Gonococcal Infections Among Adolescents and Adults – STI Treatment Guidelines",
+          "title": "Gonococcal Infections Among Adolescents and Adults \u2013 STI Treatment Guidelines",
           "organization": "Centers for Disease Control and Prevention",
           "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm",
           "kind": "clinical-guideline",
@@ -6889,7 +7353,7 @@
         },
         {
           "id": "cdc-gonorrhea-verified20261010",
-          "title": "Gonococcal Infections Among Adolescents and Adults — STI Treatment Guidelines",
+          "title": "Gonococcal Infections Among Adolescents and Adults \u2014 STI Treatment Guidelines",
           "organization": "Centers for Disease Control and Prevention",
           "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm",
           "kind": "clinical-guideline",
@@ -6903,6 +7367,66 @@
           "rights": {
             "basis": "public-domain-government",
             "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-gonorrhea-treatment-depth-20261010",
+          "title": "Gonococcal Infections Among Adolescents and Adults \u2014 STI Treatment Guidelines",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm",
+          "kind": "clinical-guideline",
+          "edition": "CDC STI Treatment Guidelines, 2021; chapter reviewed September 21, 2022",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Uncomplicated cervix/urethra/rectum recommended and alternative regimens; Pharynx; Follow-Up; Drug Allergy and Pregnancy",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "These dose questions concern uncomplicated adolescent/adult disease, not DGI or neonatal infection. Cefixime is an availability alternative, not a universal first-line or reliable pharyngeal substitute. Unexcluded chlamydia requires population-appropriate treatment. Original study paraphrases only; CDC originals are freely available. Attribution does not imply endorsement by CDC, HHS or the U.S. Government. No linked third-party work, figure, logo or full source document is imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "cdc-sti-erratum2023-treatments-20261010",
+          "title": "Erratum: Vol. 70, No. RR-4",
+          "organization": "Centers for Disease Control and Prevention",
+          "url": "https://www.cdc.gov/mmwr/volumes/72/wr/mm7204a5.htm",
+          "kind": "official-recommendation",
+          "edition": "MMWR 2023;72(4):107\u2013108 correction of STI Treatment Guidelines, 2021",
+          "publishedDate": "2023-01-27",
+          "checkedAt": "2026-10-10",
+          "locator": "Correction to page 73: availability versus cephalosporin-allergy alternative regimen boxes",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "Selected correction cross-check only. Original educational paraphrase, without reproducing tables, marks or third-party publications. The parent guideline remains a 2021 edition; an erratum is not a new guideline edition.",
+          "rights": {
+            "basis": "public-domain-mmwr",
+            "policyUrl": "https://www.cdc.gov/mmwr/about.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        },
+        {
+          "id": "fda-gonorrhea-oral-approvals2025-20261010",
+          "title": "FDA Approves Two Oral Therapies to Treat Gonorrhea",
+          "organization": "U.S. Food and Drug Administration",
+          "url": "https://www.fda.gov/news-events/press-announcements/fda-approves-two-oral-therapies-treat-gonorrhea",
+          "kind": "official-clinical-reference",
+          "edition": "FDA news release, December 12, 2025; approval status, not a clinical practice guideline",
+          "publishedDate": "2025-12-12",
+          "checkedAt": "2026-10-10",
+          "locator": "Opening approval paragraphs: indication, age/weight eligibility and restricted gepotidacin use",
+          "reuse": "original-summary-no-full-text",
+          "jurisdiction": "United States",
+          "limitations": "FDA-authored regulatory status summary only. No efficacy percentages, trial-dose schedules, proprietary labels or treatment-ranking claims are imported. Full prescribing warnings, interactions and pregnancy precautions require separate exact-label assessment; approved indications are not proof of CDC first-line status.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.fda.gov/about-fda/about-website/website-policies",
             "checkedAt": "2026-10-10",
             "commercialClinicalApproval": false
           }
@@ -6936,7 +7460,7 @@
         {
           "id": "suspected-treatment-failure",
           "title": "Persistent symptoms need culture and susceptibility assessment",
-          "text": "CDC says to consider treatment failure when symptoms persist 3–5 days after recommended gonorrhea treatment and no posttreatment sexual contact is reported. Most suspected failures are reinfections, but when reinfection is unlikely and failure is suspected, obtain relevant specimens for culture, preferably with simultaneous NAAT, and susceptibility testing if gonorrhea is isolated before retreatment. Specialist/public-health consultation is part of this pathway.",
+          "text": "CDC says to consider treatment failure when symptoms persist 3\u20135 days after recommended gonorrhea treatment and no posttreatment sexual contact is reported. Most suspected failures are reinfections, but when reinfection is unlikely and failure is suspected, obtain relevant specimens for culture, preferably with simultaneous NAAT, and susceptibility testing if gonorrhea is isolated before retreatment. Specialist/public-health consultation is part of this pathway.",
           "sourceIds": [
             "cdc-gonorrhea-verified20261010"
           ],
@@ -6950,6 +7474,52 @@
             "cdc-gonorrhea-verified20261010"
           ],
           "sourceLocator": "Disseminated Gonococcal Infection, clinical findings and specimen-collection paragraphs."
+        },
+        {
+          "id": "anogenital-doses-chlamydia-20261010",
+          "title": "Weight and unexcluded chlamydia",
+          "text": "For uncomplicated cervical, urethral or rectal gonorrhea, ceftriaxone is given IM once: 500 mg below 150 kg, or 1 g at 150 kg or more. When chlamydia has not been excluded in a nonpregnant adult, add doxycycline 100 mg orally twice daily for 7 days. Pregnancy requires its separate chlamydia regimen.",
+          "sourceIds": [
+            "cdc-gonorrhea-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Uncomplicated Gonococcal Infection of the Cervix, Urethra, or Rectum \u2014 recommended regimen and weight footnote; Pregnancy."
+        },
+        {
+          "id": "anogenital-alternatives-20261010",
+          "title": "Availability and allergy alternatives",
+          "text": "When ceftriaxone administration is unavailable or infeasible, cefixime 800 mg orally once is an alternative for uncomplicated anogenital infection, with chlamydia treatment if unexcluded. CDC lists gentamicin 240 mg IM plus azithromycin 2 g orally, each once, for cephalosporin allergy. These are not interchangeable pharyngeal or pregnancy regimens.",
+          "sourceIds": [
+            "cdc-gonorrhea-treatment-depth-20261010",
+            "cdc-sti-erratum2023-treatments-20261010"
+          ],
+          "sourceLocator": "Uncomplicated anogenital infection \u2014 Alternative Regimens; Pharynx; Pregnancy."
+        },
+        {
+          "id": "pharyngeal-severe-allergy-20261010",
+          "title": "Pharyngeal severe allergy needs expert input",
+          "text": "CDC identifies no reliable alternative treatment for pharyngeal gonorrhea. Ceftriaxone anaphylaxis or another severe reaction calls for infectious-disease consultation rather than automatic substitution of an anogenital alternative.",
+          "sourceIds": [
+            "cdc-gonorrhea-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Uncomplicated Gonococcal Infection of the Pharynx \u2014 final recommendation paragraph."
+        },
+        {
+          "id": "pharyngeal-positive-naat-20261010",
+          "title": "Clarify a positive pharyngeal test of cure",
+          "text": "Pharyngeal test of cure uses culture or NAAT 7\u201314 days after treatment; testing at day 7 increases false-positive risk. If NAAT is positive, obtain confirmatory culture before retreatment where possible. Positive test-of-cure cultures need susceptibility testing.",
+          "sourceIds": [
+            "cdc-gonorrhea-treatment-depth-20261010"
+          ],
+          "sourceLocator": "Follow-Up \u2014 first two paragraphs."
+        },
+        {
+          "id": "fda-oral-approval-status-20261010",
+          "title": "New oral approvals do not establish guideline priority",
+          "text": "In December 2025, FDA approved oral zoliflodacin for uncomplicated urogenital gonorrhea at age 12 or older and weight at least 77 pounds, and gepotidacin at age 12 or older and weight at least 99 pounds. Gepotidacin is restricted to patients with limited or no alternative treatment options because of limited safety data. These approvals do not establish CDC first-line status or extend the indication to pharyngeal or disseminated infection. Consult the exact current prescribing information for full eligibility and precautions.",
+          "sourceIds": [
+            "fda-gonorrhea-oral-approvals2025-20261010"
+          ],
+          "sourceLocator": "Opening FDA approval paragraphs and heading specifying uncomplicated urogenital gonorrhea; guideline-status distinction is an editorial scope boundary."
         }
       ],
       "questions": [
@@ -7124,6 +7694,228 @@
           "domain": "acute",
           "learningObjective": "Recognize a disseminated gonococcal pattern and broaden site-specific diagnostic sampling.",
           "difficulty": "application"
+        },
+        {
+          "id": "gonorrhea-q5",
+          "stem": "An adult weighing exactly 150 kg has uncomplicated rectal gonorrhea, negative chlamydia testing and no relevant allergy. Which ceftriaxone regimen matches the CDC weight threshold?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "250 mg IM once"
+            },
+            {
+              "id": "B",
+              "text": "500 mg IM once"
+            },
+            {
+              "id": "C",
+              "text": "500 mg orally once"
+            },
+            {
+              "id": "D",
+              "text": "1 g IM once"
+            },
+            {
+              "id": "E",
+              "text": "1 g IM daily for 7 days"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "The 1-g single IM dose applies at 150 kg or more.",
+          "distractorExplanations": {
+            "A": "This is not the listed dose at this weight.",
+            "B": "The 500-mg dose applies below 150 kg.",
+            "C": "The recommended regimen uses IM administration.",
+            "E": "The uncomplicated regimen is a single dose, not this repeated course."
+          },
+          "sectionIds": [
+            "anogenital-doses-chlamydia-20261010"
+          ],
+          "sourceIds": [
+            "cdc-gonorrhea-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply the inclusive 150-kg uncomplicated gonorrhea dosing threshold.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "gonorrhea-q6",
+          "stem": "A nonpregnant adult has uncomplicated urethral gonorrhea without pharyngeal exposure, negative chlamydia testing and no relevant allergy. Ceftriaxone administration is not feasible. Which listed oral regimen is the CDC availability alternative?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Cefixime 400 mg once"
+            },
+            {
+              "id": "B",
+              "text": "Cefixime 800 mg once"
+            },
+            {
+              "id": "C",
+              "text": "Azithromycin 2 g alone once"
+            },
+            {
+              "id": "D",
+              "text": "Cefixime 800 mg daily for 7 days"
+            },
+            {
+              "id": "E",
+              "text": "Doxycycline 100 mg twice daily for 7 days alone"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Cefixime 800 mg orally once is the availability alternative for this uncomplicated anogenital scenario.",
+          "distractorExplanations": {
+            "A": "CDC specifies 800 mg for this alternative.",
+            "C": "Azithromycin monotherapy is not recommended for gonorrhea.",
+            "D": "CDC specifies a single dose rather than this repeated course.",
+            "E": "Doxycycline is the unexcluded-chlamydia add-on, not the gonorrhea regimen."
+          },
+          "sectionIds": [
+            "anogenital-alternatives-20261010"
+          ],
+          "sourceIds": [
+            "cdc-gonorrhea-treatment-depth-20261010",
+            "cdc-sti-erratum2023-treatments-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Select an anogenital availability alternative without presenting it as first-line treatment.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "gonorrhea-q7",
+          "stem": "An adult with confirmed pharyngeal gonorrhea has a documented previous anaphylactic reaction to ceftriaxone. Which next step preserves CDC's site-specific treatment limitation?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Automatically substitute cefixime as an equally reliable pharyngeal regimen"
+            },
+            {
+              "id": "B",
+              "text": "Automatically use the usual anogenital allergy alternative without consultation"
+            },
+            {
+              "id": "C",
+              "text": "Consult an infectious-disease specialist for an alternative treatment recommendation"
+            },
+            {
+              "id": "D",
+              "text": "Treat with azithromycin monotherapy as the standard pharyngeal regimen"
+            },
+            {
+              "id": "E",
+              "text": "Use doxycycline alone as the standard gonorrhea regimen"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "No reliable pharyngeal alternative is identified; severe ceftriaxone allergy needs specialist guidance.",
+          "distractorExplanations": {
+            "A": "CDC does not identify cefixime as an equally reliable pharyngeal alternative.",
+            "B": "The pharyngeal severe-allergy recommendation calls for consultation rather than automatic substitution.",
+            "D": "Azithromycin monotherapy is not recommended.",
+            "E": "Doxycycline alone is not the recommended gonorrhea regimen."
+          },
+          "sectionIds": [
+            "pharyngeal-severe-allergy-20261010",
+            "anogenital-alternatives-20261010"
+          ],
+          "sourceIds": [
+            "cdc-gonorrhea-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Respond to severe ceftriaxone allergy without generalizing anogenital alternatives to the pharynx.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "gonorrhea-q8",
+          "stem": "A symptom-free adult has a positive pharyngeal gonorrhea NAAT at a day-7 test of cure after recommended treatment, with no sexual contact afterward. Culture can be collected. Which next step best clarifies this result before choosing retreatment?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Obtain confirmatory culture and susceptibility testing if the culture is positive"
+            },
+            {
+              "id": "B",
+              "text": "Use the NAAT alone to determine antimicrobial susceptibility"
+            },
+            {
+              "id": "C",
+              "text": "Declare every positive day-7 NAAT proof of resistance"
+            },
+            {
+              "id": "D",
+              "text": "Ignore all positive tests of cure if symptoms resolved"
+            },
+            {
+              "id": "E",
+              "text": "Repeat NAAT daily instead of collecting an available culture"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Day-7 NAAT has increased false-positive risk; CDC advises confirmatory culture before retreatment where possible.",
+          "distractorExplanations": {
+            "B": "NAAT cannot provide the antimicrobial susceptibility result.",
+            "C": "CDC warns of increased false positives at day 7.",
+            "D": "CDC specifies evaluation of a positive test of cure.",
+            "E": "This substitutes serial NAAT for the recommended available culture."
+          },
+          "sectionIds": [
+            "pharyngeal-positive-naat-20261010"
+          ],
+          "sourceIds": [
+            "cdc-gonorrhea-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Clarify an early positive pharyngeal NAAT and obtain susceptibility information appropriately.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
+        },
+        {
+          "id": "gonorrhea-q9",
+          "stem": "A nonpregnant 80-kg adult has uncomplicated urethral gonorrhea; the chlamydia result is unavailable. There are no drug contraindications and multiday adherence is reliable. Which plan covers the CDC uncomplicated gonorrhea regimen and unexcluded chlamydia?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Ceftriaxone 500 mg IM once alone while chlamydia remains unexcluded"
+            },
+            {
+              "id": "B",
+              "text": "Doxycycline 100 mg twice daily for 7 days alone"
+            },
+            {
+              "id": "C",
+              "text": "Ceftriaxone 250 mg IM once plus doxycycline for 7 days"
+            },
+            {
+              "id": "D",
+              "text": "Ceftriaxone 500 mg IM once plus doxycycline 100 mg orally once"
+            },
+            {
+              "id": "E",
+              "text": "Ceftriaxone 500 mg IM once plus doxycycline 100 mg orally twice daily for 7 days"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "The gonorrhea dose below 150 kg is 500 mg IM once, with a 7-day doxycycline course when chlamydia is unexcluded outside pregnancy.",
+          "distractorExplanations": {
+            "A": "This omits the unexcluded-chlamydia treatment.",
+            "B": "This omits the recommended gonorrhea drug.",
+            "C": "The ceftriaxone dose does not match the current chapter recommendation.",
+            "D": "The doxycycline add-on requires twice-daily dosing for 7 days."
+          },
+          "sectionIds": [
+            "anogenital-doses-chlamydia-20261010"
+          ],
+          "sourceIds": [
+            "cdc-gonorrhea-treatment-depth-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Combine the gonorrhea regimen with appropriate unexcluded-chlamydia treatment outside pregnancy.",
+          "difficulty": "application",
+          "examScope": "us-board-study"
         }
       ]
     }

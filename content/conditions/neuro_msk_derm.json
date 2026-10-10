@@ -4369,6 +4369,24 @@
             "checkedAt": "2026-10-10",
             "commercialClinicalApproval": false
           }
+        },
+        {
+          "id": "lbp-va2022-full-treatment-20261010",
+          "title": "VA/DoD Clinical Practice Guideline for the Diagnosis and Treatment of Low Back Pain",
+          "organization": "Department of Veterans Affairs and Department of Defense",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/Pain/lbp/VADODLBPCPGFinal508.pdf",
+          "kind": "clinical-guideline",
+          "edition": "February 2022, version 3.0; evidence reviewed through February 1, 2021",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Recommendations 1–3, 8–9, 12, 14, 19, 23–24 and 28–29; Sidebar 1; NSAID discussion",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -4403,6 +4421,51 @@
           "sourceIds": [
             "acute-low-back-pain-gov-expansion-20261010"
           ]
+        },
+        {
+          "id": "lbp-nsaid-risk-selection",
+          "title": "NSAID treatment requires suitability and monitoring",
+          "text": "VA/DoD suggests NSAIDs for low back pain, rather than requiring them for everyone. Its discussion emphasizes gastrointestinal, cardiovascular and renal risks; NSAIDs may worsen heart failure, hypertension and renal function. In an older adult or a patient with renal impairment, cautious selection or avoidance is appropriate. When used, the source advises the lowest effective dose for the shortest feasible duration. This module does not establish a specific product dose for a patient.",
+          "sourceIds": [
+            "lbp-va2022-full-treatment-20261010"
+          ],
+          "sourceLocator": "Recommendation 19 discussion, pages 50–51."
+        },
+        {
+          "id": "lbp-muscle-relaxant-uncertainty",
+          "title": "Do not carry an older muscle-relaxant recommendation forward",
+          "text": "For short-term non-benzodiazepine muscle relaxant use in acute low back pain, the 2022 VA/DoD guideline finds insufficient evidence to recommend for or against use. This replaced the 2017 suggestion in favor. Insufficient evidence is neither proof of benefit nor a universal prohibition. Benzodiazepines are a separate class, recommended against for low back pain.",
+          "sourceIds": [
+            "lbp-va2022-full-treatment-20261010"
+          ],
+          "sourceLocator": "Recommendations 23 and 29; Appendix D, 2017-to-2022 recommendation comparison."
+        },
+        {
+          "id": "lbp-systemic-steroid-scope",
+          "title": "Radicular symptoms do not erase the corticosteroid qualifier",
+          "text": "The 2022 VA/DoD guideline suggests against systemic corticosteroids, whether oral or intramuscular, for low back pain with or without radicular symptoms. A sciatica-like presentation alone therefore does not establish routine systemic steroid treatment under this recommendation. The statement concerns systemic treatment, not every possible spinal procedure.",
+          "sourceIds": [
+            "lbp-va2022-full-treatment-20261010"
+          ],
+          "sourceLocator": "Recommendation 28 and discussion."
+        },
+        {
+          "id": "lbp-new-red-flags",
+          "title": "Reassess new red flags rather than repeating the original no-imaging plan",
+          "text": "A previously uncomplicated course must be reassessed when fever, immunosuppression, injection drug use, recent infection or neurologic deficits develop. For suspected spinal infection, Sidebar 1 lists MRI and inflammatory markers such as ESR or CRP. For possible fracture with osteoporosis, older age or recent trauma, it lists lumbosacral plain radiographs and further imaging if initial findings are inconclusive. The no-routine-imaging recommendation applies only while red flags and focal deficits remain absent.",
+          "sourceIds": [
+            "lbp-va2022-full-treatment-20261010"
+          ],
+          "sourceLocator": "Recommendations 1–3; Sidebar 1, infection and fracture pathways."
+        },
+        {
+          "id": "lbp-persistent-pain",
+          "title": "Persistent chronic pain permits broader nonpharmacologic care",
+          "text": "If a study case evolves into chronic low back pain, reassess the clinical situation rather than continuing an acute-only plan indefinitely. VA/DoD suggests cognitive behavioral therapy for chronic low back pain and a structured clinician-directed exercise program for low back pain. It finds insufficient evidence for or against mindfulness-based stress reduction in chronic pain and mechanical lumbar traction. These distinctions do not imply that pain is imaginary or that one intervention fits everyone. For chronic low back pain, Recommendation 24 suggests against offering a non-benzodiazepine muscle relaxant; this differs from the insufficient-evidence statement for short-term acute use.",
+          "sourceIds": [
+            "lbp-va2022-full-treatment-20261010"
+          ],
+          "sourceLocator": "Recommendations 8, 9, 12, 14 and 24; acute-versus-chronic muscle-relaxant distinction in Recommendations 23–24."
         }
       ],
       "questions": [
@@ -4578,6 +4641,265 @@
           "domain": "acute",
           "learningObjective": "Identify a suggested medication class for low back pain.",
           "difficulty": "application"
+        },
+        {
+          "id": "acute-low-back-pain-q5",
+          "stem": "A 78-year-old study patient with uncomplicated acute low back pain also has chronic kidney impairment and heart failure. A trainee proposes an oral NSAID without reviewing these conditions because Recommendation 19 suggests NSAIDs. Which response best applies the guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Use the suggestion without considering comorbidities"
+            },
+            {
+              "id": "B",
+              "text": "Choose a COX-2 agent solely to eliminate every cardiovascular and renal concern"
+            },
+            {
+              "id": "C",
+              "text": "Review gastrointestinal, cardiovascular and renal risk; cautious selection or avoidance may be appropriate"
+            },
+            {
+              "id": "D",
+              "text": "Continue treatment indefinitely once an initial dose has been chosen"
+            },
+            {
+              "id": "E",
+              "text": "Replace the assessment with routine lumbar imaging solely to determine NSAID suitability"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "The NSAID suggestion requires individual risk assessment. The discussion identifies heart failure, hypertension, renal impairment and older age as relevant safety considerations.",
+          "distractorExplanations": {
+            "A": "The discussion explicitly emphasizes individual safety risks.",
+            "B": "COX-2 selection does not eliminate cardiovascular or renal risk assessment.",
+            "D": "The source advises the lowest effective dose and shortest feasible duration when an NSAID is used.",
+            "E": "Imaging does not substitute for review of medication risks and comorbidities."
+          },
+          "sectionIds": [
+            "lbp-nsaid-risk-selection"
+          ],
+          "sourceIds": [
+            "lbp-va2022-full-treatment-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Apply an NSAID recommendation with its safety limitations rather than as a universal prescription.",
+          "difficulty": "application"
+        },
+        {
+          "id": "acute-low-back-pain-q6",
+          "stem": "A 42-year-old study patient has four days of nonradicular low back pain and no red flags. A colleague cites the 2017 VA/DoD suggestion for short-term non-benzodiazepine muscle relaxants. What does the 2022 replacement recommendation state?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Short-term use is strongly recommended for all acute cases"
+            },
+            {
+              "id": "B",
+              "text": "There is insufficient evidence to recommend for or against short-term non-benzodiazepine muscle relaxant use"
+            },
+            {
+              "id": "C",
+              "text": "The recommendation now requires long-term use for acute pain"
+            },
+            {
+              "id": "D",
+              "text": "The recommendation addresses only benzodiazepines and says nothing about other muscle relaxants"
+            },
+            {
+              "id": "E",
+              "text": "The evidence proves every such medicine is ineffective in every acute case"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "Recommendation 23 reports insufficient evidence for or against short-term non-benzodiazepine muscle relaxants for acute low back pain, replacing the older suggestion in favor.",
+          "distractorExplanations": {
+            "A": "The current statement is insufficient evidence, not a strong universal recommendation.",
+            "C": "The source does not recommend converting this into long-term treatment.",
+            "D": "Recommendation 23 specifically addresses non-benzodiazepine muscle relaxants.",
+            "E": "Insufficient evidence is not proof that an intervention never helps."
+          },
+          "sectionIds": [
+            "lbp-muscle-relaxant-uncertainty"
+          ],
+          "sourceIds": [
+            "lbp-va2022-full-treatment-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Use the current muscle-relaxant evidence category without overstating certainty.",
+          "difficulty": "application"
+        },
+        {
+          "id": "acute-low-back-pain-q7",
+          "stem": "A 46-year-old study patient has acute low back pain with radicular symptoms, a stable neurologic examination and no serious red flags. Which statement most accurately describes the VA/DoD position on routine oral systemic corticosteroids?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Radicular symptoms make systemic corticosteroids a strong first-line recommendation"
+            },
+            {
+              "id": "B",
+              "text": "The recommendation applies only to pain without radicular symptoms"
+            },
+            {
+              "id": "C",
+              "text": "Only intramuscular systemic corticosteroids are addressed"
+            },
+            {
+              "id": "D",
+              "text": "The guideline suggests against systemic corticosteroids with or without radicular symptoms"
+            },
+            {
+              "id": "E",
+              "text": "The systemic-drug recommendation prohibits every type of spinal injection"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "Recommendation 28 suggests against systemic corticosteroids, oral or intramuscular, in low back pain with or without radicular symptoms.",
+          "distractorExplanations": {
+            "A": "Radicular symptoms are included in the population covered by the suggestion against use.",
+            "B": "The source explicitly includes radicular symptoms.",
+            "C": "The recommendation includes both oral and intramuscular systemic routes.",
+            "E": "The recommendation is about systemic corticosteroids, not a blanket rule for every procedure."
+          },
+          "sectionIds": [
+            "lbp-systemic-steroid-scope"
+          ],
+          "sourceIds": [
+            "lbp-va2022-full-treatment-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Preserve the radicular-symptom and route scope of the systemic corticosteroid recommendation.",
+          "difficulty": "application"
+        },
+        {
+          "id": "acute-low-back-pain-q8",
+          "stem": "A 39-year-old study patient initially had back pain without red flags. Ten days later, fever appears, and the history reveals injection drug use. No imaging contraindication is identified. Which change in the diagnostic plan best follows VA/DoD guidance for suspected spinal infection?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Obtain MRI and appropriate inflammatory markers such as ESR or CRP"
+            },
+            {
+              "id": "B",
+              "text": "Keep the original no-imaging plan because it cannot change after the first visit"
+            },
+            {
+              "id": "C",
+              "text": "Obtain only a routine annual radiograph and defer reassessment"
+            },
+            {
+              "id": "D",
+              "text": "Select a muscle relaxant before evaluating the new fever"
+            },
+            {
+              "id": "E",
+              "text": "Treat the new findings as irrelevant if saddle sensory loss is absent"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "New infection-related red flags require reassessment. Sidebar 1 lists MRI and ESR and/or CRP for suspected spinal infection; Recommendation 2 supports imaging and appropriate laboratory testing when red flags are present.",
+          "distractorExplanations": {
+            "B": "The original no-routine-imaging plan depended on the absence of red flags.",
+            "C": "An annual radiograph plan does not address the newly suspected infection pathway.",
+            "D": "Medication selection does not replace evaluation of these red flags.",
+            "E": "Fever and injection drug use are infection-related red flags even without saddle sensory loss."
+          },
+          "sectionIds": [
+            "lbp-new-red-flags"
+          ],
+          "sourceIds": [
+            "lbp-va2022-full-treatment-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Change the diagnostic pathway when infection-related back-pain red flags develop.",
+          "difficulty": "application"
+        },
+        {
+          "id": "acute-low-back-pain-q9",
+          "stem": "A 77-year-old study patient with osteoporosis develops new lumbar pain after a fall. There is no focal neurologic deficit or bowel/bladder change. The question asks for the INITIAL study listed in the VA/DoD possible-fracture pathway. Which is appropriate?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "No imaging, because normal neurology excludes a fracture pathway"
+            },
+            {
+              "id": "B",
+              "text": "A routine bone scan as the initial study for every fall"
+            },
+            {
+              "id": "C",
+              "text": "MRI only after waiting for persistent pain beyond six months"
+            },
+            {
+              "id": "D",
+              "text": "A vascular ultrasound instead of a spinal study"
+            },
+            {
+              "id": "E",
+              "text": "Lumbosacral plain radiographs, with additional imaging if results are inconclusive"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Sidebar 1 identifies osteoporosis, older age and recent trauma as possible-fracture features and lists lumbosacral plain radiography, followed by advanced imaging when needed for inconclusive results.",
+          "distractorExplanations": {
+            "A": "The no-routine-imaging recommendation does not apply when fracture-related red flags are present.",
+            "B": "The sidebar specifies plain radiographs as the initial listed study in this pathway.",
+            "C": "The source does not require that delay before evaluating possible fracture.",
+            "D": "The cited fracture pathway does not begin with vascular ultrasound."
+          },
+          "sectionIds": [
+            "lbp-new-red-flags"
+          ],
+          "sourceIds": [
+            "lbp-va2022-full-treatment-20261010"
+          ],
+          "domain": "acute",
+          "learningObjective": "Use the fracture-specific initial back-pain imaging pathway instead of the uncomplicated-pain rule.",
+          "difficulty": "application"
+        },
+        {
+          "id": "acute-low-back-pain-q10",
+          "stem": "A study patient first presented with uncomplicated low back pain four months ago. After reassessment, the pain is chronic and no serious cause is identified. The question asks which listed intervention VA/DoD specifically suggests for CHRONIC low back pain. Which option best matches?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Mechanical lumbar traction as a strongly recommended therapy"
+            },
+            {
+              "id": "B",
+              "text": "Benzodiazepines as the preferred chronic treatment"
+            },
+            {
+              "id": "C",
+              "text": "Cognitive behavioral therapy within an individualized care plan"
+            },
+            {
+              "id": "D",
+              "text": "A non-benzodiazepine muscle relaxant as the standard long-term treatment"
+            },
+            {
+              "id": "E",
+              "text": "Mindfulness-based stress reduction described as having a stronger recommendation than cognitive behavioral therapy"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Recommendation 8 suggests cognitive behavioral therapy for chronic low back pain. The guideline distinguishes this from insufficient evidence for mindfulness-based stress reduction or traction and recommendations against benzodiazepines and chronic muscle relaxants.",
+          "distractorExplanations": {
+            "A": "Recommendation 14 reports insufficient evidence for or against mechanical lumbar traction.",
+            "B": "Recommendation 29 recommends against benzodiazepines.",
+            "D": "Recommendation 24 suggests against non-benzodiazepine muscle relaxants for chronic low back pain.",
+            "E": "Recommendation 12 reports insufficient evidence for or against mindfulness-based stress reduction."
+          },
+          "sectionIds": [
+            "lbp-persistent-pain",
+            "lbp-muscle-relaxant-uncertainty"
+          ],
+          "sourceIds": [
+            "lbp-va2022-full-treatment-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Adapt a persistent back-pain study plan to chronic-pain recommendations.",
+          "difficulty": "application"
         }
       ]
     },
@@ -4646,6 +4968,24 @@
             "checkedAt": "2026-10-10",
             "commercialClinicalApproval": false
           }
+        },
+        {
+          "id": "oa-va2026-full-treatment-20261010",
+          "title": "VA/DoD Clinical Practice Guideline for the Non-Surgical Management of Hip & Knee Osteoarthritis",
+          "organization": "Department of Veterans Affairs and Department of Defense",
+          "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/CD/OA/Osteoarthritis-CPG_2026-Guideline_final_20260618.pdf",
+          "kind": "clinical-guideline",
+          "edition": "May 2026, version 3.0; evidence reviewed through July 31, 2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Recommendations 5–6 and 12–18; Sidebars 1–3; Appendix K",
+          "reuse": "original-summary-no-full-text",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
         }
       ],
       "sections": [
@@ -4682,6 +5022,60 @@
           "sourceIds": [
             "osteoarthritis-gov-expansion-20261010"
           ]
+        },
+        {
+          "id": "oa-structured-pt",
+          "title": "Individualized physical therapy without an invented preferred format",
+          "text": "VA/DoD suggests a structured physical therapy program for hip or knee OA. It finds insufficient evidence to favor one particular type or delivery format over another. Early physical therapy referral can be considered according to pain severity, functional limitations and preferences. A specific exercise format must not be described as universally superior.",
+          "sourceIds": [
+            "oa-va2026-full-treatment-20261010"
+          ],
+          "sourceLocator": "Recommendations 5 and 6; Sidebar 1, physical therapy footnote."
+        },
+        {
+          "id": "oa-medication-safety",
+          "title": "Oral treatment depends on kidney, cardiovascular and gastrointestinal risk",
+          "text": "For hip or knee OA, VA/DoD suggests oral NSAIDs or acetaminophen, subject to individual suitability. Its initial-treatment sidebar calls for renal assessment and says to avoid NSAIDs, including COX-2 agents, with eGFR below 30 mL/min/1.73 m². Cardiovascular disease, chronic kidney disease and serious upper gastrointestinal toxicity risks also weigh against systemic NSAID use. Adding gastrointestinal protection does not remove the renal restriction.",
+          "sourceIds": [
+            "oa-va2026-full-treatment-20261010"
+          ],
+          "sourceLocator": "Recommendation 12; Sidebar 1, NSAID/COX-2 footnote; Appendix I, pharmacotherapy selection."
+        },
+        {
+          "id": "oa-adjunct-duloxetine",
+          "title": "A selected knee-OA adjunct rather than an automatic next drug",
+          "text": "If initial treatment provides inadequate benefit, reassess the response and consider a different combination of initial interventions. VA/DoD suggests duloxetine for knee OA depending on patient characteristics and preferences. It can be considered as an alternative or adjunct in selected patients, not prescribed automatically to every person with persistent pain.",
+          "sourceIds": [
+            "oa-va2026-full-treatment-20261010"
+          ],
+          "sourceLocator": "Recommendation 13; Sidebar 2, next steps in care."
+        },
+        {
+          "id": "oa-hip-injection-and-surgery-timing",
+          "title": "Hip injection guidance and the preoperative interval",
+          "text": "For hip OA pain insufficiently relieved by other interventions, VA/DoD suggests image-guided intra-articular corticosteroid injection. This hip-specific imaging qualifier should remain visible. The injection sidebar says corticosteroid injections should be avoided during the three months before joint replacement surgery; routine injection immediately before a planned replacement does not follow that guidance. The guideline separately suggests against intra-articular viscosupplementation for hip OA.",
+          "sourceIds": [
+            "oa-va2026-full-treatment-20261010"
+          ],
+          "sourceLocator": "Recommendations 16 and 18; Sidebar 3, corticosteroid-injection footnote."
+        },
+        {
+          "id": "oa-surgical-referral",
+          "title": "Referral when conservative care leaves major impairment",
+          "text": "The OA algorithm calls for reassessing diagnosis and considering surgical consultation when individualized treatment remains inadequate. Appendix K describes referral for persistent pain, deformity or substantial functional/quality-of-life impairment despite conservative measures, with medical stability and willingness to consider surgery. It suggests plain radiographs within six months of referral, preferably weight-bearing for knees. This referral discussion is an appendix reflecting clinical practice; it is not a new high-certainty GRADE recommendation or a mandate for surgery.",
+          "sourceIds": [
+            "oa-va2026-full-treatment-20261010"
+          ],
+          "sourceLocator": "Module A alternative algorithm text, Box 9; Appendix K, Referrals for Surgical Consultation."
+        },
+        {
+          "id": "oa-no-new-opioids",
+          "title": "Persistent pain does not establish opioid initiation",
+          "text": "VA/DoD suggests against initiating opioids, explicitly including tramadol, for hip or knee OA pain. Persistent symptoms do not make starting an opioid a required step before another appropriate intervention or surgical consultation. Management of a patient already receiving long-term opioid therapy is a separate question; the guideline refers that situation to the VA/DoD chronic-pain opioid guideline.",
+          "sourceIds": [
+            "oa-va2026-full-treatment-20261010"
+          ],
+          "sourceLocator": "Recommendation 14; Module A and Appendix K do not require opioid initiation before surgical consultation."
         }
       ],
       "questions": [
@@ -4856,6 +5250,267 @@
           ],
           "domain": "chronic",
           "learningObjective": "Recognize a conditional intervention for persistent knee OA.",
+          "difficulty": "application"
+        },
+        {
+          "id": "osteoarthritis-q5",
+          "stem": "A 64-year-old study patient with knee OA has limited walking tolerance and wants a supervised exercise plan. A colleague claims one delivery format is proven best for every patient. Which response most accurately applies the VA/DoD guideline?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Select only aquatic therapy because the guideline establishes its superiority"
+            },
+            {
+              "id": "B",
+              "text": "Offer a structured physical therapy program adapted to needs and preferences; no single format is established as superior"
+            },
+            {
+              "id": "C",
+              "text": "Use only unsupervised rest because structured physical therapy is discouraged"
+            },
+            {
+              "id": "D",
+              "text": "Choose a format solely from the radiograph, without considering function or preferences"
+            },
+            {
+              "id": "E",
+              "text": "Require all pain to resolve before referral to physical therapy"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "VA/DoD suggests structured physical therapy for hip/knee OA and reports insufficient evidence to favor one delivery mode or type. Pain, function and preferences can inform early referral.",
+          "distractorExplanations": {
+            "A": "The guideline does not identify one format as superior for all patients.",
+            "C": "This reverses the suggestion for structured physical therapy.",
+            "D": "The initial plan considers functional limitations and preferences, not radiographs alone.",
+            "E": "Persistent pain and functional limitation can support early referral; complete pain resolution is not required."
+          },
+          "sectionIds": [
+            "oa-structured-pt"
+          ],
+          "sourceIds": [
+            "oa-va2026-full-treatment-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Select individualized physical therapy while preserving uncertainty about the best delivery format.",
+          "difficulty": "application"
+        },
+        {
+          "id": "osteoarthritis-q6",
+          "stem": "A 76-year-old study patient with hip OA has an eGFR of 24 mL/min/1.73 m². A trainee proposes a COX-2 oral NSAID plus a proton-pump inhibitor, reasoning that gastric protection makes the plan suitable. Which issue most directly invalidates that reasoning under the VA/DoD initial-treatment sidebar?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "The sidebar prohibits assessing kidney function before choosing treatment"
+            },
+            {
+              "id": "B",
+              "text": "A proton-pump inhibitor establishes that no medication monitoring is necessary"
+            },
+            {
+              "id": "C",
+              "text": "The renal restriction applies only to topical capsaicin"
+            },
+            {
+              "id": "D",
+              "text": "NSAIDs, including COX-2 agents, should be avoided below an eGFR of 30; gastric protection does not remove that restriction"
+            },
+            {
+              "id": "E",
+              "text": "Every patient with hip OA must receive an NSAID before discussing any other intervention"
+            }
+          ],
+          "correctChoiceId": "D",
+          "explanation": "The sidebar directs renal assessment and avoidance of NSAIDs, including COX-2 agents, when eGFR is below 30. Gastrointestinal protection is a separate consideration.",
+          "distractorExplanations": {
+            "A": "The sidebar calls for renal assessment.",
+            "B": "Gastrointestinal protection does not establish renal suitability or eliminate individual risk assessment.",
+            "C": "The cited renal restriction concerns NSAIDs, including COX-2 agents.",
+            "E": "The treatment plan is individualized and includes nonpharmacologic and other suitable options."
+          },
+          "sectionIds": [
+            "oa-medication-safety"
+          ],
+          "sourceIds": [
+            "oa-va2026-full-treatment-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Apply a source-defined renal restriction when selecting an oral OA analgesic.",
+          "difficulty": "application"
+        },
+        {
+          "id": "osteoarthritis-q7",
+          "stem": "A 59-year-old study patient has persistent knee OA pain despite a suitable initial plan. Contraindications and preferences have been reviewed. The question asks which additional oral agent VA/DoD suggests for selected knee-OA patients. Which option matches that recommendation?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Duloxetine"
+            },
+            {
+              "id": "B",
+              "text": "Gabapentin as the specifically recommended knee-OA adjunct"
+            },
+            {
+              "id": "C",
+              "text": "Tramadol as the routinely preferred initial opioid"
+            },
+            {
+              "id": "D",
+              "text": "A long-term systemic corticosteroid as the specified adjunct"
+            },
+            {
+              "id": "E",
+              "text": "A different opioid chosen solely because pain remains"
+            }
+          ],
+          "correctChoiceId": "A",
+          "explanation": "Recommendation 13 suggests duloxetine for knee OA depending on characteristics and preferences; Sidebar 2 allows considering it as an adjunct or alternative for selected patients.",
+          "distractorExplanations": {
+            "B": "This is not the oral adjunct specified by Recommendation 13.",
+            "C": "The guideline suggests against initiating opioids, including tramadol.",
+            "D": "The cited next-step recommendation specifies duloxetine, not routine systemic corticosteroids.",
+            "E": "Persistent pain alone does not reverse the recommendation against initiating opioids."
+          },
+          "sectionIds": [
+            "oa-adjunct-duloxetine",
+            "oa-no-new-opioids"
+          ],
+          "sourceIds": [
+            "oa-va2026-full-treatment-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize a conditional oral adjunct for knee OA after an inadequate initial response.",
+          "difficulty": "application"
+        },
+        {
+          "id": "osteoarthritis-q8",
+          "stem": "A 68-year-old study patient with hip OA still has substantial pain after other suitable interventions. A corticosteroid joint injection is being considered. No replacement surgery is planned in the next three months. Which approach preserves the hip-specific VA/DoD recommendation?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "An unguided injection because the hip recommendation omits imaging"
+            },
+            {
+              "id": "B",
+              "text": "Viscosupplementation as a strongly recommended replacement for corticosteroid injection"
+            },
+            {
+              "id": "C",
+              "text": "An image-guided intra-articular corticosteroid injection after reviewing individual suitability"
+            },
+            {
+              "id": "D",
+              "text": "Routine opioid initiation before considering injection"
+            },
+            {
+              "id": "E",
+              "text": "An injection only if it is described as a definitive cure"
+            }
+          ],
+          "correctChoiceId": "C",
+          "explanation": "Recommendation 16 suggests an image-guided intra-articular corticosteroid injection for persistent hip OA pain inadequately relieved by other interventions.",
+          "distractorExplanations": {
+            "A": "The hip recommendation explicitly includes image guidance.",
+            "B": "The guideline suggests against intra-articular viscosupplementation for hip OA.",
+            "D": "Initiating opioids is discouraged rather than required before this option.",
+            "E": "The conditional recommendation does not promise a cure."
+          },
+          "sectionIds": [
+            "oa-hip-injection-and-surgery-timing",
+            "oa-no-new-opioids"
+          ],
+          "sourceIds": [
+            "oa-va2026-full-treatment-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Preserve image guidance when applying the conditional hip-OA injection recommendation.",
+          "difficulty": "application"
+        },
+        {
+          "id": "osteoarthritis-q9",
+          "stem": "A study patient with knee OA has agreed to joint replacement in six weeks. Persistent pain prompts consideration of an intra-articular corticosteroid injection today. Which statement about timing follows the VA/DoD injection sidebar?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "The timing footnote applies only after surgery"
+            },
+            {
+              "id": "B",
+              "text": "The footnote excludes knee injections"
+            },
+            {
+              "id": "C",
+              "text": "Giving the injection eliminates the need to reassess the overall plan"
+            },
+            {
+              "id": "D",
+              "text": "Six weeks is beyond the interval identified by the sidebar"
+            },
+            {
+              "id": "E",
+              "text": "Avoid corticosteroid injection during the three months before joint replacement and review other suitable measures"
+            }
+          ],
+          "correctChoiceId": "E",
+          "explanation": "Sidebar 3 says corticosteroid injections should be avoided during the three months preceding joint replacement. Six weeks falls within that interval.",
+          "distractorExplanations": {
+            "A": "The footnote concerns the period before joint replacement.",
+            "B": "The footnote accompanies the hip and knee injection discussion.",
+            "C": "The timing constraint requires reconsidering the plan.",
+            "D": "Six weeks is shorter than three months."
+          },
+          "sectionIds": [
+            "oa-hip-injection-and-surgery-timing"
+          ],
+          "sourceIds": [
+            "oa-va2026-full-treatment-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Recognize the source-defined preoperative timing constraint for OA corticosteroid injection.",
+          "difficulty": "application"
+        },
+        {
+          "id": "osteoarthritis-q10",
+          "stem": "A medically stable study patient with knee OA has major mobility impairment despite activity modification, medication and physical therapy. They are willing to consider surgery, and no knee radiographs have been obtained in the last year. Which next-step plan best matches the VA/DoD algorithm and Appendix K?",
+          "choices": [
+            {
+              "id": "A",
+              "text": "Continue the same plan indefinitely because referral requires complete inability to walk"
+            },
+            {
+              "id": "B",
+              "text": "Reassess the diagnosis, arrange surgical consultation and obtain current plain radiographs, preferably weight-bearing for the knee"
+            },
+            {
+              "id": "C",
+              "text": "Require MRI in place of plain radiographs for every referral"
+            },
+            {
+              "id": "D",
+              "text": "Schedule surgery without consultation or review of preferences"
+            },
+            {
+              "id": "E",
+              "text": "Initiate an opioid as a mandatory prerequisite to referral"
+            }
+          ],
+          "correctChoiceId": "B",
+          "explanation": "The algorithm and Appendix K support reassessment and surgical consultation when conservative care leaves substantial impairment, with plain radiographs within six months of referral. The appendix is practice guidance rather than a high-certainty GRADE recommendation.",
+          "distractorExplanations": {
+            "A": "Substantial functional or quality-of-life impairment despite conservative treatment can support referral before complete immobility.",
+            "C": "The appendix discusses plain radiographs, with weight-bearing knee views preferred.",
+            "D": "Consultation is not a guarantee or automatic scheduling of surgery.",
+            "E": "The guideline does not require opioid initiation before referral."
+          },
+          "sectionIds": [
+            "oa-surgical-referral",
+            "oa-no-new-opioids"
+          ],
+          "sourceIds": [
+            "oa-va2026-full-treatment-20261010"
+          ],
+          "domain": "chronic",
+          "learningObjective": "Choose reassessment and referral for OA that remains disabling despite conservative care.",
           "difficulty": "application"
         }
       ]

@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import {
   STUDY_CONDITION_FILES, loadStudyCurriculum, loadStudyFoundations,
-  combineStudyCurricula, createStudyCurriculum,
+  combineStudyCurricula, createStudyCurriculum, studyRecordType,
 } from '../server/study-curriculum.js';
 import { createBoardPractice } from '../server/board-practice.js';
 import { createApp } from '../server/index.js';
@@ -54,8 +54,9 @@ test('expanded real bank supplies at least 400 current US study questions withou
   assert.equal(result.manifest.inventoryQuestions, inventory.length);
   assert.equal(result.manifest.currentQuestions, current.length);
   assert.equal(inventory.length, current.length + comparative.length);
-  assert.equal(result.manifest.conditions, records.filter(record => record.recordType !== 'foundation').length);
-  assert.equal(result.manifest.foundationTopics, records.filter(record => record.recordType === 'foundation').length);
+  assert.equal(result.manifest.conditions, records.filter(record => studyRecordType(record) === 'condition').length);
+  assert.equal(result.manifest.studyTopics, records.filter(record => studyRecordType(record) === 'study-topic').length);
+  assert.equal(result.manifest.foundationTopics, records.filter(record => studyRecordType(record) === 'foundation').length);
   assert.equal(result.manifest.currentMeetsMinimum, true);
   assert.equal(result.manifest.satisfiesMinimum, true);
   assert.ok(result.manifest.annotatedDocumentReuseQuestions >= 200);
@@ -207,7 +208,7 @@ test('expanded real-corpus HTTP routes enforce sign-in and preserve current coun
   }
   const status = await (await fetch(base + '/api/status')).json();
   assert.equal(status.authenticated, false);
-  assert.equal(status.curriculum.conditions, curriculum.count);
+  assert.equal(status.curriculum.conditions, curriculum.list().diseaseConditions);
   assert.equal(status.curriculum.questions, conditionQuestions);
   assert.equal(conditionQuestions + foundationQuestions, inventory.length);
   assert.equal(status.boardPractice.questions, boardQuestions.length);
