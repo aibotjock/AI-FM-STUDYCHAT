@@ -20,6 +20,7 @@ import { isOperatorTitle, learnerState, preserveOperatorConversations } from './
 import { createPremiumSpeechService, premiumSpeechText, splitPremiumSpeech, premiumVoice, PREMIUM_PREVIEW_TEXT, PremiumSpeechError } from './premium-speech.js';
 import { createConversationAudioService, conversationAudioId, CONVERSATION_AUDIO_LIMITS, ConversationAudioError } from './conversation-audio.js';
 import { publicEvidencePolicy } from '../shared/evidence-policy.js';
+import { createReferenceDiscovery, ReferenceDiscoveryError } from './reference-discovery.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, timeZone: 'America/New_York', voiceEnabled: true, voiceId: 'marin', competencyRatings: {} });
@@ -35,6 +36,59 @@ const fail = (status, message) => { throw new HttpError(status, message); };
 const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const isLoopback = value => ['localhost', '127.0.0.1', '::1', '[::1]'].includes(value.toLowerCase());
 const hash = value => createHash('sha256').update(value).digest('hex');
+
+const SOURCE_ACRONYMS = Object.freeze({
+  'abfm-blueprint': 'ABFM', 'aafp-guidelines': 'AAFP', 'uspstf-recommendations': 'USPSTF / AHRQ',
+  'cdc-clinical-sources': 'CDC', 'acgme-milestones': 'ACGME', 'aan-guidelines': 'AAN', 'aaos-guidelines': 'AAOS',
+  'aap-guidelines': 'AAP', 'acc-guidelines': 'ACC', 'acog-guidelines': 'ACOG', 'acp-guidelines': 'ACP',
+  'acs-surgeons': 'ACS (Surgeons)', 'acs-cancer': 'ACS (Cancer)', 'ada-diabetes': 'ADA (Diabetes)',
+  'aha-guidelines': 'AHA / ASA', 'apa-psychiatry': 'APA (Psychiatry)', 'asco-guidelines': 'ASCO',
+  'cmss-methodology': 'CMSS', 'idsa-guidelines': 'IDSA', 'nccn-guidelines': 'NCCN', 'cdc-mmwr': 'CDC / MMWR',
+  'cdc-contraception': 'CDC', 'va-dod-guidelines': 'VA / DoD', 'nih-niddk': 'NIH / NIDDK',
+  'nih-niams': 'NIH / NIAMS', 'nih-nhlbi': 'NIH / NHLBI', 'nlm-medlineplus-selected': 'NLM / MedlinePlus',
+  'hhs-hiv-guidelines': 'HHS / Clinicalinfo', 'nci-pdq': 'NCI / PDQ', 'pmc-open-access': 'NLM / PMC',
+  'kdigo-guidelines': 'KDIGO', 'ats-guidelines': 'ATS', 'chest-guidelines': 'CHEST', 'gina-asthma': 'GINA',
+  'gold-copd': 'GOLD', 'acg-guidelines': 'ACG', 'aga-guidance': 'AGA', 'acr-rheumatology-guidelines': 'ACR',
+  'asccp-management': 'ASCCP', 'asco-cervical-secondary-prevention': 'ASCO',
+  'asco-metastatic-breast-resource-stratified': 'ASCO', 'nogg-uk-osteoporosis-2024': 'NOGG (UK)',
+  'ahrq-health-literacy-toolkit-3': 'AHRQ', 'nih-nimh': 'NIH / NIMH', 'nih-ninds': 'NIH / NINDS',
+  'nih-nei': 'NIH / NEI', 'nih-nichd': 'NIH / NICHD', 'nih-nia': 'NIH / NIA', 'nih-nidcr': 'NIH / NIDCR',
+  'fda-drug-information': 'FDA', 'fda-open-data': 'FDA / openFDA', 'nlm-dailymed': 'NLM / DailyMed',
+  'hrsa-preventive-services': 'HRSA', 'samhsa-publications': 'SAMHSA', 'aap-bright-futures': 'AAP / HRSA',
+  'ata-thyroid-guidelines': 'ATA', 'nkf-guidelines': 'NKF / KDOQI', 'asge-guidelines': 'ASGE',
+  'aasld-guidance': 'AASLD', 'aad-guidelines': 'AAD', 'aao-hns-guidelines': 'AAO-HNS',
+  'aao-ophthalmology': 'AAO', 'aua-guidelines': 'AUA', 'aaaai-practice-parameters': 'AAAAI',
+  'asam-guidelines': 'ASAM', 'aasm-guidelines': 'AASM', 'ash-guidelines': 'ASH',
+  'pubmed-discovery': 'NLM / PubMed', 'nice-guidance': 'NICE', 'who-guidance': 'WHO'
+});
+
+// This projection is a link directory only; it never supplies tutor evidence or reuse authorization.
+export function projectReferenceDirectory(registry) {
+  const text = (value, max) => typeof value === 'string' ? value.trim().slice(0, max).replace(/\0/g, '') : '';
+  const safeHttps = value => {
+    try { const url = new URL(value); return url.protocol === 'https:' && !url.username && !url.password ? url.href : ''; }
+    catch { return ''; }
+  };
+  const sources = (Array.isArray(registry?.sources) ? registry.sources.slice(0, 125) : []).flatMap(source => {
+    if (!isObject(source)) return [];
+    const id = text(source.id, 100), organization = text(source.organization, 240), title = text(source.title, 300);
+    const url = safeHttps(source.url);
+    if (!/^[a-z0-9][a-z0-9._-]*$/.test(id) || !organization || !title || !url || url.length > 2048) return [];
+    const links = [...new Set([url, ...(Array.isArray(source.additionalUrls) ? source.additionalUrls.slice(0, 5).map(safeHttps) : [])])].filter(link => link && link.length <= 2048);
+    const rightsStatus = text(source.rightsStatus, 160);
+    const reuseNotice = rightsStatus.includes('unresolved') || source.rightsReviewStatus === 'unresolved'
+      ? 'Content reuse permission is not yet established.'
+      : /permission|license-required|licens.*required|restricted/.test(rightsStatus)
+        ? 'Separate permission may be required to reuse publisher content.'
+        : 'Content reuse must be checked for each document.';
+    return [{ id, organization, acronym: SOURCE_ACRONYMS[id] || '', title, url, additionalUrls: links.slice(1),
+      specialties: (Array.isArray(source.specialties) ? source.specialties : []).slice(0, 8).map(item => text(item, 80)).filter(Boolean),
+      referenceType: source.recordType === 'document' ? 'document' : 'collection', reuseNotice,
+      checkedAt: /^\d{4}-\d{2}-\d{2}$/.test(source.checkedAt || '') ? source.checkedAt : null }];
+  });
+  return { version: text(registry?.version, 20), sources, total: sources.length,
+    purpose: 'External publisher references. Links alone are not evidence for tutor answers or practice questions.' };
+}
 
 function cleanText(value, name, max, optional = false) {
   if (value === undefined && optional) return '';
@@ -255,13 +309,17 @@ function secureHeaders(res) {
 }
 
 /** A single-user, durable study app. Each deployment should have its own data directory. */
-export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = process.env, fetchImpl = globalThis.fetch, authenticateRequest, isActive = () => true, generateReply, generateDrafts, curriculum: suppliedCurriculum, curriculumDir = resolve(ROOT, 'content', 'conditions'), foundations: suppliedFoundations, foundationsPath = resolve(ROOT, 'content', 'board-foundations.json'), boardPractice: suppliedBoardPractice } = {}) {
+export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = process.env, fetchImpl = globalThis.fetch, referenceFetchImpl = globalThis.fetch, authenticateRequest, isActive = () => true, generateReply, generateDrafts, curriculum: suppliedCurriculum, curriculumDir = resolve(ROOT, 'content', 'conditions'), foundations: suppliedFoundations, foundationsPath = resolve(ROOT, 'content', 'board-foundations.json'), boardPractice: suppliedBoardPractice } = {}) {
   const accessToken = (env.STUDY_ACCESS_TOKEN || '').trim();
   if (accessToken && accessToken.length < 24) throw new Error('STUDY_ACCESS_TOKEN must contain at least 24 characters.');
   const bindHost = env.HOST || '127.0.0.1';
   if (!isLoopback(bindHost) && !accessToken && !authenticateRequest) throw new Error('Set a strong STUDY_ACCESS_TOKEN before using a non-loopback HOST.');
   // These unreviewed educational summaries never replace the approved commercial corpus.
   const curriculumEnabled = !authenticateRequest && !generateReply;
+  const registryPath = resolve(ROOT, 'content', 'source-registry.json');
+  if (statSync(registryPath).size > 256 * 1024) throw new Error('Reference directory metadata is too large.');
+  const referenceDirectory = projectReferenceDirectory(JSON.parse(readFileSync(registryPath, 'utf8')));
+  const referenceDiscovery = createReferenceDiscovery({ fetchImpl: referenceFetchImpl });
   const curriculum = curriculumEnabled ? suppliedCurriculum || loadStudyCurriculum({ contentDir: curriculumDir }) : null;
   const foundations = curriculumEnabled ? suppliedFoundations || loadStudyFoundations({ contentPath: foundationsPath }) : null;
   const studyReferences = curriculumEnabled ? combineStudyCurricula([curriculum, foundations]) : null;
@@ -456,6 +514,21 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
           return json(res, 200, { authenticated: true }, { 'Set-Cookie': `studychat_session=${id}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${SESSION_MS / 1000}${secure ? '; Secure' : ''}` });
         }
         if (!session(req)) fail(401, 'Sign in to use your study workspace.');
+        if (path === '/api/study/reference-search') {
+          if (req.method !== 'POST') fail(405, 'Use POST with a study topic to find external references.');
+          rateLimit(req, 'reference-search', 10, 60000);
+          const input=await readJson(req,2048);
+          if(!isObject(input) || Object.keys(input).length!==1 || !Object.hasOwn(input,'query')) fail(400,'Send a study topic only. Do not include patient details.');
+          try {
+            const result=await referenceDiscovery.search(input.query);
+            if(!session(req) || !isActive()) fail(401,'Sign in again to view external references.');
+            return json(res,200,result);
+          } catch(error) { if(error instanceof ReferenceDiscoveryError) fail(error.status,error.message);throw error; }
+        }
+        if (path === '/api/study/reference-directory') {
+          if (req.method !== 'GET') fail(405, 'Use GET to view external reference links.');
+          return json(res, 200, referenceDirectory);
+        }
         if (path.startsWith('/api/conversation-agent/')) {
           if (!conversationAudio || !speech || voiceStopping || closed || !isActive()) fail(403, 'Hands-free voice is available only in the active personal OpenAI study workspace.');
           if (req.method === 'GET' && path === '/api/conversation-agent/options') return json(res, 200, conversationAudio.options());
@@ -897,11 +970,12 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             const blockedFollowup = studyReferences && isDialogueFollowup(content) && priorAssistant?.unsupported === true && medicalRequested;
             const evidence = !generated && !blockedFollowup && studyReferences ? conversationalEvidence(studyReferences, conversation, content, { conditionIds, previousQueries }) : [];
             if (pending && !generated && ((medicalRequested && !evidence.length && !isDialogueFollowup(content)) || (evidence.length && !evidence.some(item => item.conditionId === pendingConditionId)))) pending = null;
-            if (!generated && evidence.length && isStudyQuizRequest(content)) generated = studyReferences.quiz(evidence, { previousQuestionKeys: conversation.messages.filter(message => message.role === 'assistant' && message.studyQuestion && !message.importedEvidence && !message.studyQuestion.imported).map(message => message.studyQuestion.key) });
+            const quizOptions = { previousQuestionKeys: conversation.messages.filter(message => message.role === 'assistant' && message.studyQuestion && !message.importedEvidence && !message.studyQuestion.imported).map(message => message.studyQuestion.key) };
+            if (!generated && evidence.length && isStudyQuizRequest(content)) generated = studyReferences.quiz(evidence, quizOptions);
             if (!generated && studyReferences) {
               if (ai.configured) {
                 try {
-                  const tutorContext = { references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending, requireVersion2: true };
+                  const tutorContext = { references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending, requireVersion3: true };
                   const primaryPrompt = buildNaturalTutorPrompt(tutorContext);
                   const primarySchema = buildNaturalTutorSchema(tutorContext);
                   aiCalls++;
@@ -911,10 +985,17 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
                   const reviewPrompt = buildNaturalReviewPrompt(draft, tutorContext);
                   const reviewSchema = buildNaturalReviewSchema(draft, tutorContext);
                   aiCalls++;
-                  reviewCompletion = await complete([{ role: 'system', content: reviewPrompt }, { role: 'user', content: 'Review the complete candidate in NATURAL_REVIEW_DATA. Return the required review JSON.' }], { jsonMode: true, jsonSchema: reviewSchema, maxOutputTokens: 600, signal: controller?.signal });
+                  reviewCompletion = await complete([{ role: 'system', content: reviewPrompt }, { role: 'user', content: 'Review the complete candidate in NATURAL_REVIEW_DATA. Return the required review JSON.' }], { jsonMode: true, jsonSchema: reviewSchema, maxOutputTokens: 2000, signal: controller?.signal });
                   ensureVoiceActive();
                   generated = renderReviewedTutor(draft, JSON.parse(reviewCompletion.content), tutorContext);
-                } catch (error) { generated = naturalTutorFailure(error); }
+                } catch (error) {
+                  // Generated questions never establish their own medical answer keys.
+                  // Reuse a current canonical quiz only when requested; otherwise show
+                  // the available cited point without posing another assessment.
+                  generated = error?.reasonId === 308 && evidence.length && !pending
+                    ? (isStudyQuizRequest(content) ? studyReferences.quiz(evidence, quizOptions) : null) || studyReferences.render({ chunkIds: evidence.slice(0, 2).map(item => item.key), questionId: null, unsupported: false }, evidence)
+                    : naturalTutorFailure(error);
+                }
               } else if (evidence.length && !coachingRequested && !pending) generated = studyReferences.render({ chunkIds: evidence.slice(0, 2).map(item => item.key), questionId: null, unsupported: false }, evidence);
               else if (medicalRequested && !evidence.length && !pending) generated = { content: STUDY_NO_EVIDENCE, citations: [], unsupported: true };
               else generated = { content: sourcedStudyNavigation(conversation), scripted: true };

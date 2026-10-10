@@ -5,6 +5,7 @@ import { STUDY_CONDITION_FILES, loadStudyCurriculum, loadStudyFoundations, combi
 import { buildBoardAlignment } from '../server/board-alignment.js';
 import { validateMaintenanceCorpus } from './validate-study-curriculum.js';
 import { verifiedStudySourceReuse, knownStudySourceReuseUrl } from '../shared/source-reuse.js';
+import { mergeStudyReferences, readStudyReferenceFiles } from '../server/reference-expansion.js';
 
 const ROOT = resolve(import.meta.dirname, '..');
 
@@ -20,7 +21,10 @@ export function validateBoardBank({ rootDir = ROOT, now = Date.now(), minimumQue
     const body = readFileSync(path, 'utf8');
     return { name: path.slice(rootDir.length + 1), parsed: JSON.parse(body), sha256: createHash('sha256').update(body).digest('hex') };
   });
-  const records = files.flatMap(file => file.parsed.conditions);
+  const referenceFiles = readStudyReferenceFiles(resolve(rootDir, 'content/reference-expansion'), { now });
+  const records = mergeStudyReferences(files.filter(file => file.name !== 'content/board-foundations.json').flatMap(file => file.parsed.conditions), referenceFiles.map(file => file.parsed), { now });
+  records.push(...files.find(file => file.name === 'content/board-foundations.json').parsed.conditions);
+  files.push(...referenceFiles.map(file => ({ ...file, name: `content/${file.name}` })));
   const result = validateMaintenanceCorpus({ records, files, now, allowQuarantine });
   const combined = combineStudyCurricula([curriculum, foundations]);
   const questions = combined.boardQuestions();

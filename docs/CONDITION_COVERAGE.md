@@ -1,10 +1,10 @@
 # Condition coverage
 
-Source checks begin: 2026-10-09. Inventory: 115 disease conditions and 7 additional study topics, 538 original questions and 619 original teaching sections.
+Source checks begin: 2026-10-09. Inventory: 117 disease conditions and 7 additional study topics, 546 original questions and 1185 source-linked teaching sections.
 
-Currently eligible: 115 disease conditions, 7 study topics and 538 questions. Quarantined: 0 records and 0 questions. Validation mode: strict-current-readiness; fully current: true.
+Currently eligible: 117 disease conditions, 7 study topics and 546 questions. Quarantined: 0 records and 0 questions. Validation mode: strict-current-readiness; fully current: true.
 
-Formal guideline or official recommendation evidence: 105 inventory conditions (105 current). Official clinical reference only: 10. These labels do not establish independent clinician review or commercial rights.
+Formal guideline or official recommendation evidence: 106 inventory conditions (106 current). Official clinical reference only: 11. These labels do not establish independent clinician review or commercial rights.
 
 Study tool only; not medical advice or for clinical use. This is a curated high-yield selection, not an epidemiological ranking or a proportionally balanced ABFM mock examination. Source links are free at their originating sites; the app is independent and does not imply endorsement.
 
@@ -52,6 +52,7 @@ Study tool only; not medical advice or for clinical use. This is a curated high-
 | Chronic insomnia disorder | chronic | 4 | Guideline / official recommendation | Current source check; clinician review pending |
 | Chronic kidney disease | chronic | 4 | Guideline / official recommendation | Current source check; clinician review pending |
 | Chronic obstructive pulmonary disease | chronic | 4 | Guideline / official recommendation | Current source check; clinician review pending |
+| Colorectal cancer: colon and rectal treatment fundamentals | chronic | 4 | **Official reference only — guideline gap** | Current source check; clinician review pending |
 | Community-acquired pneumonia | acute | 4 | Guideline / official recommendation | Current source check; clinician review pending |
 | Contraceptive eligibility and reproductive planning | preventive | 6 | Guideline / official recommendation | Current source check; clinician review pending |
 | COVID-19 | acute | 4 | Guideline / official recommendation | Current source check; clinician review pending |
@@ -65,7 +66,7 @@ Study tool only; not medical advice or for clinical use. This is a curated high-
 | Endometriosis | chronic | 4 | **Official reference only — guideline gap** | Current source check; clinician review pending |
 | Epilepsy | chronic | 4 | Guideline / official recommendation | Current source check; clinician review pending |
 | Gastroesophageal reflux disease | chronic | 4 | Guideline / official recommendation | Current source check; clinician review pending |
-| Generalized anxiety disorder | chronic | 4 | **Official reference only — guideline gap** | Current source check; clinician review pending |
+| Generalized anxiety disorder | chronic | 4 | Guideline / official recommendation | Current source check; clinician review pending |
 | Genital herpes | chronic | 4 | Guideline / official recommendation | Current source check; clinician review pending |
 | Gestational diabetes mellitus | chronic | 4 | Guideline / official recommendation | Current source check; clinician review pending |
 | Gonococcal infection | acute | 9 | Guideline / official recommendation | Current source check; clinician review pending |
@@ -107,6 +108,7 @@ Study tool only; not medical advice or for clinical use. This is a curated high-
 | Preeclampsia | emergent | 4 | Guideline / official recommendation | Current source check; clinician review pending |
 | Pressure injury | chronic | 4 | Guideline / official recommendation | Current source check; clinician review pending |
 | Primary open-angle glaucoma | chronic | 4 | **Official reference only — guideline gap** | Current source check; clinician review pending |
+| Prostate cancer: localized treatment choices | chronic | 4 | **Official reference only — guideline gap** | Current source check; clinician review pending |
 | Psoriasis | chronic | 4 | Guideline / official recommendation | Current source check; clinician review pending |
 | Pulmonary embolism | emergent | 4 | Guideline / official recommendation | Current source check; clinician review pending |
 | Pyelonephritis | acute | 6 | Guideline / official recommendation | Current source check; clinician review pending |

@@ -19,7 +19,7 @@
     },
     {
       "id": "conflicts",
-      "instruction": "Do not silently merge conflicts, choose solely by publication date, or substitute another jurisdiction’s rules. Describe disagreements only from supplied supporting evidence; otherwise request editorial clarification."
+      "instruction": "When supplied sources disagree on a factual recommendation, explicitly identify each source and cite both positions. Preserve the actual difference in recommendation, threshold, strength, population, setting, jurisdiction and edition where supplied. Distinguish a true disagreement from recommendations for different populations or a reference summary versus a formal guideline. Do not silently blend positions, invent consensus, pick solely by date, or call a missing recommendation a disagreement. If evidence cannot establish a comparison, say so and retain separate external reference links."
     },
     {
       "id": "independent-review",
@@ -47,7 +47,7 @@
     },
     {
       "id": "rights-boundary",
-      "instruction": "Public access, citation, government hosting and study disclaimers do not grant reuse rights. Follow server-admitted source-specific rights/processing rules; never grant commercial, AI-processing or clinical approval."
+      "instruction": "Public access, citation, government hosting, live lookup and study disclaimers do not grant reuse rights. Follow server-admitted source-specific rights/processing rules. Linked reference directories and live discovery metadata are navigation, never factual evidence or question-answer authorization. Never grant commercial, AI-processing or clinical approval."
     }
   ],
   "roleInstructions": {
@@ -55,7 +55,8 @@
       "Follow the existing schema and map every external claim to its supporting source IDs. Empty evidence permits nonfactual conversation, not teaching. Keep necessary qualifiers and avoid repetitive disclaimers."
     ],
     "reviewer": [
-      "Independently cover every original segment, external claim and implicit premise in the existing schema. Quote claims exactly and bind supplied source spans; never rewrite or invent support. Uncertainty or any failing claim rejects the whole reply. Nonfactual segments may have zero claims. Approval certifies only the automated check."
+      "Independently cover every original segment, external claim and implicit premise in the existing schema. Quote claims exactly and bind supplied source spans; never rewrite or invent support. Uncertainty or any failing claim rejects the whole reply. Nonfactual segments may have zero claims. Approval certifies only the automated check.",
+      "Reject omitted or blurred disagreements present in the supplied evidence, unsupported claims of agreement or disagreement, and clinical recommendations inferred from a linked source title or metadata. Use the existing unsupported_fact or uncertain flag. A supported comparison needs direct support for each position, with its qualifiers and separate source bindings."
     ]
   },
   "publicMetadata": {

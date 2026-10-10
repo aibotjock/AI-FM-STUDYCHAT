@@ -24,7 +24,9 @@ export function verifiedStudySourceReuse(source, { now = Date.now() } = {}) {
   const document = documents.get(source?.url);
   return Number.isFinite(now) && document !== undefined &&
     document.organizations.includes(source?.organization) && document.kinds.includes(source?.kind) &&
-    source?.reuse === 'original-summary-no-full-text' &&
+    (source?.reuse === 'original-summary-no-full-text' ||
+      (source?.reuse === 'licensed-text-excerpt' && document.basis.startsWith('cc-by-')) ||
+      (source?.reuse === 'public-domain-text-excerpt' && document.basis.startsWith('public-domain-') && typeof source.attribution === 'string' && source.attribution.trim().length > 0 && source.attribution.length <= 1000)) &&
     rights !== null && typeof rights === 'object' && !Array.isArray(rights) &&
     Object.keys(rights).length === rightsKeys.length && rightsKeys.every(key => Object.hasOwn(rights, key)) &&
     rights.basis === document.basis && rights.policyUrl === document.policyUrl &&

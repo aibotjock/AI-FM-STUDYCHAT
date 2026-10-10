@@ -6,11 +6,11 @@ The data bank now supplies substantially more referenced study material, but it 
 
 ## Inventory boundary and final counts
 
-The frozen [combined-bank manifest](../content/board-bank-manifest.json), checked 2026-10-10, records **115 disease records plus seven additional study topics / 538 questions**, **six foundation topics / 20 questions**, and **558 questions overall**. There are **639 teaching sections and 252 distinct source URLs**. The U.S. board-study pool contains **550 questions**; eight comparative-study questions remain in the library and are excluded from that pool. Direct file counts agree with the manifest.
+The frozen [combined-bank manifest](../content/board-bank-manifest.json), checked 2026-10-10, records **117 disease records plus seven additional study topics / 546 questions**, **six foundation topics / 20 questions**, and **566 questions overall**. There are **1,205 teaching sections and 360 distinct source URLs**. The U.S. board-study pool contains **558 questions**; eight comparative-study questions remain in the library and are excluded from that pool. Direct file counts agree with the manifest.
 
-Strict technical validation passed for the frozen inventory. It does not certify medical accuracy, clinical review, commercial readiness, item difficulty, or curriculum completeness. No qualified human clinical review or commercial clinical approval is recorded. Document-specific reuse assessments cover 413 questions; 336 questions have complete document-reuse annotations, and 145 question keys still have unresolved document-reuse status. Those figures describe rights metadata, not clinical approvals or permission to activate the commercial app.
+Strict technical validation passed for the frozen inventory. It does not certify medical accuracy, clinical review, commercial readiness, item difficulty, or curriculum completeness. No qualified human clinical review or commercial clinical approval is recorded. Document-specific reuse assessments cover 422 questions; 344 questions have complete document-reuse annotations, and 144 question keys still have unresolved document-reuse status. Those figures describe rights metadata, not clinical approvals or permission to activate the commercial app.
 
-The disease manifest identifies 105 conditions with at least one formal-guideline source and ten with official-reference sources only: benign prostatic hyperplasia, benign positional vertigo, generalized anxiety disorder, endometriosis, vitamin B12 deficiency, retinal detachment, primary open-angle glaucoma, acute angle-closure glaucoma, cataract, and ankle sprain. A formal-source label establishes source presence, not sufficient guideline extraction, treatment depth, current U.S. applicability, or reuse permission. Study topics and foundation items are counted separately and cannot pad the disease-condition or formal-guideline quota.
+The disease manifest identifies 106 conditions with at least one formal-guideline source and eleven with official-reference sources only: benign prostatic hyperplasia, benign positional vertigo, endometriosis, vitamin B12 deficiency, retinal detachment, primary open-angle glaucoma, acute angle-closure glaucoma, cataract, ankle sprain, colorectal cancer, and prostate cancer. A formal-source label establishes source presence, not sufficient guideline extraction, treatment depth, current U.S. applicability, or reuse permission. Study topics and foundation items are counted separately and cannot pad the disease-condition or formal-guideline quota.
 
 New adult osteomyelitis, infective endocarditis, and resource-stratified metastatic breast cancer records are integrated. Existing UTI, osteoporosis, cervical-dysplasia, and bronchiolitis records also gained document-specific depth. The targeted additions below close particular objectives; they do not establish broad infection, oncology, bone-health, or pediatric completeness.
 
@@ -28,6 +28,12 @@ The 92-question addition covers 24 lifespan/prevention items, 12 immunization it
 
 [Editorial review](source-audit/GAP_EXPANSION_EDITORIAL_REVIEW.md) read all 92 new items and checked revised evidence packets. It is not qualified clinical, pharmacist or psychometric review. All 458 prior U.S. question fingerprints were preserved, with 92 new U.S. items; old source-review dates were not renewed by a rights assessment. Evidence is in `qa/gap-fill-results.json`. Preventive coverage grew, but urgent-care and foundations breadth are still comparatively thin. No claim of complete ABFM coverage is justified.
 
+## October 10 reference-library increment
+
+The subsequent supplement adds 566 source-linked sections: selected MedlinePlus breadth, CDC/VA clinical depth, NCI cancer/tobacco evidence, exact licensed ATA/ADA/joint-benzodiazepine prose, and new colorectal/prostate treatment fundamentals with eight original questions. All 550 prior U.S. question identities are preserved. The source policy has 258 exact-document entries; the earlier 149-entry count below describes the preceding increment. Detailed counts, commercial boundaries and 75 linked directory entries are in [the current resource matrix](source-audit/RESOURCE_INCORPORATION_STATUS.md).
+
+This improves selected depth and foundational explanations. It does not close every antibiotic-dose, contraindication, special-population, follow-up or urgent-care objective. Live reference finding returns links, rather than silently supplying unlicensed AI evidence. External references do not eliminate missing answer passages. Generated medical questions without a canonical supported answer are now withheld. Generalized anxiety disorder now has the narrowly scoped joint benzodiazepine-tapering guideline, not a comprehensive GAD treatment guideline.
+
 ## External scope context
 
 The [official ABFM blueprint](https://www.theabfm.org/family-medicine-exam-blueprint/) organizes questions by clinical activity. Its public five-domain weights are:
@@ -35,7 +41,7 @@ The [official ABFM blueprint](https://www.theabfm.org/family-medicine-exam-bluep
 | ABFM domain | Target allocation | Current U.S. pool items | Inventory concern |
 |---|---:|---:|---|
 | Acute Care and Diagnosis | 35% | 211 | Condition-focused questions do not exhaust undifferentiated diagnosis, initial treatment, or next-step decisions. |
-| Chronic Care Management | 25% | 193 | Numerous records exist, but escalation, exceptions, longitudinal follow-up, and interacting conditions need more depth. |
+| Chronic Care Management | 25% | 201 | Numerous records exist, but escalation, exceptions, longitudinal follow-up, and interacting conditions need more depth. |
 | Emergent and Urgent Care | 20% | 53 | Several major emergencies are represented; the range of urgent hypothetical scenarios remains limited. |
 | Preventive Care | 15% | 73 | Selected immunization, reproductive planning and developmental topics now exist; comprehensive screening and well-child/preconception coverage remain incomplete. |
 | Foundations of Care | 5% | 20 | Statistics, communication, quality/safety, and social needs exist; policy, legal/ethical context, and additional quantitative interpretation remain thin. |

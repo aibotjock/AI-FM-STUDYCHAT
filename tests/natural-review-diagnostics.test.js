@@ -38,13 +38,13 @@ test('actual AF study corpus supports one reviewed point followed by neutral rec
   assert.match(reviewer, /For a question containing a factual premise, quote the exact question and verify that premise/);
 });
 
-test('a supported factual premise in an AF recall question requires that question segment to declare its source', () => {
+test('a supported medical question still needs a canonical answer key and its premise needs declared sources', () => {
   const current = context();
   const key = 'atrial-fibrillation:risk';
   const question = 'At what estimated annual risk does the study point base stroke prevention on risk regardless of AF pattern?';
   current.draft.segments[1] = { id: 's2', text: question, sourceChunkIds: [key] };
   current.review.segments[1] = { id: 's2', approved: true, externalFactCount: 1, flags: [], claims: [{ quote: question, type: 'medical', sourceChunkIds: [key], supports: [{ chunkId: key, excerpt: current.evidence.find(item => item.key === key).text }] }] };
-  assert.equal(renderReviewedTutor(current.draft, current.review, current).groundingReview.externalClaimCount, 2);
+  assert.throws(() => renderReviewedTutor(current.draft, current.review, current), error => error instanceof NaturalTutorError && error.reasonId === 308);
   current.draft.segments[1].sourceChunkIds = [];
   assert.throws(() => renderReviewedTutor(current.draft, current.review, current), error => error instanceof NaturalTutorError && error.reasonId === 304);
   current.review.segments[1].approved = false;

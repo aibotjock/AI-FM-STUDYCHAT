@@ -129,7 +129,8 @@ async function fixture(t, { legacy = false, model = 'gpt-4.1-mini' } = {}) {
     let output = draft;
     if (system.includes('NATURAL_REVIEW_DATA=')) {
       const data = JSON.parse(system.split('NATURAL_REVIEW_DATA=')[1]);
-      output = legacy ? legacyReview : { version: 2, ...structuredClone(legacyReview) };
+      output = legacy ? legacyReview : { version: 3, ...structuredClone(legacyReview) };
+      if (!legacy) for (const segment of output.segments) segment.questions = [];
       if (!legacy) {
         const span = data.sourceSpans.find(item => item.chunkId === 'asthma:management');
         assert.ok(span);
@@ -149,7 +150,7 @@ async function fixture(t, { legacy = false, model = 'gpt-4.1-mini' } = {}) {
   return { api, request, calls, speechCalls, reviewReplies, conversationId: created.body.id };
 }
 
-test('fresh v2 HTTP generation persists canonical v1 evidence and premium speech reads the exact checked text', async t => {
+test('fresh v3 HTTP generation persists canonical v1 evidence and premium speech reads the exact checked text', async t => {
   const app = await fixture(t);
   const chatBody = { conversationId: app.conversationId, content: 'Help me study asthma inhaler technique.', requestId: randomUUID() };
   const answer = await app.api('/api/chat', chatBody);
@@ -163,7 +164,7 @@ test('fresh v2 HTTP generation persists canonical v1 evidence and premium speech
   assert.equal(message.groundingReview.sourceSpanBindings[0].chunkId, 'asthma:management');
   assert.equal(message.spokenText, fact);
   assert.equal(message.content, `${fact} [1]`);
-  assert.equal(app.calls[1].response_format.json_schema.name, 'family_medicine_natural_review_v2');
+  assert.equal(app.calls[1].response_format.json_schema.name, 'family_medicine_natural_review_v3');
   assert.equal((await app.api('/api/chat', chatBody)).body.message.id, message.id);
   assert.equal(app.calls.length, 2);
   const audio = await app.request('/api/voice/speech', { conversationId: app.conversationId, messageId: message.id, voice: 'marin', chunkIndex: 0, requestId: randomUUID() });

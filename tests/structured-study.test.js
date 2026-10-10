@@ -9,6 +9,7 @@ import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { buildStudyDialogueSchema, buildStudyDialoguePrompt } from '../server/study-conversation.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
+import { providerReviewContext } from './fixtures/natural-review-v3.js';
 
 const bank = () => createStudyCurriculum({ records: [studyCondition()], now: () => STUDY_NOW });
 const turns = [{ role: 'user', content: 'Explain one cited study point.' }];
@@ -81,9 +82,9 @@ async function appFixture(t, completion) {
     assert.equal(body.response_format.type, 'json_schema');
     assert.equal(body.response_format.json_schema.strict, true);
     assert.ok(body.max_completion_tokens > 0 && body.max_completion_tokens <= 1800);
-    if (body.response_format.json_schema.name === 'family_medicine_natural_review_v2') {
-      const data = JSON.parse(body.messages.find(message => message.content.includes('NATURAL_REVIEW_DATA=')).content.split('NATURAL_REVIEW_DATA=')[1]);
-      return reply(JSON.stringify({ version: 2, approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: segment.sourceChunkIds.length ? 1 : 0, flags: [], claims: segment.sourceChunkIds.length ? [{ quote: segment.text, type: 'medical', sourceChunkIds: segment.sourceChunkIds, supports: segment.sourceChunkIds.map(chunkId => ({ chunkId, spanId: data.sourceSpans.find(source => source.chunkId === chunkId).spanId })) }] : [] })) }));
+    if (body.response_format.json_schema.name === 'family_medicine_natural_review_v3') {
+      const data = providerReviewContext(body);
+      return reply(JSON.stringify({ version: 3, approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: segment.sourceChunkIds.length ? 1 : 0, flags: [], questions: [], claims: segment.sourceChunkIds.length ? [{ quote: segment.text, type: 'medical', sourceChunkIds: segment.sourceChunkIds, supports: segment.sourceChunkIds.map(chunkId => ({ chunkId, spanId: data.sourceSpans.find(source => source.chunkId === chunkId).spanId })) }] : [] })) }));
     }
     assert.equal(body.response_format.json_schema.name, 'family_medicine_natural_tutor');
     return reply(completion);

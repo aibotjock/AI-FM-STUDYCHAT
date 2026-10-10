@@ -179,7 +179,7 @@ function dialogueText(plan, { evidence, settings, hasFacts, pendingQuestion }) {
     planning: `For this ${minutes}-minute session, we can choose one topic, work through one cited point or practice question, then choose what you want to revisit. ${style}`,
     clarify: topic ? `Let’s focus on “${topic}”.` : 'Let’s identify the exact part you want to clarify.',
     reflect: 'I can help you examine your study process. I am not assigning a competence score or verifying a free-text medical answer.',
-    socratic: pendingQuestion ? 'Keep the practice question in view. Your option has not been graded yet, and I will not reveal its answer in a hint.' : 'Before we move on, put your current understanding into your own words.',
+    socratic: pendingQuestion ? 'Keep the practice question in view. Your option has not been graded yet, and I will not reveal its answer in a hint.' : hasFacts ? 'Before we move on, put the cited point into your own words.' : 'We can choose a supported study point before practicing recall.',
     explain: hasFacts ? 'Here is the cited study point we can discuss.' : 'I can help you narrow the question. A factual explanation needs a current matching study reference.',
     review: 'We can revisit a cited point, a practice question or your saved cards. Nothing has been saved or scheduled by this chat turn.',
     continue: topic ? `We can continue with “${topic}”.` : 'Let’s pick up from the last study step.',
@@ -229,6 +229,9 @@ export function renderStudyDialogue(parsed, { references, evidence, conversation
   } else canonical = hasFacts || selection.unsupported ? references.render(selection, evidence) : null;
   // The canonical multiple-choice prompt already ends with its own response instruction.
   if (canonical?.studyQuestion) plan.followup = 'none';
+  // A title or selected focus is not an answerable study point. Reflective
+  // medical prompts need either the actual cited passage or a pending key.
+  if (!canonical?.studyQuestion && !selection.chunkIds.length && !pendingQuestion && ['attempt-recall', 'compare', 'explain-reasoning'].includes(plan.followup)) plan.followup = 'choose-format';
   const coaching = dialogueText(plan, { evidence, settings, hasFacts, pendingQuestion });
   const spokenText = [coaching.intro, canonical?.content, coaching.followup].filter(Boolean).join('\n\n') || 'What would you like to study next?';
   const quote = plan.learnerQuote === null ? '' : `Your words (unverified learner statement): “${plan.learnerQuote}”`;

@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { createApp } from '../server/index.js';
 import { createStudyCurriculum, studyChoice } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
+import { conversationQuestions } from './fixtures/natural-review-v3.js';
 
 async function fixture(t, options = {}) {
   const dataDir = mkdtempSync(join(tmpdir(), 'fm-conversational-quiz-'));
@@ -16,15 +17,19 @@ async function fixture(t, options = {}) {
   const curriculum = createStudyCurriculum({ records, now: () => currentTime });
   const foundations = options.foundations || createStudyCurriculum({ records: [], now: () => currentTime });
   const env = { OPENAI_API_KEY: 'quiz-mock-only-not-a-real-api-key', OPENAI_MODEL: 'gpt-4.1-mini', ...options.env };
-  const text = options.naturalText || 'Which part would you like to work through together?';
+  const text = options.naturalText || 'Which study activity would you prefer: review, recall, or planning?';
   const draft = { segments: [{ id: 's1', text, sourceChunkIds: [] }] };
-  const review = { version: 2, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 0, claims: [], flags: [] }] };
+  const preferenceQuestions = [
+    'Which study activity would you prefer: review, recall, or planning?',
+    'Which part of the synthesis exercise would you like to unpack?',
+  ];
+  const review = { version: 3, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 0, claims: [], flags: [], questions: conversationQuestions(...preferenceQuestions.filter(quote => text.includes(quote))) }] };
   const fetchImpl = async (url, request) => {
     providerCalls++;
     const payload = JSON.parse(request.body);
     const schema = payload.response_format?.json_schema?.name;
-    assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review_v2'].includes(schema), `Unexpected generated contract ${schema}`);
-    return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 7, completion_tokens: 3 }, choices: [{ message: { content: JSON.stringify(schema === 'family_medicine_natural_review_v2' ? review : draft) } }] });
+    assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review_v3'].includes(schema), `Unexpected generated contract ${schema}`);
+    return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 7, completion_tokens: 3 }, choices: [{ message: { content: JSON.stringify(schema === 'family_medicine_natural_review_v3' ? review : draft) } }] });
   };
   let server;
   let base;
@@ -78,7 +83,7 @@ test('personal study coaching returns model-written reviewed dialogue without un
 });
 
 test('reviewed source-gap dialogue does not create facts and imported review markers cannot authorize speech', async t => {
-  const app = await fixture(t, { naturalText: 'I do not have a matching current study source for that question. Which part would you like to narrow?' });
+  const app = await fixture(t, { naturalText: 'I do not have a matching current study source for that question. You can choose an available study topic or open its cited source.' });
   const conversation = await app.conversation();
   const unknown = await app.chat(conversation.id, 'Tell me about lupus', 'safe-abstention');
   assert.equal(unknown.body.message.canonicalStudyProcess, undefined);

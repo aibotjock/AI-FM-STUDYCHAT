@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
+import { providerReviewContext } from './fixtures/natural-review-v3.js';
 
 async function fixture(t, options = {}) {
   const dataDir = mkdtempSync(join(tmpdir(), 'study-routes-'));
@@ -19,13 +20,13 @@ async function fixture(t, options = {}) {
     requests.push(payload);
     let response;
     if (options.reply) response = options.reply;
-    else if (payload.response_format?.json_schema?.name === 'family_medicine_natural_review_v2') {
-      const data = JSON.parse(payload.messages.find(message => message.content.includes('NATURAL_REVIEW_DATA=')).content.split('NATURAL_REVIEW_DATA=')[1]);
-      response = { version: 2, approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: segment.sourceChunkIds.length ? 1 : 0, flags: [], claims: segment.sourceChunkIds.length ? [{ quote: segment.text, type: 'medical', sourceChunkIds: segment.sourceChunkIds, supports: segment.sourceChunkIds.map(chunkId => ({ chunkId, spanId: data.sourceSpans.find(source => source.chunkId === chunkId).spanId })) }] : [] })) };
+    else if (payload.response_format?.json_schema?.name === 'family_medicine_natural_review_v3') {
+      const data = providerReviewContext(payload);
+      response = { version: 3, approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: segment.sourceChunkIds.length ? 1 : 0, flags: [], questions: [], claims: segment.sourceChunkIds.length ? [{ quote: segment.text, type: 'medical', sourceChunkIds: segment.sourceChunkIds, supports: segment.sourceChunkIds.map(chunkId => ({ chunkId, spanId: data.sourceSpans.find(source => source.chunkId === chunkId).spanId })) }] : [] })) };
     } else {
       const data = JSON.parse(payload.messages.find(message => message.content.includes('NATURAL_TUTOR_CONTEXT=')).content.split('NATURAL_TUTOR_CONTEXT=')[1]);
       const source = data.sources.find(source => source.key === 'asthma:management') || data.sources[0];
-      response = { segments: [{ id: 's1', text: source ? source.text : 'I cannot verify that fact from the current references. Which part would you like to narrow?', sourceChunkIds: source ? [source.key] : [] }] };
+      response = { segments: [{ id: 's1', text: source ? source.text : 'I cannot verify that fact from the current references. You can choose an available study topic or open its cited source.', sourceChunkIds: source ? [source.key] : [] }] };
     }
     return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 7, completion_tokens: 3 }, choices: [{ message: { content: JSON.stringify(response) } }] });
   };
@@ -149,7 +150,7 @@ test('connected study chat releases source-reviewed natural text with canonical 
   assert.equal(result.body.message.citations[0].url, 'https://www.nhlbi.nih.gov/health/asthma');
   assert.equal(app.requests[0].response_format.type, 'json_schema');
   assert.equal(app.requests[0].response_format.json_schema.name, 'family_medicine_natural_tutor');
-  assert.equal(app.requests[1].response_format.json_schema.name, 'family_medicine_natural_review_v2');
+  assert.equal(app.requests[1].response_format.json_schema.name, 'family_medicine_natural_review_v3');
   assert.ok(app.requests[0].messages.some(message => /Automated review is not qualified clinical approval/.test(message.content)));
   assert.equal((await app.request('/api/chat', 'POST', payload)).body.message.id, result.body.message.id);
   assert.equal(app.calls(), 2);
@@ -165,7 +166,7 @@ test('undeclared answer bodies cannot bypass natural draft validation or acquire
   assert.equal(app.calls(), 1);
 });
 
-test('unsupported clinical and dosing questions can clarify naturally without releasing factual teaching', async t => {
+test('unsupported clinical and dosing questions offer neutral study navigation without releasing factual teaching', async t => {
   const app = await fixture(t, { env: { OPENAI_API_KEY: 'mock-key' } });
   const conversation = await app.conversation();
   for (const content of ['What insulin dose?', 'What insulin dose for asthma?']) {
@@ -173,6 +174,7 @@ test('unsupported clinical and dosing questions can clarify naturally without re
     assert.equal(result.body.message.reviewedDialogue, true);
     assert.equal(result.body.message.groundingReview.externalClaimCount, 0);
     assert.deepEqual(result.body.message.citations, []);
+    assert.equal(result.body.message.content.includes('?'), false);
   }
   assert.equal(app.calls(), 4);
 });

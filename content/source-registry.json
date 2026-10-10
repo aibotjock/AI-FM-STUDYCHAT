@@ -28,7 +28,7 @@
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
       "rightsUrl": "https://www.aafp.org/about-site/using-aafp-content/permissions",
-      "notes": "Commercial reuse needs written permission; unauthorized AI training expressly restricted. Membership/access do not license commercial RAG. Endorsement, affirmation of value and not endorsed are distinct.",
+      "notes": "Commercial reuse of AAFP website material needs written permission; unauthorized AI training expressly restricted. Membership/access do not license commercial RAG. Exact authorized Springer joint benzo guideline 10.1007/s11606-025-09499-2 is separately CC BY 4.0; AAFP supplied Affirmation of Value, not formal endorsement. That exact document does not clear other AFP/AAFP content.",
       "rightsReviewStatus": "candidate-not-approved",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
@@ -43,7 +43,9 @@
         "guideline-endorsement-and-disagreement"
       ],
       "additionalRightsUrls": [
-        "https://www.aafp.org/about-site/terms-of-use"
+        "https://www.aafp.org/about-site/terms-of-use",
+        "https://link.springer.com/article/10.1007/s11606-025-09499-2",
+        "https://dev.springernature.com/tdm-reservation-policy/"
       ],
       "licensingRoute": "contentlicensing@aafp.org for multiple-use/long-term licensing; copyrights@aafp.org for one-time permissions"
     },
@@ -130,11 +132,14 @@
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
       "rightsUrl": "https://www.aan.com/practice/what-are-clinical-practice-guidelines/",
-      "notes": "Guideline reproduction goes to the Neurology publisher; clinician/patient derivative tools go to guidelines@aan.com. No blanket AI or commercial rights.",
+      "notes": "Guideline reproduction goes to the Neurology publisher; clinician/patient derivative tools go to guidelines@aan.com. No blanket AI or commercial rights. Exact separately licensed Springer joint benzo guideline 10.1007/s11606-025-09499-2 is CC BY 4.0 and AAN-endorsed. Functional seizure DOI 10.1212/WNL.0000000000214466 manuscript embargo lasts until 2026-10-31; no currently available commercial grant verified for that item.",
       "rightsReviewStatus": "candidate-not-approved",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
-      "ingestionStatus": "metadata-only-not-ingested"
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://link.springer.com/article/10.1007/s11606-025-09499-2"
+      ]
     },
     {
       "id": "aaos-guidelines",
@@ -238,14 +243,15 @@
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
       "rightsUrl": "https://www.acog.org/legal/terms-of-use",
-      "notes": "Terms restrict both generative-AI training and use in an LLM to generate responses. Generic reprint permission is insufficient. Direct fetch blocked; official indexed policy reviewed. ACOG permissions process/publication@acog.org.",
+      "notes": "ACOG website terms restrict both generative-AI training and LLM response generation; generic reprint permission is insufficient. Official indexed policy reviewed. Exact March2026 Endometriosis CPG11 DOI10.1097/AOG.0000000000006181 has no verified commercial grant. Separately licensed Springer joint benzo guideline10.1007/s11606-025-09499-2 is CC BY4.0 and ACOG-endorsed; this does not clear ACOG website guidance. ACOG permissions/publication@acog.org.",
       "rightsReviewStatus": "candidate-not-approved",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
       "ingestionStatus": "metadata-only-not-ingested",
       "additionalRightsUrls": [
         "https://www.acog.org/legal/permissions-information",
-        "https://shop.lww.com/journal-permission"
+        "https://shop.lww.com/journal-permission",
+        "https://link.springer.com/article/10.1007/s11606-025-09499-2"
       ]
     },
     {
@@ -347,11 +353,18 @@
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
       "rightsUrl": "https://diabetesjournals.org/journals/pages/ai_content_licensing_policy_and_terms",
-      "notes": "ADA here means Diabetes Association. Dedicated AI content licensing policy; subscriptions/free access insufficient. Direct fetch blocked; official indexed policy metadata reviewed. permissions@diabetes.org.",
+      "notes": "ADA here means Diabetes Association. Dedicated AI content licensing covers ADA-site content; subscriptions/free access insufficient. Official indexed policy reviewed; permissions@diabetes.org. Separately authorized Springer/Diabetologia ADA-EASD versions 10.1007/s00125-026-06855-7 (T2D2026), 10.1007/s00125-026-06833-z (T1D2026) and10.1007/s00125-024-06183-8 (adult crises2024) explicitly grant whole-article CC BY4.0; Springer TDM policy permits CC BY. ADA website policy has no established document-specific override of those publisher grants. Apply T1D correction10.1007/s00125-026-06893-1; exclude separately credited third-party material. No whole Standards/corpus approval.",
       "rightsReviewStatus": "candidate-not-approved",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
-      "ingestionStatus": "metadata-only-not-ingested"
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://link.springer.com/article/10.1007/s00125-026-06855-7",
+        "https://link.springer.com/article/10.1007/s00125-026-06833-z",
+        "https://link.springer.com/article/10.1007/s00125-026-06893-1",
+        "https://link.springer.com/article/10.1007/s00125-024-06183-8",
+        "https://dev.springernature.com/tdm-reservation-policy/"
+      ]
     },
     {
       "id": "aha-guidelines",
@@ -398,11 +411,15 @@
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
       "rightsUrl": "https://www.psychiatry.org/psychiatrists/search-directories-databases/resource-documents",
-      "notes": "APA here means Psychiatric Association. APA content must not be input into generative AI or machine-learning tools without written permission. contracts@psych.org.",
+      "notes": "APA here means Psychiatric Association. APA website resource notice restricts input into generative AI or machine learning without written permission; contracts@psych.org. Separately licensed 2019 APA ED-boarding resource DOI10.5811/westjem.2019.6.42422 is CC BY4.0, pending currentness review. APA participated in joint benzo guideline10.1007/s11606-025-09499-2 (Springer CC BY4.0) but is not named in its formal endorsement list. Authorized publisher exceptions do not clear APA website corpus.",
       "rightsReviewStatus": "candidate-not-approved",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
-      "ingestionStatus": "metadata-only-not-ingested"
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC6754202/",
+        "https://link.springer.com/article/10.1007/s11606-025-09499-2"
+      ]
     },
     {
       "id": "asco-guidelines",
@@ -447,11 +464,15 @@
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
       "rightsUrl": null,
-      "notes": "Methodology resource, not a treatment corpus or umbrella license to member-society guidelines. Exact commercial rights unresolved. Inquiry: https://cmss.org/contact-us/.",
+      "notes": "Methodology resource, not treatment corpus or umbrella member-society license. Official standards page invites members/others, including relevant for-profit entities, to adopt/adapt standards for their policies. Narrow invitation supports cited editorial-quality framework, not wholesale PDF retrieval. Exact raw-corpus commercial rights unresolved. Inquiry https://cmss.org/contact-us/.",
       "rightsReviewStatus": "unresolved",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
-      "ingestionStatus": "metadata-only-not-ingested"
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://cmss.org/programs-and-resources/professional-standards/",
+        "https://cmss.org/wp-content/uploads/2017/11/Revised-CMSS-Principles-for-Clinical-Practice-Guideline-Development.pdf"
+      ]
     },
     {
       "id": "idsa-guidelines",
@@ -472,11 +493,19 @@
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
       "rightsUrl": "https://www.idsociety.org/link/b2335d30fd854d2fa562016520dfc7cc.aspx",
-      "notes": "Terms restrict automated scraping/mining. Website guidance and journal versions need separate rightsholder and individual-license review.",
+      "notes": "IDSA site terms restrict automated scraping/mining; no blanket corpus grant. Authorized Cambridge joint practice recommendations10.1017/ice.2022.304 (hand hygiene,2022update/published2023) and10.1017/ice.2023.67 (surgical-site infection,2022update/published2023) explicitly grant whole-article CC BY4.0. Cambridge terms preserve CC permissions; use exact publisher prose with attribution and scope, excluding separately credited third-party material. American Hospital Association participation is not American Heart Association guidance. Current AMR guidance published 2026-07-30 replaces earlier versions and explicitly reserves retrieval storage, TDM and AI use; AASLD-IDSA HCV DOI 10.1093/cid/ciad319 is all-rights-reserved. These remain linked references, not approved corpus.",
       "rightsReviewStatus": "candidate-not-approved",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
-      "ingestionStatus": "metadata-only-not-ingested"
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://doi.org/10.1017/ice.2022.304",
+        "https://doi.org/10.1017/ice.2023.67",
+        "https://www.cambridge.org/core/legal-notices/terms",
+        "https://www.cambridge.org/core/services/open-research/text-and-data-mining",
+        "https://www.idsociety.org/practice-guideline/amr-guidance/",
+        "https://academic.oup.com/cid/advance-article/doi/10.1093/cid/ciad319/7179952"
+      ]
     },
     {
       "id": "nccn-guidelines",
@@ -497,14 +526,16 @@
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
       "rightsUrl": "https://www.nccn.org/about/permissions/",
-      "notes": "Current full NCCN permissions/EULA fetch failed. Verified JNCCN360 disclaimer requires written authorization for use/copy/distribution. Another company license does not extend to StudyChat.",
+      "notes": "No commercial AI rights granted to StudyChat. Current2025 lung screening10.6004/jnccn.2025.0002 and survivorship10.6004/jnccn.2025.0028 document licenses unverified after publisher-access failures. Superseded2022 lung screening PDF explicitly reserves reproduction. JNCCN360 disclaimer requires written authorization for use/copy/distribution. Papers about NCCN, individual subscriptions and other companies licenses do not extend to StudyChat.",
       "rightsReviewStatus": "partial-official-policy-access-current-eula-unverified",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
       "ingestionStatus": "metadata-only-not-ingested",
       "additionalRightsUrls": [
         "https://www.nccn.org/Store/EULA/Default.aspx",
-        "https://jnccn360.org/disclaimer/"
+        "https://jnccn360.org/disclaimer/",
+        "https://pubmed.ncbi.nlm.nih.gov/39819601/",
+        "https://jnccn.org/downloadpdf/view/journals/jnccn/20/7/article-p754.pdf"
       ]
     },
     {
@@ -697,11 +728,17 @@
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
       "rightsUrl": "https://medlineplus.gov/about/using/usingcontent/",
-      "notes": "Selected NLM-authored summaries are public-domain candidates. Exclude A.D.A.M. encyclopedia articles, ASHP drug monographs, credited images, RSS and externally linked material without their own rights.",
+      "notes": "NLM-authored health-topic summaries, medical-test text and genetics summaries are public domain, including English/Spanish material; credit MedlinePlus/NLM. XML developer feeds are a permitted acquisition route for those selected summaries. Exclude A.D.A.M. encyclopedia/videos, ASHP drug monographs, credited images and externally linked material without their own rights. API/feed availability is not a license to vendor content or every linked source; inspect fields and exact current pages. This catalog does not approve an import.",
       "rightsReviewStatus": "conditional-public-domain-candidate",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
-      "ingestionStatus": "metadata-only-not-ingested"
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalUrls": [
+        "https://medlineplus.gov/xml.html",
+        "https://medlineplus.gov/xmldescription.html",
+        "https://medlineplus.gov/about/developers/",
+        "https://medlineplus.gov/about/developers/geneticsdatafilesapi/"
+      ]
     },
     {
       "id": "hhs-hiv-guidelines",
@@ -721,15 +758,19 @@
         "prophylaxis",
         "special-populations"
       ],
-      "rightsStatus": "document-specific-rights-unresolved",
+      "rightsStatus": "exact-current-version-public-domain-review-pending",
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
-      "rightsUrl": null,
-      "notes": "Federal hosting does not establish exact authorship/reuse rights. Adult opportunistic-infection update October 1, 2026 is a freshness candidate. No ingestion approval inferred.",
-      "rightsReviewStatus": "unresolved",
+      "rightsUrl": "https://www.ncbi.nlm.nih.gov/books/NBK50850/?report=classic",
+      "notes": "Official indexed NLM Bookshelf HHS HIV Clinical Guidelines collection states that the publication is in the public domain. Direct collection retrieval was CAPTCHA-blocked, and that notice is not automatically extended to every newer Clinicalinfo version or credited third-party component. Clinicalinfo photos are expressly proprietary, not public domain. Match the exact current guideline edition/section to authorship and reuse notice, exclude images, verify corrections and approval-date currency before import. No blanket AI/corpus clearance granted. Follow-up official indexed collection notice explicitly covers public-domain publication and lists 2026 editions. Exact ART Bookshelf record NBK586306 verifies HHS publisher and May 27, 2026 update; current PDF selected prose/credits still need inspection. This is stronger current-version evidence, not a blanket approval of all Clinicalinfo content.",
+      "rightsReviewStatus": "conditional-public-domain-candidate",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
-      "ingestionStatus": "metadata-only-not-ingested"
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://clinicalinfo.hiv.gov/en/disclaimers",
+        "https://www.ncbi.nlm.nih.gov/books/NBK586306/?report=reader"
+      ]
     },
     {
       "id": "nci-pdq",
@@ -750,7 +791,7 @@
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
       "rightsUrl": "https://www.cancer.gov/policies/copyright-reuse",
-      "notes": "Review PDQ excerpt/attribution rules and third-party images separately. PDQ evidence summaries are not formal practice guidelines.",
+      "notes": "NCI text is copyright-free unless otherwise indicated. Per-summary PDQ notices permit text reuse, but an adapted excerpt cannot be identified as the complete NCI PDQ cancer-information summary unless reproduced in its entirety and kept regularly updated. Identify excerpts honestly and cite the original title/link/date. Third-party images require separate permission; NCI logos and PDQ trademark apply only to wholly unchanged original products. PDQ health-professional evidence summaries are not formal clinical practice guidelines or official treatment recommendations. Review each exact current summary and source spans.",
       "rightsReviewStatus": "conditional-public-domain-candidate",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
@@ -818,15 +859,16 @@
         "treatment",
         "monitoring"
       ],
-      "rightsStatus": "document-and-publisher-rights-review-pending",
+      "rightsStatus": "commercial-permission-and-document-license-review-required",
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
-      "rightsUrl": null,
-      "notes": "Metadata-only catalog; each ATS/journal guideline and coauthor rights require review.",
-      "rightsReviewStatus": "unresolved",
+      "rightsUrl": "https://site.thoracic.org/about-us/leadership-governance/terms-of-use",
+      "notes": "ATS website terms reserve reproduction/upload/network copying and modification for rights-holder permission. Contributor grants to ATS do not license StudyChat. Exact society, journal, coauthor and any open-access article licenses require separate review; terms also restrict deep linking, so display/link scope must be resolved before commercial activation.",
+      "rightsReviewStatus": "candidate-not-approved",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
-      "ingestionStatus": "metadata-only-not-ingested"
+      "ingestionStatus": "metadata-only-not-ingested",
+      "licensingRoute": "documents@thoracic.org for guideline questions; permissions and journal-rights channels for exact content-use scope"
     },
     {
       "id": "chest-guidelines",
@@ -844,12 +886,12 @@
         "treatment",
         "monitoring"
       ],
-      "rightsStatus": "document-and-publisher-rights-review-pending",
+      "rightsStatus": "commercial-permission-and-document-license-review-required",
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
-      "rightsUrl": null,
-      "notes": "Metadata-only catalog; inspect exact society and publisher permissions before retrieval or AI processing.",
-      "rightsReviewStatus": "unresolved",
+      "rightsUrl": "https://www.chestnet.org/about/terms-of-use",
+      "notes": "CHEST website terms generally allow personal use only unless a broader express license applies; other copying, modification, publication or sale requires permission. Journal and joint guideline rights are separate. Verify exact edition/license before paid retrieval, AI processing or subscriber outputs.",
+      "rightsReviewStatus": "candidate-not-approved",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
       "ingestionStatus": "metadata-only-not-ingested"
@@ -943,8 +985,8 @@
       "rightsStatus": "document-and-publisher-rights-review-pending",
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
-      "rightsUrl": null,
-      "notes": "Catalog only; web or publisher access does not establish commercial reuse permission.",
+      "rightsUrl": "https://gastro.org/terms-of-use/",
+      "notes": "AGA terms were located through official indexed policy metadata; direct page access was blocked. Grants for user-submitted material to AGA are not permission to reuse AGA-owned guidance. Exact web/journal permissions, open-access article licenses, AI use and subscriber distribution remain unresolved.",
       "rightsReviewStatus": "unresolved",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
@@ -992,11 +1034,14 @@
       "commercialCorpusUseApproved": false,
       "aiProcessingApproved": false,
       "rightsUrl": null,
-      "notes": "ACR here means Rheumatology, not Radiology. Individual guideline/publisher rights review pending.",
+      "notes": "ACR here means Rheumatology, not Radiology. Individual guideline/publisher rights review pending. Exact official-hosted Wiley patient-values qualitative study DOI 10.1002/acr.25693 has CC BY; this is supplemental shared-decision evidence, not the main LN/SLE treatment CPG. Exact first-online date unverified; submitted 2025-06-26, accepted 2025-10-13, publisher indexed 2026. No import approved.",
       "rightsReviewStatus": "unresolved",
       "recordType": "catalog",
       "checkedAt": "2026-10-10",
-      "ingestionStatus": "metadata-only-not-ingested"
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://assets.contentstack.io/v3/assets/bltee37abb6b278ab2c/blt5b118b7dbc7049cd/lupus-guideline-sle-patient-values-preferences-2025.pdf"
+      ]
     },
     {
       "id": "asccp-management",
@@ -1226,6 +1271,766 @@
       "ingestionStatus": "metadata-only-not-ingested",
       "specialties": [
         "foundations"
+      ]
+    },
+    {
+      "id": "nih-nimh",
+      "organization": "National Institute of Mental Health",
+      "title": "Mental health information and publications",
+      "url": "https://www.nimh.nih.gov/",
+      "role": "Authoritative psychiatric background; not a complete medication-management guideline",
+      "specialties": [
+        "psychiatry"
+      ],
+      "studyCoverage": [
+        "disease-explanation",
+        "treatment-background",
+        "special-populations"
+      ],
+      "rightsStatus": "conditional-source-by-source-public-domain-review",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.nimh.nih.gov/site-info/policies",
+      "notes": "NIMH text is public domain unless otherwise indicated; credit NIMH and preserve accuracy. All stock/publication images are excluded from reuse without their rights. No logo, promotion, or implied endorsement. Exact dated text and linked third-party material require separate review.",
+      "rightsReviewStatus": "conditional-public-domain-candidate",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested"
+    },
+    {
+      "id": "nih-ninds",
+      "organization": "National Institute of Neurological Disorders and Stroke",
+      "title": "Neurological disorders and publication information",
+      "url": "https://www.ninds.nih.gov/",
+      "role": "Neurological disease explanations and treatment background",
+      "specialties": [
+        "neurology"
+      ],
+      "studyCoverage": [
+        "disease-explanation",
+        "treatment-background"
+      ],
+      "rightsStatus": "conditional-source-by-source-public-domain-review",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.ninds.nih.gov/publications/publications-help",
+      "notes": "Official indexed Publications Help states that information prepared by NINDS is public domain and freely copyable. Direct fetch failed during this review. Confirm exact-page authorship, credits and currency; journal material, images and logos are not automatically cleared. Educational pages are not comprehensive prescribing guidelines.",
+      "rightsReviewStatus": "conditional-public-domain-candidate",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested"
+    },
+    {
+      "id": "nih-nei",
+      "organization": "National Eye Institute",
+      "title": "Eye disease information",
+      "url": "https://www.nei.nih.gov/",
+      "role": "Ophthalmology explanations, prevention and research background",
+      "specialties": [
+        "ophthalmology"
+      ],
+      "studyCoverage": [
+        "disease-explanation",
+        "prevention",
+        "treatment-background"
+      ],
+      "rightsStatus": "conditional-source-by-source-public-domain-review",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://eyegene.nih.gov/about/policies/copyright",
+      "notes": "Official NEI eyeGENE policy identifies most NEI-employee text as public domain with NEI/NIH source credit. Copyrighted journal material is separate. Image-gallery permission is limited to stated educational/news/research uses, not commercial promotion; other graphics and marks require case-specific review. Verify each exact item.",
+      "rightsReviewStatus": "conditional-public-domain-candidate",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested"
+    },
+    {
+      "id": "nih-nichd",
+      "organization": "Eunice Kennedy Shriver National Institute of Child Health and Human Development",
+      "title": "Pregnancy, reproductive health and child development information",
+      "url": "https://www.nichd.nih.gov/",
+      "role": "Reproductive, developmental and pediatric background",
+      "specialties": [
+        "obstetrics",
+        "gynecology",
+        "pediatrics"
+      ],
+      "studyCoverage": [
+        "disease-explanation",
+        "development",
+        "special-populations"
+      ],
+      "rightsStatus": "conditional-source-by-source-public-domain-review",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.nichd.nih.gov/disclaimer",
+      "notes": "NICHD employee/contractor text is generally public domain with Courtesy NICHD credit; copyrighted journal articles are exceptions. Images and logos require separate review. Safe to Sleep marks and materials have distinct restrictions. Do not imply endorsement or comprehensive clinical-guideline status.",
+      "rightsReviewStatus": "conditional-public-domain-candidate",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested"
+    },
+    {
+      "id": "nih-nia",
+      "organization": "National Institute on Aging",
+      "title": "Aging, dementia and older-adult health information",
+      "url": "https://www.nia.nih.gov/",
+      "role": "Geriatric and cognitive health background",
+      "specialties": [
+        "geriatrics",
+        "neurology"
+      ],
+      "studyCoverage": [
+        "disease-explanation",
+        "prevention",
+        "special-populations"
+      ],
+      "rightsStatus": "conditional-source-by-source-public-domain-review",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.nia.nih.gov/about/policies",
+      "notes": "Official indexed policy permits public-domain text reuse except indicated copyrighted material and requests NIA/NIH credit. Direct page retrieval presented a browser verification wall. Photos, linked articles and some videos are separate. Review exact current pages before importing.",
+      "rightsReviewStatus": "conditional-public-domain-candidate",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested"
+    },
+    {
+      "id": "nih-nidcr",
+      "organization": "National Institute of Dental and Craniofacial Research",
+      "title": "Oral and dental health information",
+      "url": "https://www.nidcr.nih.gov/",
+      "role": "Dental problems relevant to family medicine; educational background",
+      "specialties": [
+        "oral-health",
+        "family-medicine"
+      ],
+      "studyCoverage": [
+        "disease-explanation",
+        "prevention",
+        "treatment-background"
+      ],
+      "rightsStatus": "conditional-source-by-source-public-domain-review",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.nidcr.nih.gov/about-us/web-policies",
+      "notes": "Most text is public domain unless noted. Credit the agency, publication, URL and access date. Third-party images and publications remain protected. No advertising, endorsement or logo rights inferred. Educational material is not individual clinical advice.",
+      "rightsReviewStatus": "conditional-public-domain-candidate",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested"
+    },
+    {
+      "id": "fda-drug-information",
+      "organization": "U.S. Food and Drug Administration",
+      "title": "FDA drug safety, approval and medication information",
+      "url": "https://www.fda.gov/drugs",
+      "role": "Medication approval, safety, labeling and regulatory distinctions; supplement to treatment guidelines",
+      "specialties": [
+        "pharmacology"
+      ],
+      "studyCoverage": [
+        "approval-status",
+        "contraindications",
+        "warnings",
+        "labeling",
+        "medication-safety"
+      ],
+      "rightsStatus": "conditional-source-by-source-public-domain-review",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.fda.gov/about-fda/about-website/website-policies",
+      "notes": "FDA-authored website content is public domain unless otherwise noted. Preserve source/date and check updates; manufacturer-submitted labels and credited third-party material require independent rights review. Drug approval, indication and population must be verified from the corresponding FDA record.",
+      "rightsReviewStatus": "conditional-public-domain-candidate",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested"
+    },
+    {
+      "id": "fda-open-data",
+      "organization": "U.S. Food and Drug Administration",
+      "title": "openFDA datasets and APIs",
+      "url": "https://open.fda.gov/",
+      "role": "Structured FDA data for medication safety and labeling metadata, subject to dataset scope",
+      "specialties": [
+        "pharmacology"
+      ],
+      "studyCoverage": [
+        "medication-safety",
+        "labeling",
+        "regulatory-metadata"
+      ],
+      "rightsStatus": "conditional-dataset-specific-cc0-review",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://open.fda.gov/terms/",
+      "notes": "openFDA defaults to CC0 for its data/content except identified privately owned material. GMDN device terminology is a named proprietary exception, restricted for commercial/AI uses without its license, and is excluded. CC0 data is not a clinical guideline or a representation that an available product is FDA approved. Confirm exact dataset/version and underlying third-party exceptions.",
+      "rightsReviewStatus": "conditional-permissive-license-candidate",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://open.fda.gov/license/"
+      ]
+    },
+    {
+      "id": "nlm-dailymed",
+      "organization": "National Library of Medicine / label submitters",
+      "title": "DailyMed structured product labeling",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/index.cfm",
+      "role": "Currently in-use labeler-submitted product labeling; medication reference supplement",
+      "specialties": [
+        "pharmacology"
+      ],
+      "studyCoverage": [
+        "labeling",
+        "contraindications",
+        "warnings",
+        "interactions",
+        "special-populations"
+      ],
+      "rightsStatus": "manufacturer-and-document-specific-rights-unresolved",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.nlm.nih.gov/web_policies.html",
+      "notes": "DailyMed publishes labeler-submitted currently in-use labeling, including unapproved, nonprescription and non-human products; presence is not FDA approval. NLM hosting, bulk downloads and API access do not establish rights to every manufacturer label or illustration. Exact label copyright, approval status, version and commercial AI permissions remain unresolved.",
+      "rightsReviewStatus": "unresolved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested"
+    },
+    {
+      "id": "hrsa-preventive-services",
+      "organization": "Health Resources and Services Administration",
+      "title": "Women and children preventive service resources",
+      "url": "https://www.hrsa.gov/womens-guidelines",
+      "role": "Preventive-service coverage and jointly developed women/child resources",
+      "specialties": [
+        "prevention",
+        "gynecology",
+        "pediatrics"
+      ],
+      "studyCoverage": [
+        "screening",
+        "prevention",
+        "coverage-policy"
+      ],
+      "rightsStatus": "joint-authored-document-rights-unresolved",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": null,
+      "notes": "No affirmative blanket commercial AI/text reuse policy was verified. HRSA-hosted WPSI/ACOG and AAP Bright Futures material may remain copyrighted by collaborators or grantees. Coverage effective dates differ from clinical publication dates. Keep metadata/link-only until each exact source and rights holder is reviewed.",
+      "rightsReviewStatus": "unresolved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalUrls": [
+        "https://mchb.hrsa.gov/programs-impact/bright-futures"
+      ]
+    },
+    {
+      "id": "samhsa-publications",
+      "organization": "Substance Abuse and Mental Health Services Administration",
+      "title": "Substance-use and behavioral-health publications",
+      "url": "https://library.samhsa.gov/",
+      "role": "Substance-use assessment, treatment and behavioral-health study candidates",
+      "specialties": [
+        "addiction",
+        "psychiatry"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "monitoring",
+        "special-populations"
+      ],
+      "rightsStatus": "publication-specific-fee-and-third-party-rights-review",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.samhsa.gov/about/faqs",
+      "notes": "Most SAMHSA web material may be public domain, but publication-specific conditions govern. Official TIP 63, TIP 26 and TIP 39 notices state public domain except credited copyright sources and prohibit reproduction/distribution for a fee without specific written SAMHSA Office of Communications authorization. A paid subscription RAG is not presumed exempt. Current editions, credited excerpts, changing federal requirements and logo restrictions require independent review; no TIP content is approved here.",
+      "rightsReviewStatus": "unresolved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://www.ncbi.nlm.nih.gov/books/NBK571030/",
+        "https://www.ncbi.nlm.nih.gov/sites/books/NBK571081/",
+        "https://www.ncbi.nlm.nih.gov/sites/books/NBK535268/pdf/Bookshelf_NBK535268.pdf"
+      ],
+      "licensingRoute": "SAMHSA Office of Communications for publication-specific paid reproduction/distribution authorization; no request sent"
+    },
+    {
+      "id": "aap-bright-futures",
+      "organization": "American Academy of Pediatrics / HRSA",
+      "title": "Bright Futures health-supervision resources",
+      "url": "https://mchb.hrsa.gov/programs-impact/bright-futures",
+      "role": "Pediatric health supervision, development and prevention",
+      "specialties": [
+        "pediatrics",
+        "prevention"
+      ],
+      "studyCoverage": [
+        "health-supervision",
+        "screening",
+        "development",
+        "prevention"
+      ],
+      "rightsStatus": "commercial-permission-required",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://publications.aap.org/pages/licensing-permissions",
+      "notes": "HRSA funding and hosting do not make all AAP Bright Futures materials public domain. Individual schedules, copyrighted books, forms and tools require separate rights review; subscription access is not paid RAG authorization.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "licensingRoute": "AAP permissions@aap.org and exact publisher/rights holder; commercial integration rights must be express"
+    },
+    {
+      "id": "menopause-society",
+      "organization": "The Menopause Society",
+      "title": "Position statements and Menopause journal",
+      "url": "https://menopause.org/professional-resources/position-statements",
+      "role": "Menopause, hormone therapy and symptom-management guidance",
+      "specialties": [
+        "gynecology",
+        "geriatrics"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "monitoring"
+      ],
+      "rightsStatus": "commercial-permission-required",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://menopause.org/professional-resources/menopause-journal-nm",
+      "notes": "Official journal page identifies copyrighted Menopause content and publisher permissions route. Exact position-statement/journal rights, quotations, derivative questions and AI use require review; journal subscriptions do not establish integration rights.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://shop.lww.com/journal-permission"
+      ],
+      "licensingRoute": "Exact article/publisher permissions through Wolters Kluwer; society information at info@menopause.org"
+    },
+    {
+      "id": "ata-thyroid-guidelines",
+      "organization": "American Thyroid Association",
+      "title": "ATA guidelines and statements",
+      "url": "https://www.thyroid.org/professionals/ata-professional-guidelines/",
+      "role": "Thyroid diagnosis, treatment, nodules and pregnancy distinctions",
+      "specialties": [
+        "endocrinology"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "monitoring",
+        "special-populations"
+      ],
+      "rightsStatus": "commercial-permission-required",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.thyroid.org/about-american-thyroid-association/terms-of-use/",
+      "notes": "ATA website materials generally require commercial permission. Authorized SAGE exact guidelines10.1089/thy.2014.0028 (hypothyroidism2014) and10.1089/thy.2016.0229 (hyperthyroidism2016) explicitly grant CC BY4.0 and remain listed in current ATA catalog. Review topic-specific currency, selected passage credits and exact versions. 2017 pregnancy guidance is superseded by2026 and not imported under these exceptions. No blanket ATA corpus approval.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://journals.sagepub.com/doi/10.1089/thy.2014.0028",
+        "https://journals.sagepub.com/doi/10.1089/thy.2016.0229"
+      ]
+    },
+    {
+      "id": "nkf-guidelines",
+      "organization": "National Kidney Foundation",
+      "title": "KDOQI guidelines and commentaries",
+      "url": "https://www.kidney.org/professionals/kdoqi",
+      "role": "Kidney disease, nutrition and U.S. guideline commentaries",
+      "specialties": [
+        "nephrology"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "monitoring",
+        "nutrition"
+      ],
+      "rightsStatus": "commercial-permission-required",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.kidney.org/about/legal-copyright",
+      "notes": "NKF explicitly reserves AI and text/data-mining copying, indexing and pipeline uses absent prior written permission. Personal education is not automated retrieval or commercial distribution. Exact AJKD/article licenses and joint-author rights remain separate.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://www.kidney.org/about/content-licensing",
+        "https://www.kidney.org/national-kidney-foundation-website-terms-use"
+      ],
+      "licensingRoute": "compliance@kidney.org; NKF content-licensing form for platforms, products and AI uses"
+    },
+    {
+      "id": "asge-guidelines",
+      "organization": "American Society for Gastrointestinal Endoscopy",
+      "title": "Practice guidelines and standards",
+      "url": "https://www.asge.org/home/resources/publications/guidelines",
+      "role": "Endoscopy indications, diagnosis, procedural safety and GI management",
+      "specialties": [
+        "gastroenterology"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "procedure-indications",
+        "procedure-safety"
+      ],
+      "rightsStatus": "commercial-permission-required",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.asge.org/quicklinks/terms-of-use",
+      "notes": "Website terms prohibit unauthorized reproduction/distribution; linking is welcomed but does not license content. Society and journal rights, joint authorship, AI processing and subscriber outputs require exact-document review.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "licensingRoute": "ASGE communications / info@asge.org and exact journal publisher for document permissions"
+    },
+    {
+      "id": "aasld-guidance",
+      "organization": "American Association for the Study of Liver Diseases",
+      "title": "Practice guidelines and guidance",
+      "url": "https://www.aasld.org/practice-guidelines",
+      "role": "Liver disease, hepatitis, cirrhosis and hepatology treatment",
+      "specialties": [
+        "hepatology",
+        "gastroenterology"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "monitoring",
+        "complications"
+      ],
+      "rightsStatus": "commercial-permission-required",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.aasld.org/practice-guidelines",
+      "notes": "Catalog provides limited individual research/colleague copying but reserves systematic redistribution, full guidance and larger excerpts for permission. Numerical excerpt thresholds do not grant commercial AI database rights. Review exact article licenses and publisher permissions.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://www.aasld.org/terms-use-and-privacy-policy"
+      ]
+    },
+    {
+      "id": "aad-guidelines",
+      "organization": "American Academy of Dermatology",
+      "title": "Clinical guidelines",
+      "url": "https://www.aad.org/member/clinical-quality/guidelines",
+      "role": "Skin disease diagnosis, management and skin-cancer guidance",
+      "specialties": [
+        "dermatology"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "monitoring",
+        "prevention"
+      ],
+      "rightsStatus": "commercial-permission-required",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.aad.org/terms-use",
+      "notes": "AAD website commercial/database and AI-learning reuse requires express permission. Exact AAD-contributed Mendeley datasets10.17632/z2bmdwwdf9.2 (acne),10.17632/fmkr7fwx9j.2 (adult AD topicals),10.17632/s72kbfrfcv.1 (adult AD phototherapy/systemics) show CC BY4.0 on primary landings. Actual download contents remain uninspected; no import approved. Dataset license does not clear main JAAD articles or substitute for2025/2026 update checks.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "licensingRoute": "permissions@aad.org; exact journal rights holder where applicable",
+      "additionalRightsUrls": [
+        "https://data.mendeley.com/datasets/z2bmdwwdf9/2",
+        "https://data.mendeley.com/datasets/fmkr7fwx9j/2",
+        "https://data.mendeley.com/datasets/s72kbfrfcv/1"
+      ]
+    },
+    {
+      "id": "aao-hns-guidelines",
+      "organization": "American Academy of Otolaryngology–Head and Neck Surgery Foundation",
+      "title": "ENT clinical practice guidelines",
+      "url": "https://www.entnet.org/",
+      "role": "ENT diagnosis, medical management and referral guideline candidates",
+      "specialties": [
+        "otolaryngology"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "referral"
+      ],
+      "rightsStatus": "express-permission-required-before-ai-processing",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.entnet.org/terms-of-use/",
+      "notes": "Terms limit ordinary copying to personal noncommercial use and expressly restrict use in applications, bots or AI, including processing/analysis, without authorization. Independently verified exact open-access journal licenses may need separate ownership/scope review; no blanket exception is presumed.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested"
+    },
+    {
+      "id": "aao-ophthalmology",
+      "organization": "American Academy of Ophthalmology",
+      "title": "Preferred Practice Pattern guidelines and EyeWiki",
+      "url": "https://www.aaojournal.org/content/preferred-practice-pattern",
+      "role": "Ophthalmology diagnosis, prevention and management candidates",
+      "specialties": [
+        "ophthalmology"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "prevention",
+        "referral"
+      ],
+      "rightsStatus": "document-specific-rights-and-explicit-eyewiki-ai-restriction",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://eyewiki.aao.org/EyeWiki%3ACopyrights",
+      "notes": "EyeWiki is copyrighted despite wiki format; official notices prohibit entry into AI/LLM/GenAI without written permission. This EyeWiki restriction is not silently treated as the entire Preferred Practice Pattern license: PPP society/publisher rights must also be reviewed individually. No AAO content is approved for AI here.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalUrls": [
+        "https://eyewiki.aao.org/Main_Page"
+      ],
+      "licensingRoute": "permissions@aao.org and exact guideline publisher"
+    },
+    {
+      "id": "aua-guidelines",
+      "organization": "American Urological Association",
+      "title": "Urology guidelines",
+      "url": "https://www.auanet.org/guidelines-and-quality/guidelines",
+      "role": "Urological disease, urinary symptoms and management",
+      "specialties": [
+        "urology"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "monitoring"
+      ],
+      "rightsStatus": "express-permission-required-before-ai-processing",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.auanet.org/about-us/media-center/terms-of-use",
+      "notes": "Official indexed terms expressly prohibit AUA content use/upload in external applications, bots and AI without authorization. Direct terms retrieval returned 403. An open-access symptom-score instrument notice does not license the guideline corpus or override AI terms. No copying, embeddings or provider submission approved.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested"
+    },
+    {
+      "id": "aaaai-practice-parameters",
+      "organization": "American Academy of Allergy, Asthma & Immunology",
+      "title": "Statements and practice parameters",
+      "url": "https://www.aaaai.org/allergist-resources/statements-practice-parameters",
+      "role": "Allergy, asthma, anaphylaxis and immunology guidance",
+      "specialties": [
+        "allergy",
+        "immunology",
+        "pulmonary"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "prevention",
+        "referral"
+      ],
+      "rightsStatus": "commercial-permission-required",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.aaaai.org/global/legal-and-privacy-notices",
+      "notes": "Content is copyrighted by AAAAI or credited owners. Professional-practice/educational access does not authorize paid redistribution, embeddings, AI processing or derivative study products. Review joint task-force/journal ownership and exact licenses.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://allergist.aaaai.org/forms/copyright-request-form.php"
+      ],
+      "licensingRoute": "AAAAI copyright request form and relevant journal/partner rights holder"
+    },
+    {
+      "id": "asam-guidelines",
+      "organization": "American Society of Addiction Medicine",
+      "title": "Addiction clinical guidelines and ASAM Criteria",
+      "url": "https://www.asam.org/",
+      "role": "Substance-use treatment, assessment and level-of-care study candidates",
+      "specialties": [
+        "addiction"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "assessment",
+        "level-of-care"
+      ],
+      "rightsStatus": "express-permission-required-before-ai-processing",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.asam.org/publications-resources/licensing/fair-use",
+      "notes": "ASAM expressly prohibits AI use of ASAM Criteria and other ASAM intellectual property without a completed written agreement. Nonprofit noncommercial educational examples do not clear this paid app. Guideline access or a licensing inquiry is not an executed license. Older CC-BY-NC-ND opioid guidance is unsuitable for commercial derivative use and may be obsolete.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://www.asam.org/publications-resources/licensing",
+        "https://www.asam.org/asam-criteria/copyright-and-permissions"
+      ],
+      "licensingRoute": "ASAM licensing program; written agreement required before AI integration"
+    },
+    {
+      "id": "aasm-guidelines",
+      "organization": "American Academy of Sleep Medicine",
+      "title": "Sleep-medicine practice guidelines",
+      "url": "https://aasm.org/clinical-resources/practice-standards/practice-guidelines/",
+      "role": "Sleep disorders, diagnostics and treatment guidance",
+      "specialties": [
+        "sleep-medicine"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "monitoring"
+      ],
+      "rightsStatus": "express-permission-required-before-ai-processing",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://go.aasm.org/terms.html",
+      "notes": "Terms prohibit unauthorized copying/scraping/derivatives and entering AASM intellectual property into generative AI absent express written authorization. Availability of AASM own AI products does not grant third-party rights. Check exact guideline/publisher licenses and separately owned instruments.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "licensingRoute": "publications@aasm.org and exact publisher/rights holder"
+    },
+    {
+      "id": "ash-guidelines",
+      "organization": "American Society of Hematology",
+      "title": "ASH clinical practice guidelines",
+      "url": "https://www.hematology.org/education/clinicians/guidelines-and-quality-care/clinical-practice-guidelines",
+      "role": "Hematologic disease, thrombosis and anticoagulation guidance",
+      "specialties": [
+        "hematology",
+        "thrombosis"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "monitoring"
+      ],
+      "rightsStatus": "document-license-or-commercial-permission-required",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://ashpublications.org/bloodadvances/pages/publication-fees",
+      "notes": "Blood Advances is openly accessible, but ordinary publication license is CC-BY-NC-ND, not blanket commercial adaptation/RAG permission. Exact articles may differ and require individual license review; review ASH web and journal rights separately.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested"
+    },
+    {
+      "id": "pubmed-discovery",
+      "organization": "National Library of Medicine",
+      "title": "PubMed literature discovery",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/",
+      "role": "Find primary studies, systematic reviews, guidelines and newer versions; not a licensed full-text corpus",
+      "specialties": [
+        "family-medicine",
+        "evidence-methods"
+      ],
+      "studyCoverage": [
+        "evidence-discovery",
+        "systematic-reviews",
+        "guideline-updates"
+      ],
+      "rightsStatus": "discovery-only-no-full-text-permission",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.nlm.nih.gov/web_policies.html",
+      "notes": "PubMed indexing and citation links do not license abstracts or article full text. Treat PubMed as discovery metadata; follow each publisher, PMC license, corrections and withdrawal status. Review permitted API usage separately from downstream text/AI rights.",
+      "rightsReviewStatus": "unresolved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested"
+    },
+    {
+      "id": "nice-guidance",
+      "organization": "National Institute for Health and Care Excellence",
+      "title": "NICE guidelines and guidance",
+      "url": "https://www.nice.org.uk/guidance",
+      "role": "Clearly labeled UK supplementary guidance; not default U.S. ABFM recommendations",
+      "specialties": [
+        "family-medicine"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "monitoring",
+        "prevention"
+      ],
+      "rightsStatus": "territory-and-ai-specific-commercial-license-required",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.nice.org.uk/reusing-our-content/nice-uk-open-content-licence",
+      "notes": "NICE UK Open Content Licence is territorial, with exclusions including CKS, BNF and third-party/commissioned materials. UK commercial availability is not global U.S.-app permission. International reuse and relevant AI/API purposes require a suitable licensing agreement; transformations, retrieval, subscriber outputs and territories must be express.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://www.nice.org.uk/terms-and-conditions",
+        "https://www.nice.org.uk/reusing-our-content/nice-syndication-api"
+      ]
+    },
+    {
+      "id": "who-guidance",
+      "organization": "World Health Organization",
+      "title": "WHO guidelines and publication collections",
+      "url": "https://www.who.int/publications",
+      "role": "Clearly labeled international supplementary evidence and public-health guidance",
+      "specialties": [
+        "family-medicine",
+        "public-health"
+      ],
+      "studyCoverage": [
+        "diagnosis",
+        "treatment",
+        "prevention",
+        "population-health"
+      ],
+      "rightsStatus": "document-specific-license-or-commercial-permission-required",
+      "commercialCorpusUseApproved": false,
+      "aiProcessingApproved": false,
+      "rightsUrl": "https://www.who.int/about/policies/publishing/copyright",
+      "notes": "Many WHO publications use CC-BY-NC-SA 3.0 IGO, so commercial incorporation needs permission. Older publications and third-party components require exact review. WHO Bulletin uses a different CC-BY 3.0 IGO permission route for eligible articles; this is not a license to all WHO guidance. No logo or endorsement rights inferred.",
+      "rightsReviewStatus": "candidate-not-approved",
+      "recordType": "catalog",
+      "checkedAt": "2026-10-10",
+      "ingestionStatus": "metadata-only-not-ingested",
+      "additionalRightsUrls": [
+        "https://www.who.int/about/policies/publishing/open-access",
+        "https://www.who.int/publications/journals/bulletin/rights-and-permissions"
       ]
     }
   ],

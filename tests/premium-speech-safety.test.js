@@ -10,7 +10,7 @@ import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { validateNaturalDraft, renderReviewedTutor } from '../server/natural-tutor.js';
 import { premiumSpeechText } from '../server/premium-speech.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
-import { sourceSpanSupport } from './fixtures/natural-review-v2.js';
+import { sourceSpanSupport } from './fixtures/natural-review-v3.js';
 
 const fact = 'Mock management fact: review inhaler technique.';
 const draft = { segments: [{ id: 's1', text: fact, sourceChunkIds: ['asthma:management'] }] };
@@ -93,8 +93,8 @@ async function fixture(t, { env = {}, authenticateRequest, isActive, speechRespo
       speechStarted();
       return speechResponse ? await speechResponse({ url, options, input }) : new Response(new Uint8Array([73, 68, 51, 1]), { headers: { 'Content-Type': 'audio/mpeg' } });
     }
-    const output = input.response_format?.json_schema?.name === 'family_medicine_natural_review_v2'
-      ? { version: 2, approved: true, segments: review.segments.map(segment => ({ ...segment, claims: segment.claims.map(claim => ({ ...claim, supports: claim.sourceChunkIds.map(chunkId => sourceSpanSupport(input, chunkId)) })) })) }
+    const output = input.response_format?.json_schema?.name === 'family_medicine_natural_review_v3'
+      ? { version: 3, approved: true, segments: review.segments.map(segment => ({ ...segment, questions: [], claims: segment.claims.map(claim => ({ ...claim, supports: claim.sourceChunkIds.map(chunkId => sourceSpanSupport(input, chunkId)) })) })) }
       : draft;
     return Response.json({ model: 'gpt-4.1-mini', choices: [{ message: { content: JSON.stringify(output) } }], usage: { prompt_tokens: 6, completion_tokens: 4 } });
   } });

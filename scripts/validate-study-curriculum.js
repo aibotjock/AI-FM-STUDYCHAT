@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { createStudyCurriculum, validateStudyCondition, studyRecordType, STUDY_CONDITION_FILES, STUDY_OPTIONAL_CONDITION_FILES } from '../server/study-curriculum.js';
 import { sourceEditorialWordBudget, CONCISE_SOURCE_WORD_BUDGET } from '../shared/source-reuse.js';
+import { mergeStudyReferences, readStudyReferenceFiles } from '../server/reference-expansion.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const names = STUDY_CONDITION_FILES;
@@ -76,7 +77,7 @@ export function validateMaintenanceCorpus({ records, files = [], now = Date.now(
   let questionCount = 0;
   for (const record of structuralRecords) {
     sections += record.sections.length;
-    const envelope = files.find(file => file.parsed.conditions.includes(record));
+    const envelope = files.find(file => file.parsed.conditions.some(entry => entry.id === record.id));
     // The envelope records the earliest check in a mixed-date file. Adding
     // newly checked material must not renew unchanged source review dates.
     if (envelope && date(record.review.checkedAt) < date(envelope.parsed.checkedAt)) problems.push(`${record.id}: review precedes envelope check date.`);
@@ -150,7 +151,7 @@ export function validateMaintenanceCorpus({ records, files = [], now = Date.now(
     sourceEditorialBudgets: [...sourceBudgets].filter(([, budget]) => budget > CONCISE_SOURCE_WORD_BUDGET).map(([url, budget]) => ({ url, wordBudget: budget, clinicalApproval: false })),
     validationMode: allowQuarantine ? 'maintenance-allow-quarantine' : 'strict-current-readiness', fullyCurrent: currentRecords.length === records.length && !problems.length,
     clinicalApproval: false, humanReviewed: false, commercialApprovedRecords: 0,
-    files: files.map(({ name, sha256 }) => ({ path: `content/conditions/${name}`, sha256 })),
+    files: files.map(({ name, sha256 }) => ({ path: typeof name !== 'string' ? null : name.startsWith('reference-expansion/') ? `content/${name}` : `content/conditions/${name}`, sha256 })),
     sources: [...sources.values()].sort((a, b) => a.url.localeCompare(b.url)),
   };
   return { ok: !problems.length, problems: [...new Set(problems)], manifest };
@@ -173,7 +174,7 @@ function readCorpus(rootDir, now) {
 
 function writeReports(rootDir, manifest, validatedRecords) {
   writeFileSync(resolve(rootDir, 'content/curriculum-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
-  const lines = ['# Condition coverage', '', `Source checks begin: ${manifest.checkedAt}. Inventory: ${manifest.conditions} disease conditions and ${manifest.studyTopics} additional study topics, ${manifest.questions} original questions and ${manifest.sections} original teaching sections.`, '', `Currently eligible: ${manifest.currentConditions} disease conditions, ${manifest.currentStudyTopics} study topics and ${manifest.currentQuestions} questions. Quarantined: ${manifest.quarantinedRecords} records and ${manifest.quarantinedQuestions} questions. Validation mode: ${manifest.validationMode}; fully current: ${manifest.fullyCurrent}.`, '', `Formal guideline or official recommendation evidence: ${manifest.formalGuidelineConditions} inventory conditions (${manifest.currentFormalGuidelineConditions} current). Official clinical reference only: ${manifest.officialReferenceOnlyConditions.length}. These labels do not establish independent clinician review or commercial rights.`, '', 'Study tool only; not medical advice or for clinical use. This is a curated high-yield selection, not an epidemiological ranking or a proportionally balanced ABFM mock examination. Source links are free at their originating sites; the app is independent and does not imply endorsement.', '', '| Condition or study topic | Primary domain | Questions | Source coverage | Eligibility |', '| --- | --- | ---: | --- | --- |'];
+  const lines = ['# Condition coverage', '', `Source checks begin: ${manifest.checkedAt}. Inventory: ${manifest.conditions} disease conditions and ${manifest.studyTopics} additional study topics, ${manifest.questions} original questions and ${manifest.sections} source-linked teaching sections.`, '', `Currently eligible: ${manifest.currentConditions} disease conditions, ${manifest.currentStudyTopics} study topics and ${manifest.currentQuestions} questions. Quarantined: ${manifest.quarantinedRecords} records and ${manifest.quarantinedQuestions} questions. Validation mode: ${manifest.validationMode}; fully current: ${manifest.fullyCurrent}.`, '', `Formal guideline or official recommendation evidence: ${manifest.formalGuidelineConditions} inventory conditions (${manifest.currentFormalGuidelineConditions} current). Official clinical reference only: ${manifest.officialReferenceOnlyConditions.length}. These labels do not establish independent clinician review or commercial rights.`, '', 'Study tool only; not medical advice or for clinical use. This is a curated high-yield selection, not an epidemiological ranking or a proportionally balanced ABFM mock examination. Source links are free at their originating sites; the app is independent and does not imply endorsement.', '', '| Condition or study topic | Primary domain | Questions | Source coverage | Eligibility |', '| --- | --- | ---: | --- | --- |'];
   const records = [...validatedRecords].sort((a, b) => a.name.localeCompare(b.name));
   const quarantine = new Map(manifest.quarantine.map(record => [record.id, record.reasons]));
   for (const condition of records) lines.push(`| ${condition.name.replaceAll('|', '/')} | ${condition.domain} | ${condition.questions.length} | ${condition.sources.some(source => ['clinical-guideline', 'official-recommendation'].includes(source.kind)) ? 'Guideline / official recommendation' : '**Official reference only — guideline gap**'} | ${quarantine.has(condition.id) ? `**Quarantined:** ${quarantine.get(condition.id).join('; ').replaceAll('|', '/')}` : 'Current source check; clinician review pending'} |`);
@@ -184,8 +185,10 @@ function writeReports(rootDir, manifest, validatedRecords) {
 export function runMaintenanceCli(args = process.argv.slice(2), { rootDir = root, now = Date.now(), output = console.log, error = console.error } = {}) {
   try {
     if (args.some(argument => !['--write-manifest', '--allow-quarantine'].includes(argument))) throw new Error('Use only --write-manifest and/or --allow-quarantine.');
-    const files = readCorpus(rootDir, now);
-    const records = files.flatMap(file => file.parsed.conditions);
+    const baseFiles = readCorpus(rootDir, now);
+    const referenceFiles = readStudyReferenceFiles(resolve(rootDir, 'content/reference-expansion'), { now });
+    const files = [...baseFiles, ...referenceFiles];
+    const records = mergeStudyReferences(baseFiles.flatMap(file => file.parsed.conditions), referenceFiles.map(file => file.parsed), { now });
     const result = validateMaintenanceCorpus({ records, files, now, allowQuarantine: args.includes('--allow-quarantine') });
     if (!result.ok) { error(JSON.stringify({ ok: false, problems: result.problems }, null, 2)); return 1; }
     if (args.includes('--write-manifest')) writeReports(rootDir, result.manifest, records);

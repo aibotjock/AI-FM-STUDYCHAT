@@ -20,7 +20,7 @@ Physical Android permission, initial syllables, speaker/headset/Bluetooth behavi
 
 ## Existing study tools and cost boundaries
 
-The 105-condition library, cited question bank, Board practice, Cards, Review and Progress remain available. Use [study material](STUDY_MATERIAL.md) for coverage. Do not repeat an already-passed library, model-connection, scheduling or backup test unless a related change or failure justifies it. Separate composer dictation remains browser-dependent and may use the browser vendor's service; review its text before sending. The keyboard microphone is another manual option.
+The 117-condition library, cited question bank, Board practice, Cards, Review and Progress remain available. Use [study material](STUDY_MATERIAL.md) for coverage. Do not repeat an already-passed library, model-connection, scheduling or backup test unless a related change or failure justifies it. Separate composer dictation remains browser-dependent and may use the browser vendor's service; review its text before sending. The keyboard microphone is another manual option.
 
 Each completed voice utterance adds a transcription request. An accepted generated chat turn normally uses two paid text calls, then uncached speech chunks add requests. Cancellation may still incur charges. Missing provider-reported speech/transcription usage or cost remains unknown; Ingenium's current receiver handles text generation/review metadata rather than these audio requests. There is no automatic paid retry, device-voice fallback or alternate-provider fallback. Do not repeat a passed model connection or voice preview simply to resume fetched audio.
 
@@ -48,3 +48,15 @@ Run after the private test service reports the exact new revision as deployed. O
 7. In Coach ask: “Help me reason through this fictional study topic. Ask one question at a time, let me commit, then explain the cited decisive clue.” Check conversational pacing and source links. Unsupported medical details must remain withheld. Ordinary conversation should stay natural.
 
 Report the step, exact on-screen error, selected session mode and whether refresh changes it. Include no access token, API key or identifying patient information. Real-phone geometry, focus behavior, tutor behavior and audio remain device acceptance checks; server tests alone do not verify them.
+
+## Hybrid reference-library test — October 10 update
+
+After the exact reference-library revision is deployed, refresh once to load shell-v15. Test this new scope first; existing voice, model-connection and scheduling checks need not be repeated.
+
+1. Open **Library → Guidelines & boards → External reference directory**. Search an acronym such as **AAFP**, **ADA** or **NCCN** and open its official reference link. All 75 entries are linked resources; the directory does not claim every publication is in the RAG.
+2. In its live reference finder, enter **hypertension** and tap **Find current references**. Expect official MedlinePlus topic titles and links, the submitted topic, fetch/cache time and no clinical answer. This is the first hosted NLM availability check. If it times out, record the exact error; do not assume the provider works because mocked tests passed. A publisher-specific Google link is a separate outward search, triggered only on click. Do not use real-patient details.
+3. In Coach, type **“For board study, give one cited adult hypothyroidism treatment principle. Keep it brief.”** Check that a supported reply has genuine source links and scope qualifications. New ATA, ADA, CDC/VA, NCI and NLM selections improve evidence coverage, but missing details must still be withheld.
+4. Ask **“Compare the hypertension targets supported by the cited sources. Identify which guideline and population each target applies to, and highlight any difference.”** If both positions are supported, the answer should cite each and explain the applicable context. Expand **Compare cited source context** when present. An absent recommendation is a gap, not evidence of disagreement; the app must not manufacture a comparison.
+5. Ask **“Quiz me on this condition.”** Expect an original canonical A–E question whose answer/explanation can be revealed after committing. A generated unsupported medical question must not appear. Ordinary conversation and neutral teach-back of a point already taught remain available.
+
+The bank has 566 original items overall and 558 in the U.S. practice pool. This test verifies behavior on your phone, not medical accuracy, complete ABFM coverage or commercial approval. Report the step and exact reply/error without sharing credentials.

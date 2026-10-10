@@ -25,6 +25,7 @@ test('strategic tutor instructions preserve optional learning, source limits and
     assert.match(instructions, /self-reported recall difficulty.*interpretation confusion.*next-step confusion/);
     assert.match(instructions, /provided sources support both the clue and the comparison/);
     assert.match(instructions, /supports all medical case premises and relationships; do not invent case premises/);
+    assert.match(instructions, /Offer a fresh variation only through a server-owned original question/);
     assert.match(instructions, /teach-back, then later retrieval or mixed practice as optional next steps/);
     assert.match(instructions, /do not force questions or exercises on ordinary chat/);
     assert.match(instructions, /Do not invent reasoning scores, validated competence scores or clinical-competence claims/);

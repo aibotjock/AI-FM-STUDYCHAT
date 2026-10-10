@@ -10,7 +10,7 @@ import { createAiProvider, AiProviderError } from '../server/ai-provider.js';
 import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
-import { sourceSpanSupport } from './fixtures/natural-review-v2.js';
+import { sourceSpanSupport } from './fixtures/natural-review-v3.js';
 import { INGENIUM_TELEMETRY_ENDPOINT } from '../server/ingenium-telemetry.js';
 
 // Tests use only synthetic local fetch replacements. Never send study content
@@ -30,11 +30,11 @@ const reply = (model = MODEL, content = ANSWER, overrides = {}) => ({ model, cho
 const metadataKeys = ['provider', 'requestedModel', 'returnedModel', 'endpoint', 'usage', 'estimatedCostUsd', 'latencyMs', 'pricingBasis', 'recordedAt'].sort();
 
 function naturalContent(body) {
-  const schema = body.response_format?.json_schema?.name || (body.messages.some(message => message.content.includes('NATURAL_REVIEW_DATA')) ? 'family_medicine_natural_review_v2' : body.messages.some(message => message.content.includes('NATURAL_TUTOR_CONTEXT')) ? 'family_medicine_natural_tutor' : null);
-  assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review_v2'].includes(schema), `Unexpected generated contract ${schema}`);
-  assert.ok(body.messages.some(message => message.content.includes(schema === 'family_medicine_natural_review_v2' ? 'NATURAL_REVIEW_DATA' : 'NATURAL_TUTOR_CONTEXT')));
-  return JSON.stringify(schema === 'family_medicine_natural_review_v2'
-    ? { version: 2, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: MANAGEMENT_FACT, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [sourceSpanSupport(body, 'asthma:management')] }], flags: [] }] }
+  const schema = body.response_format?.json_schema?.name || (body.messages.some(message => message.content.includes('NATURAL_REVIEW_DATA')) ? 'family_medicine_natural_review_v3' : body.messages.some(message => message.content.includes('NATURAL_TUTOR_CONTEXT')) ? 'family_medicine_natural_tutor' : null);
+  assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review_v3'].includes(schema), `Unexpected generated contract ${schema}`);
+  assert.ok(body.messages.some(message => message.content.includes(schema === 'family_medicine_natural_review_v3' ? 'NATURAL_REVIEW_DATA' : 'NATURAL_TUTOR_CONTEXT')));
+  return JSON.stringify(schema === 'family_medicine_natural_review_v3'
+    ? { version: 3, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: MANAGEMENT_FACT, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [sourceSpanSupport(body, 'asthma:management')] }], flags: [], questions: [] }] }
     : { segments: [{ id: 's1', text: MANAGEMENT_FACT, sourceChunkIds: ['asthma:management'] }] });
 }
 

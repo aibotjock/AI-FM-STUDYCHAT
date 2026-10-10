@@ -1,0 +1,2226 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-10",
+  "purpose": "Bounded commercially assessed federal clinical text excerpts supplement existing conditions; no new questions or renewal of older condition/source dates. These are study references, not clinical advice or clinician-approved commercial corpus.",
+  "conditions": [
+    {
+      "conditionId": "tuberculosis",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-active-tb-depth-20261010",
+          "title": "Treatment for Drug-Susceptible Tuberculosis Disease",
+          "organization": "Centers for Disease Control and Prevention, HHS",
+          "url": "https://www.cdc.gov/tb/hcp/treatment/tuberculosis-disease.html",
+          "kind": "official-clinical-reference",
+          "edition": "CDC clinical treatment page, April 17, 2025; reviewed against linked 2025 update",
+          "publishedDate": "2025-04-17",
+          "checkedAt": "2026-10-10",
+          "locator": "Selecting a treatment regimen; 4-month regimen; 6- to 9-month regimens; Clinical evaluation; Directly observed therapy; Post-treatment considerations.",
+          "reuse": "public-domain-text-excerpt",
+          "jurisdiction": "United States",
+          "attribution": "Source: CDC/HHS. Original agency material is available free at the linked CDC page. Reference to CDC/HHS does not imply agency or U.S. Government endorsement of this app.",
+          "derivativeNotice": "Selected agency-authored text excerpts, with only layout whitespace normalized. Selection and study labels are app editorial material; this is not a complete guideline or an agency-approved product.",
+          "limitations": "CDC-authored clinical text only. Excludes images, logos and all separately linked journal articles or third-party resources. Study reference only, not an individually selected treatment regimen.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "federal-depth-tb-selection-20261010",
+          "title": "Select the regimen for drug-susceptible pulmonary disease",
+          "text": "There are several treatment regimens for TB disease recommended for use in the United States. Treatment for drug-susceptible TB disease typically takes 4, 6, or 9 months depending on the regimen. Directly observed therapy (DOT) is the standard of care. The goal of treatment for TB disease should be to provide the safest, most tolerable and most effective therapy for the shortest period of time. Health care providers should choose the appropriate TB treatment regimen based on: Drug-susceptibility results, Coexisting medical conditions, and Potential for drug-drug interactions.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-active-tb-depth-20261010"
+          ],
+          "sourceLocator": "Overview — Selecting a treatment regimen, opening paragraph and complete selection-factor list.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-active-tb-depth-20261010",
+              "locator": "Overview — Selecting a treatment regimen, opening paragraph and complete selection-factor list.",
+              "excerpt": "There are several treatment regimens for TB disease recommended for use in the United States. Treatment for drug-susceptible TB disease typically takes 4, 6, or 9 months depending on the regimen. Directly observed therapy (DOT) is the standard of care. The goal of treatment for TB disease should be to provide the safest, most tolerable and most effective therapy for the shortest period of time. Health care providers should choose the appropriate TB treatment regimen based on: Drug-susceptibility results, Coexisting medical conditions, and Potential for drug-drug interactions.",
+              "sha256": "15e19e0754b4a5993d08cf32e85d297e6df70534b7c7ccbdce2763f52d6b938b",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "Drug-susceptible pulmonary TB; do not extend to resistant or extrapulmonary disease."
+        },
+        {
+          "id": "federal-depth-tb-four-month-20261010",
+          "title": "Four-month rifapentine–moxifloxacin regimen and eligibility",
+          "text": "The 4-month 2HPZM/2HPM regimen has an intensive phase of 2 months of isoniazid, rifapentine, pyrazinamide, and moxifloxacin, followed by a continuation phase of 2 months and 1 week of isoniazid, rifapentine, and moxifloxacin (a total of 17 weeks for treatment). The 4-month rifapentine-moxifloxacin regimen is an option for treating pulmonary TB disease caused by organisms that are not known or suspected to be drug-resistant for: People who are 12 years and older, People with a body weight at or above 40 kg, People with HIV with CD4 counts at or above 100 cells/microliter (μL), who are receiving or planning to start an antiretroviral therapy (ART) regimen that does not have known drug-drug interactions with the 2HPZM/2HPM regimen, and People who have no contraindications to this regimen.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-active-tb-depth-20261010"
+          ],
+          "sourceLocator": "4-month (2HPZM/2HPM) treatment regimen — regimen paragraph and complete Recommendations list.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-active-tb-depth-20261010",
+              "locator": "4-month (2HPZM/2HPM) treatment regimen — regimen paragraph and complete Recommendations list.",
+              "excerpt": "The 4-month 2HPZM/2HPM regimen has an intensive phase of 2 months of isoniazid, rifapentine, pyrazinamide, and moxifloxacin, followed by a continuation phase of 2 months and 1 week of isoniazid, rifapentine, and moxifloxacin (a total of 17 weeks for treatment). The 4-month rifapentine-moxifloxacin regimen is an option for treating pulmonary TB disease caused by organisms that are not known or suspected to be drug-resistant for: People who are 12 years and older, People with a body weight at or above 40 kg, People with HIV with CD4 counts at or above 100 cells/microliter (μL), who are receiving or planning to start an antiretroviral therapy (ART) regimen that does not have known drug-drug interactions with the 2HPZM/2HPM regimen, and People who have no contraindications to this regimen.",
+              "sha256": "c427a5b2e87aaec6e1a398119db9db6ff854190d87d415531d2ed21d498dd2b9",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "All listed eligibility conditions must be retained; not a pregnancy or neonatal regimen."
+        },
+        {
+          "id": "federal-depth-tb-six-nine-20261010",
+          "title": "Six-month option and nine-month exceptions",
+          "text": "CDC recommends the 6-month 2HRZE/4HR regimen as an option for treating drug-susceptible pulmonary TB disease for adults and adolescents. CDC recommends the 9-month 2HRZE/7HR regimen for the treatment of drug-susceptible pulmonary TB disease for: People with cavitary pulmonary TB disease caused by drug-susceptible organisms and whose sputum culture obtained at the time of completion of 2 months of treatment persists positive with drug-susceptible organism, People whose intensive phase of treatment did not include pyrazinamide or whose organism was identified as resistant to pyrazinamide, People with HIV who did not or are unable to receive antiretroviral therapy (ART) during TB treatment.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-active-tb-depth-20261010"
+          ],
+          "sourceLocator": "6- to 9-month (2HRZE/4HR or 2HRZE/7HR) treatment regimens — Recommendations, both complete regimen lists.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-active-tb-depth-20261010",
+              "locator": "6- to 9-month (2HRZE/4HR or 2HRZE/7HR) treatment regimens — Recommendations, both complete regimen lists.",
+              "excerpt": "CDC recommends the 6-month 2HRZE/4HR regimen as an option for treating drug-susceptible pulmonary TB disease for adults and adolescents. CDC recommends the 9-month 2HRZE/7HR regimen for the treatment of drug-susceptible pulmonary TB disease for: People with cavitary pulmonary TB disease caused by drug-susceptible organisms and whose sputum culture obtained at the time of completion of 2 months of treatment persists positive with drug-susceptible organism, People whose intensive phase of treatment did not include pyrazinamide or whose organism was identified as resistant to pyrazinamide, People with HIV who did not or are unable to receive antiretroviral therapy (ART) during TB treatment.",
+              "sha256": "f53c756d9219072fa63d4902f32a017000b4164974c44bf48f00978bc4444962",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        },
+        {
+          "id": "federal-depth-tb-monitor-20261010",
+          "title": "Monthly monitoring and poor response",
+          "text": "Patients should have clinical evaluations at least monthly to: Identify possible adverse reactions to medications, Assess adherence, and Determine treatment efficacy. Although each patient responds to treatment at a different pace, all TB signs and symptoms should gradually improve and eventually resolve. If a patient’s symptoms do not improve during the first 2 months of treatment, or if symptoms worsen after initial improvement, the patient should be evaluated for nonadherence to, or malabsorption of, the treatment regimen; development of drug resistance; or symptoms consistent with immune reconstitution.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-active-tb-depth-20261010"
+          ],
+          "sourceLocator": "Evaluation and testing considerations — Clinical evaluation, complete section.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-active-tb-depth-20261010",
+              "locator": "Evaluation and testing considerations — Clinical evaluation, complete section.",
+              "excerpt": "Patients should have clinical evaluations at least monthly to: Identify possible adverse reactions to medications, Assess adherence, and Determine treatment efficacy. Although each patient responds to treatment at a different pace, all TB signs and symptoms should gradually improve and eventually resolve. If a patient’s symptoms do not improve during the first 2 months of treatment, or if symptoms worsen after initial improvement, the patient should be evaluated for nonadherence to, or malabsorption of, the treatment regimen; development of drug resistance; or symptoms consistent with immune reconstitution.",
+              "sha256": "c23f3c306713ae40ee06f7d0faf5949a9f3f0fe794abd3eb911aab20acfe97b3",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        },
+        {
+          "id": "federal-depth-tb-dot-20261010",
+          "title": "Directly observed treatment and video alternative",
+          "text": "CDC recommends directly observed therapy (DOT) as the standard of care for TB disease treatment. During DOT, a health care worker observes (in-person or virtually) a patient ingest the medications, monitors for adverse events, and provides social support. Video DOT (vDOT) is a type of electronic DOT (eDOT). It uses a video-enabled device (e.g., smart phone, tablet, computer) for TB treatment observation. CDC recommends vDOT as an equivalent alternative to in-person DOT during TB treatment. However, in-person DOT may be a better option for patients who: Receive injectable medications, Would benefit from additional monitoring, or Are unable to use vDOT technology.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-active-tb-depth-20261010"
+          ],
+          "sourceLocator": "Adherence strategies — Directly observed therapy, complete subsection.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-active-tb-depth-20261010",
+              "locator": "Adherence strategies — Directly observed therapy, complete subsection.",
+              "excerpt": "CDC recommends directly observed therapy (DOT) as the standard of care for TB disease treatment. During DOT, a health care worker observes (in-person or virtually) a patient ingest the medications, monitors for adverse events, and provides social support. Video DOT (vDOT) is a type of electronic DOT (eDOT). It uses a video-enabled device (e.g., smart phone, tablet, computer) for TB treatment observation. CDC recommends vDOT as an equivalent alternative to in-person DOT during TB treatment. However, in-person DOT may be a better option for patients who: Receive injectable medications, Would benefit from additional monitoring, or Are unable to use vDOT technology.",
+              "sha256": "eff857f69712388695a4542c986a4b86e80177c7e6ff4e2dab39f96c617f30dc",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        },
+        {
+          "id": "federal-depth-tb-post-treatment-20261010",
+          "title": "After satisfactory completion",
+          "text": "People who have had a satisfactory response to a TB disease treatment regimen do not require routine follow up after treatment completion. People should receive documentation of their diagnosis and treatment to have available if future TB testing is required. This should include: TB blood test or TB skin test results, Chest radiograph results, Names and dosages of medication, and Duration of treatment. Remind patients about the signs and symptoms of TB disease and advise them to seek medical care if they develop any of these signs or symptoms in the future. Most people who have a positive TB test result will continue to have a positive test result. Additional TB blood tests or TB skin tests will probably not contribute to medical care, regardless of the result.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-active-tb-depth-20261010"
+          ],
+          "sourceLocator": "Post-treatment considerations, complete subsection.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-active-tb-depth-20261010",
+              "locator": "Post-treatment considerations, complete subsection.",
+              "excerpt": "People who have had a satisfactory response to a TB disease treatment regimen do not require routine follow up after treatment completion. People should receive documentation of their diagnosis and treatment to have available if future TB testing is required. This should include: TB blood test or TB skin test results, Chest radiograph results, Names and dosages of medication, and Duration of treatment. Remind patients about the signs and symptoms of TB disease and advise them to seek medical care if they develop any of these signs or symptoms in the future. Most people who have a positive TB test result will continue to have a positive test result. Additional TB blood tests or TB skin tests will probably not contribute to medical care, regardless of the result.",
+              "sha256": "fc083def8c7d96ff61bbb836c67391848a95a9b8d9e0045d24ebe13856cad9d9",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "Only satisfactory treatment response; recurrence symptoms still require assessment."
+        },
+        {
+          "id": "federal-depth-tb-regimen-components-20261010",
+          "title": "Six-to-nine-month regimen components",
+          "text": "The 6- to 9-month 2HRZE/4HR or 2HRZE/7HR TB treatment regimens consist of: Isoniazid (H), Rifampin (R) Pyrazinamide (Z), and Ethambutol (E).",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-active-tb-depth-20261010"
+          ],
+          "sourceLocator": "6- to 9-month (2HRZE/4HR or 2HRZE/7HR) treatment regimens, introductory sentence and complete drug list.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-active-tb-depth-20261010",
+              "locator": "6- to 9-month (2HRZE/4HR or 2HRZE/7HR) treatment regimens, introductory sentence and complete drug list.",
+              "excerpt": "The 6- to 9-month 2HRZE/4HR or 2HRZE/7HR TB treatment regimens consist of: Isoniazid (H), Rifampin (R) Pyrazinamide (Z), and Ethambutol (E).",
+              "sha256": "55a2c8f4674fd84a4b785f8e4b3a19b9c8cabd2e02a0be91321a590f449e3d36",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "Exact regimen duration exceptions are in the accompanying CDC recommendations; not a drug-dose table."
+        }
+      ]
+    },
+    {
+      "conditionId": "hepatitis-c",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-hcv-care-depth-20261010",
+          "title": "Clinical Care of Hepatitis C",
+          "organization": "Centers for Disease Control and Prevention, HHS",
+          "url": "https://www.cdc.gov/hepatitis-c/hcp/clinical-care/index.html",
+          "kind": "official-clinical-reference",
+          "edition": "CDC clinical care page, January 31, 2025",
+          "publishedDate": "2025-01-31",
+          "checkedAt": "2026-10-10",
+          "locator": "Key points; Treatment options; Treatment recommendations; Treatment precautions; Hepatitis B virus reactivation risk.",
+          "reuse": "public-domain-text-excerpt",
+          "jurisdiction": "United States",
+          "attribution": "Source: CDC/HHS. Original agency material is available free at the linked CDC page. Reference to CDC/HHS does not imply agency or U.S. Government endorsement of this app.",
+          "derivativeNotice": "Selected agency-authored text excerpts, with only layout whitespace normalized. Selection and study labels are app editorial material; this is not a complete guideline or an agency-approved product.",
+          "limitations": "CDC-authored care text only, excluding linked AASLD/IDSA and university materials. No named DAA dose or cirrhosis regimen is imported. The ambiguous cure-timing sentence on this page is deliberately excluded; no SVR12 timing rule is inferred from it.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "federal-depth-hcv-curative-20261010",
+          "title": "DAA treatment: cure rate and treatment length",
+          "text": "Hepatitis C can be cured in more than 95% of cases with just 8-12 weeks of well-tolerated oral-only treatment with direct-acting antiviral (DAA) agents. Curative DAA treatment is recommended for essentially everyone with hepatitis C. DAA therapies are not approved for pregnant patients and children under 3.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-hcv-care-depth-20261010"
+          ],
+          "sourceLocator": "Key points, first two bullets; Treatment precautions, first sentence.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-hcv-care-depth-20261010",
+              "locator": "Key points, first two bullets; Treatment precautions, first sentence.",
+              "excerpt": "Hepatitis C can be cured in more than 95% of cases with just 8-12 weeks of well-tolerated oral-only treatment with direct-acting antiviral (DAA) agents. Curative DAA treatment is recommended for essentially everyone with hepatitis C. DAA therapies are not approved for pregnant patients and children under 3.",
+              "sha256": "0212c7bbc15dd5df61ed99757ae173c11fc26ce65fd31053730b9e95bf07b6a7",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "General cure-rate/duration statement with pregnancy and under-three exclusions in the same retrieved section; no named DAA regimen is established."
+        },
+        {
+          "id": "federal-depth-hcv-modern-20261010",
+          "title": "Interferon–ribavirin is not the current routine approach",
+          "text": "The use of ribavirin with interferon or peginterferon is no longer recommended due to poor efficacy and high rate of adverse effects with the regimen. DAA therapy is better tolerated and more effective and has a shorter duration.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-hcv-care-depth-20261010"
+          ],
+          "sourceLocator": "Treatment options, opening paragraph.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-hcv-care-depth-20261010",
+              "locator": "Treatment options, opening paragraph.",
+              "excerpt": "The use of ribavirin with interferon or peginterferon is no longer recommended due to poor efficacy and high rate of adverse effects with the regimen. DAA therapy is better tolerated and more effective and has a shorter duration.",
+              "sha256": "602e689019cd12bc84cf2a9ae65cfbe8240cf25eb422511aed26a5ff8cf215ba",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        },
+        {
+          "id": "federal-depth-hcv-start-20261010",
+          "title": "Treat detectable RNA and preserve population exceptions",
+          "text": "Except for pregnant patients and children under 3, clinicians should treat people with detectable HCV RNA in their blood with oral DAA therapy. There is no need to wait for potential spontaneous viral resolution. Clinicians should also: Conduct a full medical evaluation for chronic liver disease. Conduct a risk assessment and testing for HBV and HIV. Vaccinate against hepatitis A and hepatitis B as recommended.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-hcv-care-depth-20261010"
+          ],
+          "sourceLocator": "Treatment recommendations, first paragraph and complete Clinicians should also list.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-hcv-care-depth-20261010",
+              "locator": "Treatment recommendations, first paragraph and complete Clinicians should also list.",
+              "excerpt": "Except for pregnant patients and children under 3, clinicians should treat people with detectable HCV RNA in their blood with oral DAA therapy. There is no need to wait for potential spontaneous viral resolution. Clinicians should also: Conduct a full medical evaluation for chronic liver disease. Conduct a risk assessment and testing for HBV and HIV. Vaccinate against hepatitis A and hepatitis B as recommended.",
+              "sha256": "fbe7c755c8fc1a768239e0b1bb9fab3cc93ab43607c4f421184ce7ced87c24da",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        },
+        {
+          "id": "federal-depth-hcv-reactivation-20261010",
+          "title": "HBV testing before HCV DAAs and monitoring",
+          "text": "Some co-infected patients receiving DAA therapy for HCV infection have reported reactivation of hepatitis B virus (HBV) infection. Therefore, clinicians should test all patients starting HCV DAA therapy for HBV infection. The Centers for Disease Control and Prevention (CDC) recommends the following tests: hepatitis B surface antigen (HBsAg) antibody to hepatitis B surface antigen (anti-HBs) total antibody to hepatitis B core antigen (anti-HBc) Clinicians should monitor people who test positive for HBsAg or for an isolated positive anti-HBc for reactivation of HBV infection while they are receiving treatment.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-hcv-care-depth-20261010"
+          ],
+          "sourceLocator": "Treatment precautions — Hepatitis B virus reactivation risk, all agency-authored paragraphs and complete test list.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-hcv-care-depth-20261010",
+              "locator": "Treatment precautions — Hepatitis B virus reactivation risk, all agency-authored paragraphs and complete test list.",
+              "excerpt": "Some co-infected patients receiving DAA therapy for HCV infection have reported reactivation of hepatitis B virus (HBV) infection. Therefore, clinicians should test all patients starting HCV DAA therapy for HBV infection. The Centers for Disease Control and Prevention (CDC) recommends the following tests: hepatitis B surface antigen (HBsAg) antibody to hepatitis B surface antigen (anti-HBs) total antibody to hepatitis B core antigen (anti-HBc) Clinicians should monitor people who test positive for HBsAg or for an isolated positive anti-HBc for reactivation of HBV infection while they are receiving treatment.",
+              "sha256": "bbaf3e3cd9fcfd07a629a263f7e3907e6646b4f29bb9c3feab99c680127eb297",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "conditionId": "hepatitis-b",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-hbv-care-depth-20261010",
+          "title": "Clinical Care of Hepatitis B",
+          "organization": "Centers for Disease Control and Prevention, HHS",
+          "url": "https://www.cdc.gov/hepatitis-b/hcp/clinical-care/index.html",
+          "kind": "official-clinical-reference",
+          "edition": "CDC clinical care page, January 31, 2025",
+          "publishedDate": "2025-01-31",
+          "checkedAt": "2026-10-10",
+          "locator": "Key points; Treatment recommendations; Postexposure prophylaxis; Pregnant patients; Helping patients stay well.",
+          "reuse": "public-domain-text-excerpt",
+          "jurisdiction": "United States",
+          "attribution": "Source: CDC/HHS. Original agency material is available free at the linked CDC page. Reference to CDC/HHS does not imply agency or U.S. Government endorsement of this app.",
+          "derivativeNotice": "Selected agency-authored text excerpts, with only layout whitespace normalized. Selection and study labels are app editorial material; this is not a complete guideline or an agency-approved product.",
+          "limitations": "CDC-authored care text only. The pregnancy HBV DNA threshold is explicitly attributed by CDC to AASLD; no AASLD document is imported. This page does not provide a complete first-line chronic-HBV prescribing algorithm, newborn timing/weight exceptions or occupational-exposure algorithm.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "federal-depth-hbv-acute-chronic-20261010",
+          "title": "Acute supportive care differs from chronic care",
+          "text": "Clinicians typically use supportive care to treat patients with acute HBV infection, depending on the patient's symptoms. Treatment for chronic hepatitis B will depend on several factors.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-hbv-care-depth-20261010"
+          ],
+          "sourceLocator": "Treatment recommendations, opening paragraph.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-hbv-care-depth-20261010",
+              "locator": "Treatment recommendations, opening paragraph.",
+              "excerpt": "Clinicians typically use supportive care to treat patients with acute HBV infection, depending on the patient's symptoms. Treatment for chronic hepatitis B will depend on several factors.",
+              "sha256": "2cf39e4ea0cad7dedf12f59ccf7d7ce8748b32c3e6487f9154865553df495d66",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        },
+        {
+          "id": "federal-depth-hbv-treatment-goal-20261010",
+          "title": "Chronic treatment and surveillance are not a cure claim",
+          "text": "Clinicians should work with patients to monitor and slow liver damage. Although treatment is not considered curative, antiviral treatment, monitoring, and liver cancer surveillance can reduce morbidity and mortality. People with chronic hepatitis B should be under the care of a clinician with expertise in managing hepatitis B.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-hbv-care-depth-20261010"
+          ],
+          "sourceLocator": "Key points, complete three-bullet list.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-hbv-care-depth-20261010",
+              "locator": "Key points, complete three-bullet list.",
+              "excerpt": "Clinicians should work with patients to monitor and slow liver damage. Although treatment is not considered curative, antiviral treatment, monitoring, and liver cancer surveillance can reduce morbidity and mortality. People with chronic hepatitis B should be under the care of a clinician with expertise in managing hepatitis B.",
+              "sha256": "8a22deda8f43420aff253e49ff92ee96a26c80e83997946941cf7579d7a7140d",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        },
+        {
+          "id": "federal-depth-hbv-pep-20261010",
+          "title": "Postexposure vaccine and conditional HBIG",
+          "text": "If a person has been exposed to HBV, clinicians should give appropriate prophylaxis as soon as possible, preferably within 24 hours, to effectively prevent infection. The mainstay of postexposure immunoprophylaxis is hepatitis B vaccine, in certain circumstances, the addition of hepatitis B immune globulin (HBIG) provides increased protection.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-hbv-care-depth-20261010"
+          ],
+          "sourceLocator": "Postexposure prophylaxis, opening paragraph.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-hbv-care-depth-20261010",
+              "locator": "Postexposure prophylaxis, opening paragraph.",
+              "excerpt": "If a person has been exposed to HBV, clinicians should give appropriate prophylaxis as soon as possible, preferably within 24 hours, to effectively prevent infection. The mainstay of postexposure immunoprophylaxis is hepatitis B vaccine, in certain circumstances, the addition of hepatitis B immune globulin (HBIG) provides increased protection.",
+              "sha256": "ba6bea37f237c619ad68cf8b9849bc128754918344fa1e1aa7572b3cad9a2118",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "Exposure/vaccine/serology-specific branches are not provided by this excerpt; do not claim HBIG for every exposure."
+        },
+        {
+          "id": "federal-depth-hbv-pregnancy-20261010",
+          "title": "Pregnancy: maternal viral load and infant protection",
+          "text": "The AASLD recommends giving pregnant patients with HBV DNA levels greater than 200,000 IU/ML antiviral therapy to reduce perinatal HBV transmission. In addition, clinicians should advise pregnant patients with hepatitis B that their newborns should receive both hepatitis B vaccine and HBIG at the time of birth.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-hbv-care-depth-20261010"
+          ],
+          "sourceLocator": "Treatment precautions — Pregnant patients, first two paragraphs.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-hbv-care-depth-20261010",
+              "locator": "Treatment precautions — Pregnant patients, first two paragraphs.",
+              "excerpt": "The AASLD recommends giving pregnant patients with HBV DNA levels greater than 200,000 IU/ML antiviral therapy to reduce perinatal HBV transmission. In addition, clinicians should advise pregnant patients with hepatitis B that their newborns should receive both hepatitis B vaccine and HBIG at the time of birth.",
+              "sha256": "9f4d39d2f463cb9b6e34afca9276e95629730cba75cbbfb3861150f55534324c",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "CDC reproduces an AASLD recommendation. No drug, maternal-start week or infant low-birth-weight schedule is inferred."
+        }
+      ]
+    },
+    {
+      "conditionId": "influenza",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "cdc-influenza-depth-20261010",
+          "title": "Influenza Antiviral Medications: Summary for Clinicians",
+          "organization": "Centers for Disease Control and Prevention, HHS",
+          "url": "https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html",
+          "kind": "official-clinical-reference",
+          "edition": "CDC clinician summary, March 10, 2026",
+          "publishedDate": "2026-03-10",
+          "checkedAt": "2026-10-10",
+          "locator": "Antiviral Drug Options; Duration of Treatment or Chemoprophylaxis; Dosing in Adult Patients with Renal Impairment.",
+          "reuse": "public-domain-text-excerpt",
+          "jurisdiction": "United States",
+          "attribution": "Source: CDC/HHS. Original agency material is available free at the linked CDC page. Reference to CDC/HHS does not imply agency or U.S. Government endorsement of this app.",
+          "derivativeNotice": "Selected agency-authored text excerpts, with only layout whitespace normalized. Selection and study labels are app editorial material; this is not a complete guideline or an agency-approved product.",
+          "limitations": "CDC-authored clinical text only. Excludes images, logos and all separately linked journal articles or third-party resources. Study reference only, not an individually selected treatment regimen.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://www.cdc.gov/other/agencymaterials.html",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "federal-depth-flu-progressive-20261010",
+          "title": "Complicated or progressive outpatient disease after two days",
+          "text": "For outpatients with complications or progressive disease >2 days after symptom onset and suspected or confirmed influenza (e.g., pneumonia, or exacerbation of underlying chronic medical conditions), initiation of antiviral treatment with oral oseltamivir is recommended as soon as possible.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-influenza-depth-20261010"
+          ],
+          "sourceLocator": "Priority Groups — Antiviral Drug Options, second bullet.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-influenza-depth-20261010",
+              "locator": "Priority Groups — Antiviral Drug Options, second bullet.",
+              "excerpt": "For outpatients with complications or progressive disease >2 days after symptom onset and suspected or confirmed influenza (e.g., pneumonia, or exacerbation of underlying chronic medical conditions), initiation of antiviral treatment with oral oseltamivir is recommended as soon as possible.",
+              "sha256": "85551fc6e238241a0cca955e1872d3f954b4c35e2fb8a28adc17cf0c3215aa0d",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        },
+        {
+          "id": "federal-depth-flu-uncomplicated-20261010",
+          "title": "Uncomplicated influenza options preserve age and contraindications",
+          "text": "For outpatients with suspected or confirmed uncomplicated influenza within two days of symptom onset, oral oseltamivir, inhaled zanamivir, intravenous peramivir, or oral baloxavir may be used for treatment, depending upon approved age groups and contraindications.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-influenza-depth-20261010"
+          ],
+          "sourceLocator": "Priority Groups — Antiviral Drug Options, third bullet, first sentence.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-influenza-depth-20261010",
+              "locator": "Priority Groups — Antiviral Drug Options, third bullet, first sentence.",
+              "excerpt": "For outpatients with suspected or confirmed uncomplicated influenza within two days of symptom onset, oral oseltamivir, inhaled zanamivir, intravenous peramivir, or oral baloxavir may be used for treatment, depending upon approved age groups and contraindications.",
+              "sha256": "094c2e6b12abff4615f9a4cab945e882766975c4e6b78fc91bc42c147446a2b2",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "The following linked trial claim is excluded. This excerpt is not a dose or pediatric eligibility table."
+        },
+        {
+          "id": "federal-depth-flu-duration-20261010",
+          "title": "Treatment duration depends on drug and severity",
+          "text": "Treatment: Recommended duration for antiviral treatment of uncomplicated influenza in outpatients is 5 days for oral oseltamivir or inhaled zanamivir. For treatment of uncomplicated influenza with intravenous peramivir or oral baloxavir, a single dose is recommended. Longer daily dosing (oral oseltamivir or intravenous peramivir) can be considered for hospitalized patients with influenza who remain severely ill after 5 days of treatment. Treatment should be started as soon as possible after symptom onset for the greatest clinical benefit.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-influenza-depth-20261010"
+          ],
+          "sourceLocator": "Duration of Treatment or Chemoprophylaxis, complete Treatment bullet and following sentence.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-influenza-depth-20261010",
+              "locator": "Duration of Treatment or Chemoprophylaxis, complete Treatment bullet and following sentence.",
+              "excerpt": "Treatment: Recommended duration for antiviral treatment of uncomplicated influenza in outpatients is 5 days for oral oseltamivir or inhaled zanamivir. For treatment of uncomplicated influenza with intravenous peramivir or oral baloxavir, a single dose is recommended. Longer daily dosing (oral oseltamivir or intravenous peramivir) can be considered for hospitalized patients with influenza who remain severely ill after 5 days of treatment. Treatment should be started as soon as possible after symptom onset for the greatest clinical benefit.",
+              "sha256": "366f62ef62c6c41394408e8387cf65553c8ae6da1ca22e35b62d61836afa0f0d",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        },
+        {
+          "id": "federal-depth-flu-prophylaxis-20261010",
+          "title": "Prophylaxis duration and institutional outbreaks",
+          "text": "Chemoprophylaxis: Recommended duration is 7 days (after last known exposure). For control of outbreaks in institutional settings (e.g., long-term care facilities for older adults and children) and hospitals, CDC recommends antiviral chemoprophylaxis of exposed residents with oral oseltamivir or inhaled zanamivir for a minimum of 2 weeks and continuing up to 1 week after the last known case was identified. Antiviral chemoprophylaxis is recommended for all residents, including those who have received influenza vaccination.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-influenza-depth-20261010"
+          ],
+          "sourceLocator": "Duration of Treatment or Chemoprophylaxis, Chemoprophylaxis bullet and first sentence of following paragraph.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-influenza-depth-20261010",
+              "locator": "Duration of Treatment or Chemoprophylaxis, Chemoprophylaxis bullet and first sentence of following paragraph.",
+              "excerpt": "Chemoprophylaxis: Recommended duration is 7 days (after last known exposure). For control of outbreaks in institutional settings (e.g., long-term care facilities for older adults and children) and hospitals, CDC recommends antiviral chemoprophylaxis of exposed residents with oral oseltamivir or inhaled zanamivir for a minimum of 2 weeks and continuing up to 1 week after the last known case was identified. Antiviral chemoprophylaxis is recommended for all residents, including those who have received influenza vaccination.",
+              "sha256": "8150a8a7927d76c5968d06204b405b40cdc45b5c809c136feb6bb3926b0bc1ab",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "Institutional-outbreak duration differs from ordinary exposure prophylaxis; linked third-party postexposure-treatment study excluded."
+        },
+        {
+          "id": "federal-depth-flu-renal-20261010",
+          "title": "Renal impairment changes selected antiviral dosing",
+          "text": "Dose adjustment of oseltamivir is recommended for patients with creatinine clearance between 10 and 60 mL/min and patients with end-stage renal disease (ESRD) undergoing hemodialysis or continuous peritoneal dialysis receiving oseltamivir for the treatment or chemoprophylaxis of influenza. Oseltamivir is not recommended for patients with ESRD not undergoing dialysis. The recommended doses are detailed in Table 3; duration of treatment and chemoprophylaxis is the same as recommended for patients with normal renal function. The dose of intravenous peramivir should be reduced for patients with baseline creatinine clearance below 50 mL/min.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "cdc-influenza-depth-20261010"
+          ],
+          "sourceLocator": "Dosing in Adult Patients with Renal Impairment, first two paragraphs.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "cdc-influenza-depth-20261010",
+              "locator": "Dosing in Adult Patients with Renal Impairment, first two paragraphs.",
+              "excerpt": "Dose adjustment of oseltamivir is recommended for patients with creatinine clearance between 10 and 60 mL/min and patients with end-stage renal disease (ESRD) undergoing hemodialysis or continuous peritoneal dialysis receiving oseltamivir for the treatment or chemoprophylaxis of influenza. Oseltamivir is not recommended for patients with ESRD not undergoing dialysis. The recommended doses are detailed in Table 3; duration of treatment and chemoprophylaxis is the same as recommended for patients with normal renal function. The dose of intravenous peramivir should be reduced for patients with baseline creatinine clearance below 50 mL/min.",
+              "sha256": "24a563ba7891c64e02c395b7a20014446210e73c0627ff70d9d5482510467ea8",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "Exact dose-adjustment table is not imported; do not invent its doses."
+        }
+      ]
+    },
+    {
+      "conditionId": "post-traumatic-stress-disorder",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "va-ptsd-depth-20261010",
+          "title": "VA/DoD Clinical Practice Guideline for Management of PTSD — Provider Summary",
+          "organization": "Department of Veterans Affairs and Department of Defense",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/MH/ptsd/VA-DOD-CPG-PTSD-Provider-Summary.pdf",
+          "kind": "clinical-guideline",
+          "edition": "June 2023; evidence through May 4, 2022",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Recommendation 15; Recommendation 18; Recommendation 20; Recommendation 32; Pharmacotherapy dosing table, prazosin warnings.",
+          "reuse": "public-domain-text-excerpt",
+          "jurisdiction": "United States",
+          "attribution": "Source: Department of Veterans Affairs and Department of Defense. The original guideline is available free at the linked agency document. Its inclusion does not imply agency or U.S. Government endorsement.",
+          "derivativeNotice": "Selected agency-authored text excerpts, with only layout whitespace normalized. Selection and study labels are app editorial material; this is not a complete guideline or an agency-approved product.",
+          "limitations": "Selected VA/DoD-authored recommendations only; no DSM criteria, screening instruments, third-party tables, media or linked journal articles. Recommendations were developed for the VA/DoD population; do not present them as universal ABFM rules or imply that their evidence search occurred in 2026.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "federal-depth-ptsd-medications-20261010",
+          "title": "VA/DoD strongly recommended medication options",
+          "text": "We recommend paroxetine, sertraline, or venlafaxine for the treatment of PTSD.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-ptsd-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 15, printed page 5 of 22; Strong for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-ptsd-depth-20261010",
+              "locator": "Recommendation 15, printed page 5 of 22; Strong for.",
+              "excerpt": "We recommend paroxetine, sertraline, or venlafaxine for the treatment of PTSD.",
+              "sha256": "4242d16fc8be0ceaa814cb898884286559c84f0d3f33375c41778aca4e597cc9",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "strong-for",
+          "scope": "VA/DoD adult PTSD recommendation; psychotherapy preference remains in existing curriculum."
+        },
+        {
+          "id": "federal-depth-ptsd-nightmares-20261010",
+          "title": "Prazosin: nightmares differ from overall PTSD",
+          "text": "We suggest prazosin for the treatment of nightmares associated with PTSD.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-ptsd-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 32, printed page 6 of 22; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-ptsd-depth-20261010",
+              "locator": "Recommendation 32, printed page 6 of 22; Weak for.",
+              "excerpt": "We suggest prazosin for the treatment of nightmares associated with PTSD.",
+              "sha256": "390c7cbb072d087834a1d86d40494d03746dee8f6844e5e66df299d2b5160fcf",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for",
+          "scope": "Nightmares associated with PTSD only; do not present as recommended treatment for overall PTSD."
+        },
+        {
+          "id": "federal-depth-ptsd-overall-prazosin-20261010",
+          "title": "VA/DoD discourages prazosin for overall PTSD treatment",
+          "text": "We suggest against divalproex, guanfacine, ketamine, prazosin, risperidone, tiagabine, or vortioxetine for the treatment of PTSD.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-ptsd-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 18, printed page 5 of 22; Weak against.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-ptsd-depth-20261010",
+              "locator": "Recommendation 18, printed page 5 of 22; Weak against.",
+              "excerpt": "We suggest against divalproex, guanfacine, ketamine, prazosin, risperidone, tiagabine, or vortioxetine for the treatment of PTSD.",
+              "sha256": "97d5569d0d10d7c360c10e5d5d5eb71429c5fd9a060ea19f52c9a6a79c2c4c40",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-against",
+          "scope": "Overall PTSD treatment differs from the nightmare-specific Recommendation 32."
+        },
+        {
+          "id": "federal-depth-ptsd-cannabis-20261010",
+          "title": "Cannabis is recommended against as PTSD treatment",
+          "text": "We recommend against cannabis or cannabis derivatives for the treatment of PTSD.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-ptsd-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 20, printed page 5 of 22; Strong against.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-ptsd-depth-20261010",
+              "locator": "Recommendation 20, printed page 5 of 22; Strong against.",
+              "excerpt": "We recommend against cannabis or cannabis derivatives for the treatment of PTSD.",
+              "sha256": "148942f9d1b66b799df696d2fdfeb99b5debcbacac91b86229cb283361e96ce7",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "strong-against"
+        },
+        {
+          "id": "federal-depth-ptsd-prazosin-risk-20261010",
+          "title": "Prazosin safety qualifiers",
+          "text": "Prazosin might cause syncope with a sudden loss of consciousness. Syncopal episodes usually occur within 30 to 90 minutes of the initial dose. Addition of a diuretic, other antihypertensive agents, or a PDE5 inhibitor might cause an additive hypotensive effect.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-ptsd-depth-20261010"
+          ],
+          "sourceLocator": "Pharmacotherapy Dosing Table — Other Agents, prazosin warnings, printed page 19 of 23.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-ptsd-depth-20261010",
+              "locator": "Pharmacotherapy Dosing Table — Other Agents, prazosin warnings, printed page 19 of 23.",
+              "excerpt": "Prazosin might cause syncope with a sudden loss of consciousness. Syncopal episodes usually occur within 30 to 90 minutes of the initial dose. Addition of a diuretic, other antihypertensive agents, or a PDE5 inhibitor might cause an additive hypotensive effect.",
+              "sha256": "0aabe6f99c6f7a16a469c9a7cdb7687a3d40ca03ee3f1ecb10516716b8b2b977",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "No titration schedule is imported; not a patient-specific prescription."
+        }
+      ]
+    },
+    {
+      "conditionId": "major-depression",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "va-mdd-depth-20261010",
+          "title": "VA/DoD Clinical Practice Guideline for the Management of Major Depressive Disorder — Provider Summary",
+          "organization": "Department of Veterans Affairs and Department of Defense",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/MH/mdd/VADODMDDCPG_ProviderSummary_Final_508_updated.pdf",
+          "kind": "clinical-guideline",
+          "edition": "February 2022; current official listing checked October 10, 2026",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Recommendations 11–13, 16, 20, 23–24; all quoted recommendation text only.",
+          "reuse": "public-domain-text-excerpt",
+          "jurisdiction": "United States",
+          "attribution": "Source: Department of Veterans Affairs and Department of Defense. The original guideline is available free at the linked agency document. Its inclusion does not imply agency or U.S. Government endorsement.",
+          "derivativeNotice": "Selected agency-authored text excerpts, with only layout whitespace normalized. Selection and study labels are app editorial material; this is not a complete guideline or an agency-approved product.",
+          "limitations": "Selected VA/DoD-authored recommendations only; no DSM criteria, screening instruments, third-party tables, media or linked journal articles. Recommendations were developed for the VA/DoD population; do not present them as universal ABFM rules or imply that their evidence search occurred in 2026.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "federal-depth-mdd-drugs-20261010",
+          "title": "Initial medication options are not rank ordered",
+          "text": "When choosing an initial pharmacotherapy, or for patients who have previously responded well to pharmacotherapy, we suggest offering one of the following (not rank ordered): · Bupropion · Mirtazapine · A serotonin-norepinephrine reuptake inhibitor · Trazodone, vilazodone, or vortioxetine · A selective serotonin reuptake inhibitor",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-mdd-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 11, printed page 3 of 26; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-mdd-depth-20261010",
+              "locator": "Recommendation 11, printed page 3 of 26; Weak for.",
+              "excerpt": "When choosing an initial pharmacotherapy, or for patients who have previously responded well to pharmacotherapy, we suggest offering one of the following (not rank ordered): · Bupropion · Mirtazapine · A serotonin-norepinephrine reuptake inhibitor · Trazodone, vilazodone, or vortioxetine · A selective serotonin reuptake inhibitor",
+              "sha256": "27b36f6bf5861401cce16d3833caeed36ef1b3809b7e7bfcb6a34348e5784ad7",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for"
+        },
+        {
+          "id": "federal-depth-mdd-notinitial-20261010",
+          "title": "Certain treatments are discouraged as initial medication",
+          "text": "When choosing an initial pharmacotherapy, we suggest against using: · Esketamine · Ketamine · Monoamine oxidase inhibitors · Nefazodone · Tricyclic antidepressants",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-mdd-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 12, printed page 3 of 26; Weak against.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-mdd-depth-20261010",
+              "locator": "Recommendation 12, printed page 3 of 26; Weak against.",
+              "excerpt": "When choosing an initial pharmacotherapy, we suggest against using: · Esketamine · Ketamine · Monoamine oxidase inhibitors · Nefazodone · Tricyclic antidepressants",
+              "sha256": "5e9f3bb81f0f5b1e254a359c7eaac1448a70e69769381dd80ccadba54ef7df69",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-against",
+          "scope": "Initial pharmacotherapy qualifier is essential; not a ban in all treatment-resistant settings."
+        },
+        {
+          "id": "federal-depth-mdd-pgtesting-20261010",
+          "title": "Pharmacogenetic selection has an evidence limit",
+          "text": "There is insufficient evidence to recommend for or against pharmacogenetic testing to help guide the selection of antidepressants.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-mdd-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 13, printed page 3 of 26; Neither for nor against.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-mdd-depth-20261010",
+              "locator": "Recommendation 13, printed page 3 of 26; Neither for nor against.",
+              "excerpt": "There is insufficient evidence to recommend for or against pharmacogenetic testing to help guide the selection of antidepressants.",
+              "sha256": "033c4244d0a10601e06c00becc3f289ac290b8c46ec260f565571119d168fc54",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "neither-for-nor-against"
+        },
+        {
+          "id": "federal-depth-mdd-nonresponse-20261010",
+          "title": "After an adequate initial medication trial",
+          "text": "For patients with MDD who have demonstrated partial or no response to an adequate trial of initial pharmacotherapy, we suggest (not rank ordered): · Switching to another antidepressant (including TCAs, MAOIs, or those in Recommendation 12) · Switching to psychotherapy · Augmenting with a psychotherapy · Augmenting with a second-generation antipsychotic",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-mdd-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 16, printed page 4 of 26; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-mdd-depth-20261010",
+              "locator": "Recommendation 16, printed page 4 of 26; Weak for.",
+              "excerpt": "For patients with MDD who have demonstrated partial or no response to an adequate trial of initial pharmacotherapy, we suggest (not rank ordered): · Switching to another antidepressant (including TCAs, MAOIs, or those in Recommendation 12) · Switching to psychotherapy · Augmenting with a psychotherapy · Augmenting with a second-generation antipsychotic",
+              "sha256": "cb7ce2a049e371d46b27c428ba1c695f24e9a81cd2c386556c18c7e5bc335980",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for",
+          "scope": "Only after an adequate trial; source does not rank a universal single next drug."
+        },
+        {
+          "id": "federal-depth-mdd-ect-20261010",
+          "title": "Severe MDD: ECT indications",
+          "text": "We recommend offering electroconvulsive therapy (ECT) with or without psychotherapy in patients with severe MDD and any of the following conditions: · Catatonia · Psychotic depression · Severe suicidality · A history of a good response to ECT · Need for rapid, definitive treatment response on either medical or psychiatric grounds · The risks associated with other treatments are greater than the risks of ECT for this specific patient (i.e., co-occurring medical conditions make ECT the safest MDD treatment alternative) · A history of a poor response or intolerable side effects to multiple antidepressants",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-mdd-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 20, printed page 4 of 26; Strong for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-mdd-depth-20261010",
+              "locator": "Recommendation 20, printed page 4 of 26; Strong for.",
+              "excerpt": "We recommend offering electroconvulsive therapy (ECT) with or without psychotherapy in patients with severe MDD and any of the following conditions: · Catatonia · Psychotic depression · Severe suicidality · A history of a good response to ECT · Need for rapid, definitive treatment response on either medical or psychiatric grounds · The risks associated with other treatments are greater than the risks of ECT for this specific patient (i.e., co-occurring medical conditions make ECT the safest MDD treatment alternative) · A history of a poor response or intolerable side effects to multiple antidepressants",
+              "sha256": "d3b3c339c3c5b4dadd88fb7fcd88821c28a883bba799b3e3e69856555962497e",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "strong-for"
+        },
+        {
+          "id": "federal-depth-mdd-perinatal-20261010",
+          "title": "Mild-to-moderate perinatal MDD and prior medication response",
+          "text": "For individuals with mild to moderate MDD who are breastfeeding or pregnant, we recommend offering an evidence-based psychotherapy as a first-line treatment (see Recommendation 7). In patients with a history of MDD prior to pregnancy who responded to antidepressant medications, and are currently stable on pharmacotherapy, weigh risk/benefit balance to both mother and fetus in treatment decisions.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-mdd-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 23, printed page 5 of 26; Strong for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-mdd-depth-20261010",
+              "locator": "Recommendation 23, printed page 5 of 26; Strong for.",
+              "excerpt": "For individuals with mild to moderate MDD who are breastfeeding or pregnant, we recommend offering an evidence-based psychotherapy as a first-line treatment (see Recommendation 7). In patients with a history of MDD prior to pregnancy who responded to antidepressant medications, and are currently stable on pharmacotherapy, weigh risk/benefit balance to both mother and fetus in treatment decisions.",
+              "sha256": "e4fe85b248224957dc497c597794825163fd15f3e6659b2ead83ddba1073c5bb",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "strong-for",
+          "scope": "Retains severity and stable-prior-pharmacotherapy qualifiers; no drug-specific fetal risk claim."
+        },
+        {
+          "id": "federal-depth-mdd-older-20261010",
+          "title": "Older adults: first-line psychotherapy preference",
+          "text": "For older adults (≥65 years) with mild to moderate MDD, we suggest offering a first-line psychotherapy (see Recommendation 7). Patient preference and the additional safety risks of pharmacotherapy should be considered when making this decision.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-mdd-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 24, printed page 5 of 26; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-mdd-depth-20261010",
+              "locator": "Recommendation 24, printed page 5 of 26; Weak for.",
+              "excerpt": "For older adults (≥65 years) with mild to moderate MDD, we suggest offering a first-line psychotherapy (see Recommendation 7). Patient preference and the additional safety risks of pharmacotherapy should be considered when making this decision.",
+              "sha256": "9ecf13c4f6aea9a680fa00db357ef679f56e6f3eafdcd208a4ca1a844546415f",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "Age at least 65 and mild-to-moderate severity; not a prohibition on antidepressants.",
+          "recommendationStrength": "weak-for"
+        }
+      ]
+    },
+    {
+      "conditionId": "chronic-insomnia",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "va-insomnia-osa-depth-20261010",
+          "title": "VA/DoD Clinical Practice Guideline for Chronic Insomnia Disorder and Obstructive Sleep Apnea — Provider Summary",
+          "organization": "Department of Veterans Affairs and Department of Defense",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/CD/insomnia/I-OSA-CPG_2025-Provider-Summary_final_20250422.pdf",
+          "kind": "clinical-guideline",
+          "edition": "January 2025; provider summary filename dated April 22, 2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Recommendations 6, 8–11, 18–21, 23; Module B footnote b; Sidebar 4; Sidebar 9.",
+          "reuse": "public-domain-text-excerpt",
+          "jurisdiction": "United States",
+          "attribution": "Source: Department of Veterans Affairs and Department of Defense. The original guideline is available free at the linked agency document. Its inclusion does not imply agency or U.S. Government endorsement.",
+          "derivativeNotice": "Selected agency-authored text excerpts, with only layout whitespace normalized. Selection and study labels are app editorial material; this is not a complete guideline or an agency-approved product.",
+          "limitations": "Selected VA/DoD-authored recommendations only; no DSM criteria, screening instruments, third-party tables, media or linked journal articles. Recommendations were developed for the VA/DoD population; do not present them as universal ABFM rules or imply that their evidence search occurred in 2026.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "federal-depth-insomnia-bbti-20261010",
+          "title": "Brief behavioral therapy is a conditional option",
+          "text": "For treatment of chronic insomnia disorder, we suggest treatment with BBT-I.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 6, printed page 2 of 27; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Recommendation 6, printed page 2 of 27; Weak for.",
+              "excerpt": "For treatment of chronic insomnia disorder, we suggest treatment with BBT-I.",
+              "sha256": "1d902942f3d65d65c8fb42596d9631a5c1599d8226d065b6d5f45fcca035eecf",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for",
+          "scope": "BBT-I is brief behavioral therapy for insomnia; guideline says it is not equivalent to CBT-I."
+        },
+        {
+          "id": "federal-depth-insomnia-firstline-20261010",
+          "title": "CBT-I versus medication as first line",
+          "text": "For treatment of chronic insomnia disorder, we suggest CBT-I over pharmacotherapy as first-line treatment.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 8, printed page 2 of 27; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Recommendation 8, printed page 2 of 27; Weak for.",
+              "excerpt": "For treatment of chronic insomnia disorder, we suggest CBT-I over pharmacotherapy as first-line treatment.",
+              "sha256": "801dce92efa1d36a0464efd8c90eb68e7a34389016a97b992b42e52b59132fc2",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for"
+        },
+        {
+          "id": "federal-depth-insomnia-options-20261010",
+          "title": "Medication options when a course is offered",
+          "text": "For treatment of chronic insomnia disorder in patients who are offered a course of pharmacotherapy, we suggest the use of one of the following agents: • Daridorexant • Doxepin • Eszopiclone • Lemborexant • Suvorexant • Zaleplon • Zolpidem",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 9, printed page 2 of 27; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Recommendation 9, printed page 2 of 27; Weak for.",
+              "excerpt": "For treatment of chronic insomnia disorder in patients who are offered a course of pharmacotherapy, we suggest the use of one of the following agents: • Daridorexant • Doxepin • Eszopiclone • Lemborexant • Suvorexant • Zaleplon • Zolpidem",
+              "sha256": "a27bb61567d3e6eece19008b69f4f135546ab31f39314b9e218e4acdaf6248b5",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for",
+          "scope": "Conditional medication-course option; does not establish dose or suitability in a specific patient."
+        },
+        {
+          "id": "federal-depth-insomnia-avoid-20261010",
+          "title": "Medication classes suggested against",
+          "text": "For treatment of chronic insomnia disorder in patients who are offered a course of pharmacotherapy, we suggest against the use of: • Antipsychotic drugs • Benzodiazepines • Diphenhydramine • Trazodone",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 10, printed page 3 of 27; Weak against.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Recommendation 10, printed page 3 of 27; Weak against.",
+              "excerpt": "For treatment of chronic insomnia disorder in patients who are offered a course of pharmacotherapy, we suggest against the use of: • Antipsychotic drugs • Benzodiazepines • Diphenhydramine • Trazodone",
+              "sha256": "547ab11e5e01dc79781dcc4a0a3295ebadaf61b3a75a9e0ced1fc89bf616deb9",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-against",
+          "scope": "Chronic-insomnia indication only; trazodone for MDD is a different recommendation."
+        },
+        {
+          "id": "federal-depth-insomnia-ramelteon-20261010",
+          "title": "Ramelteon evidence limit",
+          "text": "For treatment of chronic insomnia disorder in patients who are offered a course of pharmacotherapy, there is insufficient evidence to recommend for or against the use of ramelteon.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 11, printed page 3 of 27; Neither for nor against.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Recommendation 11, printed page 3 of 27; Neither for nor against.",
+              "excerpt": "For treatment of chronic insomnia disorder in patients who are offered a course of pharmacotherapy, there is insufficient evidence to recommend for or against the use of ramelteon.",
+              "sha256": "71e659572781ac182fb8c249adb2bcff12053b16f9dd51cf3c3f5f6d36644152",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "neither-for-nor-against"
+        },
+        {
+          "id": "federal-depth-insomnia-behavior-compare-20261010",
+          "title": "CBT-I and BBT-I are not equivalent",
+          "text": "CBT-I and BBT-I are not equivalent, and there is more robust evidence for CBT-I. While this algorithm uses CBT-I and BBT-I similarly, providers referring patients for these treatments should consider availability of the treatment, the complexity and comorbidities of the patient, and the training of the provider.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Module B algorithm, footnote b, printed page 9 of 27.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Module B algorithm, footnote b, printed page 9 of 27.",
+              "excerpt": "CBT-I and BBT-I are not equivalent, and there is more robust evidence for CBT-I. While this algorithm uses CBT-I and BBT-I similarly, providers referring patients for these treatments should consider availability of the treatment, the complexity and comorbidities of the patient, and the training of the provider.",
+              "sha256": "546c0afe8a10f0b699ead8b664bc4e6aa5859d65992d8af5e930573964a6e9eb",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        },
+        {
+          "id": "federal-depth-insomnia-before-medicine-20261010",
+          "title": "Assess risks before short-term medication",
+          "text": "Before starting short-term pharmacotherapy, review sleep history, reproductive status, and evaluate contraindications for pharmacotherapy: • Evaluate for other sleep disorders (e.g., apnea, NREM parasomnias), daytime sleepiness, respiratory impairment, cognitive impairment, substance abuse history, and medication interactions",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Sidebar 4, opening sentence and complete contraindication-evaluation bullet, printed page 11 of 27.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Sidebar 4, opening sentence and complete contraindication-evaluation bullet, printed page 11 of 27.",
+              "excerpt": "Before starting short-term pharmacotherapy, review sleep history, reproductive status, and evaluate contraindications for pharmacotherapy: • Evaluate for other sleep disorders (e.g., apnea, NREM parasomnias), daytime sleepiness, respiratory impairment, cognitive impairment, substance abuse history, and medication interactions",
+              "sha256": "2f1499550ed75c2588ac249be06553b2cd5f617b814b06f8ecf8c4a9ef9aaacb",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        },
+        {
+          "id": "federal-depth-insomnia-nonresponse-20261010",
+          "title": "Specialist assessment for pharmacotherapy nonresponse",
+          "text": "Consider sleep specialist referral in patients who do not respond to pharmacotherapy.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Sidebar 4, final sentence, printed page 11 of 27.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Sidebar 4, final sentence, printed page 11 of 27.",
+              "excerpt": "Consider sleep specialist referral in patients who do not respond to pharmacotherapy.",
+              "sha256": "5ff17ecf671532da1e2f18e3a73c2abe7aea49b2291c0fd7442ccf011e1b04d2",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "conditionId": "obstructive-sleep-apnea",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "va-insomnia-osa-depth-20261010",
+          "title": "VA/DoD Clinical Practice Guideline for Chronic Insomnia Disorder and Obstructive Sleep Apnea — Provider Summary",
+          "organization": "Department of Veterans Affairs and Department of Defense",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/CD/insomnia/I-OSA-CPG_2025-Provider-Summary_final_20250422.pdf",
+          "kind": "clinical-guideline",
+          "edition": "January 2025; provider summary filename dated April 22, 2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Recommendations 6, 8–11, 18–21, 23; Module B footnote b; Sidebar 4; Sidebar 9.",
+          "reuse": "public-domain-text-excerpt",
+          "jurisdiction": "United States",
+          "attribution": "Source: Department of Veterans Affairs and Department of Defense. The original guideline is available free at the linked agency document. Its inclusion does not imply agency or U.S. Government endorsement.",
+          "derivativeNotice": "Selected agency-authored text excerpts, with only layout whitespace normalized. Selection and study labels are app editorial material; this is not a complete guideline or an agency-approved product.",
+          "limitations": "Selected VA/DoD-authored recommendations only; no DSM criteria, screening instruments, third-party tables, media or linked journal articles. Recommendations were developed for the VA/DoD population; do not present them as universal ABFM rules or imply that their evidence search occurred in 2026.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "federal-depth-osa-mad-pap-20261010",
+          "title": "Mild-to-moderate OSA: mandibular device or PAP",
+          "text": "For treatment of mild to moderate obstructive sleep apnea (Event Index <30 per hour), we suggest either mandibular advancement devices or positive airway pressure as first line therapy options.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 18, printed page 4 of 27; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Recommendation 18, printed page 4 of 27; Weak for.",
+              "excerpt": "For treatment of mild to moderate obstructive sleep apnea (Event Index <30 per hour), we suggest either mandibular advancement devices or positive airway pressure as first line therapy options.",
+              "sha256": "f24dde1e410fbc232c94ec20d8c314228bdded7a94295b88e6c0f9d7e81cf489",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for",
+          "scope": "Established OSA diagnosis with event index below 30/hour; not an indication to treat every low-index result."
+        },
+        {
+          "id": "federal-depth-osa-auto-pap-20261010",
+          "title": "New OSA: auto-titrating PAP preference",
+          "text": "For treatment of newly diagnosed obstructive sleep apnea, we suggest initiating auto-titrating over fixed continuous positive airway pressure to facilitate usage.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 19, printed page 4 of 27; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Recommendation 19, printed page 4 of 27; Weak for.",
+              "excerpt": "For treatment of newly diagnosed obstructive sleep apnea, we suggest initiating auto-titrating over fixed continuous positive airway pressure to facilitate usage.",
+              "sha256": "6d2dcd4603e4c1a3a5aef06b148084ed35e8ecf995ff04d243d80dd7bb4ed282",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for"
+        },
+        {
+          "id": "federal-depth-osa-weight-20261010",
+          "title": "Weight management is combined with other OSA therapy",
+          "text": "For treatment of obstructive sleep apnea in patients with overweight or obesity, we suggest evidence-based weight management in combination with other treatments for obstructive sleep apnea. (See VA/DOD CPG on Management of Overweight and Obesity)",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 20, printed page 4 of 27; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Recommendation 20, printed page 4 of 27; Weak for.",
+              "excerpt": "For treatment of obstructive sleep apnea in patients with overweight or obesity, we suggest evidence-based weight management in combination with other treatments for obstructive sleep apnea. (See VA/DOD CPG on Management of Overweight and Obesity)",
+              "sha256": "be63ab151de46da74a380ee9108efb40fe8956072218bfdd78a3893b2467e031",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for"
+        },
+        {
+          "id": "federal-depth-osa-positional-20261010",
+          "title": "Positional OSA",
+          "text": "For treatment of positional obstructive sleep apnea, we suggest positional therapy.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 21, printed page 4 of 27; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Recommendation 21, printed page 4 of 27; Weak for.",
+              "excerpt": "For treatment of positional obstructive sleep apnea, we suggest positional therapy.",
+              "sha256": "3d452ad0328dc2688c75e49e3ff996c477d12bcec543113d559485fbf30140d7",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for"
+        },
+        {
+          "id": "federal-depth-osa-oxygen-20261010",
+          "title": "Oxygen alone is discouraged when recommended therapies are intolerable",
+          "text": "For treatment of obstructive sleep apnea in patients who cannot tolerate other recommended therapies, we suggest against oxygen therapy as a standalone treatment.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 23, printed page 4 of 27; Weak against.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Recommendation 23, printed page 4 of 27; Weak against.",
+              "excerpt": "For treatment of obstructive sleep apnea in patients who cannot tolerate other recommended therapies, we suggest against oxygen therapy as a standalone treatment.",
+              "sha256": "6da6f7ba174bd54b8cd63e1211704f0be6f2825a84bcf5d4021c388689291923",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-against"
+        },
+        {
+          "id": "federal-depth-osa-adoption-20261010",
+          "title": "Support PAP adoption and use",
+          "text": "Offer educational, behavioral therapy, and supportive interventions to improve PAP adoption and use",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Sidebar 9, item 3, printed page 14 of 27.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Sidebar 9, item 3, printed page 14 of 27.",
+              "excerpt": "Offer educational, behavioral therapy, and supportive interventions to improve PAP adoption and use",
+              "sha256": "27985b521c2c96bcf28263ec7642d4bff996e983df596a4f48816f818969d33e",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "Only the general support statement is imported; medication-assisted adoption and its dosing are excluded."
+        },
+        {
+          "id": "federal-depth-osa-follow-up-20261010",
+          "title": "Persistent symptoms or nonuse need sleep-specialist follow-up",
+          "text": "Refer patients for follow up to a sleep medicine specialist: • Who do not adopt/use PAP and/or MAD therapy • With persistent symptoms despite adequate therapy",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-insomnia-osa-depth-20261010"
+          ],
+          "sourceLocator": "Sidebar 9, complete item 5, printed page 14 of 27.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-insomnia-osa-depth-20261010",
+              "locator": "Sidebar 9, complete item 5, printed page 14 of 27.",
+              "excerpt": "Refer patients for follow up to a sleep medicine specialist: • Who do not adopt/use PAP and/or MAD therapy • With persistent symptoms despite adequate therapy",
+              "sha256": "1b11faefe07cdf82ac0f937f310d4520d5e0b145e9aedba31b3a534ac06f6202",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "conditionId": "alcohol-use-disorder",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "va-sud-depth-20261010",
+          "title": "VA/DoD Clinical Practice Guideline for the Management of Substance Use Disorders — Provider Summary",
+          "organization": "Department of Veterans Affairs and Department of Defense",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/MH/sud/VADODSUDCPGProviderSummary.pdf",
+          "kind": "clinical-guideline",
+          "edition": "August 2021; evidence through June 30, 2020",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Recommendations 5–6, 9, 12–15, 17, 19; Table 4, off-label footnote.",
+          "reuse": "public-domain-text-excerpt",
+          "jurisdiction": "United States",
+          "attribution": "Source: Department of Veterans Affairs and Department of Defense. The original guideline is available free at the linked agency document. Its inclusion does not imply agency or U.S. Government endorsement.",
+          "derivativeNotice": "Selected agency-authored text excerpts, with only layout whitespace normalized. Selection and study labels are app editorial material; this is not a complete guideline or an agency-approved product.",
+          "limitations": "Selected VA/DoD-authored recommendations only; no DSM criteria, screening instruments, third-party tables, media or linked journal articles. Recommendations were developed for the VA/DoD population; do not present them as universal ABFM rules or imply that their evidence search occurred in 2026.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "federal-depth-aud-acamprosate-20261010",
+          "title": "Acamprosate or disulfiram: conditional alternatives",
+          "text": "For patients with moderate-severe alcohol use disorder, we suggest offering one of the following medications: • Acamprosate • Disulfiram",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-sud-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 13, printed page 3 of 37; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-sud-depth-20261010",
+              "locator": "Recommendation 13, printed page 3 of 37; Weak for.",
+              "excerpt": "For patients with moderate-severe alcohol use disorder, we suggest offering one of the following medications: • Acamprosate • Disulfiram",
+              "sha256": "0cc79e2f4ec4c5c3108fa93daa73806f39823b169d210a6d5413fe29bf7db9b6",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for"
+        },
+        {
+          "id": "federal-depth-aud-gabapentin-20261010",
+          "title": "Gabapentin when first-line medication cannot work",
+          "text": "For patients with moderate-severe alcohol use disorder for whom first-line pharmacotherapy is contraindicated or ineffective, we suggest offering gabapentin.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-sud-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 14, printed page 3 of 37; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-sud-depth-20261010",
+              "locator": "Recommendation 14, printed page 3 of 37; Weak for.",
+              "excerpt": "For patients with moderate-severe alcohol use disorder for whom first-line pharmacotherapy is contraindicated or ineffective, we suggest offering gabapentin.",
+              "sha256": "59cbfd83f93d9ccfbf7a287e6aefe01d1557863dc3811daeed4161117413dca8",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for"
+        },
+        {
+          "id": "federal-depth-aud-offlabel-20261010",
+          "title": "Separate guideline support from FDA indication",
+          "text": "Topiramate and gabapentin are not FDA labeled for treatment of AUD.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-sud-depth-20261010"
+          ],
+          "sourceLocator": "Table 4, footnote b, printed page 17 of 37.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-sud-depth-20261010",
+              "locator": "Table 4, footnote b, printed page 17 of 37.",
+              "excerpt": "Topiramate and gabapentin are not FDA labeled for treatment of AUD.",
+              "sha256": "447099bbe4b0cf38d86beb270641f7defa70f468e9fa91fb3f47723e2d01c999",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "Guideline-supported use and FDA-approved indication are different; no other labeling assertion is inferred."
+        },
+        {
+          "id": "federal-depth-aud-psychotherapy-20261010",
+          "title": "Psychosocial interventions preserve preference and availability",
+          "text": "For patients with alcohol use disorder, we suggest one or more of the following interventions, considering patient preference and availability: • Behavioral couples therapy • Cognitive behavioral therapy • Community reinforcement approach • Motivational enhancement therapy • 12-step facilitation",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-sud-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 15, printed page 4 of 37; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-sud-depth-20261010",
+              "locator": "Recommendation 15, printed page 4 of 37; Weak for.",
+              "excerpt": "For patients with alcohol use disorder, we suggest one or more of the following interventions, considering patient preference and availability: • Behavioral couples therapy • Cognitive behavioral therapy • Community reinforcement approach • Motivational enhancement therapy • 12-step facilitation",
+              "sha256": "f0f6dbd12bcaf3aef30208dbfe7c356cbfc0b68a5e050fd23c73a37d78169b0e",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for"
+        },
+        {
+          "id": "federal-depth-aud-withdrawal-alternative-20261010",
+          "title": "Mild-to-moderate withdrawal when benzodiazepine risk is higher",
+          "text": "For managing mild-moderate alcohol withdrawal in patients for whom risks of benzodiazepines outweigh benefits (e.g., inadequate monitoring available, abuse liability, or allergy/adverse reactions), we suggest considering carbamazepine, gabapentin, or valproic acid as an alternative.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-sud-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 6, printed page 2 of 37; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-sud-depth-20261010",
+              "locator": "Recommendation 6, printed page 2 of 37; Weak for.",
+              "excerpt": "For managing mild-moderate alcohol withdrawal in patients for whom risks of benzodiazepines outweigh benefits (e.g., inadequate monitoring available, abuse liability, or allergy/adverse reactions), we suggest considering carbamazepine, gabapentin, or valproic acid as an alternative.",
+              "sha256": "3e0394e356fb0b5eb6a905bc71a106ba6af28492669fca9791faec308afafcc1",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for",
+          "scope": "Mild–moderate withdrawal only; do not substitute this for monitored benzodiazepines in severe withdrawal."
+        }
+      ]
+    },
+    {
+      "conditionId": "opioid-use-disorder",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "va-sud-depth-20261010",
+          "title": "VA/DoD Clinical Practice Guideline for the Management of Substance Use Disorders — Provider Summary",
+          "organization": "Department of Veterans Affairs and Department of Defense",
+          "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/MH/sud/VADODSUDCPGProviderSummary.pdf",
+          "kind": "clinical-guideline",
+          "edition": "August 2021; evidence through June 30, 2020",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Recommendations 5–6, 9, 12–15, 17, 19; Table 4, off-label footnote.",
+          "reuse": "public-domain-text-excerpt",
+          "jurisdiction": "United States",
+          "attribution": "Source: Department of Veterans Affairs and Department of Defense. The original guideline is available free at the linked agency document. Its inclusion does not imply agency or U.S. Government endorsement.",
+          "derivativeNotice": "Selected agency-authored text excerpts, with only layout whitespace normalized. Selection and study labels are app editorial material; this is not a complete guideline or an agency-approved product.",
+          "limitations": "Selected VA/DoD-authored recommendations only; no DSM criteria, screening instruments, third-party tables, media or linked journal articles. Recommendations were developed for the VA/DoD population; do not present them as universal ABFM rules or imply that their evidence search occurred in 2026.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "federal-depth-oud-naltrexone-20261010",
+          "title": "Extended-release injection has a conditional recommendation",
+          "text": "For patients with opioid use disorder, we suggest offering extended-release naltrexone (IM).",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-sud-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 17, printed page 4 of 37; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-sud-depth-20261010",
+              "locator": "Recommendation 17, printed page 4 of 37; Weak for.",
+              "excerpt": "For patients with opioid use disorder, we suggest offering extended-release naltrexone (IM).",
+              "sha256": "9e4bc337b95ad65033e7eff782df74c7565cdc6b9dd28aa3f1f94579daa4fc50",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for",
+          "scope": "Not an induction/timing protocol; opioid dependence and recent use require separate assessment."
+        },
+        {
+          "id": "federal-depth-oud-oral-naltrexone-20261010",
+          "title": "Oral naltrexone is a separate evidence statement",
+          "text": "There is insufficient evidence to recommend for or against oral naltrexone for the treatment of opioid use disorder.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-sud-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 19, printed page 4 of 37; Neither for nor against.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-sud-depth-20261010",
+              "locator": "Recommendation 19, printed page 4 of 37; Neither for nor against.",
+              "excerpt": "There is insufficient evidence to recommend for or against oral naltrexone for the treatment of opioid use disorder.",
+              "sha256": "d1fb716a0d1bf589a184bbf531a36c08baf5dfded243a81ec47c4825b491d93a",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "neither-for-nor-against"
+        },
+        {
+          "id": "federal-depth-oud-withdrawal-secondline-20261010",
+          "title": "Withdrawal-only second-line agents have a narrow role",
+          "text": "For patients with opioid use disorder for whom withdrawal management is indicated and for whom methadone and buprenorphine are contraindicated, unacceptable, or unavailable, we suggest offering clonidine or lofexidine as a second-line agent for opioid withdrawal management (see Recommendation 17).",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-sud-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 9, printed page 3 of 37; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-sud-depth-20261010",
+              "locator": "Recommendation 9, printed page 3 of 37; Weak for.",
+              "excerpt": "For patients with opioid use disorder for whom withdrawal management is indicated and for whom methadone and buprenorphine are contraindicated, unacceptable, or unavailable, we suggest offering clonidine or lofexidine as a second-line agent for opioid withdrawal management (see Recommendation 17).",
+              "sha256": "35ead849810c305a5e8c85bddfe49454bd949dbbdcaed6d3b4e14943ef441af9",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for",
+          "scope": "Second-line withdrawal management, not maintenance OUD treatment or proof that relapse protection is supplied."
+        }
+      ]
+    },
+    {
+      "conditionId": "type-2-diabetes",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "va-dm-depth-20261010",
+          "title": "VA/DoD Clinical Practice Guideline for the Management of Type 2 Diabetes Mellitus — Provider Summary",
+          "organization": "Department of Veterans Affairs and Department of Defense",
+          "url": "https://www.healthquality.va.gov/guidelines/CD/diabetes/VADOD-Diabetes-CPG-Provider-Summary_final_508.pdf",
+          "kind": "clinical-guideline",
+          "edition": "May 2023; current official listing checked October 10, 2026",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Recommendations 9–11, 19, 21–25; quoted recommendation text only.",
+          "reuse": "public-domain-text-excerpt",
+          "jurisdiction": "United States",
+          "attribution": "Source: Department of Veterans Affairs and Department of Defense. The original guideline is available free at the linked agency document. Its inclusion does not imply agency or U.S. Government endorsement.",
+          "derivativeNotice": "Selected agency-authored text excerpts, with only layout whitespace normalized. Selection and study labels are app editorial material; this is not a complete guideline or an agency-approved product.",
+          "limitations": "VA/DoD adult T2DM recommendations, with population-specific HbA1c targets that differ from other organizations. No third-party diagnostic tables, drug labeling table, disease-screening instrument or full-text references imported. No universal ABFM numeric target is established.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "federal-depth-dm-individual-target-20261010",
+          "title": "Individualize the VA/DoD HbA1c target",
+          "text": "We suggest setting an individualized HbA1c target range based on the clinician’s appraisal of the risk benefit ratio, patient characteristics, presence or absence of type 2 diabetes mellitus complications, comorbidities, and life expectancy.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-dm-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 9, printed page 14 of 31; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-dm-depth-20261010",
+              "locator": "Recommendation 9, printed page 14 of 31; Weak for.",
+              "excerpt": "We suggest setting an individualized HbA1c target range based on the clinician’s appraisal of the risk benefit ratio, patient characteristics, presence or absence of type 2 diabetes mellitus complications, comorbidities, and life expectancy.",
+              "sha256": "8054200fa95627d82e3217ccda677683b8531982d731fff5fc48a8fa2e248529",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for"
+        },
+        {
+          "id": "federal-depth-dm-va-range-20261010",
+          "title": "VA/DoD population-specific usual target range",
+          "text": "We suggest an HbA1c range of 7.0–8.5% for most patients, if it can be safely achieved.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-dm-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 10, printed page 14 of 31; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-dm-depth-20261010",
+              "locator": "Recommendation 10, printed page 14 of 31; Weak for.",
+              "excerpt": "We suggest an HbA1c range of 7.0–8.5% for most patients, if it can be safely achieved.",
+              "sha256": "97dbe1b3689f3c0eb28a0e8380fffb6cf3b3596fde58d4f1c8fcc8a7b776b92d",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for",
+          "scope": "VA/DoD 2023 target, not a claim that all guideline organizations or ABFM mandate this range."
+        },
+        {
+          "id": "federal-depth-dm-cgm-20261010",
+          "title": "Insulin treatment and unmet glycemic goals",
+          "text": "In insulin-treated adults with type 2 diabetes mellitus who are not achieving glycemic goals, we suggest real-time continuous glucose monitoring to decrease hypoglycemia and improve HbA1c.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-dm-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 11, printed page 14 of 31; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-dm-depth-20261010",
+              "locator": "Recommendation 11, printed page 14 of 31; Weak for.",
+              "excerpt": "In insulin-treated adults with type 2 diabetes mellitus who are not achieving glycemic goals, we suggest real-time continuous glucose monitoring to decrease hypoglycemia and improve HbA1c.",
+              "sha256": "3959fe79afe99271874bac47aeffd2b5bee2955cda60eb2a61b9c4d11adf58f3",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for"
+        },
+        {
+          "id": "federal-depth-dm-ascvd-20261010",
+          "title": "ASCVD favors agents with proven cardiovascular benefit",
+          "text": "For adults with type 2 diabetes mellitus with atherosclerotic cardiovascular disease, we recommend glucagon-like peptide-1 receptor agonists or sodium-glucose cotransporter-2 inhibitors with proven cardiovascular benefits to decrease the risk of major adverse cardiovascular events.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-dm-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 19, printed page 15 of 31; Strong for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-dm-depth-20261010",
+              "locator": "Recommendation 19, printed page 15 of 31; Strong for.",
+              "excerpt": "For adults with type 2 diabetes mellitus with atherosclerotic cardiovascular disease, we recommend glucagon-like peptide-1 receptor agonists or sodium-glucose cotransporter-2 inhibitors with proven cardiovascular benefits to decrease the risk of major adverse cardiovascular events.",
+              "sha256": "827d6055a5fdb12b08b725a8b20d953b546934fd154b56dc8ca4c31fe4136d75",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "strong-for"
+        },
+        {
+          "id": "federal-depth-dm-hf-20261010",
+          "title": "Heart failure favors an SGLT2 inhibitor",
+          "text": "For adults with type 2 diabetes mellitus and heart failure, we recommend a sodium-glucose cotransporter-2 inhibitor to prevent hospital admissions for heart failure.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-dm-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 21, printed page 15 of 31; Strong for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-dm-depth-20261010",
+              "locator": "Recommendation 21, printed page 15 of 31; Strong for.",
+              "excerpt": "For adults with type 2 diabetes mellitus and heart failure, we recommend a sodium-glucose cotransporter-2 inhibitor to prevent hospital admissions for heart failure.",
+              "sha256": "934e3bed14067cc189ea8dba96b2b02160ce4985dd8bad571fc5a3d53c112f24",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "strong-for"
+        },
+        {
+          "id": "federal-depth-dm-ckd-20261010",
+          "title": "CKD: renal protection and alternative when unsuitable",
+          "text": "For adults with type 2 diabetes mellitus and chronic kidney disease, we recommend sodium-glucose cotransporter-2 inhibitors with proven renal protection to improve renal outcomes. For adults with type 2 diabetes mellitus and chronic kidney disease who are not good candidates for a sodium-glucose cotransporter-2 inhibitor, we recommend a glucagon-like peptide-1 receptor agonist with proven renal protection to improve macroalbuminuria.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-dm-depth-20261010"
+          ],
+          "sourceLocator": "Recommendations 22–23, printed pages 15–16 of 31; both Strong for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-dm-depth-20261010",
+              "locator": "Recommendations 22–23, printed pages 15–16 of 31; both Strong for.",
+              "excerpt": "For adults with type 2 diabetes mellitus and chronic kidney disease, we recommend sodium-glucose cotransporter-2 inhibitors with proven renal protection to improve renal outcomes. For adults with type 2 diabetes mellitus and chronic kidney disease who are not good candidates for a sodium-glucose cotransporter-2 inhibitor, we recommend a glucagon-like peptide-1 receptor agonist with proven renal protection to improve macroalbuminuria.",
+              "sha256": "8d03fedc4f44f36b47f27198329c93b46be19f8dd375db503802b8f15e6af64b",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "strong-for",
+          "scope": "Requires proven renal protection and suitability; no eGFR-specific dose threshold is inferred."
+        },
+        {
+          "id": "federal-depth-dm-target-independent-20261010",
+          "title": "Cardiorenal therapy can matter even at the glycemic goal",
+          "text": "In adults with type 2 diabetes mellitus who have cardiovascular disease or renal disease, we suggest that the addition of a sodium-glucose cotransporter-2 inhibitor or glucagon-like peptide-1 receptor agonist be considered, even if the patient has already achieved their individualized target range for glycemic control.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-dm-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 24, printed page 16 of 31; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-dm-depth-20261010",
+              "locator": "Recommendation 24, printed page 16 of 31; Weak for.",
+              "excerpt": "In adults with type 2 diabetes mellitus who have cardiovascular disease or renal disease, we suggest that the addition of a sodium-glucose cotransporter-2 inhibitor or glucagon-like peptide-1 receptor agonist be considered, even if the patient has already achieved their individualized target range for glycemic control.",
+              "sha256": "875e523e74c966afb55a3aa94d1631bfc62587fe755e792dcdf7d20bcb140e67",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for"
+        },
+        {
+          "id": "federal-depth-dm-older-hypoglycemia-20261010",
+          "title": "Older adults and avoidable hypoglycemia risk",
+          "text": "In adults with type 2 diabetes mellitus, especially those 65 years and older, we suggest prioritizing drug classes other than insulin, sulfonylureas, or meglitinides to minimize the risk of hypoglycemia, if glycemic control can be achieved with other treatments.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-dm-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 25, printed page 16 of 31; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-dm-depth-20261010",
+              "locator": "Recommendation 25, printed page 16 of 31; Weak for.",
+              "excerpt": "In adults with type 2 diabetes mellitus, especially those 65 years and older, we suggest prioritizing drug classes other than insulin, sulfonylureas, or meglitinides to minimize the risk of hypoglycemia, if glycemic control can be achieved with other treatments.",
+              "sha256": "19c7ad7ddd182216b34d29fb60da56620363cfa2e6fbd3ce51360f4a59726817",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for"
+        }
+      ]
+    },
+    {
+      "conditionId": "hypertension",
+      "review": {
+        "kind": "automated-source-check",
+        "humanReviewed": false,
+        "checkedAt": "2026-10-10",
+        "expiresAt": "2026-11-09"
+      },
+      "sources": [
+        {
+          "id": "va-htn2026-depth-20261010",
+          "title": "VA/DoD Clinical Practice Guideline for Diagnosis and Treatment of Hypertension in Primary Care — Provider Summary",
+          "organization": "Department of Veterans Affairs and Department of Defense",
+          "url": "https://healthquality.va.gov/HEALTHQUALITY/guidelines/CD/htn/HTN-CPG_2026-Provider-Summary_final_20260824.pdf",
+          "kind": "clinical-guideline",
+          "edition": "August 2026; evidence through November 12, 2025",
+          "publishedDate": null,
+          "checkedAt": "2026-10-10",
+          "locator": "Recommendations 4–6, 11, 13, 14, 19; quoted recommendations, with strengths retained.",
+          "reuse": "public-domain-text-excerpt",
+          "jurisdiction": "United States",
+          "attribution": "Source: Department of Veterans Affairs and Department of Defense. The original guideline is available free at the linked agency document. Its inclusion does not imply agency or U.S. Government endorsement.",
+          "derivativeNotice": "Selected agency-authored text excerpts, with only layout whitespace normalized. Selection and study labels are app editorial material; this is not a complete guideline or an agency-approved product.",
+          "limitations": "VA/DoD adult primary-care hypertension recommendations. Diastolic target evidence and initial-combination-therapy recommendations differ from the existing AHA/ACC source; the generator must identify the named source and preserve disagreement rather than blend them into a single rule. No emergency algorithm or third-party tools imported.",
+          "rights": {
+            "basis": "public-domain-government",
+            "policyUrl": "https://department.va.gov/copyright-policy/",
+            "checkedAt": "2026-10-10",
+            "commercialClinicalApproval": false
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "federal-depth-htn-va-sbp-20261010",
+          "title": "VA/DoD 2026 systolic target retains individual factors",
+          "text": "For individuals with hypertension, we recommend treating to a target systolic blood pressure goal of <130 mmHg to reduce adverse cardiovascular outcomes, depending on patient characteristics and preferences.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-htn2026-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 4, printed page 5 of 23; Strong for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-htn2026-depth-20261010",
+              "locator": "Recommendation 4, printed page 5 of 23; Strong for.",
+              "excerpt": "For individuals with hypertension, we recommend treating to a target systolic blood pressure goal of <130 mmHg to reduce adverse cardiovascular outcomes, depending on patient characteristics and preferences.",
+              "sha256": "f99ef69168d0b9189bd3448a9af5e8d7ec73ffb6dcb11bb8fb7da8682f367b37",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "strong-for"
+        },
+        {
+          "id": "federal-depth-htn-va-dbp-20261010",
+          "title": "VA/DoD diastolic targets and evidence limit",
+          "text": "For individuals ≥30 years old with hypertension, we suggest treating to a target diastolic blood pressure goal of <90mmHg to reduce adverse cardiovascular outcomes, depending on patient characteristics and preferences. (See Recommendation 6) For individuals with hypertension, there is insufficient evidence to recommend for or against treating to a target diastolic blood pressure goal of <80 mmHg, versus a target of <90 mmHg.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-htn2026-depth-20261010"
+          ],
+          "sourceLocator": "Recommendations 5–6, printed page 5 of 23; Weak for and Neither for nor against respectively.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-htn2026-depth-20261010",
+              "locator": "Recommendations 5–6, printed page 5 of 23; Weak for and Neither for nor against respectively.",
+              "excerpt": "For individuals ≥30 years old with hypertension, we suggest treating to a target diastolic blood pressure goal of <90mmHg to reduce adverse cardiovascular outcomes, depending on patient characteristics and preferences. (See Recommendation 6) For individuals with hypertension, there is insufficient evidence to recommend for or against treating to a target diastolic blood pressure goal of <80 mmHg, versus a target of <90 mmHg.",
+              "sha256": "4a387bd4cbc5d84b51b6b0f1e80286227fa065f97d68865756c4b4367bc1948a",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "scope": "Explicit VA/DoD 2026 guidance; do not overwrite or imply agreement with AHA/ACC targets."
+        },
+        {
+          "id": "federal-depth-htn-va-drugs-20261010",
+          "title": "VA/DoD primary medication classes",
+          "text": "For individuals with hypertension, we recommend a thiazide-type diuretic, dihydropyridine calcium channel blocker, or either an angiotensin-converting enzyme inhibitor or an angiotensin II receptor blocker, as primary pharmacologic therapy to reduce adverse cardiovascular outcomes.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-htn2026-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 11, printed page 6 of 23; Strong for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-htn2026-depth-20261010",
+              "locator": "Recommendation 11, printed page 6 of 23; Strong for.",
+              "excerpt": "For individuals with hypertension, we recommend a thiazide-type diuretic, dihydropyridine calcium channel blocker, or either an angiotensin-converting enzyme inhibitor or an angiotensin II receptor blocker, as primary pharmacologic therapy to reduce adverse cardiovascular outcomes.",
+              "sha256": "40114d85eecb6b1b60953f2ba54ab1cb6cc7b376b05d92f2c6af4c0e32adbaf9",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "strong-for"
+        },
+        {
+          "id": "federal-depth-htn-va-resistant-20261010",
+          "title": "After maximally tolerated triple therapy",
+          "text": "For individuals on maximally tolerated triple therapy (i.e., a thiazide-type diuretic; calcium channel blockers; and angiotensin-converting enzyme inhibitor or angiotensin II receptor blocker), who have not achieved blood pressure control, we suggest adding spironolactone or amiloride.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-htn2026-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 13, printed page 6 of 23; Weak for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-htn2026-depth-20261010",
+              "locator": "Recommendation 13, printed page 6 of 23; Weak for.",
+              "excerpt": "For individuals on maximally tolerated triple therapy (i.e., a thiazide-type diuretic; calcium channel blockers; and angiotensin-converting enzyme inhibitor or angiotensin II receptor blocker), who have not achieved blood pressure control, we suggest adding spironolactone or amiloride.",
+              "sha256": "aeed84789c9265c3fc64bf66ecb20c837aaad96579b2ce047308a98f4708abe8",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "weak-for",
+          "scope": "Only after the listed maximally tolerated triple therapy; not a potassium/renal monitoring or dosing protocol."
+        },
+        {
+          "id": "federal-depth-htn-va-combination-limit-20261010",
+          "title": "VA/DoD initial combination versus sequential treatment",
+          "text": "For initiation of pharmacological hypertension treatment, there is insufficient evidence to recommend starting combination therapy over monotherapy with sequential addition of another medication to reduce adverse cardiovascular outcomes.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-htn2026-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 14, printed page 6 of 23; Neither for nor against.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-htn2026-depth-20261010",
+              "locator": "Recommendation 14, printed page 6 of 23; Neither for nor against.",
+              "excerpt": "For initiation of pharmacological hypertension treatment, there is insufficient evidence to recommend starting combination therapy over monotherapy with sequential addition of another medication to reduce adverse cardiovascular outcomes.",
+              "sha256": "03e01fcadb82b008e6b7452605c0260cf15fabe2cd2bd71397e2878b2380ac6c",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "neither-for-nor-against",
+          "scope": "Source-specific difference from AHA/ACC combination-treatment guidance; do not silently reconcile."
+        },
+        {
+          "id": "federal-depth-htn-va-lifestyle-20261010",
+          "title": "VA/DoD diet and activity combination",
+          "text": "We recommend a combination of a healthy low-sodium diet with less than 2,300 mg/day of sodium and physical activity greater than 120 minutes/week to improve blood pressure control.",
+          "textKind": "selected-agency-text-excerpts",
+          "sourceIds": [
+            "va-htn2026-depth-20261010"
+          ],
+          "sourceLocator": "Recommendation 19, printed page 7 of 23; Strong for.",
+          "review": {
+            "kind": "automated-source-check",
+            "humanReviewed": false,
+            "checkedAt": "2026-10-10",
+            "expiresAt": "2026-11-09"
+          },
+          "sourceSpans": [
+            {
+              "sourceId": "va-htn2026-depth-20261010",
+              "locator": "Recommendation 19, printed page 7 of 23; Strong for.",
+              "excerpt": "We recommend a combination of a healthy low-sodium diet with less than 2,300 mg/day of sodium and physical activity greater than 120 minutes/week to improve blood pressure control.",
+              "sha256": "bb0be13b8589fa6c548a4f5341344a5b9b3c8625acaaf04963d81103f3a1923b",
+              "normalization": "Layout whitespace collapsed; PDF soft line-break artifacts normalized; clinical words, numbers and qualifiers preserved."
+            }
+          ],
+          "recommendationStrength": "strong-for",
+          "scope": "Named VA/DoD 2026 recommendation; not a claim that all exercise guidelines use this threshold."
+        }
+      ]
+    }
+  ]
+}

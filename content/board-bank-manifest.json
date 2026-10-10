@@ -2,28 +2,28 @@
   "schemaVersion": 1,
   "checkedAt": "2026-10-10",
   "purpose": "Original family medicine board study only; not medical advice or clinical use.",
-  "conditions": 115,
+  "conditions": 117,
   "studyTopics": 7,
   "foundationTopics": 6,
-  "inventoryQuestions": 558,
-  "currentQuestions": 550,
+  "inventoryQuestions": 566,
+  "currentQuestions": 558,
   "currentQuestionScope": "U.S. board-study pool; comparative-study questions remain in the library.",
   "comparativeStudyQuestions": 8,
   "minimumQuestions": 400,
   "satisfiesMinimum": true,
   "minimumBasis": "current-us-board-study",
   "currentMeetsMinimum": true,
-  "sections": 639,
-  "distinctSourceUrls": 252,
+  "sections": 1205,
+  "distinctSourceUrls": 360,
   "correctAnswerPositions": {
-    "A": 114,
-    "B": 113,
-    "C": 111,
-    "D": 113,
+    "A": 116,
+    "B": 115,
+    "C": 113,
+    "D": 115,
     "E": 107
   },
-  "annotatedDocumentReuseQuestions": 336,
-  "exactDocumentReuseAssessmentQuestions": 413,
+  "annotatedDocumentReuseQuestions": 344,
+  "exactDocumentReuseAssessmentQuestions": 422,
   "unresolvedDocumentReuseQuestionKeys": [
     "hypertension:hypertension-q1",
     "hypertension:hypertension-q2",
@@ -31,7 +31,6 @@
     "hypertensive-emergency:hypertensive-emergency-q2",
     "dyslipidemia:dyslipidemia-q1",
     "dyslipidemia:dyslipidemia-q2",
-    "type-2-diabetes:type-2-diabetes-q2",
     "type-1-diabetes:type-1-diabetes-q2",
     "diabetic-ketoacidosis:diabetic-ketoacidosis-q2",
     "hypothyroidism:hypothyroidism-q1",
@@ -223,8 +222,28 @@
       "sha256": "4887953bb46d5b866536302144aba3d455be8dbb53a0ce45c0522478abf8318c"
     },
     {
+      "path": "content/conditions/oncology_reference_expansion.json",
+      "sha256": "0adc84d4c2b339c6206d45bf424652b16866303c9282559b71e2604352e10eb7"
+    },
+    {
       "path": "content/board-foundations.json",
       "sha256": "d057549d510694dde828eccf0b137cf5b0ddc6ff6d1a2b62b1addf4b3e96e0f4"
+    },
+    {
+      "path": "content/reference-expansion/medlineplus-breadth.json",
+      "sha256": "687739c113a704915b84d94100f030ba142d0796360cabee705be859a50f1265"
+    },
+    {
+      "path": "content/reference-expansion/federal-clinical-depth.json",
+      "sha256": "5206238f326290b7c915bbebf7625fd99e735d29c5d7be0c240122c47eed0a4b"
+    },
+    {
+      "path": "content/reference-expansion/federal-specialty-passages.json",
+      "sha256": "c3a55a5a66c622053557b0ac42797a1c61cd8314bf57405c1cc9c044a719aae3"
+    },
+    {
+      "path": "content/reference-expansion/licensed-specialty-passages.json",
+      "sha256": "51c040872dee2297cde16d7eabad3d50ff4b511544738fe74efa4abbbc383e0a"
     }
   ],
   "alignment": {
@@ -235,8 +254,8 @@
       "https://www.theabfm.org/family-medicine-exam-blueprint/",
       "https://www.theabfm.org/app/uploads/2025/10/2026-FMCE-Examination-Information-Booklet-v.1.0.pdf"
     ],
-    "questionCount": 550,
-    "poolFingerprint": "142af10533f6f66beb7fa68a09602e19a196fa3debdb262bc1e3b04eeae41714",
+    "questionCount": 558,
+    "poolFingerprint": "84bb575aec03371a73e31a46d03f52fc3f82533fa46cf2e4064f34ecce221b71",
     "mappingBasis": "Publisher-authored question primary-domain metadata; not independently adjudicated alignment.",
     "crosswalk": [
       {
@@ -1852,6 +1871,52 @@
         "primaryDomain": "chronic",
         "sourceIds": [
           "niddk-chronic-kidney-disease-study-20261010"
+        ]
+      },
+      {
+        "key": "colorectal-cancer:colorectal-cancer-q1",
+        "fingerprint": "a91d104a7e113fcf22365cef310f0dff76cd133bedf4a2608a8a9ef13414a157",
+        "conditionId": "colorectal-cancer",
+        "questionId": "colorectal-cancer-q1",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nci-colon-cancer-patient-scope-20261010",
+          "nci-colon-cancer-treatment-20261010"
+        ]
+      },
+      {
+        "key": "colorectal-cancer:colorectal-cancer-q2",
+        "fingerprint": "0dc3c66bd7c952bc83ddead182de2a9f219e0be065ac5a569ba7c8abcd7d39c0",
+        "conditionId": "colorectal-cancer",
+        "questionId": "colorectal-cancer-q2",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nci-colon-cancer-treatment-20261010",
+          "nci-rectal-cancer-treatment-20261010"
+        ]
+      },
+      {
+        "key": "colorectal-cancer:colorectal-cancer-q3",
+        "fingerprint": "9ded3cddc83b315a59e7e8a34492a7761dd79711fc6e642877849fb803b7fdc9",
+        "conditionId": "colorectal-cancer",
+        "questionId": "colorectal-cancer-q3",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nci-colon-cancer-patient-scope-20261010",
+          "nci-colon-cancer-treatment-20261010",
+          "nci-rectal-cancer-treatment-20261010"
+        ]
+      },
+      {
+        "key": "colorectal-cancer:colorectal-cancer-q4",
+        "fingerprint": "970ad933264c4eb9c22bbfea0acb1dc2341183e060617f38ac8282c9002d3f40",
+        "conditionId": "colorectal-cancer",
+        "questionId": "colorectal-cancer-q4",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nci-colon-cancer-patient-scope-20261010",
+          "nci-colon-cancer-treatment-20261010",
+          "nci-rectal-cancer-treatment-20261010"
         ]
       },
       {
@@ -4674,6 +4739,46 @@
         ]
       },
       {
+        "key": "prostate-cancer:prostate-cancer-q1",
+        "fingerprint": "30dc8b4f8e9b18c4b42a176e2671f6b64739b0a789d2d30f8537a3b1ff1627a4",
+        "conditionId": "prostate-cancer",
+        "questionId": "prostate-cancer-q1",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nci-prostate-cancer-treatment-20261010"
+        ]
+      },
+      {
+        "key": "prostate-cancer:prostate-cancer-q2",
+        "fingerprint": "3f9167ec2a4cb4df85e0aeb7f617505ad3d8bb70f8fd9d69e45672e1b4e98380",
+        "conditionId": "prostate-cancer",
+        "questionId": "prostate-cancer-q2",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nci-prostate-cancer-treatment-20261010"
+        ]
+      },
+      {
+        "key": "prostate-cancer:prostate-cancer-q3",
+        "fingerprint": "394c53415136b2e12501fa439ca38b86a2bc14efd85f3d9a6e1fba436ec4e980",
+        "conditionId": "prostate-cancer",
+        "questionId": "prostate-cancer-q3",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nci-prostate-cancer-treatment-20261010"
+        ]
+      },
+      {
+        "key": "prostate-cancer:prostate-cancer-q4",
+        "fingerprint": "08c07831aa30aa118106d31e6f2d32213a89b1754b59afba62e5b763a4da5a14",
+        "conditionId": "prostate-cancer",
+        "questionId": "prostate-cancer-q4",
+        "primaryDomain": "chronic",
+        "sourceIds": [
+          "nci-prostate-cancer-treatment-20261010"
+        ]
+      },
+      {
         "key": "psoriasis:psoriasis-q1",
         "fingerprint": "bd1dcd09066d5d922456374e7da70c190887c2feb2e0823522f9ef6e86106081",
         "conditionId": "psoriasis",
@@ -5777,17 +5882,17 @@
         "targetPercent": 35,
         "availableQuestions": 211,
         "coveredTopics": 72,
-        "bankPercent": 38.36,
-        "deviationPercentagePoints": 3.36
+        "bankPercent": 37.81,
+        "deviationPercentagePoints": 2.81
       },
       {
         "domain": "chronic",
         "title": "Chronic Care Management",
         "targetPercent": 25,
-        "availableQuestions": 193,
-        "coveredTopics": 62,
-        "bankPercent": 35.09,
-        "deviationPercentagePoints": 10.09
+        "availableQuestions": 201,
+        "coveredTopics": 64,
+        "bankPercent": 36.02,
+        "deviationPercentagePoints": 11.02
       },
       {
         "domain": "emergent",
@@ -5795,8 +5900,8 @@
         "targetPercent": 20,
         "availableQuestions": 53,
         "coveredTopics": 29,
-        "bankPercent": 9.64,
-        "deviationPercentagePoints": -10.36
+        "bankPercent": 9.5,
+        "deviationPercentagePoints": -10.5
       },
       {
         "domain": "preventive",
@@ -5804,8 +5909,8 @@
         "targetPercent": 15,
         "availableQuestions": 73,
         "coveredTopics": 31,
-        "bankPercent": 13.27,
-        "deviationPercentagePoints": -1.73
+        "bankPercent": 13.08,
+        "deviationPercentagePoints": -1.92
       },
       {
         "domain": "foundations",
@@ -5813,8 +5918,8 @@
         "targetPercent": 5,
         "availableQuestions": 20,
         "coveredTopics": 6,
-        "bankPercent": 3.64,
-        "deviationPercentagePoints": -1.36
+        "bankPercent": 3.58,
+        "deviationPercentagePoints": -1.42
       }
     ],
     "scope": "Current inventory and primary-domain distribution only. Topic completeness, item difficulty, medical accuracy and exam readiness are not evaluated.",

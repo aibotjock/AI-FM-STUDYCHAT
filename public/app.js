@@ -36,6 +36,17 @@ let screen = ['today','coach','review','library','progress','board'].includes(lo
 let currentConversationId = null;
 let libraryTab = 'guidelines';
 let curriculumCatalog = null;
+let referenceDirectory = null;
+let referenceDirectoryOpen = false;
+let referenceDirectoryLoading = false;
+let referenceDirectoryError = '';
+let referenceDirectorySearch = '';
+let referenceDirectoryRequest = 0;
+let referenceSearchQuery = '';
+let referenceSearchResults = null;
+let referenceSearchLoading = false;
+let referenceSearchError = '';
+let referenceSearchRequest = 0;
 let curriculumLoading = false;
 let curriculumError = '';
 let curriculumSearch = '';
@@ -442,13 +453,78 @@ function renderLibrary() {
 }
 
 function resetCurriculumState() {
+  referenceDirectoryRequest++;referenceDirectory=null;referenceDirectoryOpen=false;referenceDirectoryLoading=false;referenceDirectoryError='';referenceDirectorySearch='';
+  referenceSearchRequest++;referenceSearchQuery='';referenceSearchResults=null;referenceSearchLoading=false;referenceSearchError='';
   curriculumSessionRevision++;curriculumRequest++;curriculumDetailRequest++;clearTimeout(curriculumSearchTimer);curriculumCatalog=null;curriculumCondition=null;curriculumConditionId=null;curriculumLoading=false;curriculumDetailLoading=false;curriculumError='';curriculumDetailError='';curriculumGrading=false;curriculumSavingCard=false;curriculumAnswers.clear();curriculumSavedCards.clear();
 }
 function curriculumIsVisible() { return screen === 'library' && libraryTab === 'guidelines' && (!status.authRequired || status.authenticated); }
-function curriculumSources(sources = [], { compact = false } = {}) {
+function sourceReuseNotice(source) {
+  const policyUrl = safeUrl(source.rights?.policyUrl);
+  const license = source.rights?.basis === 'cc-by-4.0' ? 'CC BY 4.0' : source.rights?.basis === 'cc-by-unversioned' ? 'CC BY · publisher reuse terms' : source.rights?.basis?.startsWith('public-domain-') ? 'Public-domain text · source reuse policy' : '';
+  return `${source.attribution ? `<small>${esc(source.attribution)}</small>` : ''}${license && policyUrl ? `<small><a href="${esc(policyUrl)}" target="_blank" rel="noopener noreferrer">${esc(license)}</a></small>` : ''}${source.derivativeNotice ? `<small>${esc(source.derivativeNotice)}</small>` : ''}`;
+}
+function renderReferenceDirectory() {
+  return `<details class="card condition-section" id="reference-directory" ${referenceDirectoryOpen ? 'open' : ''}><summary>External reference directory</summary><p>Browse reputable publishers and guideline collections. These links are separate from the reviewed passages used for Coach answers and practice questions. Publisher access may require an account or payment.</p><div class="library-tools"><label class="screen-reader" for="reference-directory-search">Search publishers, acronyms and specialties</label><input id="reference-directory-search" class="search-input" type="search" maxlength="120" value="${esc(referenceDirectorySearch)}" placeholder="Search AAFP, AAN, antibiotics, or a specialty…"><button class="text-button" data-action="reference-directory-clear">Clear search</button></div><div id="external-reference-results">${renderReferenceDirectoryResults()}</div>${renderReferenceSearch()}<p class="footer-note">A link does not grant permission to copy or process publisher content. Only separately reviewed documents may be included in the study library. No publisher endorsement is implied.</p></details>`;
+}
+function renderReferenceDirectoryResults() {
+  if (referenceDirectoryLoading) return '<div class="loading-line" role="status"><span class="spinner"></span> Loading external references…</div>';
+  if (referenceDirectoryError) return `<div class="notice error" role="alert">${esc(referenceDirectoryError)} <button class="text-button" data-action="reference-directory-retry">Try again</button></div>`;
+  if (!referenceDirectory) return '<p class="footer-note">Open this directory to load publisher links.</p>';
+  const term = referenceDirectorySearch.trim().toLowerCase();
+  const sources = (referenceDirectory.sources || []).filter(source => [source.acronym, source.organization, source.title, ...(source.specialties || [])].join(' ').toLowerCase().includes(term));
+  return `<p role="status" aria-live="polite">${sources.length} of ${Number(referenceDirectory.total) || 0} external references</p>${sources.length ? `<ul class="guideline-sources">${sources.map(source => {
+    const links = [source.url, ...(source.additionalUrls || [])].map(safeUrl).filter(url => url.startsWith('https:'));
+    return `<li><strong>${esc(source.acronym ? `${source.acronym} · ${source.organization}` : source.organization)}</strong>${links.map((url,index) => `<div><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(index ? 'Additional publisher resource' : source.title)} ↗</a></div>`).join('')}<small>${esc(source.reuseNotice || 'Document permissions require review.')}</small>${source.specialties?.length ? `<small>${source.specialties.map(value => esc(value.replace(/-/g,' '))).join(' · ')}</small>` : ''}${publisherSearchLink(source)}</li>`;
+  }).join('')}</ul>` : '<p>No external references match. Try an acronym, publisher name or another specialty.</p>'}`;
+}
+function updateReferenceDirectoryUI() {
+  const results = $('#external-reference-results');
+  if (results && curriculumIsVisible()) results.innerHTML = renderReferenceDirectoryResults();
+}
+async function loadReferenceDirectory() {
+  if (referenceDirectoryLoading || referenceDirectory && !referenceDirectoryError) return;
+  const request = ++referenceDirectoryRequest;
+  referenceDirectoryLoading = true;referenceDirectoryError='';updateReferenceDirectoryUI();
+  try {
+    const directory = await api('/api/study/reference-directory');
+    if (request === referenceDirectoryRequest) referenceDirectory = directory;
+  } catch (error) { if (request === referenceDirectoryRequest) referenceDirectoryError=error.message; }
+  finally { if (request === referenceDirectoryRequest) { referenceDirectoryLoading=false;updateReferenceDirectoryUI(); } }
+}
+function publisherSearchLink(source) {
+  if (!referenceSearchQuery.trim()) return '';
+  const url=safeUrl(source.url);if(!url || !url.startsWith('https:')) return '';
+  const search=new URL('https://www.google.com/search');search.searchParams.set('q',`site:${new URL(url).hostname} ${referenceSearchQuery.trim().slice(0,120)}`);
+  return `<small><a href="${esc(search.href)}" target="_blank" rel="noopener noreferrer">Search this publisher on Google ↗</a></small>`;
+}
+function renderReferenceSearch() {
+  return `<section class="form-section"><h3>Find current references</h3><p>Search MedlinePlus health-topic links for a study subject. This finds background references; it does not add medical teaching to Coach or approve new practice questions.</p><form id="reference-search-form"><label for="reference-search-query">Study topic</label><input id="reference-search-query" class="search-input" type="search" maxlength="120" value="${esc(referenceSearchQuery)}" placeholder="For example, asthma or antibiotic stewardship" required><button id="reference-search-submit" class="button secondary" type="submit" ${referenceSearchLoading || !referenceSearchQuery.trim() ? 'disabled' : ''}>${referenceSearchLoading ? 'Finding references…' : 'Find current references'}</button></form><p class="footer-note">Searching sends this topic to the National Library of Medicine. Include study terms only, without patient details. Clicking a publisher’s Google link sends the topic and publisher domain to Google. Neither action sends your chat, recordings or credentials.</p><div id="reference-search-results">${renderReferenceSearchResults()}</div></section>`;
+}
+function renderReferenceSearchResults() {
+  if(referenceSearchLoading) return '<p role="status">Finding external topic links…</p>';
+  if(referenceSearchError) return `<div class="notice error" role="alert">${esc(referenceSearchError)} <button class="text-button" data-action="reference-search-retry">Try again</button></div>`;
+  if(!referenceSearchResults) return '';
+  return `<p role="status" aria-live="polite">Results for: <strong>${esc(referenceSearchResults.query)}</strong> · ${referenceSearchResults.sources?.length || 0} MedlinePlus topic links · ${referenceSearchResults.cached ? 'Cached search' : 'Search fetched'} ${esc(referenceSearchResults.fetchedAt || 'time not supplied')}</p><ul class="guideline-sources">${(referenceSearchResults.sources || []).map(source=>`<li><a href="${esc(safeUrl(source.url))}" target="_blank" rel="noopener noreferrer">${esc(source.title)} ↗</a><small>${esc(source.organization)} · Publication date not supplied by search</small></li>`).join('')}</ul><p class="footer-note">Source: MedlinePlus.gov, National Library of Medicine. Topic links are not full treatment guidelines. Search results may be cached for 12 hours; open the original page to check its date and context. MedlinePlus does not endorse this app.</p>`;
+}
+function updateReferenceSearchUI() {
+  const results=$('#reference-search-results');if(results && curriculumIsVisible()) results.innerHTML=renderReferenceSearchResults();
+  const button=$('#reference-search-submit');if(button) { button.disabled=referenceSearchLoading || !referenceSearchQuery.trim();button.textContent=referenceSearchLoading?'Finding references…':'Find current references'; }
+}
+async function searchReferences() {
+  if(referenceSearchLoading || !referenceSearchQuery.trim()) return;
+  const query=referenceSearchQuery.trim().slice(0,120);
+  const request=++referenceSearchRequest;
+  referenceSearchLoading=true;referenceSearchError='';updateReferenceSearchUI();
+  try {
+    const result=await mutate('/api/study/reference-search','POST',{query});
+    if(request===referenceSearchRequest) referenceSearchResults={...result,query};
+  } catch(error) {if(request===referenceSearchRequest) referenceSearchError=error.message;}
+  finally {if(request===referenceSearchRequest) {referenceSearchLoading=false;updateReferenceSearchUI();}}
+}
+function curriculumSources(sources = [], { compact = false, compare = false } = {}) {
   return `<ul class="guideline-sources ${compact ? 'compact' : ''}">${sources.map(source=> {
     const url = safeUrl(source.url);
-    return `<li>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(source.title || source.id || 'Official source')} ↗</a>` : `<strong>${esc(source.title || source.id || 'Official source')}</strong>`}<small>${[source.publisher,source.jurisdiction,source.kind ? ({'clinical-guideline':'Formal guideline','official-recommendation':'Official recommendation','official-clinical-reference':'Official clinical reference'})[source.kind] || source.kind : '',source.edition ? `Edition: ${source.edition}` : '',source.checkedAt ? `Source checked ${String(source.checkedAt).slice(0,10)}` : ''].filter(Boolean).map(esc).join(' · ')}</small>${source.locator ? `<small>Reference section: ${esc(source.locator)}</small>` : ''}${source.limitations ? `<small>Source limitation: ${esc(source.limitations)}</small>` : ''}${source.attribution ? `<small>${esc(source.attribution)}</small>` : ''}${['cc-by-4.0','cc-by-unversioned'].includes(source.rights?.basis) && safeUrl(source.rights.policyUrl) ? `<small>License: <a href="${esc(safeUrl(source.rights.policyUrl))}" target="_blank" rel="noopener noreferrer">${source.rights.basis === 'cc-by-4.0' ? 'CC BY 4.0' : 'CC BY · publisher reuse terms'}</a></small>` : ''}${source.derivativeNotice ? `<small>${esc(source.derivativeNotice)}</small>` : ''}</li>`;
+    return `<li>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(source.title || source.id || 'Official source')} ↗</a>` : `<strong>${esc(source.title || source.id || 'Official source')}</strong>`}<small>${[source.publisher,source.jurisdiction || (compare ? 'Jurisdiction not supplied' : ''),source.kind ? ({'clinical-guideline':'Formal guideline','official-recommendation':'Official recommendation','official-clinical-reference':'Official clinical reference'})[source.kind] || source.kind : compare ? 'Reference type not supplied' : '',source.edition ? `Edition: ${source.edition}` : compare ? 'Edition not supplied' : '',compare ? source.publishedDate ? `Published ${source.publishedDate}` : 'Publication date not supplied' : '',source.checkedAt || compare && source.reviewedAt ? `Source checked ${String(source.checkedAt || source.reviewedAt).slice(0,10)}` : compare ? 'Source-check date not supplied' : ''].filter(Boolean).map(esc).join(' · ')}</small>${source.locator ? `<small>Reference section: ${esc(source.locator)}</small>` : ''}${source.limitations ? `<small>Source limitation: ${esc(source.limitations)}</small>` : ''}${sourceReuseNotice(source)}</li>`;
   }).join('')}</ul>`;
 }
 function curriculumReviewNotice(item) {
@@ -465,7 +541,7 @@ function renderCurriculumCatalogResults() {
 function renderCurriculum() {
   if (curriculumConditionId) return renderCurriculumCondition();
   const domains = curriculumCatalog?.domains || [];
-  return `<section class="curriculum-intro"><h2>Guidelines & board practice</h2><p>Explore family medicine conditions and prevention topics using verified official source links and original summaries. Questions practice board-style reasoning; they are not official ABFM questions or endorsed by ABFM.</p></section><div class="library-tools curriculum-tools"><label class="screen-reader" for="condition-search">Search conditions and study topics</label><input id="condition-search" class="search-input" type="search" maxlength="120" value="${esc(curriculumSearch)}" placeholder="Search conditions, prevention, or aliases…"><label class="screen-reader" for="condition-domain">Filter by study domain</label><select id="condition-domain" class="filter-select"><option value="">All domains</option>${domains.map(domain=>`<option value="${esc(typeof domain === 'string' ? domain : domain.id)}" ${curriculumDomain === (typeof domain === 'string' ? domain : domain.id) ? 'selected' : ''}>${esc(typeof domain === 'string' ? domainLabel(domain) : domain.title || domain.name)}</option>`).join('')}</select><button class="text-button" data-action="curriculum-clear">Clear filters</button></div><div class="library-summary"><span id="condition-count" role="status" aria-live="polite">${curriculumCatalogCount()}</span><span>Study summaries · Source-linked</span></div><div id="condition-results">${renderCurriculumCatalogResults()}</div><p class="footer-note">Official sources are checked monthly. New or changed recommendations need review before teaching content is marked clinician reviewed. Follow each source link for full context, exceptions and the latest publication.</p>`;
+  return `<section class="curriculum-intro"><h2>Guidelines & board practice</h2><p>Explore family medicine conditions and prevention topics using verified official source links and original summaries. Questions practice board-style reasoning; they are not official ABFM questions or endorsed by ABFM.</p></section><div class="library-tools curriculum-tools"><label class="screen-reader" for="condition-search">Search conditions and study topics</label><input id="condition-search" class="search-input" type="search" maxlength="120" value="${esc(curriculumSearch)}" placeholder="Search conditions, prevention, or aliases…"><label class="screen-reader" for="condition-domain">Filter by study domain</label><select id="condition-domain" class="filter-select"><option value="">All domains</option>${domains.map(domain=>`<option value="${esc(typeof domain === 'string' ? domain : domain.id)}" ${curriculumDomain === (typeof domain === 'string' ? domain : domain.id) ? 'selected' : ''}>${esc(typeof domain === 'string' ? domainLabel(domain) : domain.title || domain.name)}</option>`).join('')}</select><button class="text-button" data-action="curriculum-clear">Clear filters</button></div><div class="library-summary"><span id="condition-count" role="status" aria-live="polite">${curriculumCatalogCount()}</span><span>Study summaries · Source-linked</span></div><div id="condition-results">${renderCurriculumCatalogResults()}</div><p class="footer-note">Official sources are checked monthly. New or changed recommendations need review before teaching content is marked clinician reviewed. Follow each source link for full context, exceptions and the latest publication.</p>${renderReferenceDirectory()}`;
 }
 function updateCurriculumCatalogUI() {
   if (!curriculumIsVisible() || curriculumConditionId) return;
@@ -509,7 +585,7 @@ function renderCurriculumCondition() {
   const sources = item.sources || [];
   const objectives = Array.isArray(item.learningObjectives) ? item.learningObjectives : [];
   const redFlags = Array.isArray(item.redFlags) ? item.redFlags : [];
-  return `${back}<section class="condition-header"><span class="eyebrow">${esc(domainLabel(item.domain))}</span><h2>${esc(item.title || item.name)}</h2><p>${esc(item.summary || '')}</p>${curriculumReviewNotice(item)}<div class="inline-actions"><button class="button" data-action="curriculum-quiz">Practice board questions ${icon('arrow')}</button><button class="button secondary" data-action="curriculum-coach" data-id="${esc(item.id)}">Study with Coach ${icon('coach')}</button></div></section>${objectives.length ? `<section class="card condition-section"><h3>Learning objectives</h3><ul>${objectives.map(text=>`<li>${esc(text)}</li>`).join('')}</ul></section>` : ''}<div class="condition-sections">${(item.chunks || []).map(chunk=>`<section class="card condition-section"><h3>${esc(chunk.heading || chunk.section || 'Study summary')}</h3><p>${esc(chunk.text || '')}</p>${curriculumSources(sources.filter(source=>chunk.sourceIds?.includes(source.id)),{compact:true})}</section>`).join('')}</div>${redFlags.length ? `<section class="notice condition-red-flags"><strong>Red flags to recognize in exam cases</strong><ul>${redFlags.map(text=>`<li>${esc(text)}</li>`).join('')}</ul></section>` : ''}${renderCurriculumQuestion()}<section class="card condition-section"><h3>Official reference sources</h3>${curriculumSources(sources)}<p class="curriculum-limits">Original paraphrases are provided for study; full guideline text is not reproduced here. Check the current official document for complete recommendations.</p></section>`;
+  return `${back}<section class="condition-header"><span class="eyebrow">${esc(domainLabel(item.domain))}</span><h2>${esc(item.title || item.name)}</h2><p>${esc(item.summary || '')}</p>${curriculumReviewNotice(item)}<div class="inline-actions"><button class="button" data-action="curriculum-quiz">Practice board questions ${icon('arrow')}</button><button class="button secondary" data-action="curriculum-coach" data-id="${esc(item.id)}">Study with Coach ${icon('coach')}</button></div></section>${objectives.length ? `<section class="card condition-section"><h3>Learning objectives</h3><ul>${objectives.map(text=>`<li>${esc(text)}</li>`).join('')}</ul></section>` : ''}<div class="condition-sections">${(item.chunks || []).map(chunk=>`<section class="card condition-section"><h3>${esc(chunk.heading || chunk.section || 'Study summary')}</h3><p>${esc(chunk.text || '')}</p>${curriculumSources(sources.filter(source=>chunk.sourceIds?.includes(source.id)),{compact:true})}</section>`).join('')}</div>${redFlags.length ? `<section class="notice condition-red-flags"><strong>Red flags to recognize in exam cases</strong><ul>${redFlags.map(text=>`<li>${esc(text)}</li>`).join('')}</ul></section>` : ''}${renderCurriculumQuestion()}<section class="card condition-section"><h3>Official reference sources</h3>${curriculumSources(sources)}<p class="curriculum-limits">Original study summaries and selected permitted source excerpts are provided here. They are not complete guidelines. Official source materials are available free at their linked sites; their agencies and publishers do not endorse this app. Check the original document for complete recommendations.</p></section>`;
 }
 function renderCurriculumQuestion() {
   const question = curriculumQuestion();
@@ -995,12 +1071,18 @@ function canChat() { return status.mode !== 'commercial' || (status.authenticate
 function voiceDictationSupported() { return Boolean(SpeechRecognition) && !billingBridge(); }
 function pilotNotice(compact=false) { return status.privatePilot ? compact ? `<div class="notice pilot-notice compact-pilot"><strong>Free private phone pilot</strong><span>${status.aiConfigured ? 'Practice and test your coach.' : 'Cards and reviews are ready. AI coaching is not configured yet.'} No subscription trial has started.</span></div>` : '<div class="notice pilot-notice"><strong>Private phone pilot</strong><span>Practice, chat, and review while we test the app. This free pilot is separate from a paid subscription or subscription trial.</span></div>' : ''; }
 
+function renderSourceComparison(sources) {
+  const unique=[...new Map(sources.filter(source=>safeUrl(source.url)).map(source=>[safeUrl(source.url),source])).values()];
+  if(unique.length<2) return '';
+  return `<details class="answer-sources"><summary>Compare cited source context</summary><p>Compare publication dates, jurisdiction and supplied limitations. Multiple references do not by themselves establish a disagreement.</p>${curriculumSources(unique,{compact:true,compare:true})}</details>`;
+}
+
 function renderAnswerEvidence(message) {
   const sources = Array.isArray(message.citations) ? message.citations : [];
   const sourceList = sources.map(source => {
     const url = safeUrl(source.url), title = source.title || 'Source reference';
     const checked = source.checkedAt || source.reviewedAt;
-    return `<li>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(title)} ↗</a>` : esc(title)}<small>${[source.edition ? `Edition: ${source.edition}` : '',checked ? `Source checked ${String(checked).slice(0,10)}` : ''].filter(Boolean).map(esc).join(' · ')}</small></li>`;
+    return `<li>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(title)} ↗</a>` : esc(title)}<small>${[source.edition ? `Edition: ${source.edition}` : '',checked ? `Source checked ${String(checked).slice(0,10)}` : ''].filter(Boolean).map(esc).join(' · ')}</small>${sourceReuseNotice(source)}</li>`;
   }).join('');
   const curriculum = message.curriculum === true || message.evidence?.curriculum === true;
   const grounded = message.grounded === true || message.evidence?.grounded === true;
@@ -1014,7 +1096,7 @@ function renderAnswerEvidence(message) {
   const dialogueStatus=dialogue ? '<small class="study-dialogue-status">Conversational study coaching · Medical learning points use cited summaries.</small>' : '';
   const quoteStatus=dialogue && (message.studyDialogue.learnerQuotePresent===true || message.studyDialogue.learnerQuote===true) ? '<small class="learner-quote-status">Your quoted reasoning is unverified. Compare it with the cited learning points; readout skips learner quotes.</small>' : '';
   const conversationStatus=reviewed ? `<small class="evidence-status ai-conversation-status">${sources.length ? 'Source-linked study explanation · Automated source check; not clinician reviewed.' : 'AI conversation'}</small>` : '';
-  return `${legacyWarning}${conversationStatus}${dialogueStatus}${quoteStatus}${message.unsupported === true ? '<div class="answer-abstention">The available study evidence does not support an answer. Check a current official source.</div>' : ''}${curriculum && !reviewed ? `<small class="evidence-status">${grounded ? 'Grounded in retrieved study summaries' : 'Evidence coverage limited'} · ${humanReviewed ? 'Clinician review recorded' : 'Clinician review pending'}</small>` : ''}${sourceList ? `<details class="answer-sources"><summary>${imported ? 'Imported' : 'Source-linked'} study references (${sources.length})</summary><ul>${sourceList}</ul><p>${esc(explanation)} Study only; no medical advice or clinical use.</p></details>` : ''}`;
+  return `${legacyWarning}${conversationStatus}${dialogueStatus}${quoteStatus}${message.unsupported === true ? '<div class="answer-abstention">The available study evidence does not support an answer. Check a current official source. <button class="text-button" data-action="reference-directory-open">Find references</button></div>' : ''}${curriculum && !reviewed ? `<small class="evidence-status">${grounded ? 'Grounded in retrieved study summaries' : 'Evidence coverage limited'} · ${humanReviewed ? 'Clinician review recorded' : 'Clinician review pending'}</small>` : ''}${sourceList ? `<small class="evidence-status">Official source material is available free at the linked sites. Referenced agencies, including CDC/HHS and the U.S. Government, do not endorse this app.</small><details class="answer-sources"><summary>${imported ? 'Imported' : 'Source-linked'} study references (${sources.length})</summary><ul>${sourceList}</ul><p>${esc(explanation)} Study only; no medical advice or clinical use.</p></details>${renderSourceComparison(sources)}` : ''}`;
 }
 
 function renderAccountLogin() {
@@ -1170,6 +1252,10 @@ async function handleAction(button) {
     case 'delete-card': return confirmDialog('Delete this recall card?', 'The card will be removed from your library. Historical review statistics are retained.', 'confirm-delete-card',id);
     case 'confirm-delete-card': await mutate(`/api/cards/${encodeURIComponent(id)}`,'DELETE'); closeDialog(); await refreshState(); if(reviewSession) reviewSession.queue = reviewSession.queue.filter(cardId => cardId !== id); render(); return notify('Recall card deleted.');
     case 'suspend-card': { const card=state.cards.find(item=>item.id===id); await mutate(`/api/cards/${encodeURIComponent(id)}`,'PUT',{suspended:!card.suspended}); await refreshState(); render(); return notify(card.suspended ? 'Card resumed.' : 'Card suspended.'); }
+    case 'reference-directory-open': libraryTab='guidelines';curriculumConditionId=null;referenceDirectoryOpen=true;navigate('library');return;
+    case 'reference-search-retry': return searchReferences();
+    case 'reference-directory-retry': return loadReferenceDirectory();
+    case 'reference-directory-clear': referenceDirectorySearch='';if ($('#reference-directory-search')) $('#reference-directory-search').value='';updateReferenceDirectoryUI();return;
     case 'library-tab': libraryTab=tab; render(); if (tab === 'guidelines' && !curriculumCatalog && !curriculumLoading) return loadCurriculum(); return;
     case 'curriculum-card-condition': libraryTab='guidelines';navigate('library');return openCurriculumCondition(id);
     case 'curriculum-open': return openCurriculumCondition(id);
@@ -1226,6 +1312,7 @@ document.addEventListener('submit', async event => {
   event.preventDefault();
   const form=event.target;
   if(form.id==='chat-form') return sendMessage($('#chat-input').value);
+  if(form.id==='reference-search-form') return searchReferences();
   if(form.id==='board-start-form') return startBoardSession(form);
   if(formBusy) return;
   const data=new FormData(form);
@@ -1308,7 +1395,15 @@ document.addEventListener('submit', async event => {
   } finally { formBusy=false;if(submit) submit.disabled=false; }
 });
 
+document.addEventListener('toggle', event => {
+  if (event.target.id !== 'reference-directory') return;
+  referenceDirectoryOpen=event.target.open;
+  if (referenceDirectoryOpen && curriculumIsVisible()) loadReferenceDirectory();
+}, true);
+
 document.addEventListener('input', event=>{
+  if(event.target.id==='reference-search-query') {referenceSearchQuery=event.target.value.slice(0,120);updateReferenceSearchUI();updateReferenceDirectoryUI();}
+  if(event.target.id==='reference-directory-search') {referenceDirectorySearch=event.target.value.slice(0,120);updateReferenceDirectoryUI();}
   if(event.target.id==='chat-input') {chatDraft=event.target.value;preserveDictationEdits(chatDraft);resizeComposer();}
   if(event.target.id==='condition-search') {curriculumSearch=event.target.value;clearTimeout(curriculumSearchTimer);curriculumRequest++;curriculumSearchTimer=setTimeout(loadCurriculum,220);}
   if(event.target.id==='card-search') { searchTerm=event.target.value;const filtered=state.cards.filter(card=>(!topicFilter || card.topic===topicFilter) && `${card.front} ${card.back} ${card.topic}`.toLowerCase().includes(searchTerm.toLowerCase()));$('#card-results').innerHTML=renderCardResults(filtered);$('.library-summary span').textContent=`${filtered.length} cards · ${state.cards.filter(card=>card.suspended).length} suspended`; }

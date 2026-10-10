@@ -2,12 +2,13 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { verifiedStudySourceReuse, knownStudySourceReuseUrl } from '../shared/source-reuse.js';
+import { mergeStudyReferences, readStudyReferenceFiles } from './reference-expansion.js';
 
 export const STUDY_DISCLAIMER = 'For study use only. Original educational summaries and practice questions, not medical advice or instructions for patient care. This app is independent of ABFM; source checks are not clinician approval.';
 export const STUDY_NO_EVIDENCE = 'The current study library does not establish an answer to that question. I cannot verify a guideline-based clinical answer from the available references. Choose a condition in Guidelines or check the linked official source. This app is for study only, not patient-care advice.';
 export const STUDY_REAL_CARE_REDIRECT = 'This app is only for independent family medicine board study. It cannot diagnose a real person, select treatment or advise patient care. Bring real-care questions to a qualified clinician or your clinical team. For study practice, choose a sourced topic and explicitly describe a fictional or hypothetical board vignette.';
 const DAY = 86400000;
-export const STUDY_OPTIONAL_CONDITION_FILES = Object.freeze(['treatment_expansion.json', 'licensed_reference_expansion.json', 'lifespan_prevention.json', 'geriatric_care.json', 'eye_sports_expansion.json', 'immunization_prevention.json']);
+export const STUDY_OPTIONAL_CONDITION_FILES = Object.freeze(['treatment_expansion.json', 'licensed_reference_expansion.json', 'lifespan_prevention.json', 'geriatric_care.json', 'eye_sports_expansion.json', 'immunization_prevention.json', 'oncology_reference_expansion.json']);
 export const STUDY_CONDITION_FILES = Object.freeze(['cardiometabolic.json', 'respiratory_infectious.json', 'neuro_msk_derm.json', 'women_children_prevention.json', 'common_additions.json', ...STUDY_OPTIONAL_CONDITION_FILES]);
 export const studyRecordType = record => record.recordType ?? 'condition';
 const FILES = new Set(STUDY_CONDITION_FILES);
@@ -55,17 +56,17 @@ export function validateStudyCondition(record, { now = Date.now() } = {}) {
   if (!object(review) || review.kind !== 'automated-source-check' || review.humanReviewed !== false || !Number.isFinite(date(review.checkedAt)) || date(review.checkedAt) > clock(now) || !Number.isFinite(date(review.expiresAt)) || date(review.expiresAt) <= date(review.checkedAt) || date(review.expiresAt) > date(review.checkedAt) + 45 * DAY) problems.push('Bounded source verification dates distinct from pending clinician review required.');
   if (['withdrawn', 'unresolved-conflict', 'blocked', 'superseded'].includes(record.status) || ['withdrawn', 'unresolved-conflict', 'blocked', 'superseded'].includes(review?.status)) problems.push('Withdrawn, conflicted or blocked content is ineligible.');
   if ((record.status !== undefined && !['withdrawn', 'unresolved-conflict', 'blocked', 'superseded'].includes(record.status)) || (review?.status !== undefined && !['withdrawn', 'unresolved-conflict', 'blocked', 'superseded'].includes(review.status))) problems.push('Unknown content status is ineligible.');
-  if (!Array.isArray(record.sources) || record.sources.length < 1 || record.sources.length > 8) return [...problems, 'Between one and eight official sources required.'];
+  if (!Array.isArray(record.sources) || record.sources.length < 1 || record.sources.length > 16) return [...problems, 'Between one and sixteen official sources required.'];
   const sourceIds = new Set(record.sources.map(source => source?.id));
   if (sourceIds.size !== record.sources.length) problems.push('Source IDs must be unique within a condition.');
   for (const source of record.sources) {
     if (source?.rights !== undefined && !verifiedStudySourceReuse(source, { now: clock(now) })) problems.push('Unrecognized or invalid source-specific reuse metadata.');
-    if (!object(source) || !id(source.id) || !bounded(source.title, 300) || !officialStudySourceUrl(source.url) || !bounded(source.organization, 200) || !bounded(source.edition, 160) || !bounded(source.locator, 500) || !['clinical-guideline', 'official-recommendation', 'official-clinical-reference'].includes(source.kind) || source.reuse !== 'original-summary-no-full-text' || !Number.isFinite(date(source.checkedAt)) || date(source.checkedAt) > clock(now) || (source.publishedDate !== null && (!Number.isFinite(date(source.publishedDate)) || date(source.publishedDate) > date(source.checkedAt)))) problems.push('Complete, bounded official source metadata and valid dates required.');
+    if (!object(source) || !id(source.id) || !bounded(source.title, 300) || !officialStudySourceUrl(source.url) || !bounded(source.organization, 200) || !bounded(source.edition, 160) || !bounded(source.locator, 500) || !['clinical-guideline', 'official-recommendation', 'official-clinical-reference'].includes(source.kind) || !(source.reuse === 'original-summary-no-full-text' || ['public-domain-text-excerpt', 'licensed-text-excerpt'].includes(source.reuse) && verifiedStudySourceReuse(source, { now: clock(now) })) || !Number.isFinite(date(source.checkedAt)) || date(source.checkedAt) > clock(now) || (source.publishedDate !== null && (!Number.isFinite(date(source.publishedDate)) || date(source.publishedDate) > date(source.checkedAt)))) problems.push('Complete, bounded official source metadata and valid dates required.');
     if (source && ['withdrawn', 'unresolved-conflict', 'blocked', 'superseded'].includes(source.status)) problems.push('Withdrawn, conflicted or blocked source is ineligible.');
     if (source?.status !== undefined && !['withdrawn', 'unresolved-conflict', 'blocked', 'superseded'].includes(source.status)) problems.push('Unknown source status is ineligible.');
   }
   const sectionIds = new Set(Array.isArray(record.sections) ? record.sections.map(section => section?.id) : []);
-  if (!Array.isArray(record.sections) || record.sections.length < 3 || record.sections.length > 12 || sectionIds.size !== record.sections.length) problems.push('Between three and twelve unique source sections required.');
+  if (!Array.isArray(record.sections) || record.sections.length < 3 || record.sections.length > 32 || sectionIds.size !== record.sections.length) problems.push('Between three and thirty-two unique source sections required.');
   else for (const section of record.sections) {
     const expanded = Array.isArray(section?.sourceIds) && record.sources.some(source => section.sourceIds.includes(source?.id) && verifiedStudySourceReuse(source, { now: clock(now) }));
     if (!object(section) || !id(section.id) || !bounded(section.title, 200) || !bounded(section.text, expanded ? 1600 : 3000) || !references(section.sourceIds, sourceIds)) problems.push('Invalid source-linked study section.');
@@ -334,7 +335,8 @@ export function loadStudyCurriculum({ contentDir, now = Date.now } = {}) {
     if (!object(parsed) || parsed.schemaVersion !== 1 || !Number.isFinite(date(parsed.checkedAt)) || date(parsed.checkedAt) > clock(now) || !Array.isArray(parsed.conditions) || parsed.conditions.length > 125) throw new Error('Invalid study corpus envelope.');
     records.push(...parsed.conditions);
   }
-  return createStudyCurriculum({ records, now });
+  const referenceFiles = readStudyReferenceFiles(resolve(contentDir, '..', 'reference-expansion'), { now });
+  return createStudyCurriculum({ records: mergeStudyReferences(records, referenceFiles.map(file => file.parsed), { now }), now });
 }
 
 /** Foundations are additional exam-study topics, not counted as diagnoses. */

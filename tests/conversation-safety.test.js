@@ -8,6 +8,7 @@ import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { conversationalEvidence, renderStudyDialogue, pendingStudyQuestion, studyDialogueHistory } from '../server/study-conversation.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
+import { conversationQuestions, providerReviewContext } from './fixtures/natural-review-v3.js';
 
 // All provider responses in this file are local fixtures. No external inference.
 async function fixture(t, { reply, env = {} } = {}) {
@@ -18,9 +19,15 @@ async function fixture(t, { reply, env = {} } = {}) {
     const payload = JSON.parse(request.body);
     requests.push(payload);
     let output;
-    if (payload.response_format?.json_schema?.name === 'family_medicine_natural_review_v2') {
-      const data = JSON.parse(payload.messages.find(message => message.content.includes('NATURAL_REVIEW_DATA=')).content.split('NATURAL_REVIEW_DATA=')[1]);
-      output = { version: 2, approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: 0, flags: [], claims: [] })) };
+    if (payload.response_format?.json_schema?.name === 'family_medicine_natural_review_v3') {
+      const data = providerReviewContext(payload);
+      const preferenceQuestions = [
+        'What would you like to work on next?',
+        'What would you like to focus on?',
+        'What would you like to focus on first?',
+        'Would you like to take a break before choosing an option?',
+      ];
+      output = { version: 3, approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: 0, flags: [], claims: [], questions: conversationQuestions(...preferenceQuestions.filter(quote => segment.text.includes(quote))) })) };
     } else output = typeof reply === 'function' ? reply(payload, requests.length) : reply;
     return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 5, completion_tokens: 5 }, choices: [{ message: { content: JSON.stringify(output) } }] });
   };
@@ -178,7 +185,7 @@ test('a linked source topic does not force thanks or limited study time into med
 
 test('unsupported factual topics preserve the evidence gap but allow a subsequent study plan', async t => {
   const app = await fixture(t, { reply: payload => /What causes lupus/.test(payload.messages.at(-1).content)
-    ? { segments: [{ id: 's1', text: 'I cannot verify that fact from our current references. Which part would you like to narrow?', sourceChunkIds: [] }] }
+    ? { segments: [{ id: 's1', text: 'I cannot verify that fact from our current references. You can choose an available study topic or open its cited source.', sourceChunkIds: [] }] }
     : { segments: [{ id: 's1', text: 'We can make this a 10-minute session. What would you like to focus on first?', sourceChunkIds: [] }] } });
   const conversation = await app.conversation('asthma');
   const unknown = await app.chat(conversation.id, 'What causes lupus? Ten minutes are available.', 'unknown-time-topic');

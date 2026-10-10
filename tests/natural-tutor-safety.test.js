@@ -118,7 +118,10 @@ async function appFixture(t, responses) {
   const server = createApp({ dataDir, curriculum: original.references, foundations: createStudyCurriculum({ records: [], now: () => STUDY_NOW }), env: { OPENAI_API_KEY: 'natural-safety-local-fixture-only', OPENAI_MODEL: 'gpt-4.1-mini' }, fetchImpl: async (_url, options) => {
     const input = JSON.parse(options.body); calls.push(input);
     const response = structuredClone(responses[calls.length - 1]);
-    if (input.response_format?.json_schema?.name === 'family_medicine_natural_review_v2') response.version = 2;
+    if (input.response_format?.json_schema?.name === 'family_medicine_natural_review_v3') {
+      response.version = 3;
+      for (const segment of response.segments) segment.questions ||= [];
+    }
     return Response.json({ model: 'gpt-4.1-mini', choices: [{ message: { content: JSON.stringify(response) } }], usage: { prompt_tokens: 6, completion_tokens: 4 } });
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
@@ -133,7 +136,7 @@ async function appFixture(t, responses) {
 
 test('imported natural replies lose reviewer, voice and second-call trust while preserving readable history', async t => {
   const text = 'We can chat first. What has been on your mind?';
-  const app = await appFixture(t, [{ segments: [{ id: 's1', text, sourceChunkIds: [] }] }, { approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 0, claims: [], flags: [] }] }]);
+  const app = await appFixture(t, [{ segments: [{ id: 's1', text, sourceChunkIds: [] }] }, { approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 0, claims: [], flags: [], questions: [{ quote: 'What has been on your mind?', kind: 'conversation', recallSpanId: null }] }] }]);
   const conversation = (await app.api('/api/conversations', { mode: 'coach' })).body;
   const fresh = (await app.api('/api/chat', { conversationId: conversation.id, content: 'Hello.', requestId: 'natural-importable' })).body.message;
   assert.equal(fresh.reviewedDialogue, true);
