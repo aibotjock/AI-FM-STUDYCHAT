@@ -3,7 +3,7 @@
 Build date: October 10, 2026. Tested application tree: `449ab040a61f884e507c648d030ea6938679c3f4`; initial pushed runtime commit: `844ad092b6c24ed052f9897cd4477e98f57f5e41`. Later documentation commits do not change the tested runtime.
 
 - Pinned component provenance: 57 copied files checked against exact upstream Git blob hashes; the practice test bank-fixture path is the only copied-file adjustment.
-- Final automated acceptance: `npm test` passed 91/91 checks on Node 24.19.0, including real HTTP bootstrap, no-key deterministic study mode, encoded IDs, and logout cancellation.
+- Initial rebuild acceptance: `npm test` passed 91/91 checks on Node 24.19.0, including real HTTP bootstrap, no-key deterministic study mode, encoded IDs, and logout cancellation.
 - Pinned automated engines: 3 practice, 9 review, and 33 Conversation Agent checks passed during source materialization.
 - Host access and SQLite baseline: passed (private APIs, origin checks, cookie attributes, static exposure, login throttling, settings, schema version, and transaction action identity).
 - Typed chat control flow: passed, including duplicate/retry identity, cancellation, partial/interrupted outcomes, malformed streams, bounded history, and imported metadata.
@@ -17,3 +17,23 @@ Build date: October 10, 2026. Tested application tree: `449ab040a61f884e507c648d
 Mocked provider checks establish application behavior, not medical accuracy or model resistance to prompt injection. The approved eight small actual-model fixtures are greeting, study plan, general medical concept, unsupported current recommendation, nonexistent paper, unavailable source, ambiguous question, and hostile instructions inside quoted source text. No expanded medical benchmark, storage-failure campaign, or daily AI quotas are included.
 
 Official integration references checked: [Responses streaming](https://developers.openai.com/api/docs/guides/streaming-responses), [streaming event definitions](https://developers.openai.com/api/reference/resources/responses/streaming-events), [GPT-4.1 mini](https://developers.openai.com/api/docs/models/gpt-4.1-mini), [transcription](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create), and [speech](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create). Railway references are listed in deployment instructions.
+
+## OpenAI and Anthropic selector update
+
+Final combined acceptance: 117/117 automated checks pass on Node 24.19.0. Chromium 153 passed 15 phone-size workflows, including saved model selection, visible limited caps, and authenticated monitoring status, with zero page errors. Provider/collector responses in these checks are mocks; they do not establish live Claude credentials.
+
+The updated application adds an authenticated, cached live model catalogue, server-only provider credentials, a saved model preference, per-attempt selection identity, and direct text-only provider routing. Expensive and unknown-price models receive lower server-enforced budgets. One paid Coach request can run at a time. Prior history is trimmed in completed pairs; essential prompts that cannot fit are rejected before payment. No daily quota, SDK, production dependency, paid retry, or provider fallback was added.
+
+Focused deterministic provider checks cover catalogue filtering/pagination/cache, missing keys, uncertain fallback metadata, Anthropic text-only events and cumulative usage, required terminal events, legacy Chat Completions, client attempts to raise caps, UTF-8 byte limits, cancellation, deadlines, and concurrent-request rejection. Real HTTP checks cover authentication, preference validation, selected-provider chat, backups without credentials, and stable retry identity. Browser checks cover selection persistence, visible limited-model caps, and the unified typed/voice chat path. Mocked Claude tests do not establish live Anthropic account access.
+
+The tutor now receives the current UTC date and avoids inferring that an unread source is proprietary or unpublished. This addresses limitations observed in the initial model fixtures; it does not establish medical correctness.
+
+Official additional references checked October 10, 2026: [OpenAI model list](https://developers.openai.com/api/reference/resources/models/methods/list), [OpenAI pricing](https://developers.openai.com/api/docs/pricing), [Claude model list](https://platform.claude.com/docs/en/api/models/list), [Claude streaming](https://platform.claude.com/docs/en/build-with-claude/streaming), and [Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing).
+
+## Ingenium test account
+
+The separate test application account `STUDYCHAT-NO-RAG-TEST` uses organization `a4138b5b-c5ce-4590-abd8-e10739c38c73` and a dedicated hashed application credential. The new `studychat-test-events` receiver is published in Ingenium commit `8fd97dc906ac1915ed9e20f6845d1b7094bc7f36` on `studychat/no-rag-test-client`, and deployed ACTIVE as function version 1. Its 12 deterministic tests passed. The app's durable bounded outbox records attempted provider text requests without sending learner text or credentials and never waits for collector delivery in the reply path.
+
+Live collector verification passed with exactly two new `client_simulated` rows, one OpenAI and one Anthropic, all token/cost values null. Read-back independently confirmed those rows. Identical redelivery returned duplicate acknowledgement without a second row; changed persisted metadata returned 409; the test credential addressing the original organization returned 401; unauthenticated GET returned 405. These checks made zero model requests and do not establish live Anthropic API access.
+
+Terminal model responses that report an output-limit failure retain their supplied model and token counts for monitoring; the chat turn remains failed and cost unknown. Responses, Chat Completions, and Claude terminal-limit cases are covered. Partial unknown network/timeout usage is not invented. Collector fixtures use `client_simulated` with null usage and cost; actual attempted requests use `app_observed`. This does not create a portal login, run a recurring paid simulation, or activate model routing/optimization.

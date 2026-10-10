@@ -1,6 +1,7 @@
-import { el, api, actionId, field, notice, pageIntro, navigate, showGlobalError, getSession, updateSession, startCase } from '/app.js';
+import { el, api, actionId, field, notice, pageIntro, navigate, showGlobalError, getSession, updateSession, startCase, modelSelector } from '/app.js';
 
 let timer = null;
+let telemetryController = null;
 const button = (text, handler, cls = '') => el('button', { type: 'button', class: cls, text, onclick: handler });
 const safe = handler => async event => { const target = event?.currentTarget; if (target?.disabled) return; if (target) target.disabled = true; try { await handler(event); } catch (error) { showGlobalError(error); } finally { if (target) target.disabled = false; } };
 const post = (path, body) => api(path, { method: 'POST', body: { actionId: actionId(), ...body } });
@@ -20,7 +21,7 @@ function modalKeys(backdrop, close) {
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
   });
 }
-export function cleanup() { clearInterval(timer); timer = null; }
+export function cleanup() { clearInterval(timer); timer = null; telemetryController?.abort(); telemetryController = null; }
 export async function render(tab, page) {
   cleanup(); page.replaceChildren(el('div', { class: 'loading', role: 'status', text: 'Opening your study tools…' }));
   try { const view = { practice, review, library, progress, settings }[tab]; if (view) await view(page); }
@@ -131,6 +132,42 @@ async function progress(page) {
   page.replaceChildren(pageIntro('Today · learning signals', 'Keep the next step small.', 'A practical view of review activity and recorded practice. These signals do not measure clinical competence.'), el('div', { class: 'grid three' }, metric(stats.dueCount, 'Cards available now'), metric(stats.reviewedToday, 'Reviews today'), metric(stats.streak, 'Days with recorded reviews')), el('div', { class: 'row section-tabs' }, button('Review due cards', () => navigate('review'), 'primary'), button('Start practice', () => navigate('practice'))), el('div', { class: 'grid' }, el('section', { class: 'panel' }, title('Recent review activity', 'Recorded reviews per day, in your configured timezone.'), el('div', { class: 'activity-grid' }, (stats.activity || []).map(day => el('div', { class: `activity-cell ${day.count ? 'has-activity' : ''}`, title: `${day.date}: ${day.count} reviews`, text: String(day.count) }))), el('p', { class: 'bottom-note', text: 'Self-ratings describe recall during these reviews. They are not validated retention predictions.' })), el('section', { class: 'panel' }, title('Topics to revisit'), stats.weakTopics?.length ? el('div', { class: 'list' }, stats.weakTopics.slice(0, 5).map(topic => el('div', { class: 'row spread' }, el('span', { text: topic.topic || 'Uncategorized' }), el('small', { text: `${topic.lapses} Again ratings / ${topic.reviews} reviews` })))) : el('p', { class: 'muted', text: 'Review cards to build a useful activity history.' }))), el('section', { class: 'panel' }, title('Recent practice'), history.length ? el('div', { class: 'list' }, history.slice(0, 10).map(item => el('div', { class: 'list-item' }, el('div', { class: 'row spread' }, el('strong', { text: `${item.count} questions · ${item.mode}` }), el('span', { class: 'tag', text: item.trusted === false ? 'Imported · unverified' : 'Recorded practice' })), el('p', { class: 'muted', text: `${item.answered} answered · ${item.accuracy == null ? 'No recorded accuracy' : `${item.accuracy}% accuracy on answered items`} · ${new Date(item.completedAt || item.createdAt).toLocaleDateString()}` })))) : el('p', { class: 'muted', text: 'Your completed practice sessions will appear here.' })), notice(result.selfAssessmentLabel || 'Study signals, not clinical competence or board-readiness predictions.'));
 }
 
+function telemetryPanel() {
+  const status = el('div', { role: 'status' }, el('p', { class: 'muted', text: 'Loading monitoring status…' }));
+  const refresh = button('Refresh monitoring status', () => load());
+  const panel = el('section', { class: 'panel' }, title('Ingenium test client'), el('p', { class: 'muted', text: 'Model, token, latency, and status metadata only. Prompts and replies stay in StudyChat.' }), status, refresh);
+  let loading = false;
+  const current = () => panel.isConnected && getSession().authenticated && !document.hidden;
+  async function load() {
+    if (loading || !current()) return;
+    loading = true; refresh.disabled = true;
+    const controller = new AbortController(); telemetryController = controller;
+    try {
+      const result = await api('/api/telemetry', { signal: controller.signal, timeoutMs: 10000 });
+      if (controller.signal.aborted || !current()) return;
+      const count = key => Number.isFinite(Number(result[key])) ? Math.max(0, Number(result[key])) : 0;
+      const deliveryDate = result.lastDeliveryAt ? new Date(result.lastDeliveryAt) : null;
+      const details = [el('p', {}, el('span', { class: 'tag', text: result.configured ? 'Configured' : 'Disabled' }))];
+      details.push(el('div', { class: 'list' }, ['pending', 'delivered', 'rejected', 'dropped'].map(key => el('div', { class: 'row spread' }, el('span', { text: key[0].toUpperCase() + key.slice(1) }), el('strong', { text: String(count(key)) })))));
+      details.push(el('p', { class: 'muted', text: deliveryDate && Number.isFinite(deliveryDate.getTime()) ? `Last delivery ${deliveryDate.toLocaleString()}.` : 'No successful delivery recorded.' }));
+      if (count('pending') || count('rejected') || count('dropped')) details.push(notice('Some monitoring events are pending, rejected, or dropped. These counts do not delay Coach replies.'));
+      if (result.lastError) details.push(notice(`Last delivery error: ${String(result.lastError).slice(0, 500)}`, 'error'));
+      status.replaceChildren(...details);
+    } catch (error) {
+      if (!controller.signal.aborted && current()) status.replaceChildren(notice(`Monitoring status could not load. ${error.message}`, 'error'));
+    } finally {
+      if (telemetryController === controller) telemetryController = null;
+      loading = false; refresh.disabled = false;
+    }
+  }
+  queueMicrotask(() => {
+    if (!panel.isConnected || !getSession().authenticated) return;
+    timer = setInterval(() => { if (current()) void load(); }, 10000);
+    if (current()) void load(); else status.replaceChildren(el('p', { class: 'muted', text: 'Monitoring status refreshes when Settings is visible.' }));
+  });
+  return panel;
+}
+
 async function settings(page) {
   const saved = await api('/api/settings'), focus = select([['clinical-reasoning', 'Clinical reasoning'], ['exam-preparation', 'Exam preparation'], ['balanced', 'Balanced study']]), style = select([['guided-questions', 'Guided questions'], ['concise', 'Concise explanations'], ['detailed', 'Detailed explanations']]);
   focus.value = saved.focus; style.value = saved.style;
@@ -140,5 +177,5 @@ async function settings(page) {
   const form = el('form', { onsubmit: async event => { event.preventDefault(); if (save.disabled) return; save.disabled = true; try { const result = await post('/api/settings', { focus: focus.value, style: style.value, sessionMinutes: Number(duration.value), newCardLimit: Number(newCards.value), timeZone: timezone.value, voice: voice.value, voiceEnabled: voiceEnabled.checked }); updateSession({ settings: result }); feedback.replaceChildren(notice('Preferences saved.', 'good')); } catch (error) { feedback.replaceChildren(notice(error.message, 'error')); } finally { save.disabled = false; } } }, field('Study focus', focus), field('Coach style', style), field('Session minutes', duration), field('Daily new-card limit', newCards), field('Timezone', timezone), field('Preferred voice', voice), el('label', { class: 'check-row' }, voiceEnabled, 'Enable optional voice'), el('p', { class: 'bottom-note', text: 'Voice is AI generated and starts only when you choose Voice in Coach. Text remains available independently.' }), save, feedback);
   const restoreInput = el('input', { type: 'file', accept: '.json,application/json', 'aria-label': 'Select a JSON backup' }), restoreFeedback = el('div');
   const restoreButton = button('Restore selected backup', safe(async () => { const file = restoreInput.files[0]; if (!file) throw new Error('Select a JSON backup first.'); if (file.size > 16 * 1024 * 1024) throw new Error('Backup exceeds the 16 MiB limit.'); let data; try { data = JSON.parse(await file.text()); } catch { throw new Error('The backup is not valid JSON.'); } await api('/api/backup', { method: 'POST', body: data }); restoreFeedback.replaceChildren(notice('Backup restored. Saved data was validated and replaced atomically. Reloading the workspace…', 'good')); location.reload(); }), 'danger');
-  page.replaceChildren(pageIntro('Settings · your study rhythm', 'Make this space yours.', 'Keep preferences simple, save your work, and return with a clear next step.'), el('div', { class: 'grid' }, el('section', { class: 'panel' }, title('Study preferences'), form), el('div', { class: 'stack' }, el('section', { class: 'panel' }, title('Your data'), el('p', { class: 'muted', text: 'Backups contain your saved study records and preferences, without API keys or access tokens.' }), button('Download JSON backup', safe(async () => { const data = await api('/api/backup'); const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })); const link = el('a', { href: url, download: `studychat-backup-${new Date().toISOString().slice(0, 10)}.json` }); document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); }), 'primary'), el('div', { class: 'reveal' }, el('h3', { text: 'Restore a backup' }), notice('Restore replaces current study data after validation. Download a backup first if you want to preserve your current records.'), restoreInput, restoreButton, restoreFeedback)), el('section', { class: 'panel' }, title('Connection'), el('p', { class: 'muted', text: getSession().aiAvailable ? `Text model: ${getSession().model}. Credentials remain on the server.` : 'AI is unavailable. Practice, review, personal cards, cases, and fixed worksheets remain usable.' }), button('Sign out', () => document.querySelector('.sidebar-foot button')?.click()), el('p', { class: 'bottom-note', text: 'The installed shell can load without a network. Saved study workflows require a backend connection; there is no offline sync.' })))));
+  page.replaceChildren(pageIntro('Settings · your study rhythm', 'Make this space yours.', 'Keep preferences simple, save your work, and return with a clear next step.'), el('div', { class: 'grid' }, el('section', { class: 'panel' }, title('Study preferences'), form), el('div', { class: 'stack' }, el('section', { class: 'panel' }, title('Your data'), el('p', { class: 'muted', text: 'Backups contain your saved study records and preferences, without API keys or access tokens.' }), button('Download JSON backup', safe(async () => { const data = await api('/api/backup'); const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })); const link = el('a', { href: url, download: `studychat-backup-${new Date().toISOString().slice(0, 10)}.json` }); document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); }), 'primary'), el('div', { class: 'reveal' }, el('h3', { text: 'Restore a backup' }), notice('Restore replaces current study data after validation. Download a backup first if you want to preserve your current records.'), restoreInput, restoreButton, restoreFeedback)), el('section', { class: 'panel' }, title('Connection'), modelSelector('settings'), el('p', { class: 'muted', text: getSession().aiAvailable ? 'Choose a configured OpenAI or Anthropic model above. Model choice saves immediately; provider keys remain on the server.' : 'AI is unavailable. Practice, review, personal cards, cases, and fixed worksheets remain usable.' }), button('Sign out', () => document.querySelector('.sidebar-foot button')?.click()), el('p', { class: 'bottom-note', text: 'The installed shell can load without a network. Saved study workflows require a backend connection; there is no offline sync.' })), telemetryPanel())));
 }

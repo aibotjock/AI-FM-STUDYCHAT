@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { createStore } from './store.js';
-import { createOpenAIProvider } from './provider.js';
+import { createModelGateway } from './provider.js';
+import { createIngeniumTelemetry } from './telemetry.js';
 import { createChatService } from './chat.js';
 import { createStudyService } from './study.js';
 import { createBackupService } from './backup.js';
@@ -12,9 +13,12 @@ export function buildApplication({ config, provider: suppliedProvider } = {}) {
   const store = createStore({ dataDir: config.dataDir, maxBytes: config.backupBytes });
   const bank = JSON.parse(readFileSync(new URL('../content/medical-question-bank.json', import.meta.url), 'utf8'));
   const study = createStudyService({ store, bank });
-  const provider = suppliedProvider || createOpenAIProvider({ apiKey: config.apiKey, model: config.model, maxOutputTokens: config.maxOutputTokens, timeoutMs: config.chatTimeoutMs, maxOutputChars: config.maxOutputChars });
+  const telemetry = createIngeniumTelemetry({ db: store.db, config });
+  const models = createModelGateway({ config, onSettled: metadata => telemetry.record(metadata) });
+  const provider = suppliedProvider || models;
   const references = createReferenceDirectory();
   const chat = createChatService({ db: store.db, provider, config,
+    getSelection: () => { const settings = study.settings(); return { provider: settings.aiProvider, model: settings.aiModel || (settings.aiProvider === 'anthropic' ? config.anthropicModel : config.model) }; },
     getContext: ({ conversationId, input, referenceIds = [] }) => {
       const context = study.getChatContext(conversationId, input);
       if (!referenceIds.length) return context;
@@ -25,7 +29,7 @@ export function buildApplication({ config, provider: suppliedProvider } = {}) {
   });
   const backup = createBackupService({ store, chat, study, maxBytes: config.backupBytes });
   const voice = createVoiceService({ db: store.db, chat, config });
-  store.db.prepare('INSERT OR IGNORE INTO schema_version VALUES(2)').run();
-  const app = createApp({ config, chat, study, backup, references, voice });
-  return { ...app, store, chat, study, backup, references, voice, async shutdown() { voice.close(); chat.close(); await app.close(); store.close(); } };
+  store.db.prepare('INSERT OR IGNORE INTO schema_version VALUES(3)').run();
+  const app = createApp({ config, chat, study, backup, references, voice, telemetry, models: suppliedProvider?.catalogue ? suppliedProvider : models });
+  return { ...app, store, chat, study, backup, references, voice, models, telemetry, async shutdown() { voice.close(); chat.close(); await app.close(); await telemetry.close(); store.close(); } };
 }

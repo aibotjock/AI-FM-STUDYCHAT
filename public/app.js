@@ -36,11 +36,12 @@ const root = document.querySelector('#app');
 const tabs = [['coach', 'Coach', '◌'], ['practice', 'Practice', '▤'], ['review', 'Review', '↻'], ['library', 'Library', '▥'], ['progress', 'Progress', '▥'], ['settings', 'Settings', '⚙']];
 let session = {}, currentTab = 'coach', page, globalNotice, agent, currentConversation = null, conversations = [], log, input, chatStatus, stopButton, nextTurnId = null, active = null, conversationReadOnly = false;
 let studyModule = null, voiceModule = null, voiceOpening = false;
+let selectedModel = null, modelCataloguePromise = null, modelController = null, modelSaveQueue = Promise.resolve();
 const requests = new Map();
 const brand = () => el('div', { class: 'brand' }, el('span', { class: 'brand-mark', 'aria-hidden': 'true', text: '+' }), el('div', {}, 'StudyChat', el('small', { text: 'FAMILY MEDICINE' })));
 const navigation = className => el('nav', { class: className, 'aria-label': 'Main navigation' }, tabs.map(([id, label, symbol]) => el('button', { type: 'button', 'data-tab': id, 'aria-current': currentTab === id ? 'page' : null, onclick: () => navigate(id) }, el('span', { class: 'nav-icon', 'aria-hidden': 'true', text: symbol }), label)));
 function showStatus(text, busy = false) { if (chatStatus) { chatStatus.textContent = text; chatStatus.classList.toggle('loading', busy); } if (stopButton) stopButton.classList.toggle('hidden', !busy); }
-function logoutLocal() { agent?.destroy(); agent = null; voiceModule?.cleanup?.(); session = { authenticated: false }; currentConversation = null; nextTurnId = null; active = null; showLogin(); }
+function logoutLocal() { agent?.destroy(); agent = null; voiceModule?.cleanup?.(); modelController?.abort(); modelController = null; modelCataloguePromise = null; selectedModel = null; modelSaveQueue = Promise.resolve(); session = { authenticated: false }; currentConversation = null; nextTurnId = null; active = null; showLogin(); }
 export function showGlobalError(error) { if (globalNotice) globalNotice.replaceChildren(notice(error?.message || String(error), 'error')); }
 export function clearGlobalError() { globalNotice?.replaceChildren(); }
 async function boot() {
@@ -57,6 +58,8 @@ function showLogin(error = '') {
   root.replaceChildren(el('main', { class: 'login', id: 'main' }, brand(), el('div', { class: 'eyebrow', text: 'Your private study space' }), el('h1', { class: 'preserve-lines', text: 'Small steps.\nStronger reasoning.' }), el('p', { class: 'muted', text: 'A focused workspace for family medicine. Converse, practice, and return to what matters.' }), el('div', { class: 'panel' }, form), el('p', { class: 'bottom-note', text: 'Study support only. Your access token is separate from your AI API key.' })));
 }
 async function showWorkspace() {
+  modelController?.abort(); modelController = new AbortController(); modelCataloguePromise = null;
+  selectedModel = session.selected || { provider: 'openai', model: session.model };
   globalNotice = el('div'); page = el('main', { id: 'main', class: 'page', tabindex: '-1' });
   const status = el('span', { class: `tag ${session.aiAvailable ? 'good' : 'alert'}`, text: session.aiAvailable ? 'AI connected' : 'AI unavailable' });
   root.replaceChildren(el('div', { class: 'layout' }, el('aside', { class: 'sidebar' }, brand(), navigation('nav'), el('div', { class: 'sidebar-foot' }, el('div', { class: 'owner-tag' }, el('span', { class: 'status-dot' }), 'Private workspace'), el('div', { class: 'muted', text: 'Clinical reasoning, one useful step at a time.' }), el('button', { class: 'subtle', onclick: logout, text: 'Sign out' }))), el('div', { class: 'workspace' }, el('header', { class: 'topbar' }, el('div', { class: 'mobile-brand' }, brand()), el('div', {}, el('div', { class: 'topbar-title', text: 'A little practice, every day' }), el('div', { class: 'date-label', text: new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).format(new Date()) })), status), globalNotice, page), navigation('tabbar')));
@@ -93,7 +96,8 @@ function finishBubble(item, value) {
   if (value.content && item.bubble.body.textContent !== value.content) item.bubble.body.textContent = value.content;
   const status = value.status || 'completed'; item.status = status;
   item.bubble.state.classList.toggle('error', status !== 'completed');
-  item.bubble.state.textContent = status === 'completed' ? 'Saved' : `${status[0].toUpperCase() + status.slice(1)}${value.error || value.message ? ` · ${value.error?.message || value.error || value.message}` : ''}${item.bubble.body.textContent ? ' · Partial response' : ''}`;
+  const modelLabel = value.model && value.provider ? ` · ${value.provider === 'openai' ? 'OpenAI' : value.provider === 'anthropic' ? 'Anthropic' : value.provider} ${value.model}` : '';
+  item.bubble.state.textContent = status === 'completed' ? `Saved${modelLabel}` : `${status[0].toUpperCase() + status.slice(1)}${value.error || value.message ? ` · ${value.error?.message || value.error || value.message}` : ''}${item.bubble.body.textContent ? ' · Partial response' : ''}`;
   sourceLabels(item.bubble.sources, value.sources || value.references || []);
   if (['pending', 'running'].includes(status)) {
     item.bubble.state.textContent = 'This saved request is still running. Reload history to recover its outcome, or stop it.';
@@ -141,6 +145,63 @@ function savedTurn(turn) {
   finishBubble({ bubble: answer, turnId: turn.turnId || turn.id, input: turn.input || turn.userContent, attemptId: turn.attemptId }, turn);
   fragment.append(user.node, answer.node); return fragment;
 }
+const selectionKey = selection => JSON.stringify([selection.provider, selection.model || selection.id]);
+export function getModelCatalogue({ refresh = false } = {}) {
+  if (refresh) modelCataloguePromise = null;
+  modelCataloguePromise ||= api('/api/models', { signal: modelController?.signal });
+  return modelCataloguePromise;
+}
+export function modelSelector(location = 'coach') {
+  const selectedAtMount = selectedModel || session.selected || { provider: 'openai', model: session.model };
+  const picker = el('select', { id: `chat-model-${location}`, 'aria-label': 'Chat model' }, el('option', { value: selectionKey(selectedAtMount), text: selectedAtMount.model || 'Configured default model' }));
+  picker.value = selectionKey(selectedAtMount);
+  const detail = el('small', { class: 'model-limit', role: 'status', text: 'Loading available models. Your saved model remains selected.' });
+  const widget = el('div', { class: `model-controls ${location === 'settings' ? 'model-settings' : ''}` }, el('div', { class: 'model-picker-row' }, el('label', { for: picker.id, text: 'Chat model' }), picker), detail);
+  let catalogue = null;
+  function updateDetail() {
+    const choice = catalogue?.models?.find(model => selectionKey(model) === selectionKey(selectedModel || selectedAtMount));
+    detail.classList.toggle('limited', choice?.tier === 'limited');
+    const provider = catalogue?.providers?.find(value => value.id === (selectedModel || selectedAtMount).provider);
+    if (choice && !choice.available) { detail.textContent = `${provider?.label || choice.provider} is unavailable. Configure its server key or choose an available model.`; return; }
+    const caps = [];
+    if (choice?.limits?.maxPromptBytes) caps.push(`${Math.round(choice.limits.maxPromptBytes / 1024)} KiB prompt`);
+    if (choice?.limits?.maxOutputTokens) caps.push(`${choice.limits.maxOutputTokens.toLocaleString()} output tokens`);
+    const budgetLabel = choice?.tier === 'limited' ? choice.priceKnown === false ? 'Price unconfirmed · limited budget' : 'Higher-cost model · limited budget' : 'Standard model budget';
+    detail.textContent = `${budgetLabel}${caps.length ? `: ${caps.join(' · ')}` : ''}. Changes apply to the next attempt; the current reply keeps its model.${choice?.availability === 'unconfirmed' ? ' Account access unconfirmed; the live model list could not be loaded.' : ''}`;
+  }
+  async function load(refresh = false) {
+    try {
+      catalogue = await getModelCatalogue({ refresh });
+      if (!widget.isConnected || !session.authenticated) return;
+      // The session endpoint supplies the effective saved selection; directory loading cannot replace a newer user choice.
+      selectedModel ||= catalogue.selected || catalogue.defaultSelection || selectedAtMount;
+      const groups = (catalogue.providers || []).map(provider => {
+        const group = el('optgroup', { label: `${provider.label}${provider.configured ? '' : ' · key unavailable'}` });
+        for (const model of (catalogue.models || []).filter(value => value.provider === provider.id)) group.append(el('option', { value: selectionKey(model), disabled: !model.available, text: `${model.label || model.id}${model.tier === 'limited' ? ' · limited' : ''}${model.available ? '' : ' · unavailable'}` }));
+        return group;
+      });
+      if (!(catalogue.models || []).some(model => selectionKey(model) === selectionKey(selectedModel))) groups.unshift(el('option', { value: selectionKey(selectedModel), text: `${selectedModel.model} · saved selection` }));
+      picker.replaceChildren(...groups); picker.value = selectionKey(selectedModel); updateDetail();
+    } catch (error) {
+      if (!widget.isConnected || !session.authenticated) return;
+      detail.replaceChildren('Model list unavailable. Your saved model remains selected. ', el('button', { type: 'button', class: 'button-link', text: 'Try loading models again', onclick: () => load(true) }));
+    }
+  }
+  picker.addEventListener('change', () => {
+    const choice = catalogue?.models?.find(model => selectionKey(model) === picker.value);
+    if (!choice?.available) { picker.value = selectionKey(selectedModel || selectedAtMount); showGlobalError(new Error('Choose a model whose provider is configured and available.')); return; }
+    const previous = selectedModel, selection = { provider: choice.provider, model: choice.id }, signal = modelController?.signal;
+    selectedModel = selection; updateDetail();
+    // Serialize preference writes only. Chat requests are independent and snapshot the visible choice immediately.
+    modelSaveQueue = modelSaveQueue.catch(() => {}).then(async () => {
+      if (signal?.aborted) return;
+      try { const saved = await api('/api/settings', { method: 'POST', signal, body: { actionId: actionId(), aiProvider: selection.provider, aiModel: selection.model } }); session.settings = { ...session.settings, ...saved }; session.selected = selection; }
+      catch (error) { if (signal?.aborted) return; if (selectionKey(selectedModel) === selectionKey(selection)) { selectedModel = session.selected || previous; picker.value = selectionKey(selectedModel); updateDetail(); } showGlobalError(new Error(`The model preference could not be saved. ${error.message}`)); }
+    });
+  });
+  queueMicrotask(() => load()); return widget;
+}
+function modelSnapshot() { return { ...(selectedModel || session.selected || { provider: 'openai', model: session.model }) }; }
 function welcome() {
   log.replaceChildren(el('div', { class: 'chat-welcome' }, el('div', { class: 'coach-symbol', 'aria-hidden': 'true', text: '✦' }), el('div', { class: 'eyebrow', text: 'Meet your study coach' }), el('h2', { text: 'Where would you like to begin?' }), el('p', { text: 'Think through a concept, plan a focused session, or talk through what feels difficult. A source match is never required to start a conversation.' }), el('div', { class: 'suggestions' }, ['Plan an 18-minute session', 'Help me reason through a case', 'Explain a concept simply'].map(text => el('button', { type: 'button', text, onclick: () => { input.value = text; input.focus(); } })))));
 }
@@ -164,7 +225,7 @@ async function renderCoach() {
   chatStatus = el('div', { class: 'chat-status', role: 'status', 'aria-live': 'polite', text: 'Ready for your next question.' });
   const voiceButton = el('button', { type: 'button', class: 'subtle', id: 'voice-start', text: 'Voice', onclick: () => openVoice().catch(showGlobalError) });
   page.replaceChildren(pageIntro('Coach · clinical reasoning', 'Make room for understanding.', 'A concise tutor for thoughtful practice and useful conversation.'), !session.aiAvailable ? notice('AI is unavailable. Your messages receive a clear service outcome; practice, cards, and review remain available.') : document.createDocumentFragment(),
-    el('section', { class: 'panel chat-card', 'aria-label': 'Coach' }, el('div', { class: 'chat-toolbar' }, picker, el('div', { class: 'row' }, voiceButton, el('button', { type: 'button', class: 'subtle', text: '+ New chat', onclick: () => { agent?.stop('New conversation.'); voiceModule?.cleanup?.(); currentConversation = null; conversationReadOnly = false; input.readOnly = false; input.placeholder = 'Ask Coach, or just start a conversation…'; picker.value = ''; setupAgent(); welcome(); showStatus('New conversation.'); } }))), log,
+    el('section', { class: 'panel chat-card', 'aria-label': 'Coach' }, el('div', { class: 'chat-toolbar' }, picker, el('div', { class: 'row' }, voiceButton, el('button', { type: 'button', class: 'subtle', text: '+ New chat', onclick: () => { agent?.stop('New conversation.'); voiceModule?.cleanup?.(); currentConversation = null; conversationReadOnly = false; input.readOnly = false; input.placeholder = 'Ask Coach, or just start a conversation…'; picker.value = ''; setupAgent(); welcome(); showStatus('New conversation.'); } }))), modelSelector(), log,
       el('form', { class: 'composer', onsubmit: event => { event.preventDefault(); submit(); } }, el('div', { class: 'composer-box' }, input, el('button', { class: 'primary', type: 'submit', title: 'Send message', 'aria-label': 'Send message', text: '↑' })), el('div', { class: 'composer-footer' }, chatStatus, stopButton), el('div', { class: 'composer-footer' }, el('small', { text: 'Enter to send · Shift + Enter for a new line' }), el('small', { text: 'Private study workspace' })))), el('p', { class: 'bottom-note', text: 'For education and reflection. Coach can be wrong; reference links are distinguished from material actually consulted.' }));
   setupAgent(); welcome();
   if (currentConversation) { try { await history(); } catch (error) { showGlobalError(error); } }
@@ -176,14 +237,14 @@ async function submit() {
   if (document.querySelector('.chat-welcome')) log.replaceChildren();
   currentConversation ||= actionId();
   const user = bubble('user', text); const answer = bubble('assistant', '', 'Connecting…'); log.append(user.node, answer.node); input.value = '';
-  const item = { conversationId: currentConversation, turnId: actionId(), attemptId: actionId(), input: text, bubble: answer, status: 'running' }; nextTurnId = item.turnId; requests.set(item.turnId, item);
+  const item = { conversationId: currentConversation, turnId: actionId(), attemptId: actionId(), input: text, bubble: answer, status: 'running', selection: modelSnapshot() }; nextTurnId = item.turnId; requests.set(item.turnId, item);
   log.scrollTop = log.scrollHeight; await agent.sendText(text);
 }
 async function retryTurn(item) {
   if (active || !item.input || !item.turnId) return;
   const last = log.querySelector('.message.assistant:last-child');
   if (last !== item.bubble.node) { showStatus('Only the most recent unsuccessful turn can be retried. Send a new message to revisit an older question.'); return; }
-  const retry = { ...item, conversationId: currentConversation, attemptId: actionId(), retry: true, status: 'running' }; nextTurnId = retry.turnId; requests.set(retry.turnId, retry);
+  const retry = { ...item, conversationId: currentConversation, attemptId: actionId(), retry: true, status: 'running', selection: modelSnapshot() }; nextTurnId = retry.turnId; requests.set(retry.turnId, retry);
   item.bubble.state.replaceChildren('Retrying…'); await agent.sendText(item.input);
 }
 async function sendTurn({ text, turnId, signal }) {
@@ -191,7 +252,7 @@ async function sendTurn({ text, turnId, signal }) {
   if (!item) {
     if (document.querySelector('.chat-welcome')) log.replaceChildren();
     currentConversation ||= actionId(); const user = bubble('user', text), answer = bubble('assistant', '', 'Connecting…'); log.append(user.node, answer.node);
-    item = { conversationId: currentConversation, turnId, attemptId: actionId(), input: text, bubble: answer, status: 'running' };
+    item = { conversationId: currentConversation, turnId, attemptId: actionId(), input: text, bubble: answer, status: 'running', selection: modelSnapshot() };
     log.scrollTop = log.scrollHeight;
   }
   active = item; item.status = 'running'; requests.set(turnId, item);
@@ -200,7 +261,7 @@ async function sendTurn({ text, turnId, signal }) {
   const combined = AbortSignal.any([signal, timerController.signal]);
   let terminal = null;
   try {
-    const response = await fetch('/api/chat', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ conversationId: item.conversationId, turnId: item.turnId, attemptId: item.attemptId, input: text, retry: Boolean(item.retry), referenceIds: [] }), signal: combined });
+    const response = await fetch('/api/chat', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ conversationId: item.conversationId, turnId: item.turnId, attemptId: item.attemptId, input: text, retry: Boolean(item.retry), referenceIds: [], provider: item.selection?.provider, model: item.selection?.model }), signal: combined });
     if (!response.ok) { let value = {}; try { value = await response.json(); } catch {} throw new Error(value.error?.message || value.error || value.message || `Chat request failed (${response.status}).`); }
     if (!response.body || !response.headers.get('content-type')?.includes('text/event-stream')) throw new Error('The chat stream was not available.');
     const reader = response.body.getReader(), decoder = new TextDecoder(); let buffer = '', content = '';

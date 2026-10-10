@@ -3,12 +3,12 @@ import { mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { HttpError } from './errors.js';
 
-export const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', style: 'guided-questions', sessionMinutes: 18, newCardLimit: 5, timeZone: 'America/New_York', voice: 'marin', voiceEnabled: false });
+export const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', style: 'guided-questions', sessionMinutes: 18, newCardLimit: 5, timeZone: 'America/New_York', voice: 'marin', voiceEnabled: false, aiProvider: 'openai', aiModel: '' });
 
 export function validateSettings(input, base = DEFAULT_SETTINGS) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new HttpError(400, 'Settings must be an object.');
   const next = { ...base };
-  for (const [key, values] of Object.entries({ focus: ['clinical-reasoning', 'exam-preparation', 'balanced'], style: ['guided-questions', 'concise', 'detailed'], voice: ['marin', 'cedar', 'coral', 'sage', 'ash'] })) {
+  for (const [key, values] of Object.entries({ focus: ['clinical-reasoning', 'exam-preparation', 'balanced'], style: ['guided-questions', 'concise', 'detailed'], voice: ['marin', 'cedar', 'coral', 'sage', 'ash'], aiProvider: ['openai', 'anthropic'] })) {
     if (input[key] !== undefined) { if (!values.includes(input[key])) throw new HttpError(400, `Invalid ${key}.`); next[key] = input[key]; }
   }
   for (const [key, min, max] of [['sessionMinutes', 5, 120], ['newCardLimit', 0, 100]]) {
@@ -20,6 +20,7 @@ export function validateSettings(input, base = DEFAULT_SETTINGS) {
     next.timeZone = input.timeZone;
   }
   if (input.voiceEnabled !== undefined) { if (typeof input.voiceEnabled !== 'boolean') throw new HttpError(400, 'Invalid voice setting.'); next.voiceEnabled = input.voiceEnabled; }
+  if (input.aiModel !== undefined) { if (typeof input.aiModel !== 'string' || (input.aiModel !== '' && !/^[A-Za-z0-9_.:-]{1,200}$/.test(input.aiModel))) throw new HttpError(400, 'Invalid AI model.'); next.aiModel = input.aiModel; }
   return next;
 }
 
@@ -28,7 +29,7 @@ export function createStore({ dataDir, filename, seed = {}, maxBytes = 16 * 1024
   const db = new DatabaseSync(filename);
   db.exec('PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=3000; CREATE TABLE IF NOT EXISTS schema_version (version INTEGER PRIMARY KEY); INSERT OR IGNORE INTO schema_version VALUES(1); CREATE TABLE IF NOT EXISTS workspace (id INTEGER PRIMARY KEY CHECK(id=1), payload TEXT NOT NULL); CREATE TABLE IF NOT EXISTS study_actions (id TEXT PRIMARY KEY, kind TEXT NOT NULL, payload TEXT NOT NULL, result TEXT NOT NULL, created_at INTEGER NOT NULL);');
   const schema = db.prepare('SELECT MAX(version) AS version FROM schema_version').get().version;
-  if (schema > 2) { db.close(); throw new Error('This database schema is newer than this app.'); }
+  if (schema > 3) { db.close(); throw new Error('This database schema is newer than this app.'); }
   const put = db.prepare('INSERT INTO workspace(id,payload) VALUES(1,?) ON CONFLICT(id) DO UPDATE SET payload=excluded.payload');
   if (!db.prepare('SELECT id FROM workspace WHERE id=1').get()) put.run(JSON.stringify({ settings: { ...DEFAULT_SETTINGS }, cards: [], reviews: [], ...structuredClone(seed) }));
   function transaction(fn) {

@@ -1,0 +1,31 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { buildApplication } from '../server/bootstrap.js';
+import { loadConfig } from '../server/config.js';
+
+test('authenticated catalogue and saved model selection reach the same typed/voice chat path without trusting supplied limits', async t => {
+  const dataDir = mkdtempSync(`${tmpdir()}/studychat-model-http-`), selections = [];
+  const choices = [{ provider: 'openai', id: 'gpt-4.1-mini' }, { provider: 'anthropic', id: 'claude-opus-5-5' }];
+  const provider = { async catalogue() { return { providers: [{ id: 'openai', configured: true }, { id: 'anthropic', configured: true }], models: choices }; }, async resolveSelection(selection) { if (!choices.some(choice => choice.provider === selection.provider && choice.id === selection.model)) { const error = new Error('Choose a listed model.'); error.status = 400; throw error; } return selection; }, async generate({ selection }) { selections.push(selection); return { content: 'Selected model reply', provider: selection.provider, model: selection.model }; } };
+  const config = loadConfig({ PORT: '0', DATA_DIR: dataDir, STUDY_ACCESS_TOKEN: 'owner-model-http-token-32-characters', OPENAI_API_KEY: 'test-placeholder', ANTHROPIC_API_KEY: 'test-placeholder' });
+  const app = buildApplication({ config, provider }); await new Promise(resolve => app.server.listen(0, '127.0.0.1', resolve));
+  t.after(async () => { await app.shutdown(); rmSync(dataDir, { recursive: true, force: true }); });
+  const origin = `http://127.0.0.1:${app.server.address().port}`;
+  assert.equal((await fetch(origin + '/api/models')).status, 401);
+  assert.equal((await fetch(origin + '/api/telemetry')).status, 401);
+  assert.equal((await (await fetch(origin + '/api/session')).json()).selected, undefined);
+  const login = await fetch(origin + '/api/login', { method: 'POST', headers: { Origin: origin, 'Content-Type': 'application/json' }, body: JSON.stringify({ token: config.accessToken }) });
+  const headers = { Origin: origin, Cookie: login.headers.get('set-cookie').split(';')[0], 'Content-Type': 'application/json' };
+  const post = (path, body) => fetch(origin + path, { headers, method: 'POST', body: JSON.stringify(body) });
+  const list = await fetch(origin + '/api/models', { headers }); assert.equal(list.status, 200); assert.equal((await list.json()).models.length, 2);
+  const monitoring = await fetch(origin + '/api/telemetry', { headers }); assert.equal(monitoring.status, 200); const telemetry = await monitoring.json(); assert.equal(telemetry.configured, false); assert.equal(telemetry.organizationId, null); assert.doesNotMatch(JSON.stringify(telemetry), /test-placeholder/);
+  assert.equal((await post('/api/settings', { aiProvider: 'anthropic', aiModel: 'made-up' })).status, 400);
+  const saved = await post('/api/settings', { aiProvider: 'anthropic', aiModel: 'claude-opus-5-5' }); assert.equal(saved.status, 200);
+  assert.deepEqual((await (await fetch(origin + '/api/session', { headers })).json()).selected, { provider: 'anthropic', model: 'claude-opus-5-5' });
+  const stream = await post('/api/chat', { conversationId: 'model-c', turnId: 'model-t', attemptId: 'model-a', input: 'Hello', maxOutputTokens: 999999, limits: { maxOutputTokens: 999999 } });
+  const terminal = (await stream.text()).split('\n').filter(line => line.startsWith('data: ')).map(line => JSON.parse(line.slice(6))).at(-1);
+  assert.equal(terminal.status, 'completed'); assert.deepEqual(selections, [{ provider: 'anthropic', model: 'claude-opus-5-5' }]); assert.equal(terminal.provider, 'anthropic');
+  const backup = app.backup.export(); assert.equal(backup.state.settings.aiModel, 'claude-opus-5-5'); assert.doesNotMatch(JSON.stringify(backup), /test-placeholder/);
+});

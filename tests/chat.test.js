@@ -22,7 +22,7 @@ test('empty-reference ordinary chat streams once, saves user first, and deduplic
   let calls = 0, chat;
   const provider = { async generate({ messages, onDelta }) {
     calls++; assert.equal(chat.history('c1').turns[0].input, 'Hello');
-    assert.equal(messages.at(-1).content, 'Hello'); assert.equal(messages.length, 2);
+    assert.equal(messages.at(-1).content, 'Hello'); assert.equal(messages.length, 3); assert.match(messages[1].content, /Current UTC date:/);
     onDelta('Hi '); onDelta('there.'); return { content: 'Hi there.', usage: { input_tokens: 10, output_tokens: 3 }, model: 'test' };
   } };
   ({ chat } = setup(t, provider));
@@ -88,7 +88,7 @@ test('Stop wins once, excludes incomplete turns from model context, and terminal
   const controller = new AbortController(), first = chat.submit(request(), () => {}, { signal: controller.signal });
   await tick(); controller.abort(); assert.equal((await first).status, 'cancelled');
   await chat.submit(request('t2', { input: 'Next' }));
-  assert.equal(delivered.length, 2); assert.ok(delivered.every(message => message.content !== 'Partial text'));
+  assert.equal(delivered.length, 3); assert.ok(delivered.every(message => message.content !== 'Partial text'));
   assert.equal(chat.cancel({ conversationId: 'c1' }).cancelled, false);
 });
 
@@ -149,7 +149,7 @@ test('backup round trip preserves legacy archive; imported answers cannot become
   db.exec('BEGIN'); chat.importData(chat.exportData()); db.exec('COMMIT');
   assert.deepEqual(chat.history('c1').turns[0].historicalMetadata, historical);
   assert.deepEqual(chat.exportData().legacyRecords, exported.legacyRecords);
-  await chat.submit(request('t2')); assert.equal(messages.length, 2);
+  await chat.submit(request('t2')); assert.equal(messages.length, 3);
   const invalid = structuredClone(exported); invalid.turns[0].conversation_id = 'missing';
   assert.throws(() => chat.validateImport(invalid)); assert.equal(chat.history('c1').turns.length, 2);
 });
@@ -178,5 +178,5 @@ test('direct provider sends one supported Responses request without tools or fal
   assert.equal(calls, 1); assert.equal(body.stream, true); assert.equal(body.store, false); assert.equal(body.tools, undefined);
   const noAI = createOpenAIProvider(); assert.equal(noAI.available, false);
   await assert.rejects(noAI.generate({ messages: [] }), error => error.code === 'ai_unavailable');
-  assert.throws(() => createOpenAIProvider({ model: 'gpt-6-astra' }));
+  assert.equal(createOpenAIProvider({ model: 'gpt-6-astra' }).model, 'gpt-6-astra');
 });

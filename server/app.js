@@ -20,7 +20,7 @@ export async function readBody(req, limit, json = true) {
   catch { throw new HttpError(400, 'Request must contain a JSON object.'); }
 }
 
-export function createApp({ config, chat, study, references, voice, backup, onLogout } = {}) {
+export function createApp({ config, chat, study, references, voice, backup, models, telemetry, onLogout } = {}) {
   const auth = createAuth(config);
   const sessionWork = new Map();
   const track = (session, controller) => { if (!sessionWork.has(session)) sessionWork.set(session, new Set()); sessionWork.get(session).add(controller); return () => { const work = sessionWork.get(session); work?.delete(controller); if (!work?.size) sessionWork.delete(session); }; };
@@ -33,12 +33,14 @@ export function createApp({ config, chat, study, references, voice, backup, onLo
     try {
       const url = new URL(req.url, 'http://localhost'); const path = url.pathname;
       if (path === '/health' && req.method === 'GET') return json({ status: 'ok' });
-      if (path === '/api/session' && req.method === 'GET') return json({ authenticated: !!auth.session(req), aiAvailable: !!config.apiKey, model: config.model, voices: config.voices, limits: { chatTimeoutMs: config.chatTimeoutMs, maxInputChars: config.maxInputChars } });
+      if (path === '/api/session' && req.method === 'GET') { const authenticated = !!auth.session(req), settings = authenticated ? study?.settings() : null; return json({ authenticated, aiAvailable: !!(config.apiKey || config.anthropicApiKey), model: config.model, selected: authenticated ? { provider: settings?.aiProvider || 'openai', model: settings?.aiModel || (settings?.aiProvider === 'anthropic' ? config.anthropicModel : config.model) } : undefined, voices: config.voices, limits: { chatTimeoutMs: config.chatTimeoutMs, maxInputChars: config.maxInputChars } }); }
       if (path.startsWith('/api/')) {
         if (!['GET', 'POST', 'DELETE'].includes(req.method)) throw new HttpError(405, 'Method is not supported.');
         if (req.method !== 'GET') auth.checkOrigin(req);
         if (path === '/api/login' && req.method === 'POST') { const body = await readBody(req, 4096); const login = auth.login(req, body.token); res.setHeader('Set-Cookie', login.cookie); return json({ authenticated: true }); }
         const session = auth.requireSession(req);
+        if (telemetry && path === '/api/telemetry' && req.method === 'GET') return json(telemetry.status());
+        if (models && path === '/api/models' && req.method === 'GET') { const settings = study?.settings() || {}; return json({ ...await models.catalogue(), selected: { provider: settings.aiProvider || 'openai', model: settings.aiModel || ((settings.aiProvider === 'anthropic') ? config.anthropicModel : config.model) } }); }
         if (path === '/api/logout' && req.method === 'POST') {
           for (const controller of sessionWork.get(session) || []) controller.abort(); sessionWork.delete(session); voice?.invalidate({ ownerKey: session }); onLogout?.(session);
           const logout = auth.logout(req); res.setHeader('Set-Cookie', logout.cookie); return json({ authenticated: false });
@@ -73,7 +75,7 @@ export function createApp({ config, chat, study, references, voice, backup, onLo
           if (path === '/api/cards' && req.method === 'POST') { const body = await readBody(req, config.jsonBytes); return json(study.cards(body.action, body)); }
           if (path === '/api/review' && req.method === 'GET') return json(study.due());
           if (path === '/api/review' && req.method === 'POST') return json(study.review(await readBody(req, config.jsonBytes)));
-          if (path === '/api/settings') return json(study.settings(req.method === 'GET' ? undefined : await readBody(req, config.jsonBytes)));
+          if (path === '/api/settings') { if (req.method === 'GET') return json(study.settings()); const body = await readBody(req, config.jsonBytes); if (models && (body.aiProvider !== undefined || body.aiModel !== undefined)) { const saved = study.settings(); const provider = body.aiProvider ?? saved.aiProvider; await models.resolveSelection({ provider, model: (body.aiModel ?? saved.aiModel) || (provider === 'anthropic' ? config.anthropicModel : config.model) }); } return json(study.settings(body)); }
           if (path === '/api/progress' && req.method === 'GET') return json(study.progress());
           if (path === '/api/cases') return json(study.cases(req.method === 'GET' ? undefined : await readBody(req, config.jsonBytes)));
           if (path === '/api/worksheets' && req.method === 'GET') return json(study.worksheets());

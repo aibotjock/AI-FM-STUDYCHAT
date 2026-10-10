@@ -16,5 +16,6 @@ test('settings validate timezone and remote configuration refuses exposed empty 
   assert.equal(validateSettings({ timeZone: 'America/Los_Angeles', newCardLimit: 0 }).newCardLimit, 0);
   assert.throws(() => validateSettings({ timeZone: 'made-up-zone' }), /timezone/);
   assert.throws(() => loadConfig({ HOST: '0.0.0.0' }), /STUDY_ACCESS_TOKEN/);
-  assert.throws(() => loadConfig({ OPENAI_MODEL: 'gpt-6-astra' }), /prohibited/);
+  assert.equal(loadConfig({ OPENAI_MODEL: 'gpt-6-astra' }).model, 'gpt-6-astra');
+  assert.throws(() => loadConfig({ LIMITED_OUTPUT_TOKENS: 99999 }), /LIMITED_OUTPUT_TOKENS/);
 });

@@ -11,7 +11,7 @@ export function validChatId(id, field = 'ID') {
 const validId = validChatId;
 function parse(value, fallback) { try { return JSON.parse(value); } catch { return fallback; } }
 
-export function createChatService({ db, provider, config = {}, getContext = () => null, resolveTurn = () => null } = {}) {
+export function createChatService({ db, provider, config = {}, getContext = () => null, resolveTurn = () => null, getSelection = () => ({ provider: 'openai', model: config.model || 'gpt-4.1-mini' }) } = {}) {
   const maxInput = config.maxInputChars || 8000, maxOutput = config.maxOutputChars || 20000;
   const maxHistory = config.maxHistoryMessages ?? 12, timeoutMs = config.chatTimeoutMs || 90000;
   const active = new Map();
@@ -28,6 +28,7 @@ export function createChatService({ db, provider, config = {}, getContext = () =
     CREATE INDEX IF NOT EXISTS chat_turn_conversation ON chat_turns(conversation_id, seq);
     CREATE INDEX IF NOT EXISTS chat_attempt_turn ON chat_attempts(turn_id, started_at);`);
   if (!db.prepare('PRAGMA table_info(chat_attempts)').all().some(row => row.name === 'imported_metadata')) db.exec('ALTER TABLE chat_attempts ADD COLUMN imported_metadata TEXT');
+  for (const column of ['request_provider', 'request_model', 'provider']) if (!db.prepare('PRAGMA table_info(chat_attempts)').all().some(row => row.name === column)) db.exec(`ALTER TABLE chat_attempts ADD COLUMN ${column} TEXT`);
   db.prepare("UPDATE chat_attempts SET status='interrupted', error='Generation interrupted by server restart. Retry explicitly.', error_code='interrupted', finished_at=? WHERE status IN ('pending','running')").run(Date.now());
   const findConversation = db.prepare('SELECT * FROM chat_conversations WHERE id=?');
   const findTurn = db.prepare('SELECT * FROM chat_turns WHERE turn_id=?');
@@ -38,7 +39,7 @@ export function createChatService({ db, provider, config = {}, getContext = () =
   function outcome(row, turn, extra = {}) {
     return { conversationId: turn.conversation_id, turnId: turn.turn_id, attemptId: row.attempt_id,
       status: row.status, content: row.content, error: row.error, code: row.error_code, sources: parse(row.sources, []),
-      label: row.label, model: row.model, usage: parse(row.usage, null), firstTextMs: row.first_text_ms,
+      label: row.label, model: row.model, provider: row.provider, selection: { provider: row.request_provider, model: row.request_model }, usage: parse(row.usage, null), firstTextMs: row.first_text_ms,
       durationMs: row.total_ms, imported: Boolean(row.imported), historicalMetadata: parse(row.imported_metadata, null), ...extra };
   }
   function eventFor(result) { return { type: result.status === 'completed' || ACTIVE.has(result.status) ? 'done' : 'error', ...result }; }
@@ -50,10 +51,10 @@ export function createChatService({ db, provider, config = {}, getContext = () =
     db.exec('BEGIN IMMEDIATE');
     try {
       db.prepare(`UPDATE chat_attempts SET status=?, content=?, error=?, error_code=?, finished_at=?,
-        model=?, usage=?, first_text_ms=?, total_ms=?, sources=?, label=? WHERE attempt_id=? AND status IN ('pending','running')`)
+        model=?, usage=?, first_text_ms=?, total_ms=?, sources=?, label=?, provider=? WHERE attempt_id=? AND status IN ('pending','running')`)
         .run(status, item.content, extra.error || null, extra.code || null, finished, extra.model || null,
           extra.usage ? JSON.stringify(extra.usage) : null, item.firstTextMs ?? null, finished - item.startedAt,
-          JSON.stringify(extra.sources || []), extra.label || null, item.attemptId);
+          JSON.stringify(extra.sources || []), extra.label || null, extra.provider || null, item.attemptId);
       db.prepare('UPDATE chat_conversations SET updated_at=? WHERE id=?').run(finished, item.turn.conversation_id);
       db.exec('COMMIT');
     } catch (error) { db.exec('ROLLBACK'); throw error; }
@@ -117,7 +118,11 @@ export function createChatService({ db, provider, config = {}, getContext = () =
     const references = JSON.stringify([...new Set(referenceIds)].sort());
     let turn = findTurn.get(turnId);
     const attempt = findAttempt.get(attemptId);
+    const fallback = attempt?.request_provider && request.provider === undefined && request.model === undefined ? { provider: attempt.request_provider, model: attempt.request_model } : getSelection();
+    const selection = { provider: request.provider ?? fallback.provider, model: request.model ?? (request.provider && request.provider !== fallback.provider ? (request.provider === 'anthropic' ? config.anthropicModel : config.model) : fallback.model) };
+    if (!['openai', 'anthropic'].includes(selection.provider) || typeof selection.model !== 'string' || !/^[A-Za-z0-9_.:-]{1,200}$/.test(selection.model)) fail('Choose a valid provider and model.', 'invalid_model');
     if (attempt && attempt.turn_id !== turnId) fail('Attempt ID already belongs to another turn.', 'payload_mismatch', 409);
+    if (attempt?.request_provider && (attempt.request_provider !== selection.provider || attempt.request_model !== selection.model)) fail('Attempt ID was reused with a different provider or model. Use a new attempt ID.', 'payload_mismatch', 409);
     if (turn) {
       if (turn.conversation_id !== conversationId || turn.input !== input || turn.reference_ids !== references) fail('Turn ID was reused with a different submission.', 'payload_mismatch', 409);
       const latest = latestAttempt.get(turnId);
@@ -134,7 +139,7 @@ export function createChatService({ db, provider, config = {}, getContext = () =
     try {
       if (!findConversation.get(conversationId)) db.prepare('INSERT INTO chat_conversations VALUES (?,?,?,?)').run(conversationId, input.trim().slice(0, 70), now, now);
       if (!turn) db.prepare('INSERT INTO chat_turns(turn_id,conversation_id,input,reference_ids,created_at) VALUES (?,?,?,?,?)').run(turnId, conversationId, input, references, now);
-      db.prepare("INSERT INTO chat_attempts(attempt_id,turn_id,status,started_at) VALUES (?,?,'running',?)").run(attemptId, turnId, now);
+      db.prepare("INSERT INTO chat_attempts(attempt_id,turn_id,status,started_at,request_provider,request_model) VALUES (?,?,'running',?,?,?)").run(attemptId, turnId, now, selection.provider, selection.model);
       db.prepare('UPDATE chat_conversations SET updated_at=? WHERE id=?').run(now, conversationId);
       db.exec('COMMIT');
     } catch (error) { db.exec('ROLLBACK'); throw error; }
@@ -173,7 +178,7 @@ export function createChatService({ db, provider, config = {}, getContext = () =
         if (resolved) return resolved;
         const context = await getContext({ ...request, text: input, signal: item.controller.signal });
         item.controller.signal.throwIfAborted();
-        return provider.generate({ messages: coachMessages({ history: completedContext(conversationId), input, context }), signal: item.controller.signal, onDelta: delta });
+        return provider.generate({ messages: coachMessages({ history: completedContext(conversationId), input, context }), selection, signal: item.controller.signal, onDelta: delta });
       });
       const result = await Promise.race([work, deadline, aborted]);
       if (!ACTIVE.has(findAttempt.get(attemptId)?.status)) return outcome(findAttempt.get(attemptId), turn);
@@ -185,7 +190,7 @@ export function createChatService({ db, provider, config = {}, getContext = () =
     } catch (error) {
       const row = findAttempt.get(attemptId);
       if (row && !ACTIVE.has(row.status)) return outcome(row, turn);
-      const allowed = new Set(['ai_unavailable','provider_auth','provider_rate_limit','provider_http','provider_network','provider_error','timeout','empty_output','early_close','malformed_stream','incomplete_response','output_limit','source_unavailable']);
+      const allowed = new Set(['ai_unavailable','provider_auth','provider_rate_limit','provider_http','provider_network','provider_error','timeout','empty_output','early_close','malformed_stream','incomplete_response','output_limit','source_unavailable','invalid_model','model_unavailable','context_limit','chat_busy']);
       const code = allowed.has(error?.code) ? error.code : 'provider_error';
       const message = allowed.has(error?.code) ? error.message : 'Could not complete this response. You can retry this turn.';
       return finish(item, 'failed', { error: message, code });
@@ -226,14 +231,17 @@ export function createChatService({ db, provider, config = {}, getContext = () =
       if (row.imported_metadata != null && (typeof row.imported_metadata !== 'string' || !parse(row.imported_metadata, null) || row.imported_metadata.length > 131072)) fail('Invalid historical attempt metadata.');
       if (row.sources != null && (typeof row.sources !== 'string' || !Array.isArray(parse(row.sources, null)))) fail('Invalid source metadata.');
       if (row.model != null && typeof row.model !== 'string') fail('Invalid historical model metadata.');
+      if (row.provider != null && !['openai','anthropic'].includes(row.provider)) fail('Invalid historical provider metadata.');
+      if (row.request_provider != null && !['openai','anthropic'].includes(row.request_provider)) fail('Invalid requested provider metadata.');
+      if (row.request_model != null && (typeof row.request_model !== 'string' || !/^[A-Za-z0-9_.:-]{1,200}$/.test(row.request_model))) fail('Invalid requested model metadata.');
       if (row.usage != null && (typeof row.usage !== 'string' || !parse(row.usage, null))) fail('Invalid historical usage metadata.');
       attempts.add(row.attempt_id); paired.add(row.turn_id);
       row.imported_metadata ??= JSON.stringify({ status: row.status, sources: row.sources || '[]', label: row.label || null,
-        model: row.model || null, usage: row.usage || null, first_text_ms: row.first_text_ms ?? null, total_ms: row.total_ms ?? null });
+        model: row.model || null, provider: row.provider || null, usage: row.usage || null, first_text_ms: row.first_text_ms ?? null, total_ms: row.total_ms ?? null });
       if (ACTIVE.has(row.status)) { row.status = 'interrupted'; row.error = 'Imported unfinished response. Retry explicitly.'; row.error_code = 'interrupted'; row.finished_at = Date.now(); }
       // Imported text and links have not been rechecked; no consulted-source evidence is imported.
       row.sources = '[]'; row.label = row.status === 'completed' ? 'Imported history; sources unverified' : null; row.imported = 1;
-      row.usage = null; row.model = null; row.first_text_ms = null; row.total_ms = null;
+      row.usage = null; row.model = null; row.provider = null; row.first_text_ms = null; row.total_ms = null;
     }
     if (copy.turns.some(row => !paired.has(row.turn_id))) fail('Backup turn has no attempt.');
     return copy;
@@ -244,8 +252,8 @@ export function createChatService({ db, provider, config = {}, getContext = () =
     db.exec('DELETE FROM chat_attempts; DELETE FROM chat_turns; DELETE FROM chat_conversations; DELETE FROM chat_legacy_records;');
     for (const row of valid.conversations) db.prepare('INSERT INTO chat_conversations VALUES (?,?,?,?)').run(row.id,row.title,row.created_at,row.updated_at);
     for (const row of valid.turns) db.prepare('INSERT INTO chat_turns(turn_id,conversation_id,input,reference_ids,created_at) VALUES (?,?,?,?,?)').run(row.turn_id,row.conversation_id,row.input,row.reference_ids,row.created_at);
-    for (const row of valid.attempts) db.prepare('INSERT INTO chat_attempts(attempt_id,turn_id,status,content,error,error_code,started_at,finished_at,model,usage,first_text_ms,total_ms,sources,label,imported,imported_metadata) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-      .run(row.attempt_id,row.turn_id,row.status,row.content,row.error || null,row.error_code || null,row.started_at,row.finished_at || null,row.model,row.usage,row.first_text_ms,row.total_ms,row.sources,row.label,row.imported,row.imported_metadata);
+    for (const row of valid.attempts) db.prepare('INSERT INTO chat_attempts(attempt_id,turn_id,status,content,error,error_code,started_at,finished_at,model,usage,first_text_ms,total_ms,sources,label,imported,imported_metadata,request_provider,request_model,provider) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+      .run(row.attempt_id,row.turn_id,row.status,row.content,row.error || null,row.error_code || null,row.started_at,row.finished_at || null,row.model,row.usage,row.first_text_ms,row.total_ms,row.sources,row.label,row.imported,row.imported_metadata,row.request_provider || null,row.request_model || null,row.provider || null);
     valid.legacyRecords.forEach((row,index) => db.prepare('INSERT INTO chat_legacy_records VALUES (?,?)').run(index,JSON.stringify(row)));
     return { conversations: valid.conversations.length, turns: valid.turns.length };
   }

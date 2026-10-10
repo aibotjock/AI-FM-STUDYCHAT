@@ -28,8 +28,12 @@ An inventory read on October 10, 2026 found one existing service and its 500 MB 
 | `PORT` | Leave to Railway's injected value |
 | `STUDY_ACCESS_TOKEN` | Private owner token, at least 32 characters; never commit or log it |
 | `APP_ORIGIN` | Exact generated HTTPS origin, without a trailing slash |
-| `OPENAI_API_KEY` | Server-only credential; omit for the fully usable deterministic no-AI study mode |
-| `OPENAI_MODEL` | One supported configured text model; default `gpt-4.1-mini` |
+| `OPENAI_API_KEY` | Server-only OpenAI credential; also used for optional voice |
+| `ANTHROPIC_API_KEY` | Server-only Claude credential; add to this new service to enable its selector choices |
+| `OPENAI_MODEL` | Default OpenAI text model, `gpt-4.1-mini` |
+| `ANTHROPIC_MODEL` | Default Claude text model, `claude-haiku-5-5` |
+| `STANDARD_PROMPT_BYTES`, `MAX_OUTPUT_TOKENS` | Optional standard budget overrides; defaults `24000`, `1200` |
+| `LIMITED_PROMPT_BYTES`, `LIMITED_OUTPUT_TOKENS` | Optional limited budget overrides; defaults `8000`, `768`; cannot exceed standard caps |
 | `OPENAI_TRANSCRIPTION_MODEL` | Default `gpt-4o-mini-transcribe` |
 | `OPENAI_SPEECH_MODEL` | Default `gpt-4o-mini-tts` |
 
@@ -94,14 +98,14 @@ The Node 24 SQLite module is available without an enabling flag. Its documented 
 On October 10, 2026, the following new resources were prepared:
 
 - Service: `6f422cde-c9b9-4bdf-a8cc-3b41a31b6e1d` (`studychat-no-rag-test`).
-- Domain: `https://studychat-no-rag-test-private-test.up.railway.app`. It has no running application yet.
+- Domain: `https://studychat-no-rag-test-private-test.up.railway.app`.
 - New staged volume: `5e1e422a-5a56-43a5-a8ed-d9da1733aaed`, 500 MB, iad, `/app/data`.
 - Reviewed pending patch: `4f245262-e4aa-4f82-b115-a1b489f8ef77`, 26 changes, only this new service and volume, no shared variable changes.
 - Pinned runtime commit: `844ad092b6c24ed052f9897cd4477e98f57f5e41`.
 - The owner access token is separate from the original pilot and is omitted from this repository.
 - Provider credential is a Railway service reference to the pilot's existing server-only key; no key was read or changed.
 
-The deployment approval action returned “Cancelled — the user did not approve this action. No changes were made.” The configuration remains staged. Re-read the entire pending patch before accepting it once approval is received. Hosted smoke, actual-model fixtures, and persistence after restart remain pending.
+The initial deployment approval action returned “Cancelled — the user did not approve this action. No changes were made.” The owner then applied the patch directly in Railway, as recorded below.
 
 ## Live deployment verification
 

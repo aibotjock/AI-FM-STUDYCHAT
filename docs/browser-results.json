@@ -1,9 +1,10 @@
 {
   "browser": "153.0.8010.0",
   "mockedProvider": true,
-  "calls": 3,
+  "calls": 4,
   "checks": [
     "authenticated typed stream; one model request; no reference/audio requests",
+    "provider/model selection persists; limited-model caps visible; unified chat uses captured selection",
     "saved history after reload",
     "Stop visibly cancels",
     "practice grading and saved resume",
@@ -11,6 +12,7 @@
     "personal card creation",
     "lazy reference search and truthful labels",
     "settings persistence",
+    "private monitoring status and refresh without browser credentials",
     "JSON backup download",
     "validated backup restore in browser",
     "microphone denial keeps typed chat usable",
