@@ -75,7 +75,7 @@ docker volume create studychat-no-rag-test-data
 docker run --rm --env-file .env -e HOST=0.0.0.0 -e DATA_DIR=/app/data -p 127.0.0.1:3000:3000 -v studychat-no-rag-test-data:/app/data studychat-no-rag
 ```
 
-The current workspace has no Docker CLI. The staged deploy was blocked by its approval step, so the image build is pending Railway build evidence. The application's Node 24 tests provide separate local runtime evidence.
+The local workspace has no Docker CLI. Railway successfully built and deployed the Dockerfile with Node v24.21.0; its healthcheck passed. The application's Node 24 tests provide separate local runtime evidence.
 
 ## Official documentation checked
 
@@ -102,3 +102,7 @@ On October 10, 2026, the following new resources were prepared:
 - Provider credential is a Railway service reference to the pilot's existing server-only key; no key was read or changed.
 
 The deployment approval action returned “Cancelled — the user did not approve this action. No changes were made.” The configuration remains staged. Re-read the entire pending patch before accepting it once approval is received. Hosted smoke, actual-model fixtures, and persistence after restart remain pending.
+
+## Live deployment verification
+
+The owner applied the staged configuration directly in Railway. Deployment `46594ad7-e106-4d24-8f75-1ce28d549e79` reached SUCCESS from branch commit `dc3714062e9a47e418ca7feb2e8f36ada146c398`. The generated HTTPS domain is live. Both old and new services remained SUCCESS; no staged changes remained. Hosted sign-in, real chat streaming, study endpoints, and persistence after restarting only the new service passed. Actual-model observations and limitations are in validation.md and model-results.json.

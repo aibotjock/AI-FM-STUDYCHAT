@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-10T21:49:42.589Z",
+  "origin": "https://studychat-no-rag-test-private-test.up.railway.app",
+  "deployment": "46594ad7-e106-4d24-8f75-1ce28d549e79",
+  "commit": "dc3714062e9a47e418ca7feb2e8f36ada146c398",
+  "checks": [
+    "health HTTP 200",
+    "unauthenticated private cards HTTP 401",
+    "secure authenticated login",
+    "566 original questions, canonical answer reveal",
+    "practice catalogue and saved view",
+    "review due cards and card library",
+    "synthetic personal card create and saved readback",
+    "reference directory labels and unavailable consultation HTTP 501",
+    "preferences, progress and version-2 backup export",
+    "persistent volume survives restart; synthetic fixture cleaned"
+  ],
+  "loadedQuestions": 566,
+  "eligibleQuestions": 558,
+  "restartTest": "passed: saved synthetic card survived container restart; removed only synthetic card",
+  "actualModel": false
+}
