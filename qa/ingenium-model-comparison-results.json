@@ -1,0 +1,76 @@
+{
+  "recordedAt": "2026-10-10",
+  "timezone": "UTC",
+  "scope": "Bounded owner-authorized Luna 6 / Terra 5.6 metadata comparison",
+  "modelsInOrder": [
+    "gpt-5.6-terra",
+    "gpt-6-luna"
+  ],
+  "preferredFinalModel": "gpt-6-luna",
+  "gate": "luna6-terra56-ready-v1",
+  "maximumNewCompletions": 2,
+  "maximumBilledOutputTokensPerCheck": 512,
+  "validation": {
+    "command": "node --test tests/ingenium-model-comparison.test.js tests/ingenium-check.test.js",
+    "runs": 1,
+    "passed": 10,
+    "failed": 0,
+    "newGroups": 6,
+    "directlyAffectedLegacyGroups": 4,
+    "realProviderCalls": 0,
+    "localHttpIntegration": true,
+    "syntheticCompletionCount": 2,
+    "syntheticMetadataEventCount": 2,
+    "restartAdditionalCompletions": 0,
+    "restartAdditionalMetadataEvents": 0
+  },
+  "preserved": [
+    "audio repair 573e32c5ed3d5f23bc527396719ce85c79192627",
+    "whole-reply medical approval and source checks",
+    "Marin, Cedar, Coral, Sage, Ash",
+    "account isolation and durable model-test requests",
+    "existing registered metadata-only Ingenium receiver",
+    "private ECR image, volume, domain and deployment configuration"
+  ],
+  "hashes": {
+    "server/ingenium-check.js": "dfa4e218fcd8bc8de659c4651ac8479a4bf317592cb10881376b19b23a38297f",
+    "server/start.js": "d6a515033916c57d30fe7d1d633c6c32f4848930ee84eec18eab29b78712217a",
+    "tests/ingenium-model-comparison.test.js": "bd832143f3eb44bdf80c62286858ac9173e95d47b040700bb97afd0292b1880b",
+    "tests/ingenium-check.test.js": "8f99a9c0fa483fdec751c46842e5111d42a98838dd8187ffe7c7e3f48db021d2"
+  },
+  "genuineData": {
+    "state": "pending owner Apply and live verification",
+    "registeredOrganizationId": "21bca727-553f-4df8-a2c6-e702f45e4ca2",
+    "receiverBaseline": {
+      "models": [
+        "gpt-6-luna",
+        "gpt-5.6-terra"
+      ],
+      "rows": 0,
+      "method": "read-only organization-scoped ai_request_events query"
+    },
+    "clinicalAccuracy": "Not evaluated",
+    "qualityComparison": "Not evaluated",
+    "audioPerformance": "Not evaluated"
+  },
+  "audioRepairLive": {
+    "deploymentId": "7d69ce92-913d-4013-ba3e-db2f3eb3601e",
+    "createdAt": "2026-10-10T02:07:49.112Z",
+    "status": "SUCCESS",
+    "resolvedCommit": "573e32c5ed3d5f23bc527396719ce85c79192627",
+    "servedAssetMatches": 6,
+    "newInferenceCalls": 0,
+    "physicalPhoneAcceptance": "Pending"
+  },
+  "officialModelSources": [
+    "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "https://developers.openai.com/api/docs/models/gpt-5.6-terra"
+  ],
+  "limitations": [
+    "READY provides connectivity and instruction evidence only, not medical accuracy.",
+    "Provider failures or cancellation costs may be unknown; no automatic paid retry.",
+    "Actual model access and genuine ingestion require deployment verification.",
+    "No audio, clinical, billing or unchanged model suite was repeated.",
+    "App-store publication and commercial activation remain held."
+  ]
+}

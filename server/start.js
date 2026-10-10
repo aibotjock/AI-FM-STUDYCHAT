@@ -13,7 +13,7 @@ try {
     const server = createApp();
     server.listen(port, host, async () => {
       console.log(`Family Medicine Study Coach ready on ${host}:${port}. Check Study preferences for the active AI model.`);
-      if (process.env.INGENIUM_INITIAL_CONNECTION_CHECK === 'ready-v1') {
+      if (['ready-v1', 'luna6-terra56-ready-v1'].includes(process.env.INGENIUM_INITIAL_CONNECTION_CHECK)) {
         const { runIngeniumConnectionCheck } = await import('./ingenium-check.js');
         const result = await runIngeniumConnectionCheck({ baseUrl: `http://127.0.0.1:${port}/`, flushTelemetry: () => server.flushIngeniumTelemetry() });
         console.log('Ingenium registration check:', JSON.stringify(result));
