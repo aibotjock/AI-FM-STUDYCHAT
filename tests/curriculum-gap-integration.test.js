@@ -14,6 +14,7 @@ import { buildNaturalSourceSpans } from '../server/natural-tutor.js';
 import { validateMaintenanceCorpus } from '../scripts/validate-study-curriculum.js';
 import { validateBoardBank } from '../scripts/validate-board-bank.js';
 import { studyCondition } from './fixtures/study-condition.js';
+import { readStudyReferenceFiles } from '../server/reference-expansion.js';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const NOW = Date.parse('2026-10-10T12:00:00Z');
@@ -108,6 +109,7 @@ test('new gap-module HTTP routes enforce access, grade and save cited cards, and
   let clock = NOW;
   const { modules, records, curriculum, foundations } = corpus(() => clock);
   const newRecords = modules.flatMap(file => file.records);
+  const supplementalSources = readStudyReferenceFiles(resolve(ROOT, 'content/reference-expansion'), { now: NOW }).flatMap(file => file.parsed.conditions);
   const dataDir = mkdtempSync(resolve(tmpdir(), 'fm-gap-module-http-'));
   const token = 'gap-module-http-test-token-longer-than-24-characters';
   let providerCalls = 0;
@@ -141,7 +143,8 @@ test('new gap-module HTTP routes enforce access, grade and save cited cards, and
     assert.equal(condition.humanReview, false, record.id);
     assert.ok(condition.questions.every(question => !Object.hasOwn(question, 'correctChoiceId') && !Object.hasOwn(question, 'rationale')), record.id);
     for (const source of condition.sources) {
-      const canonical = record.sources.find(item => item.id === source.id);
+      const canonical = record.sources.find(item => item.id === source.id) || supplementalSources.filter(patch => patch.conditionId === record.id).flatMap(patch => patch.sources).find(item => item.id === source.id);
+      assert.ok(canonical, `Every displayed source must have a repository binding: ${record.id}:${source.id}`);
       for (const key of ['url', 'locator', 'jurisdiction', 'limitations', 'attribution', 'derivativeNotice']) {
         if (canonical[key] !== undefined) assert.equal(source[key], canonical[key], `${record.id}:${source.id}:${key}`);
       }

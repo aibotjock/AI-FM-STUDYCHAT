@@ -8,7 +8,7 @@ import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { buildStudyDialogueSchema, renderStudyDialogue, projectStudyDialoguePlan, studyDialogueRejection } from '../server/study-conversation.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
-import { sourceSpanSupport } from './fixtures/natural-review-v2.js';
+import { sourceSpanSupport } from './fixtures/natural-review-v3.js';
 
 const settings = { coachStyle: 'socratic', dailyMinutes: 18, focus: 'exam' };
 const dialogue = { intent: 'explain', acknowledgment: 'none', followup: 'attempt-recall', focusChunkId: 'asthma:management', learnerQuote: null, minutes: null };
@@ -85,7 +85,7 @@ test('HTTP natural explanation is reviewed and idempotent before a canonical qui
     const body = JSON.parse(request.body);
     const primary = body.messages.some(message => message.content.includes('NATURAL_TUTOR_CONTEXT='));
     const payload = primary ? { segments: [{ id: 's1', text: factualText, sourceChunkIds: ['asthma:management'] }] }
-      : { version: 2, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: factualText, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [sourceSpanSupport(body, 'asthma:management')] }], flags: [] }] };
+      : { version: 3, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: factualText, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [sourceSpanSupport(body, 'asthma:management')] }], flags: [], questions: [] }] };
     return Response.json({ model: 'gpt-4.1-mini', choices: [{ message: { content: JSON.stringify(payload) } }], usage: { prompt_tokens: 10, completion_tokens: 10 } });
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');

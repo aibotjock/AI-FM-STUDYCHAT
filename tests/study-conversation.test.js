@@ -8,6 +8,7 @@ import { createApp } from '../server/index.js';
 import { createStudyCurriculum, isActualCareRequest } from '../server/study-curriculum.js';
 import { buildStudyDialoguePrompt, conversationalEvidence, renderStudyDialogue, studyDialogueHistory } from '../server/study-conversation.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
+import { conversationQuestions } from './fixtures/natural-review-v3.js';
 
 const settings = { coachStyle: 'socratic', focus: 'exam', dailyMinutes: 18 };
 const selection = (dialogue, chunkIds = []) => ({ chunkIds, questionId: null, unsupported: false, dialogue });
@@ -22,7 +23,12 @@ async function fixture(t, respond) {
     const prompt = body.messages.find(message => /NATURAL_(?:TUTOR_CONTEXT|REVIEW_DATA)=/.test(message.content))?.content;
     const reviewing = prompt.includes('NATURAL_REVIEW_DATA=');
     const context = JSON.parse(prompt.split(reviewing ? 'NATURAL_REVIEW_DATA=' : 'NATURAL_TUTOR_CONTEXT=')[1]);
-    const reply = reviewing ? { version: 2, approved: true, segments: context.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: 0, claims: [], flags: [] })) } : respond(context, calls.length);
+    const planningQuestions = [
+      'Which section would you like to choose?',
+      'Would you like to start with one cited section?',
+      'Would you like to think through the options first?'
+    ];
+    const reply = reviewing ? { version: 3, approved: true, segments: context.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: 0, claims: [], questions: conversationQuestions(...planningQuestions.filter(quote => segment.text.includes(quote))), flags: [] })) } : respond(context, calls.length);
     return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 20, completion_tokens: 10 }, choices: [{ message: { content: JSON.stringify(reply) } }] });
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
@@ -101,7 +107,7 @@ test('linked-topic natural planning uses prior turns and preferences, two bounde
   const second = await app.chat('Thanks, let us keep that plan.', 'plan-followup');
   assert.equal(second.status, 200);
   assert.equal(app.calls.length, 4);
-  for (const [index, call] of app.calls.entries()) assert.equal(call.max_completion_tokens ?? call.max_tokens, index % 2 ? 600 : 800);
+  for (const [index, call] of app.calls.entries()) assert.equal(call.max_completion_tokens ?? call.max_tokens, index % 2 ? 2000 : 800);
   assert.equal(seenContext.preferences.coachStyle, 'direct');
   assert.ok(seenContext.history.some(message => message.role === 'user' && message.content.includes('15 minutes')));
   assert.ok(seenContext.history.some(message => message.role === 'assistant' && message.content.includes('For your 15 minutes')));

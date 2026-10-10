@@ -8,6 +8,7 @@ import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { runNaturalConversationCheck, NATURAL_CHECK_TURNS } from '../server/natural-conversation-check.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
+import { conversationQuestions } from './fixtures/natural-review-v3.js';
 
 test('natural operator check exercises authenticated three-turn generation and review, bounded history, and current cited rendering', async t => {
   const dir = mkdtempSync(join(tmpdir(), 'fm-natural-probe-route-'));
@@ -17,7 +18,7 @@ test('natural operator check exercises authenticated three-turn generation and r
   const server = createApp({ dataDir: dir, curriculum, env, fetchImpl: async (url, options) => {
     assert.equal(url, 'https://api.openai.com/v1/chat/completions');
     const body = JSON.parse(options.body), index = calls.length, turn = Math.floor(index / 2), reviewing = index % 2 === 1;
-    calls.push(body); assert.equal(body.store, false); assert.equal(body.max_tokens ?? body.max_completion_tokens, reviewing ? 600 : 800);
+    calls.push(body); assert.equal(body.store, false); assert.equal(body.max_tokens ?? body.max_completion_tokens, reviewing ? 2000 : 800);
     const prefix = reviewing ? 'NATURAL_REVIEW_DATA=' : 'NATURAL_TUTOR_CONTEXT=';
     const context = JSON.parse(body.messages.find(message => message.content.includes(prefix)).content.split(prefix)[1]);
     assert.ok(context.history.some(message => message.content === NATURAL_CHECK_TURNS[turn].content));
@@ -31,7 +32,8 @@ test('natural operator check exercises authenticated three-turn generation and r
       const candidate = context.candidate[0], span = context.sourceSpans.find(item => candidate.sourceChunkIds.includes(item.chunkId));
       if (turn === 2) { assert.ok(span); assert.ok(candidate.text.includes(span.excerpt)); }
       const claims = turn === 2 ? [{ quote: span.excerpt, type: 'medical', sourceChunkIds: [span.chunkId], supports: [{ chunkId: span.chunkId, spanId: span.spanId }] }] : [];
-      parsed = { version: 2, approved: true, segments: [{ id: candidate.id, approved: true, externalFactCount: claims.length, claims, flags: [] }] };
+      const questions = turn === 2 ? [{ quote: 'What does that source-backed point say?', kind: 'source-recall', recallSpanId: span.spanId }] : conversationQuestions(turn === 0 ? 'What is on your mind?' : 'How has your day been?');
+      parsed = { version: 3, approved: true, segments: [{ id: candidate.id, approved: true, externalFactCount: claims.length, claims, flags: [], questions }] };
     }
     return Response.json({ model: 'gpt-4.1-mini-2025-04-14', choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(parsed) } }], usage: { prompt_tokens: 1000 + index, completion_tokens: 70 } });
   } });

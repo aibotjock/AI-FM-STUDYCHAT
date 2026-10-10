@@ -81,12 +81,13 @@ async function appFixture(t, completion) {
     calls++; const body = JSON.parse(request.body);
     assert.equal(body.response_format.type, 'json_schema');
     assert.equal(body.response_format.json_schema.strict, true);
-    assert.ok(body.max_completion_tokens > 0 && body.max_completion_tokens <= 1800);
     if (body.response_format.json_schema.name === 'family_medicine_natural_review_v3') {
+      assert.equal(body.max_completion_tokens, 2000);
       const data = providerReviewContext(body);
       return reply(JSON.stringify({ version: 3, approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: segment.sourceChunkIds.length ? 1 : 0, flags: [], questions: [], claims: segment.sourceChunkIds.length ? [{ quote: segment.text, type: 'medical', sourceChunkIds: segment.sourceChunkIds, supports: segment.sourceChunkIds.map(chunkId => ({ chunkId, spanId: data.sourceSpans.find(source => source.chunkId === chunkId).spanId })) }] : [] })) }));
     }
     assert.equal(body.response_format.json_schema.name, 'family_medicine_natural_tutor');
+    assert.equal(body.max_completion_tokens, 800);
     return reply(completion);
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');

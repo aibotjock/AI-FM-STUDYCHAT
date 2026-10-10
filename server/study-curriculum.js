@@ -149,7 +149,13 @@ export function createStudyCurriculum({ records = [], now = Date.now } = {}) {
     else accepted.push(normalizeCondition(structuredClone(record)));
   }
   const byId = new Map(accepted.map(record => [record.id, record]));
-  const documents = accepted.flatMap(condition => condition.chunks.map(chunk => ({ condition, chunk, key: `${condition.id}:${chunk.id}`, words: tokens(`${chunk.heading} ${chunk.text}`) })));
+  const documents = accepted.flatMap(condition => {
+    const topicWords = new Set(tokens(`${condition.title} ${condition.aliases.join(' ')}`));
+    return condition.chunks.map(chunk => ({ condition, chunk, key: `${condition.id}:${chunk.id}`, topicWords,
+      words: tokens(`${chunk.heading} ${chunk.text}`),
+      objectiveWords: tokens(condition.questions.filter(question => question.sectionIds.includes(chunk.id)).map(question => question.learningObjective).join(' ')),
+    }));
+  });
   const documentsByKey = new Map(documents.map(document => [document.key, document]));
   function canonicalEvidence(document) {
     const { condition, chunk, key } = document;
@@ -205,7 +211,14 @@ export function createStudyCurriculum({ records = [], now = Date.now } = {}) {
     const wanted = tokens(effectiveQuery);
     const dosingRequest = /\b(?:dose|dosage|dosing|how many|how much|puffs?|tablet strength|capsule strength|mg|mcg|infusion rate)\b/i.test(query);
     const genericFollowup = isStudyFollowup(query);
-    return documents.filter(doc => ids.has(doc.condition.id) && currency(doc.condition, now).current && (!dosingRequest || /\b\d+(?:\.\d+)?\s*(?:mg|mcg|micrograms?|milligrams?|units?|mL)\b/i.test(doc.chunk.text))).map(doc => ({ ...doc, score: bm25(doc.words, wanted) + (phraseMatches(query, doc.condition, conditionIds).length ? 2 : 0) })).filter(doc => matched.length || genericFollowup || !wanted.length || doc.score > 0).sort((a, b) => b.score - a.score || a.key.localeCompare(b.key)).slice(0, maxChunks).map(doc => ({ ...canonicalEvidence(doc), score: doc.score }));
+    return documents.filter(doc => ids.has(doc.condition.id) && currency(doc.condition, now).current && (!dosingRequest || /\b\d+(?:\.\d+)?\s*(?:mg|mcg|micrograms?|milligrams?|units?|mL)\b/i.test(doc.chunk.text))).map(doc => {
+      // Once the condition is selected, rank the requested concept rather than
+      // repeated condition names in broad background headings. Canonical quiz
+      // objectives help find their bound passages; only passage text is evidence.
+      const focused = wanted.filter(word => !doc.topicWords.has(word));
+      const rankedWords = focused.length ? focused : wanted;
+      return { ...doc, score: bm25(doc.words, rankedWords) + 0.6 * bm25(doc.objectiveWords, rankedWords) + (phraseMatches(query, doc.condition, conditionIds).length ? 2 : 0) };
+    }).filter(doc => matched.length || genericFollowup || !wanted.length || doc.score > 0).sort((a, b) => b.score - a.score || a.key.localeCompare(b.key)).slice(0, maxChunks).map(doc => ({ ...canonicalEvidence(doc), score: doc.score }));
   }
   function get(conditionId) {
     const condition = byId.get(conditionId);
