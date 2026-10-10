@@ -28,8 +28,9 @@ test('natural operator check exercises authenticated three-turn generation and r
       const source = context.sources[0];
       parsed = { segments: [{ id: 's1', text: turn === 0 ? 'Hi Morgan. What is on your mind?' : turn === 1 ? 'You asked me to call you Morgan. How has your day been?' : `${source.text} What does that source-backed point say?`, sourceChunkIds: turn === 2 ? [source.key] : [] }] };
     } else {
-      const candidate = context.candidate[0], source = context.sources.find(item => candidate.sourceChunkIds.includes(item.key));
-      const claims = turn === 2 ? [{ quote: source.text, type: 'medical', sourceChunkIds: [source.key], supports: [{ chunkId: source.key, spanId: context.sourceSpans.find(span => span.chunkId === source.key).spanId }] }] : [];
+      const candidate = context.candidate[0], span = context.sourceSpans.find(item => candidate.sourceChunkIds.includes(item.chunkId));
+      if (turn === 2) { assert.ok(span); assert.ok(candidate.text.includes(span.excerpt)); }
+      const claims = turn === 2 ? [{ quote: span.excerpt, type: 'medical', sourceChunkIds: [span.chunkId], supports: [{ chunkId: span.chunkId, spanId: span.spanId }] }] : [];
       parsed = { version: 2, approved: true, segments: [{ id: candidate.id, approved: true, externalFactCount: claims.length, claims, flags: [] }] };
     }
     return Response.json({ model: 'gpt-4.1-mini-2025-04-14', choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(parsed) } }], usage: { prompt_tokens: 1000 + index, completion_tokens: 70 } });

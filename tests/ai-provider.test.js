@@ -100,8 +100,11 @@ test('personal inactive Claude adapter preserves reviewed natural replies throug
     const factualText = 'Mock management fact: review inhaler technique.';
     assert.match(body.system, /NATURAL_(?:TUTOR_CONTEXT|REVIEW_DATA)=/);
     const primary = body.system.includes('NATURAL_TUTOR_CONTEXT=');
+    // The Claude adapter appends a JSON-format instruction after this data line.
+    const reviewData = body.system.split('\n').find(line => line.startsWith('NATURAL_REVIEW_DATA='));
+    if (!primary) assert.ok(reviewData);
     const payload = primary ? { segments: [{ id: 's1', text: factualText, sourceChunkIds: ['asthma:management'] }] }
-      : { version: 2, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: factualText, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [sourceSpanSupport(body, 'asthma:management')] }], flags: [] }] };
+      : { version: 2, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: factualText, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [sourceSpanSupport({ system: reviewData }, 'asthma:management')] }], flags: [] }] };
     return Response.json(result({ content: [{ type: 'thinking', thinking: 'private thinking' }, { type: 'text', text: JSON.stringify(payload) }] }));
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');

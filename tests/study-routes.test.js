@@ -150,7 +150,7 @@ test('connected study chat releases source-reviewed natural text with canonical 
   assert.equal(app.requests[0].response_format.type, 'json_schema');
   assert.equal(app.requests[0].response_format.json_schema.name, 'family_medicine_natural_tutor');
   assert.equal(app.requests[1].response_format.json_schema.name, 'family_medicine_natural_review_v2');
-  assert.ok(app.requests[0].messages.some(message => /not clinician approval/.test(message.content)));
+  assert.ok(app.requests[0].messages.some(message => /Automated review is not qualified clinical approval/.test(message.content)));
   assert.equal((await app.request('/api/chat', 'POST', payload)).body.message.id, result.body.message.id);
   assert.equal(app.calls(), 2);
 });

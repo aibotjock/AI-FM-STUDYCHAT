@@ -44,7 +44,8 @@ async function fixture(t, options = {}) {
 test('commercial preparation blocks public launch and unconfigured public billing', () => {
   assert.throws(() => createCommercialApp({ env: { PUBLIC_RELEASE: 'true' } }), /Public release is blocked/);
   assert.throws(() => createCommercialApp({ env: {} }), /Configure Google Play billing/);
-  assert.throws(() => createCommercialApp({ env: { ...pilot, COMMERCIAL_OPENAI_MODEL: 'another-model' } }), /explicit verified/);
+  assert.throws(() => createCommercialApp({ env: { ...pilot, COMMERCIAL_OPENAI_MODEL: 'another-model' } }), /Unknown aliases are disabled/);
+  assert.throws(() => createCommercialApp({ env: { ...pilot, COMMERCIAL_OPENAI_MODEL: 'another-model', AI_INPUT_USD_PER_MILLION: '1', AI_OUTPUT_USD_PER_MILLION: '1' } }), /Unknown aliases are disabled/);
 });
 
 test('commercial accounts isolate cards, conversations, backups and restore ownership', async t => {

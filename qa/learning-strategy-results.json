@@ -22,5 +22,27 @@
   "realModelTeachingBehavior": "unverified; prompt contract only",
   "uiBrowserAndAndroidFlow": "pending; existing Chromium executable absent, no installation attempted",
   "deployment": "not applied",
-  "uiStateEvidence": "Actual edited UI functions executed once with held API promises: unfinished identity preserved during historical review, matching completion cleared, confidence resumed, forced post-finish refresh rejects later stale response."
+  "uiStateEvidence": "Actual edited UI functions executed once with held API promises: unfinished identity preserved during historical review, matching completion cleared, confidence resumed, forced post-finish refresh rejects later stale response.",
+  "githubCiRepair": {
+    "initialCommit": "402a225e920b6d31e820e9568563b9e6e9b56813",
+    "initialRunId": 38027405174,
+    "initialCounts": {
+      "tests": 447,
+      "passed": 431,
+      "failed": 15,
+      "skipped": 1
+    },
+    "initialApplicationAndBankChecks": "passed",
+    "failureCauses": [
+      "Actual AF fixtures predated newest source check; section count had expanded",
+      "Consolidated evidence-policy wording invalidated older literal assertions",
+      "Mock review-data JSON parsing included trailing adapter instructions",
+      "Mock reviewer used source.text instead of the v2 canonical source span"
+    ],
+    "targetedPreviouslyFailedScopes": 15,
+    "targetedResult": "all passed",
+    "productionChangesForCiRepair": false,
+    "paidCalls": 0,
+    "fullFollowUpResult": "Inspect the follow-up GitHub Actions run for the corrected revision; not inferred from targeted passes."
+  }
 }

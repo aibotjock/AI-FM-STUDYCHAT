@@ -41,6 +41,6 @@ test('author and independent reviewer share conservative presentation context an
     assert.doesNotMatch(prompt, /UNPLAYED_PRIVATE_MARKER/);
     assert.match(prompt, /"heard":"unknown"/);
     assert.match(prompt, /hearing|heard/);
+    assert.match(prompt, /Clarify ambiguous medical terms, negations, numbers and units instead of silently changing transcription/);
   }
-  assert.match(buildNaturalTutorPrompt(context), /negation, a number or a unit/);
 });

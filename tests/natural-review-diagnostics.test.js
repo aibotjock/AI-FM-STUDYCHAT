@@ -6,7 +6,10 @@ import { buildNaturalTutorPrompt, buildNaturalReviewPrompt, renderReviewedTutor,
 
 function context() {
   const record = JSON.parse(readFileSync(new URL('../content/conditions/cardiometabolic.json', import.meta.url))).conditions.find(condition => condition.id === 'atrial-fibrillation');
-  const now = Date.parse(`${record.review.checkedAt}T12:00:00Z`);
+  // Source additions can be checked after the original condition review. Test
+  // the current packet without falsely renewing its older review or expiry.
+  const checkedAt = [record.review.checkedAt, ...record.sources.map(source => source.checkedAt)].sort().at(-1);
+  const now = Date.parse(`${checkedAt}T12:00:00Z`);
   const references = createStudyCurriculum({ records: [record], now: () => now });
   const evidence = references.retrieve('Study atrial fibrillation', { maxChunks: 6 });
   const key = 'atrial-fibrillation:risk';
@@ -30,8 +33,9 @@ test('actual AF study corpus supports one reviewed point followed by neutral rec
   assert.equal(result.citations[0].url, current.references.get('atrial-fibrillation').sources[0].url);
   const author = buildNaturalTutorPrompt(current);
   const reviewer = buildNaturalReviewPrompt(current.draft, current);
-  assert.match(author, /Questions can contain factual premises/);
-  assert.match(reviewer, /Review factual premises inside questions/);
+  assert.match(author, /\[exact-current-support\] Every external factual claim, including medical teaching and premises in questions[^\n]*needs exact supplied current authoritative source support/);
+  assert.match(author, /Declare supporting sourceChunkIds on every factual paragraph, including questions/);
+  assert.match(reviewer, /For a question containing a factual premise, quote the exact question and verify that premise/);
 });
 
 test('a supported factual premise in an AF recall question requires that question segment to declare its source', () => {

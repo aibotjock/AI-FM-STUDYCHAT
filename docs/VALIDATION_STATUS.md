@@ -674,3 +674,10 @@ The new frozen inventory is **115 disease conditions, seven additional study top
 Evidence is in `qa/gap-fill-results.json` and `qa/learning-strategy-results.json`. Intermediate policy fragments were consolidated into the canonical document policy without deleting source audits or learner data. Local diagnostics add no AI calls and do not send answer/confidence bodies to Ingenium. The existing spaced scheduler and monthly maintenance schedule were retained. App-store publication and commercial activation remain held.
 
 Private test preparation publishes the exact GitHub revision and stages only that source commit in Railway's existing private-test environment. A staged source is not a deployment; a terminal SUCCESS and revision read-back are required before claiming the new workflow is live. Use [PHONE_TEST.md](PHONE_TEST.md) for the new, limited acceptance session.
+
+
+### GitHub full validation follow-up
+
+Initial GitHub run 38027405174 on 402a225 passed `npm run check` and strict board-bank validation, then reported 447 tests: 431 passed, 15 failed, one skipped. Its 15 failing scopes were reproduced and corrected in test fixtures only. Actual AF fixtures had a clock older than the latest source check and assumed an older section count; policy consolidation changed asserted wording; one mocked review helper parsed trailing adapter prose; another mock incorrectly read omitted reviewer source text instead of the supplied immutable span. Canonical dates, facts, source-span approval and runtime security were preserved. Unknown model aliases remain blocked even with supplied prices.
+
+Only those 15 failing scopes were run locally after correction, and all passed. The follow-up commit triggers the repository-required full CI; its actual result must be read from GitHub Actions rather than inferred from these targeted passes. No manually requested rerun of unchanged jobs, browser installation or paid provider call was performed.

@@ -7,7 +7,10 @@ import { buildNaturalSourceSpans, buildNaturalReviewSchema, buildNaturalReviewPr
 function context(recordOverride) {
   const original = JSON.parse(readFileSync(new URL('../content/conditions/cardiometabolic.json', import.meta.url))).conditions.find(condition => condition.id === 'atrial-fibrillation');
   const record = recordOverride || original;
-  const now = Date.parse(`${record.review.checkedAt}T12:00:00Z`);
+  // Keep the fixture clock consistent with the latest source added to the
+  // canonical packet; retain its actual review and source-expiration dates.
+  const checkedAt = [record.review.checkedAt, ...record.sources.map(source => source.checkedAt)].sort().at(-1);
+  const now = Date.parse(`${checkedAt}T12:00:00Z`);
   const references = createStudyCurriculum({ records: [record], now: () => now });
   const evidence = references.retrieve('Study atrial fibrillation', { maxChunks: 6 });
   const key = 'atrial-fibrillation:risk';

@@ -1,7 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createStudyCurriculum, loadStudyCurriculum, needsStudyEvidence } from '../server/study-curriculum.js';
+import { readFileSync, readdirSync } from 'node:fs';
+import { createStudyCurriculum, loadStudyCurriculum, needsStudyEvidence, STUDY_CONDITION_FILES } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
+
+function actualCurrentCurriculum() {
+  const contentUrl = new URL('../content/conditions/', import.meta.url);
+  const packets = readdirSync(contentUrl).filter(file => STUDY_CONDITION_FILES.includes(file)).map(file => JSON.parse(readFileSync(new URL(file, contentUrl), 'utf8')));
+  const checkedAt = packets.flatMap(packet => [packet.checkedAt, ...packet.conditions.flatMap(record => [record.review.checkedAt, ...record.sources.map(source => source.checkedAt)])]).sort().at(-1);
+  return loadStudyCurriculum({ contentDir: contentUrl.pathname, now: () => Date.parse(`${checkedAt}T12:00:00Z`) });
+}
 
 // New independent safety cases; no existing passing curriculum groups repeated.
 test('unknown clinical topic names cannot bypass evidence requirements through conversational wording',()=>{
@@ -93,7 +101,7 @@ test('a generic follow-up after an unsupported answer cannot reactivate an old t
 });
 
 test('actual AF stroke-risk and prevention requests cannot collide with the generic acute-stroke alias',()=>{
-  const curriculum=loadStudyCurriculum({contentDir:new URL('../content/conditions/',import.meta.url).pathname,now:()=>STUDY_NOW});
+  const curriculum=actualCurrentCurriculum();
   const selected={conditionIds:['atrial-fibrillation']};
   const queries=[
     'For board study only, what does the current atrial fibrillation study library say about stroke-risk assessment and anticoagulation?',
@@ -104,7 +112,10 @@ test('actual AF stroke-risk and prevention requests cannot collide with the gene
   ];
   for(const query of queries){
     const evidence=curriculum.retrieve(query,selected);
-    assert.equal(evidence.length,3,query);
+    // The packet now also contains a federal AF study section. Check bounded
+    // current retrieval while retaining all three original prevention spans.
+    assert.equal(evidence.length,Math.min(5,curriculum.get('atrial-fibrillation').chunks.length),query);
+    for(const key of ['risk','drug','aspirin']) assert.ok(evidence.some(item=>item.key===`atrial-fibrillation:${key}`),query);
     assert.deepEqual([...new Set(evidence.map(item=>item.conditionId))],['atrial-fibrillation'],query);
     assert.ok(evidence.every(item=>item.key.startsWith('atrial-fibrillation:')),query);
   }
@@ -115,7 +126,7 @@ test('actual AF stroke-risk and prevention requests cannot collide with the gene
 });
 
 test('explicit ischemic-stroke comparisons and a newly named stroke syndrome remain eligible in AF context',()=>{
-  const curriculum=loadStudyCurriculum({contentDir:new URL('../content/conditions/',import.meta.url).pathname,now:()=>STUDY_NOW});
+  const curriculum=actualCurrentCurriculum();
   for(const query of ['For board study, compare atrial fibrillation with acute ischemic stroke.','For board study, a new stroke syndrome after atrial fibrillation.']){
     const ids=new Set(curriculum.retrieve(query,{conditionIds:['atrial-fibrillation'],maxChunks:6}).map(item=>item.conditionId));
     assert.equal(ids.has('atrial-fibrillation'),true,query);
