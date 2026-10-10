@@ -75,7 +75,7 @@ docker volume create studychat-no-rag-test-data
 docker run --rm --env-file .env -e HOST=0.0.0.0 -e DATA_DIR=/app/data -p 127.0.0.1:3000:3000 -v studychat-no-rag-test-data:/app/data studychat-no-rag
 ```
 
-The current workspace has no Docker CLI, so the image build is pending Railway build evidence. The application's Node 24 tests provide separate local runtime evidence.
+The current workspace has no Docker CLI. The staged deploy was blocked by its approval step, so the image build is pending Railway build evidence. The application's Node 24 tests provide separate local runtime evidence.
 
 ## Official documentation checked
 
@@ -88,3 +88,17 @@ The current workspace has no Docker CLI, so the image build is pending Railway b
 - [Official Node Docker image](https://hub.docker.com/_/node)
 
 The Node 24 SQLite module is available without an enabling flag. Its documented stability still depends on the minor release; the image build runs a `DatabaseSync` smoke check, and hosted verification must record the actual Node version and image used.
+
+## Prepared deployment record
+
+On October 10, 2026, the following new resources were prepared:
+
+- Service: `6f422cde-c9b9-4bdf-a8cc-3b41a31b6e1d` (`studychat-no-rag-test`).
+- Domain: `https://studychat-no-rag-test-private-test.up.railway.app`. It has no running application yet.
+- New staged volume: `5e1e422a-5a56-43a5-a8ed-d9da1733aaed`, 500 MB, iad, `/app/data`.
+- Reviewed pending patch: `4f245262-e4aa-4f82-b115-a1b489f8ef77`, 26 changes, only this new service and volume, no shared variable changes.
+- Pinned runtime commit: `844ad092b6c24ed052f9897cd4477e98f57f5e41`.
+- The owner access token is separate from the original pilot and is omitted from this repository.
+- Provider credential is a Railway service reference to the pilot's existing server-only key; no key was read or changed.
+
+The deployment approval action returned “Cancelled — the user did not approve this action. No changes were made.” The configuration remains staged. Re-read the entire pending patch before accepting it once approval is received. Hosted smoke, actual-model fixtures, and persistence after restart remain pending.
