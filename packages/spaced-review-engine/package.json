@@ -1,0 +1,1 @@
+{"name":"@aibotjock/spaced-review-engine","version":"0.1.0","private":true,"type":"module","license":"UNLICENSED","exports":"./index.js","files":["index.js","shared","README.md"],"scripts":{"test":"node --test tests/*.test.js"}}
