@@ -79,14 +79,9 @@ async function providerPayload(response) {
 }
 
 /** Server-owned transcription only; no credentials, free-form prompt or model selector reach the browser. */
-export function createConversationAudioService({ env = process.env, fetchImpl = globalThis.fetch, provider, db, now = Date.now, onSessionEnded = () => {}, setTimer = setTimeout, clearTimer = clearTimeout } = {}) {
+export function createConversationAudioService({ env = process.env, fetchImpl = globalThis.fetch, db, now = Date.now, onSessionEnded = () => {}, setTimer = setTimeout, clearTimer = clearTimeout } = {}) {
   if (!db?.prepare) throw new Error('Conversation audio requires a durable request ledger.');
   const key = (env.OPENAI_API_KEY || '').trim();
-  const configured = provider ? provider.configured : Boolean(key);
-  const model = provider?.model || CONVERSATION_TRANSCRIPTION_MODEL;
-  const providerName = provider?.name || 'openai';
-  const paidRequest = provider ? provider.paidRequest === true : true;
-  const timeoutMs = provider?.timeoutMs ?? CONVERSATION_AUDIO_LIMITS.timeoutMs;
   db.exec("CREATE TABLE IF NOT EXISTS conversation_audio_requests(request_id TEXT PRIMARY KEY,fingerprint TEXT NOT NULL,scope TEXT NOT NULL,status TEXT NOT NULL,created_at INTEGER NOT NULL,metadata TEXT); UPDATE conversation_audio_requests SET status='uncertain' WHERE status='pending';");
   const sessions = new Map(), active = new Map(), cache = new Map();
   let stopped = false, starts = [];
@@ -114,11 +109,11 @@ export function createConversationAudioService({ env = process.env, fetchImpl = 
     return session;
   }
   function options() {
-    return { enabled: Boolean(configured) && !stopped, provider: providerName, transcriptionModel: model, transcriptionTimeoutMs: timeoutMs, maxDurationMs: CONVERSATION_AUDIO_LIMITS.sessionMs, audio: { format: 'wav', sampleRate: 16000, channels: 1, maxDurationMs: CONVERSATION_AUDIO_LIMITS.maxUtteranceMs, maxBytes: CONVERSATION_AUDIO_LIMITS.maxAudioBytes }, telemetry: { audioReportedToIngenium: false, reason: 'receiver_audio_schema_pending', estimatedCostUsd: paidRequest ? null : 0, hostingCostIncluded: false } };
+    return { enabled: Boolean(key) && !stopped, provider: 'openai', transcriptionModel: CONVERSATION_TRANSCRIPTION_MODEL, maxDurationMs: CONVERSATION_AUDIO_LIMITS.sessionMs, audio: { format: 'wav', sampleRate: 16000, channels: 1, maxDurationMs: CONVERSATION_AUDIO_LIMITS.maxUtteranceMs, maxBytes: CONVERSATION_AUDIO_LIMITS.maxAudioBytes }, telemetry: { audioReportedToIngenium: false, reason: 'receiver_audio_schema_pending', estimatedCostUsd: null } };
   }
   function start({ conversationId, ownerKey }) {
     prune();
-    if (!configured || stopped) fail(503, 'Transcription is not configured on this server.', 'conversation_audio_not_configured');
+    if (!key || stopped) fail(503, 'OpenAI transcription is not configured on this server.', 'conversation_audio_not_configured');
     if (typeof conversationId !== 'string' || !conversationId || typeof ownerKey !== 'string' || !ownerKey) fail(400, 'Use an authenticated conversation.', 'invalid_conversation_audio_scope');
     if (starts.length >= CONVERSATION_AUDIO_LIMITS.maxSessionsPerHour) fail(429, 'The hourly voice-session limit has been reached.', 'conversation_audio_session_limit');
     for (const [id, session] of sessions) {
@@ -165,36 +160,33 @@ export function createConversationAudioService({ env = process.env, fetchImpl = 
     if (hourly.requests >= CONVERSATION_AUDIO_LIMITS.maxHourlyRequests || hourly.audioMs + durationMs > CONVERSATION_AUDIO_LIMITS.maxHourlyAudioMs) fail(429, 'The hourly transcription usage limit has been reached. Try again when earlier usage expires.', 'conversation_audio_hourly_usage_limit');
     if (session.requests >= CONVERSATION_AUDIO_LIMITS.maxSessionRequests || session.audioMs + durationMs > CONVERSATION_AUDIO_LIMITS.sessionMs) fail(429, 'The voice-session usage limit has been reached.', 'conversation_audio_usage_limit');
     if (db.prepare('SELECT COUNT(*) AS count FROM conversation_audio_requests').get().count >= CONVERSATION_AUDIO_LIMITS.maxLedgerEntries) fail(429, 'The transcription request history is full.', 'conversation_audio_ledger_limit');
-    const controller = new AbortController(), startedAt = now(), timer = setTimer(() => controller.abort(), timeoutMs);
+    const controller = new AbortController(), startedAt = now(), timer = setTimer(() => controller.abort(), CONVERSATION_AUDIO_LIMITS.timeoutMs);
     timer?.unref?.();
     const signal = input.signal ? AbortSignal.any([input.signal, controller.signal]) : controller.signal;
-    let form;
-    if (!provider) {
-      form = new FormData();
-      form.set('file', new Blob([audio], { type: 'audio/wav' }), 'utterance.wav');
-      form.set('model', model); form.set('response_format', 'json'); form.set('language', 'en');
-    }
+    const form = new FormData();
+    form.set('file', new Blob([audio], { type: 'audio/wav' }), 'utterance.wav');
+    form.set('model', CONVERSATION_TRANSCRIPTION_MODEL); form.set('response_format', 'json'); form.set('language', 'en');
     session.requests++; session.audioMs += durationMs;
-    let metadata = { provider: providerName, endpoint: provider ? 'transcribe' : 'audio/transcriptions', model, durationMs, sampleRate, usage: null, estimatedCostUsd: paidRequest ? null : 0, hostingCostIncluded: false, paidRequest };
+    let metadata = { provider: 'openai', endpoint: 'audio/transcriptions', model: CONVERSATION_TRANSCRIPTION_MODEL, durationMs, sampleRate, usage: null, estimatedCostUsd: null, paidRequest: true };
     db.prepare('INSERT INTO conversation_audio_requests VALUES(?,?,?,?,?,?)').run(requestId, fingerprint, scope, 'pending', startedAt, JSON.stringify(metadata));
     active.set(requestId, { controller, sessionId: input.sessionId });
     try {
-      const response = provider ? await provider.request({ audio, signal }) : await fetchImpl(ENDPOINT, { method: 'POST', redirect: 'error', signal, headers: { Authorization: `Bearer ${key}` }, body: form });
-      if (!response.ok) { await response.body?.cancel?.().catch(() => {}); fail(response.status === 429 ? 429 : 502, 'The speech service could not transcribe this turn. No automatic retry was made.', 'conversation_audio_provider_failed'); }
+      const response = await fetchImpl(ENDPOINT, { method: 'POST', redirect: 'error', signal, headers: { Authorization: `Bearer ${key}` }, body: form });
+      if (!response.ok) { await response.body?.cancel?.().catch(() => {}); fail(response.status === 429 ? 429 : 502, 'OpenAI could not transcribe this turn. No automatic retry was made.', 'conversation_audio_provider_failed'); }
       const payload = await providerPayload(response);
       allowed();
       if (signal.aborted) fail(409, 'This transcription request was stopped.', 'conversation_audio_request_inactive');
-      if (payload?.model !== undefined && payload.model !== model && (provider || !/^gpt-4o-mini-transcribe-\d{4}-\d{2}-\d{2}$/.test(payload.model))) fail(502, 'The transcription provider returned an unexpected model.', 'conversation_audio_provider_model');
-      if (typeof payload?.text !== 'string' || payload.text.length > 12000 || /[\0\u0001-\u0008\u000b\u000c\u000e-\u001f]/u.test(payload.text)) fail(502, 'The speech service returned an unusable transcript.', 'conversation_audio_provider_format');
+      if (payload?.model !== undefined && payload.model !== CONVERSATION_TRANSCRIPTION_MODEL && !/^gpt-4o-mini-transcribe-\d{4}-\d{2}-\d{2}$/.test(payload.model)) fail(502, 'The transcription provider returned an unexpected model.', 'conversation_audio_provider_model');
+      if (typeof payload?.text !== 'string' || payload.text.length > 12000 || /[\0\u0001-\u0008\u000b\u000c\u000e-\u001f]/u.test(payload.text)) fail(502, 'OpenAI returned an unusable transcript.', 'conversation_audio_provider_format');
       const providerId = response.headers.get('x-request-id');
-      metadata = { ...metadata, returnedModel: payload.model ?? null, providerRequestId: typeof providerId === 'string' && /^[A-Za-z0-9_-]{1,180}$/.test(providerId) ? providerId : null, audioBytes: audio.length, latencyMs: Math.max(0, now() - startedAt), usage: safeUsage(payload.usage), pricingBasis: paidRequest ? 'Actual provider usage when supplied; transcription cost is not estimated.' : 'Self-hosted speech has no vendor API fee; compute and answering-model costs are separate.', recordedAt: now(), ingeniumReported: false };
+      metadata = { ...metadata, returnedModel: payload.model ?? null, providerRequestId: typeof providerId === 'string' && /^[A-Za-z0-9_-]{1,180}$/.test(providerId) ? providerId : null, audioBytes: audio.length, latencyMs: Math.max(0, now() - startedAt), usage: safeUsage(payload.usage), pricingBasis: 'Actual provider usage when supplied; transcription cost is not estimated.', recordedAt: now(), ingeniumReported: false };
       const result = { sessionId: input.sessionId, conversationId: input.conversationId, requestId, text: payload.text.trim(), transcriptVerified: false, metadata, cached: false };
       db.prepare("UPDATE conversation_audio_requests SET status='complete',metadata=? WHERE request_id=?").run(JSON.stringify(metadata), requestId);
       while (cache.size >= 10) cache.delete(cache.keys().next().value);
       cache.set(requestId, { sessionId: input.sessionId, result, expiresAt: now() + CONVERSATION_AUDIO_LIMITS.cacheMs });
       return result;
     } catch (error) {
-      if (!stopped) db.prepare("UPDATE conversation_audio_requests SET status='uncertain',metadata=? WHERE request_id=?").run(JSON.stringify({ ...metadata, latencyMs: Math.max(0, now() - startedAt), cancelled: signal.aborted, billingOutcome: paidRequest ? 'unknown' : 'no_vendor_api_fee' }), requestId);
+      if (!stopped) db.prepare("UPDATE conversation_audio_requests SET status='uncertain',metadata=? WHERE request_id=?").run(JSON.stringify({ ...metadata, latencyMs: Math.max(0, now() - startedAt), cancelled: signal.aborted, billingOutcome: 'unknown' }), requestId);
       if (error instanceof ConversationAudioError) throw error;
       fail(signal.aborted ? 409 : 502, signal.aborted ? 'This transcription request was stopped.' : 'Transcription could not be completed. No automatic retry was made.', signal.aborted ? 'conversation_audio_request_inactive' : 'conversation_audio_provider_failed');
     } finally { clearTimer(timer); active.delete(requestId); audio.fill(0); }

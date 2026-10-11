@@ -14,7 +14,7 @@ export const el = (tag, attrs = {}, ...children) => {
   return node;
 };
 export async function api(path, options = {}) {
-  const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), Math.min(path === '/api/voice/transcribe' ? 125000 : 60000, Math.max(1000, Number(options.timeoutMs) || 25000)));
+  const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), Math.min(60000, Math.max(1000, Number(options.timeoutMs) || 25000)));
   try {
     const response = await fetch(path, { credentials: 'same-origin', ...options,
       signal: options.signal ? AbortSignal.any([options.signal, controller.signal]) : controller.signal,
@@ -37,6 +37,69 @@ const tabs = [['coach', 'Coach', '◌'], ['practice', 'Practice', '▤'], ['revi
 let session = {}, currentTab = 'coach', page, globalNotice, agent, currentConversation = null, conversations = [], log, input, chatStatus, stopButton, nextTurnId = null, active = null, conversationReadOnly = false;
 let studyModule = null, voiceModule = null, voiceOpening = false, navigationVersion = 0;
 let selectedModel = null, modelCataloguePromise = null, modelController = null, modelSaveQueue = Promise.resolve();
+let deviceVoiceModulePromise = null, installPrompt = null;
+const installPanels = new Set();
+const installedApp = () => window.matchMedia?.('(display-mode: standalone)').matches || navigator.standalone === true;
+window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; for (const panel of installPanels) panel.refresh(); });
+window.addEventListener('appinstalled', () => { installPrompt = null; for (const panel of installPanels) panel.refresh(); });
+export function loadDeviceVoice() { deviceVoiceModulePromise ||= import('/device-voice.js').catch(error => { deviceVoiceModulePromise = null; throw error; }); return deviceVoiceModulePromise; }
+const megabytes = bytes => `${(Math.max(0, Number(bytes) || 0) / 1000000).toLocaleString(undefined, { maximumFractionDigits: 1 })} MB`;
+export function createDeviceInstallPanel({ compact = false, autoInstall = false } = {}) {
+  let status = null, controller = null, loading = false, refreshGeneration = 0;
+  const message = el('p', { class: 'bottom-note', role: 'status', 'aria-live': 'polite', text: 'Checking voice files on this device…' });
+  const progress = el('progress', { max: '1', value: '0', hidden: true, 'aria-label': 'Voice download progress' });
+  const download = el('button', { type: 'button', class: compact ? 'subtle' : 'primary', text: 'Download app + voices', disabled: true, onclick: () => { void downloadPack(); } });
+  const cancel = el('button', { type: 'button', class: 'subtle', text: 'Cancel download', hidden: true, onclick: () => controller?.abort() });
+  const nativeInstall = el('button', { type: 'button', class: 'subtle', text: 'Install app', hidden: true, onclick: async () => {
+    const event = installPrompt; if (!event) return;
+    nativeInstall.disabled = true;
+    try { await event.prompt(); const result = await event.userChoice; installPrompt = null; message.textContent = result.outcome === 'accepted' ? 'App installation requested. Voice files are ready on this device.' : 'Voice files are ready. You can install the app later from your browser menu.'; }
+    catch { message.textContent = 'Voice files are ready. Use your browser menu to install the app or add it to your Home Screen.'; }
+    finally { nativeInstall.disabled = false; nativeInstall.hidden = true; }
+  } });
+  const panel = el('div', { class: compact ? 'device-install compact' : 'device-install', 'data-device-install': '' }, compact ? null : el('h3', { text: 'App download with voices' }), message, progress, el('div', { class: 'row' }, download, cancel, nativeInstall));
+  const refreshButtons = () => {
+    download.disabled = loading || !status?.supported;
+    download.hidden = Boolean(status?.installed && !status?.updateAvailable);
+    download.textContent = status?.updateAvailable ? 'Update app voices' : 'Download app + voices';
+    cancel.hidden = !loading;
+    nativeInstall.hidden = loading || !status?.installed || installedApp() || !installPrompt;
+  };
+  const installedMessage = () => status?.updateAvailable ? `Voices are installed on this device. Updated voice files are available (${megabytes(status.totalBytes)}).` : installedApp() ? 'Voices are installed on this device. They run locally when you start voice chat.' : installPrompt ? 'Voice files are ready on this device. Choose Install app to finish.' : 'Voice files are ready. Use your browser menu to install the app. On iPhone or iPad, open Safari, tap Share, then Add to Home Screen.';
+  async function refresh() {
+    if (loading) return;
+    const epoch = ++refreshGeneration;
+    try { const module = await loadDeviceVoice(), next = await module.getDeviceVoiceStatus(); if (!panel.isConnected || loading || epoch !== refreshGeneration) return; status = next; message.textContent = status.reason ? `${status.reason} Typed chat remains available.` : !status.supported ? 'On-device voice is unavailable in this browser. Typed chat remains available.' : status.installed ? installedMessage() : `Download ${megabytes(status.totalBytes)} of voice files with the app. Your microphone stays off; typed chat remains available.`; refreshButtons(); }
+    catch (error) { if (panel.isConnected && !loading && epoch === refreshGeneration) { message.textContent = `Voice files could not be checked. ${error.message} Typed chat remains available.`; download.disabled = false; } }
+  }
+  async function downloadPack() {
+    if (loading) return;
+    refreshGeneration++;
+    controller = new AbortController(); loading = true; refreshButtons(); progress.hidden = false; message.textContent = 'Downloading voices to this device. Your microphone is off.';
+    try {
+      const module = await loadDeviceVoice();
+      status = await module.installDeviceVoice({ signal: controller.signal, onProgress: value => {
+        if (!panel.isConnected || controller.signal.aborted) return;
+        const total = Number(value.totalBytes) || status?.totalBytes || 1, downloaded = Number(value.downloadedBytes) || 0;
+        progress.max = total; progress.value = Math.min(total, downloaded);
+        message.textContent = `${value.stage === 'verifying' ? 'Checking' : 'Downloading'} voice files: ${megabytes(downloaded)} of ${megabytes(total)}. Your microphone is off.`;
+      } });
+      if (controller.signal.aborted) return;
+      message.textContent = installedMessage();
+      panel.dispatchEvent(new CustomEvent('devicevoiceinstalled', { bubbles: true }));
+      for (const entry of installPanels) entry.refresh();
+    } catch (error) { if (panel.isConnected) message.textContent = controller.signal.aborted ? `Voice download cancelled. Choose ${status?.updateAvailable ? 'Update app voices' : 'Download app + voices'} to try again. ${status?.installed ? 'Installed voices remain available.' : 'Typed chat is ready.'}` : `Voice download did not finish. ${error.message} Typed chat remains available.`; }
+    finally { controller = null; loading = false; progress.hidden = true; refreshButtons(); }
+  }
+  function onHidden() { if (document.hidden) controller?.abort(); }
+  document.addEventListener('visibilitychange', onHidden);
+  const entry = { refresh, destroy() { refreshGeneration++; controller?.abort(); installPanels.delete(entry); document.removeEventListener('visibilitychange', onHidden); } };
+  installPanels.add(entry);
+  panel.dispose = () => entry.destroy();
+  queueMicrotask(async () => { await refresh(); if (autoInstall && panel.isConnected && installedApp() && status?.supported && !status.installed) void downloadPack(); });
+  return panel;
+}
+function disposeInstallPanels(container) { for (const panel of container?.querySelectorAll?.('[data-device-install]') || []) panel.dispose?.(); }
 const requests = new Map();
 const brand = () => el('div', { class: 'brand' }, el('span', { class: 'brand-mark', 'aria-hidden': 'true', text: '+' }), el('div', {}, 'StudyChat', el('small', { text: 'FAMILY MEDICINE' })));
 function voiceIcon() {
@@ -51,7 +114,7 @@ function voiceIcon() {
 }
 const navigation = className => el('nav', { class: className, 'aria-label': 'Main navigation' }, tabs.map(([id, label, symbol]) => el('button', { type: 'button', 'data-tab': id, 'aria-current': currentTab === id ? 'page' : null, onclick: () => navigate(id) }, el('span', { class: 'nav-icon', 'aria-hidden': 'true', text: symbol }), label)));
 function showStatus(text, busy = false) { if (chatStatus) { chatStatus.textContent = text; chatStatus.classList.toggle('loading', busy); } if (stopButton) stopButton.classList.toggle('hidden', !busy); }
-function logoutLocal() { agent?.destroy(); agent = null; voiceModule?.cleanup?.(); modelController?.abort(); modelController = null; modelCataloguePromise = null; selectedModel = null; modelSaveQueue = Promise.resolve(); session = { authenticated: false }; currentConversation = null; nextTurnId = null; active = null; showLogin(); }
+function logoutLocal() { agent?.destroy(); agent = null; voiceModule?.cleanup?.(); disposeInstallPanels(root); modelController?.abort(); modelController = null; modelCataloguePromise = null; selectedModel = null; modelSaveQueue = Promise.resolve(); session = { authenticated: false }; currentConversation = null; nextTurnId = null; active = null; showLogin(); }
 export function showGlobalError(error) { if (globalNotice) globalNotice.replaceChildren(notice(error?.message || String(error), 'error')); }
 export function clearGlobalError() { globalNotice?.replaceChildren(); }
 async function boot() {
@@ -61,6 +124,7 @@ async function boot() {
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
 function showLogin(error = '') {
+  disposeInstallPanels(root);
   const token = el('input', { type: 'password', name: 'token', autocomplete: 'current-password', required: true, placeholder: 'Your private study token', maxlength: '500' });
   const feedback = el('div', { role: 'status' }, error ? notice(error, 'error') : null);
   const button = el('button', { class: 'primary full-width', type: 'submit', text: 'Open workspace' });
@@ -68,11 +132,12 @@ function showLogin(error = '') {
   root.replaceChildren(el('main', { class: 'login', id: 'main' }, brand(), el('div', { class: 'eyebrow', text: 'Your private study space' }), el('h1', { class: 'preserve-lines', text: 'Small steps.\nStronger reasoning.' }), el('p', { class: 'muted', text: 'A focused workspace for family medicine. Converse, practice, and return to what matters.' }), el('div', { class: 'panel' }, form), el('p', { class: 'bottom-note', text: 'Study support only. Your access token is separate from your AI API key.' })));
 }
 async function showWorkspace() {
+  disposeInstallPanels(root);
   modelController?.abort(); modelController = new AbortController(); modelCataloguePromise = null;
   selectedModel = session.selected || { provider: 'openai', model: session.model };
   globalNotice = el('div'); page = el('main', { id: 'main', class: 'page', tabindex: '-1' });
   const status = el('span', { class: `tag ${session.aiAvailable ? 'good' : 'alert'}`, text: session.aiAvailable ? 'AI connected' : 'AI unavailable' });
-  root.replaceChildren(el('div', { class: 'layout' }, el('aside', { class: 'sidebar' }, brand(), navigation('nav'), el('div', { class: 'sidebar-foot' }, el('div', { class: 'owner-tag' }, el('span', { class: 'status-dot' }), 'Private workspace'), el('div', { class: 'muted', text: 'Clinical reasoning, one useful step at a time.' }), el('button', { class: 'subtle', onclick: logout, text: 'Sign out' }))), el('div', { class: 'workspace' }, el('header', { class: 'topbar' }, el('div', { class: 'mobile-brand' }, brand()), el('div', {}, el('div', { class: 'topbar-title', text: 'A little practice, every day' }), el('div', { class: 'date-label', text: new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).format(new Date()) })), status), globalNotice, page), navigation('tabbar')));
+  root.replaceChildren(el('div', { class: 'layout' }, el('aside', { class: 'sidebar' }, brand(), navigation('nav'), el('div', { class: 'sidebar-foot' }, el('div', { class: 'owner-tag' }, el('span', { class: 'status-dot' }), 'Private workspace'), el('div', { class: 'muted', text: 'Clinical reasoning, one useful step at a time.' }), el('button', { class: 'subtle', onclick: logout, text: 'Sign out' }))), el('div', { class: 'workspace' }, el('header', { class: 'topbar' }, el('div', { class: 'mobile-brand' }, brand()), el('div', {}, el('div', { class: 'topbar-title', text: 'A little practice, every day' }), el('div', { class: 'date-label', text: new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).format(new Date()) })), status), createDeviceInstallPanel({ compact: true, autoInstall: true }), globalNotice, page), navigation('tabbar')));
   studyModule ||= await import('/study.js');
   await loadConversations({ selectLatest: true }); await navigate('coach');
 }
@@ -84,6 +149,7 @@ export async function navigate(id) {
   navigationVersion++;
   studyModule?.cleanup?.();
   voiceModule?.cleanup?.();
+  disposeInstallPanels(page);
   currentTab = id; clearGlobalError();
   document.querySelectorAll('[data-tab]').forEach(button => button.setAttribute('aria-current', button.dataset.tab === id ? 'page' : 'false'));
   if (id !== 'coach') agent?.stop('Conversation paused.');

@@ -1,6 +1,6 @@
 # Family Medicine StudyChat — no RAG rebuild
 
-A private, single-owner study app: one Node.js 24 process, one SQLite database, and browser modules. Coach makes one direct request to the selected OpenAI or Anthropic text model for an ordinary chat turn. Practice grades canonical questions on the server; review uses the copied SM-2-inspired scheduler. There are no production dependencies or frontend build step.
+A private, single-owner study app: one Node.js 24 process, one SQLite database, and browser modules. Coach makes one direct request to the selected OpenAI or Anthropic text model for an ordinary chat turn. Practice grades canonical questions on the server; review uses the copied SM-2-inspired scheduler. Node has no production npm dependencies. Optional device voice has its own build and download package.
 
 ## Run
 
@@ -16,7 +16,7 @@ Open http://127.0.0.1:3000. Local loopback use can omit the study access token. 
 npm test
 ```
 
-Node 24's built-in `node:sqlite` is required. No `npm install` is needed. Docker runs the same application. See [deployment instructions](docs/deployment.md) for the isolated Railway service and persistent `/app/data` volume. Keep one replica.
+Node 24's built-in `node:sqlite` is required. Typed chat needs no `npm install`. To build the device voice download for local development, run `npm ci --ignore-scripts` then `npm run build:voice`. Docker performs this in a separate build stage and includes only the generated assets in the runtime image. See [deployment instructions](docs/deployment.md) for the isolated Railway service and persistent `/app/data` volume. Keep one replica.
 
 ## Study behavior
 
@@ -44,15 +44,15 @@ Models priced at $3 or more per million input tokens, $15 or more per million ou
 
 Voice is optional and loaded from the compact waveform button beside the message box. Choose Heart, Bella, Nicole, Michael, or Emma in the voice dialog or Settings; no Settings opt-in is required. Press Start conversation to allow microphone capture. Stop, close, or background the app to release it. Final transcripts follow the same chat contract and use the selected OpenAI/Claude answering model. Speech reads only a completed saved response; audio never delays text or generates a second answer. Speech is AI-generated. Microphone capture needs a secure browser context and explicit permission. Browser mock tests cannot establish physical-phone echo cancellation or Bluetooth reliability.
 
-The separate [speech service](services/speech/README.md) uses Pipecat's local Faster-Whisper recognition and Kokoro ONNX synthesis. It has no paid speech API or paid fallback. Only the Node backend connects to it; the browser never receives its URL or credential. The app checks model readiness before offering microphone capture. If speech is unavailable, typed chat remains usable. Existing paid voice preferences migrate to Heart when loading settings or backups. No speech models or Python dependencies are loaded into the Node app.
+Choose **Download app + voices** to install the integrity-checked speech package on this device, then use the browser's Install app action or iPhone/iPad Add to Home Screen. An installed app with missing voices offers the same download. Whisper Base English recognizes recordings and Kokoro synthesizes replies in a browser worker using single-thread CPU WebAssembly. The package includes five voices, pinned model weights, and the runtime. Completed files survive cancellation so retry resumes; only a fully verified package becomes active. Browser storage can be cleared or evicted, in which case the app asks for another download.
 
-Self-hosted speech removes vendor speech fees; CPU, RAM, hosting and the selected answering model are separate costs. Railway can host the speech worker privately in the same project and region. The worker's Docker image includes its models, so a separate model volume is unnecessary. Start with one worker and measure latency and memory before increasing resources; this turn-based architecture is not native simultaneous speech-to-speech.
+After download, speech inference and recordings stay on the device and speech works without a network connection. The selected OpenAI/Claude answering model and saved study APIs still require the backend. Railway serves the initial package as static files and runs no speech inference, Python service, or Pipecat worker. There is no paid speech fallback. Normal hosting/download traffic and answering-model charges remain. Device CPU, memory, and browser capabilities determine speech performance; this turn-based design does not establish simultaneous speech-to-speech or physical-phone reliability.
 
 ## Settings and backups
 
 Settings and validated JSON backups use authenticated APIs. Export contains learner data and model preferences, never provider keys, the access token, or session cookie. Restore replaces the workspace atomically and validates its schema and size before changing data. Version-one pilot backups migrate on a copy: historical sources remain imported/unverified, old practice scores are not trusted, and old active quizzes do not become live pending state. Back up before restore. The rebuild never opens the pilot's writable database.
 
-The installable shell caches public interface files only. Saved study data still requires this backend; shell caching is not offline synchronization.
+The installable shell caches public interface files and the separate verified speech package. Saved study data still requires this backend; shell caching is not offline synchronization.
 
 ## Configuration and limits
 
@@ -73,10 +73,8 @@ The installable shell caches public interface files only. Saved study data still
 | `STANDARD_PROMPT_BYTES` | `24000` | Standard-model UTF-8 prompt bound |
 | `LIMITED_PROMPT_BYTES` | `8000` | Expensive or unpriced-model UTF-8 prompt bound |
 | `MAX_HISTORY_MESSAGES` | `12` | Completed context window |
-| `SPEECH_SERVICE_URL` | empty | Separate speech service origin: local/private Railway HTTP or remote HTTPS |
-| `SPEECH_SERVICE_TOKEN` | empty | Independent server-only bearer credential, at least 32 characters |
 
-Additional fixed bounds: 128 KiB ordinary JSON, 16 MiB backup/workspace, 2 MiB microphone upload (60 seconds at 16 kHz), 8 MiB speech output, 4,096 spoken text characters, 20,000 chat output characters, 45-second speech deadline and 95-second transcription deadline. The speech worker itself limits operations to 90 seconds. These are request/resource bounds, not daily AI quotas. Transcription retains the existing owner/session/request safeguards. Speech metadata records zero vendor API fees while explicitly excluding hosting costs. Cancellation can still incur answering-model charges or consume self-hosted CPU time.
+Additional fixed bounds: 128 KiB ordinary JSON, 16 MiB backup/workspace, 2 MiB local recording (60 seconds at 16 kHz), 8 MiB locally generated speech, 4,096 spoken text characters, and 20,000 chat output characters. Device engine preparation is limited to three minutes and inference to five minutes; the UI also bounds its operations. Closing or backgrounding terminates the worker and releases capture. These are resource bounds, not daily AI quotas. Cancellation can still incur answering-model charges. Legacy server speech configuration is ignored, and authenticated `/api/voice*` routes return 404.
 
 The app logs startup and terse error/status diagnostics without learner text or secrets. Model/provider failures are service errors, not invented medical abstentions. The tutor prompt supports honesty; it does not guarantee medical correctness.
 
@@ -94,4 +92,4 @@ Genuine requests are marked `app_observed`. Collector fixtures are marked `clien
 
 [Validation record](docs/validation.md) separates engine, deterministic provider, browser, actual-model, hosted, and physical-device evidence. Checks that have not run are identified explicitly.
 
-[Free speech validation](docs/free-voice-validation.md) records the Whisper/Kokoro/Pipecat branch's checks and separates local inference from browser fixtures and physical-phone testing.
+[Device speech validation](docs/device-voice-validation.md) records the local Whisper/Kokoro checks and separates real browser inference from fixtures and physical-phone testing. The earlier server prototype remains on `feature/free-voice-pipecat` for reference.

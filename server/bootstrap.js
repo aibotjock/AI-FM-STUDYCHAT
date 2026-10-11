@@ -7,7 +7,6 @@ import { createStudyService } from './study.js';
 import { createBackupService } from './backup.js';
 import { createApp } from './app.js';
 import { createReferenceDirectory } from './references.js';
-import { createVoiceService } from './voice.js';
 
 export function buildApplication({ config, provider: suppliedProvider } = {}) {
   const store = createStore({ dataDir: config.dataDir, maxBytes: config.backupBytes });
@@ -28,8 +27,7 @@ export function buildApplication({ config, provider: suppliedProvider } = {}) {
     resolveTurn: ({ conversationId, input, turnId }) => study.resolveChatTurn({ conversationId, text: input, turnId })
   });
   const backup = createBackupService({ store, chat, study, maxBytes: config.backupBytes });
-  const voice = createVoiceService({ db: store.db, chat, config });
   store.db.prepare('INSERT OR IGNORE INTO schema_version VALUES(3)').run();
-  const app = createApp({ config, chat, study, backup, references, voice, telemetry, models: suppliedProvider?.catalogue ? suppliedProvider : models });
-  return { ...app, store, chat, study, backup, references, voice, models, telemetry, async shutdown() { voice.close(); chat.close(); await app.close(); await telemetry.close(); store.close(); } };
+  const app = createApp({ config, chat, study, backup, references, telemetry, models: suppliedProvider?.catalogue ? suppliedProvider : models });
+  return { ...app, store, chat, study, backup, references, models, telemetry, async shutdown() { chat.close(); await app.close(); await telemetry.close(); store.close(); } };
 }

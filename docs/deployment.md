@@ -1,6 +1,6 @@
 # Isolated Railway deployment
 
-The rebuild is one Node 24 service with one SQLite volume. Optional self-hosted voice uses a separate private Python service; its model dependencies stay outside the Node app. The Node Dockerfile has no package installation or frontend build step. Railway supplies `PORT`; the app binds to `HOST=0.0.0.0`. `/health` is unauthenticated, returns no learner data, and makes no provider calls.
+The rebuild is one Node 24 service with one SQLite volume. Whisper and Kokoro run on user devices. Docker builds the pinned speech download in a separate stage; the Node runtime streams those static files without loading models or production npm dependencies. Railway supplies `PORT`; the app binds to `HOST=0.0.0.0`. `/health` is unauthenticated, returns no learner data, and makes no provider calls.
 
 ## Target and isolation
 
@@ -12,7 +12,7 @@ The rebuild is one Node 24 service with one SQLite volume. Optional self-hosted 
 | New volume name | `studychat-no-rag-data` |
 | New volume mount | `/app/data` |
 | Region and instances | `iad`, one replica |
-| Source | `aibotjock/AI-FM-STUDYCHAT`, `feature/no-rag-rebuild`, reviewed exact commit |
+| Source | `aibotjock/AI-FM-STUDYCHAT`, `feature/on-device-voice`, reviewed exact commit |
 
 The existing service `family-medicine-phone-test` (`78d73fb2-96fa-45bc-97e4-6aa108724dc5`) and volume `private-study-data` (`7c154489-6726-4d2c-9328-3495c655aa92`) remain untouched. The pilot's volume must not be attached to the rebuild. Initial import uses an exported backup copied to a separate test database.
 
@@ -34,8 +34,6 @@ An inventory read on October 10, 2026 found one existing service and its 500 MB 
 | `ANTHROPIC_MODEL` | Default Claude text model, `claude-haiku-5-5` |
 | `STANDARD_PROMPT_BYTES`, `MAX_OUTPUT_TOKENS` | Optional standard budget overrides; defaults `24000`, `1200` |
 | `LIMITED_PROMPT_BYTES`, `LIMITED_OUTPUT_TOKENS` | Optional limited budget overrides; defaults `8000`, `768`; cannot exceed standard caps |
-| `SPEECH_SERVICE_URL` | Optional private speech origin; see the voice-service configuration below |
-| `SPEECH_SERVICE_TOKEN` | Independent server-only speech credential; never send it to the browser |
 
 Secrets are supplied as service-scoped variables. Existing shared values may be referenced intentionally, but changing a shared value would affect the pilot and is unnecessary. The Docker image runs with the default root UID because Railway's mounted volume is root-owned. There are no secrets in image layers. SQLite migrations run at application startup, when the volume is mounted; pre-deploy commands must not open the database.
 
@@ -65,15 +63,13 @@ Railway detects the root `Dockerfile` automatically. No `railway.json` is includ
 
 Creation and deployment use resources from the existing Railway account. No plan purchase, upgrade, app-store submission, public release, or pilot deletion is part of this setup.
 
-## Optional private speech worker
+## Device speech package
 
-The `feature/free-voice-pipecat` branch supplies a separate [Whisper/Kokoro/Pipecat service](../services/speech/README.md). This configuration is proposed; it does not establish a deployed speech worker. The owner is also considering inference on user devices, which requires a different client integration. No additional Railway speech runtime has been activated.
+No Railway speech worker was created or staged. Deploy only the existing app service; retain its current SQLite volume, authentication, provider keys, and monitoring account. The old `SPEECH_SERVICE_URL`, `SPEECH_SERVICE_TOKEN`, `OPENAI_SPEECH_MODEL`, and `OPENAI_TRANSCRIPTION_MODEL` variables are unused and can be removed from this service without changing text-model keys.
 
-For a server-hosted deployment, create one private `studychat-free-speech` service from the reviewed branch commit with root directory `/services/speech`, Dockerfile `Dockerfile`, health path `/health`, 300-second health timeout, and one `iad` replica. Initial resource limits are 2 vCPU and 3 GB RAM; disable sleeping to avoid repeatedly loading the models. Set `HOST=0.0.0.0`, `PORT=8081`, `OMP_NUM_THREADS=2`, and an independent random `SPEECH_SERVICE_TOKEN`. The image contains the fixed model assets, so this service needs no public domain, database, or volume.
+The Docker build downloads fixed-revision model files and verifies their SHA-256 hashes and sizes. It bundles one lazy runtime with CPU-only WebAssembly and five voices. Heavy generated files are excluded from Git and regenerated from `tools/build-device-voice.mjs`. The generated manifest identifies the complete package; the browser checks every file before activation. Static asset responses stream from disk, and Node never performs inference. Downloads use normal Railway bandwidth; no additional compute service, model volume, or public speech endpoint is required.
 
-On the existing Node app, set `SPEECH_SERVICE_URL` to `http://${{studychat-free-speech.RAILWAY_PRIVATE_DOMAIN}}:${{studychat-free-speech.PORT}}` and `SPEECH_SERVICE_TOKEN` to `${{studychat-free-speech.SPEECH_SERVICE_TOKEN}}`. Pin both services to the reviewed free-voice commit. Keep the existing Node volume, provider credentials, authentication, and monitoring account. The older paid-speech environment variables are ignored by this branch.
-
-Inspect staged changes before applying them. Activate additional paid compute only after the owner chooses server hosting and approves its cost. [Railway resource prices](https://docs.railway.com/pricing/plans), checked October 10, 2026, are $10 per GB-month RAM and $20 per average vCPU-month, plus egress. These apply to actual consumption; the resource limits are not a guaranteed billing ceiling. Local measurements cannot establish Railway latency or actual monthly usage.
+The installed web app keeps the package in origin-scoped browser storage. This is a PWA installation, not an APK or App Store package. Users download the voices before enabling capture; the browser's native installation action remains a separate user gesture. A canceled replacement download cannot replace an already complete package. Speech can work offline afterward, while cloud answers and saved study data still require the backend. See [device voice validation](device-voice-validation.md) for tested browser behavior and remaining device checks.
 
 ## Verification and recovery
 

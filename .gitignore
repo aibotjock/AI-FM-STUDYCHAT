@@ -3,8 +3,6 @@ node_modules/
 data/
 test-results/
 *.sqlite*
-.venv/
-__pycache__/
-.pytest_cache/
 .env.local
-/services/speech/models/
+/public/voice-assets/*
+!/public/voice-assets/manifest.json

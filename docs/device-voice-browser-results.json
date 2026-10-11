@@ -1,0 +1,64 @@
+{
+  "checkedAt": "2026-10-11T00:19:55.685Z",
+  "browser": "153.0.8010.0",
+  "mockedWorker": true,
+  "mockedCapture": true,
+  "mockedPlayback": true,
+  "mockedAnsweringModel": true,
+  "actualPaidRequests": 0,
+  "serverSpeechRequests": 0,
+  "voices": [
+    {
+      "value": "af_heart",
+      "label": "Heart"
+    },
+    {
+      "value": "af_bella",
+      "label": "Bella"
+    },
+    {
+      "value": "af_nicole",
+      "label": "Nicole"
+    },
+    {
+      "value": "am_michael",
+      "label": "Michael"
+    },
+    {
+      "value": "bf_emma",
+      "label": "Emma"
+    }
+  ],
+  "selections": [
+    {
+      "provider": "openai",
+      "model": "gpt-4.1-mini"
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5"
+    }
+  ],
+  "checks": [
+    "compact black waveform; microphone off and no model binaries downloaded at app startup",
+    "five labeled voice choices persist; an uninstalled pack cannot start microphone capture",
+    "cancelled download never marks the device pack installed or starts the microphone",
+    "corrupt bytes fail SHA-256 validation; an incomplete pack cannot start speech",
+    "retry from the header resumes verified files; completion prepares an already open voice dialog without acquiring a microphone",
+    "permission denial releases audio resources and leaves typed streaming usable",
+    "one real VAD/WAV utterance uses local transcription, one selected Claude answer and chosen-voice local synthesis; playback recovery does not regenerate audio or download models",
+    "mute releases tracks and audio context; unmute acquires one microphone; Stop releases capture",
+    "backgrounding closes the dialog and terminates workers and microphone; foreground return cannot resume capture",
+    "closing during transcription terminates its worker; deliberately late transcript cannot submit a Coach turn",
+    "closing during synthesis prevents stale audio playback and preserves the saved reply",
+    "320px layout fits the viewport, reduced motion is honored and Escape releases resources",
+    "a cancelled v2 upgrade keeps v1 usable offline after destroy/recreate without fetching assets; retry activates v2 and removes the previous model pack",
+    "pack metadata and worker-fixture speech remain available offline; real model inference is tested separately",
+    "zero server speech API requests and no page errors"
+  ],
+  "errors": []
+}

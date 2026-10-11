@@ -1,9 +1,0 @@
-services:
-  speech:
-    build: .
-    ports:
-      - "127.0.0.1:8081:8081"
-    environment:
-      SPEECH_SERVICE_TOKEN: ${SPEECH_SERVICE_TOKEN:?Set a random token with at least 32 characters}
-    restart: unless-stopped
-    stop_grace_period: 15s

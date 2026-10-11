@@ -1,3 +1,11 @@
+FROM node:24-bookworm-slim AS voice-assets
+WORKDIR /build
+ENV NPM_CONFIG_UPDATE_NOTIFIER=false NPM_CONFIG_FUND=false
+COPY package.json package-lock.json ./
+RUN npm ci --ignore-scripts
+COPY tools ./tools
+RUN npm run build:voice
+
 FROM node:24-bookworm-slim
 
 WORKDIR /app
@@ -7,10 +15,11 @@ ENV NODE_ENV=production \
     NPM_CONFIG_UPDATE_NOTIFIER=false \
     NPM_CONFIG_FUND=false
 
-# No third-party runtime packages or frontend build are required.
+# Build dependencies stay in the previous image stage. Node remains dependency-free.
 COPY package.json ./
 COPY server ./server
 COPY public ./public
+COPY --from=voice-assets /build/public/voice-assets ./public/voice-assets
 COPY packages ./packages
 COPY content ./content
 

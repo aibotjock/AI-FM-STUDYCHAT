@@ -1,13 +1,5 @@
-# Voice controls validation
+# Voice validation history
 
-This records the earlier paid-speech implementation. The `feature/free-voice-pipecat` branch replaces that speech path; its current checks and limitations are recorded in [free-voice-validation.md](free-voice-validation.md).
+The current implementation runs Whisper and Kokoro on each user device. Its evidence and limitations are recorded in [device-voice-validation.md](device-voice-validation.md).
 
-The compact waveform button beside the composer opens an accessible voice dialog. Voice capture no longer depends on the historical `voiceEnabled` Settings flag. The dialog offers Marin, Cedar, Coral, Sage, and Ash, saves the selected voice immediately, and requires an explicit Start conversation press before microphone capture. The voice cannot change during an active session. Escape, Close, Stop, mute, backgrounding, and navigation release capture; returning to the page does not automatically resume it.
-
-The same conversation agent, saved chat response, OpenAI transcription adapter, and speech endpoint remain in use. No production dependency, second chat engine, or extra model request was added. Prepared audio resumes after a browser playback restriction without making another paid speech request. The native dialog retains keyboard focus and provides a typed-chat fallback.
-
-All 117 automated tests and the 15 existing phone-size browser workflows passed. The focused browser checks cover five persisted voice choices, permission denial, real local VAD with PCM/WAV encoding, one transcript/turn/speech request, prepared-audio recovery, mute/unmute, Stop, backgrounding, close during playback, 320px layout, reduced motion, and stale navigation responses. Provider/audio fixtures are used in those browser checks; they do not use paid providers. See `voice-browser-results.json` and `../qa/voice-smoke.mjs`.
-
-Real hosted API checks separately returned HTTP 200 and nonempty MP3 audio for each of the five voices. A short synthetic greeting was converted to mono 16 kHz WAV and transcribed successfully. Only the test conversation was removed afterward; owner preferences and learner study records were untouched. Results are in `live-voice-results.json`. These checks verify transport and transcription, not sound quality, physical-phone permissions, loudspeaker echo cancellation, or Bluetooth behavior.
-
-Supported voices and the speech model were checked against the [official OpenAI text-to-speech documentation](https://developers.openai.com/api/docs/guides/text-to-speech) on October 10, 2026. All voice requests use server-only credentials, with AI-generated speech disclosed in the dialog.
+Earlier paid-speech browser and hosted observations remain in `voice-browser-results.json` and `live-voice-results.json`. They concern a different implementation and do not establish current local-model performance. The separate server Whisper/Kokoro/Pipecat prototype is preserved on the `feature/free-voice-pipecat` branch; no Railway speech worker was activated.

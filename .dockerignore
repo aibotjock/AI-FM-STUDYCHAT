@@ -14,6 +14,8 @@ source-verification
 packages/*/tests
 packages/*/demo
 packages/*/docs
+packages/conversation-agent/server
 *.log
 
 qa
+public/voice-assets

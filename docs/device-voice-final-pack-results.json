@@ -1,0 +1,76 @@
+{
+  "checkedAt": "2026-10-11T00:20:07.639Z",
+  "browser": "153.0.8010.0",
+  "backend": "CPU/WASM, one ONNX thread",
+  "mode": "final-pack-smoke",
+  "actualModels": true,
+  "actualMicrophone": false,
+  "physicalPhoneTested": false,
+  "paidApiRequests": 0,
+  "serverSpeechRequests": 0,
+  "installed": {
+    "version": "studychat-device-voice-v1-7b3d86f4313e4447da28",
+    "totalBytes": 187485889,
+    "installed": true,
+    "inferenceAssets": [
+      {
+        "url": "/voice-assets/models/kokoro/onnx/model_quantized.onnx",
+        "sha256": "fbae9257e1e05ffc727e951ef9b9c98418e6d79f1c9b6b13bd59f5c9028a1478"
+      },
+      {
+        "url": "/voice-assets/models/whisper/onnx/decoder_model_merged_quantized.onnx",
+        "sha256": "dd4761a3f7add26afda3512abff4706920404c2517e85a9f2ff090b0c0987909"
+      },
+      {
+        "url": "/voice-assets/models/whisper/onnx/encoder_model_quantized.onnx",
+        "sha256": "6e8001198c490bbae018c0044f630c2915efb826bad957006ce36152d0ab2a10"
+      },
+      {
+        "url": "/voice-assets/ort/ort-wasm-simd-threaded.wasm",
+        "sha256": "f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b"
+      },
+      {
+        "url": "/voice-assets/runtime.js",
+        "sha256": "daee8e1e72692717ee7da94b6004f0cc6e909d2b2dc562114667ffb547b1de26"
+      }
+    ],
+    "installMs": 1667
+  },
+  "warmMs": 1821,
+  "voices": [
+    {
+      "voice": "af_heart",
+      "bytes": 120044,
+      "durationSeconds": 2.5,
+      "sha256": "932ba2692fa66947316912b7eecea76fab8f8856fd7450ec6f271d739ac74aad",
+      "latencyMs": 5635
+    }
+  ],
+  "transcription": {
+    "text": "Hello, I would like to study today.",
+    "metadata": {
+      "provider": "device-whisper",
+      "durationSeconds": 2.5,
+      "elapsedMs": 3222
+    }
+  },
+  "longReply": null,
+  "offline": {
+    "installed": true,
+    "bytes": 127244,
+    "elapsedMs": 7462
+  },
+  "postInstallAssetRequests": [
+    "/voice-assets/runtime.js",
+    "/voice-assets/ort/ort-wasm-simd-threaded.mjs"
+  ],
+  "checks": [
+    "actual SHA-256-verified local model/runtime pack installed in browser Cache Storage",
+    "actual local module worker initializes both CPU/WASM speech models under production CSP",
+    "actual Kokoro Heart produces non-silent PCM16 mono 24 kHz WAV audio",
+    "actual quantized Whisper recognizes the actual Kokoro synthetic greeting entirely on device",
+    "offline cached-shell reload initializes a fresh worker from installed files and produces real speech without a network",
+    "no server speech endpoint, external CDN or uploaded audio requests; no paid answering-model calls or page errors"
+  ],
+  "errors": []
+}

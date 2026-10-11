@@ -20,6 +20,10 @@ test('HTTP protects private state, checks origin, uses HttpOnly cookies, and ser
   assert.equal(login.status, 200); const cookie = login.headers.get('set-cookie'); assert.match(cookie, /HttpOnly; SameSite=Strict/);
   const headers = { Cookie: cookie.split(';')[0], Origin: origin, 'Content-Type': 'application/json' };
   assert.equal((await fetch(`${origin}/api/conversations`, { headers })).status, 200);
+  for (const path of ['/api/voice', '/api/voice/start', '/api/voice/transcribe', '/api/voice/speech']) {
+    const request = path === '/api/voice' ? { headers } : { method: 'POST', headers, body: '{}' };
+    assert.equal((await fetch(origin + path, request)).status, 404);
+  }
   for (const path of ['/server/store.js', '/content/medical-question-bank.json', '/packages/practice-engine/server/question-bank.js']) assert.equal((await fetch(origin + path)).status, 404);
   const stream = await fetch(`${origin}/api/chat`, { method: 'POST', headers, body: JSON.stringify({ conversationId: 'c', turnId: 't', attemptId: 'a', input: 'hello' }) });
   assert.match(stream.headers.get('content-type'), /text\/event-stream/); assert.match(await stream.text(), /"type":"done"/);
@@ -30,4 +34,17 @@ test('HTTP protects private state, checks origin, uses HttpOnly cookies, and ser
 test('invalid access token is visibly rejected and throttled', () => withApp(async ({ origin }) => {
   for (let i = 0; i < 5; i++) assert.equal((await fetch(`${origin}/api/login`, { method: 'POST', headers: { Origin: origin, 'Content-Type': 'application/json' }, body: '{"token":"wrong"}' })).status, 401);
   assert.equal((await fetch(`${origin}/api/login`, { method: 'POST', headers: { Origin: origin, 'Content-Type': 'application/json' }, body: '{"token":"wrong"}' })).status, 429);
+}));
+
+test('device package is public with bounded paths and WASM-capable CSP while private files stay inaccessible', () => withApp(async ({ origin }) => {
+  const manifest = await fetch(`${origin}/voice-assets/manifest.json`);
+  assert.equal(manifest.status, 200);
+  assert.match(manifest.headers.get('content-security-policy'), /script-src 'self' 'wasm-unsafe-eval'/);
+  const bytes = await manifest.arrayBuffer();
+  assert.equal(bytes.byteLength, Number(manifest.headers.get('content-length')));
+  const value = JSON.parse(new TextDecoder().decode(bytes));
+  assert.equal(value.voices.length, 5);
+  const head = await fetch(`${origin}/voice-assets/manifest.json`, { method: 'HEAD' });
+  assert.equal(head.status, 200); assert.equal(Number(head.headers.get('content-length')), bytes.byteLength); assert.equal((await head.arrayBuffer()).byteLength, 0);
+  for (const path of ['/voice-assets/%2e%2e%2fserver/config.js', '/voice-assets/models/whisper/config.py', '/voice-assets/.env', '/server/config.js']) assert.equal((await fetch(origin + path)).status, 404);
 }));
