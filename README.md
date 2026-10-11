@@ -86,6 +86,8 @@ Metadata enters a small SQLite outbox and is delivered in the background to Inge
 
 Genuine requests are marked `app_observed`. Collector fixtures are marked `client_simulated` and must have null token and cost values. Ingenium stores the actual returned model (or the requested model if unavailable), while each saved chat attempt retains its requested provider/model locally. The test application account uses an application key; it does not create a portal password or weaken portal MFA. See [test-client integration](docs/ingenium-test-client.md).
 
+New builds add optional server-derived source/configuration, model, offered voice-runtime, and pricing fingerprints to real observations. These remain text-stage baseline measurements; no optimization or device speech measurement is inferred. Old outbox events retain their original payloads. See [build-aware baseline tracking](docs/ingenium-savings-tracking.md) for the event contract and receiver-first deployment order.
+
 ## Provenance and validation
 
 [Component manifest](docs/components.json) records exact source commits and local changes. Copied notices and reference restrictions remain in place. No commercial release or rights grant is implied.

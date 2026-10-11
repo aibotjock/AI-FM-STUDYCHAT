@@ -1,3 +1,5 @@
+import { measurementPayload } from './build-metadata.js';
+
 const ENDPOINT = 'https://mzmtbauuqywucgssckwx.supabase.co/functions/v1/studychat-test-events';
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const MODEL = /^[A-Za-z0-9_.:-]{1,200}$/;
@@ -8,7 +10,7 @@ const DEADLINE_MS = 5000;
 
 // Construct the payload field by field. Prompt text, learner IDs, headers and
 // arbitrary provider metadata cannot become telemetry by object spreading.
-function eventPayload(input) {
+function eventPayload(input, measurementManifest) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) return null;
   const count = (value, limit) => value == null ? null : Number.isSafeInteger(value) && value >= 0 && value <= limit ? value : undefined;
   const model = value => typeof value === 'string' && MODEL.test(value);
@@ -26,8 +28,11 @@ function eventPayload(input) {
     || !Number.isFinite(Date.parse(input.occurredAt)) || new Date(input.occurredAt).toISOString() !== input.occurredAt
     || !['app_observed', 'client_simulated'].includes(source)
     || (source === 'client_simulated' && (Object.values(usage).some(value => value !== null) || estimatedCostUsd !== null))) return null;
-  return { requestId: input.requestId, provider: input.provider, requestedModel: input.requestedModel, returnedModel,
+  const payload = { requestId: input.requestId, provider: input.provider, requestedModel: input.requestedModel, returnedModel,
     endpoint: input.endpoint, statusCode: input.statusCode, errorCode, latencyMs: input.latencyMs, ...usage, estimatedCostUsd, occurredAt: input.occurredAt, source };
+  const measurement = source === 'app_observed' ? measurementPayload(measurementManifest, input) : null;
+  if (measurement) payload.measurement = measurement;
+  return payload;
 }
 
 function abortable(promise, signal) {
@@ -54,7 +59,7 @@ async function acknowledgement(response, signal, requestId) {
 
 /** A small durable outbox. Recording is synchronous; delivery is never part of
  * the learner's response. Each retry reuses the original observation UUID. */
-export function createIngeniumTelemetry({ db, config = {}, fetchImpl = globalThis.fetch, now = Date.now } = {}) {
+export function createIngeniumTelemetry({ db, config = {}, measurementManifest, fetchImpl = globalThis.fetch, now = Date.now } = {}) {
   const configured = Boolean(config.ingeniumKey && config.ingeniumOrganizationId);
   if (!configured) return { record: () => false, status: () => ({ configured: false, organizationId: null, pending: 0, delivered: 0, rejected: 0, dropped: 0, lastDeliveryAt: null, lastError: null, retainedEvents: 0 }), close() {} };
   db.exec(`CREATE TABLE IF NOT EXISTS ingenium_outbox (
@@ -133,10 +138,18 @@ export function createIngeniumTelemetry({ db, config = {}, fetchImpl = globalThi
   function record(metadata) {
     if (closed) return false;
     try {
-      const payload = eventPayload(metadata);
+      const payload = eventPayload(metadata, measurementManifest);
       if (!payload) { db.prepare("UPDATE ingenium_state SET dropped=dropped+1,last_error='invalid_event' WHERE id=1").run(); return false; }
       const serialized = JSON.stringify(payload), existing = db.prepare('SELECT payload FROM ingenium_outbox WHERE request_id=?').get(payload.requestId);
-      if (existing) { if (existing.payload !== serialized) { db.prepare("UPDATE ingenium_state SET dropped=dropped+1,last_error='request_id_conflict' WHERE id=1").run(); return false; } schedule(); return true; }
+      if (existing) {
+        let equivalentLegacy = false;
+        if (existing.payload !== serialized) {
+          const original = JSON.parse(existing.payload), base = { ...payload }; delete base.measurement;
+          equivalentLegacy = !Object.hasOwn(original, 'measurement') && JSON.stringify(original) === JSON.stringify(base);
+        }
+        if (existing.payload !== serialized && !equivalentLegacy) { db.prepare("UPDATE ingenium_state SET dropped=dropped+1,last_error='request_id_conflict' WHERE id=1").run(); return false; }
+        schedule(); return true;
+      }
       pruneDelivered();
       if (db.prepare('SELECT COUNT(*) AS count FROM ingenium_outbox').get().count >= MAX_ROWS) {
         db.exec("DELETE FROM ingenium_outbox WHERE request_id IN (SELECT request_id FROM ingenium_outbox WHERE status!='pending' ORDER BY created_at,rowid LIMIT 1)");

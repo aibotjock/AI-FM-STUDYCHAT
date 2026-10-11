@@ -1,6 +1,7 @@
 /** Public model metadata only. Keys stay in the gateway; live lists do not provide prices.
  * Checked 2026-10-10 against official model/pricing documentation.
  */
+const PRICING_CHECKED_AT = '2026-10-10';
 const PRICES = {
   openai: {
     'gpt-6-astra': [10,50], 'gpt-6.1-sol': [2,10], 'gpt-6-sol': [2,10], 'gpt-6-luna': [.1,.5],
@@ -20,6 +21,10 @@ const PRICES = {
     'claude-opus-4-5-20251101': [5,25], 'claude-sonnet-4-5-20250929': [3,15], 'claude-haiku-4-5-20251001': [1,5],
   },
 };
+/** Actual configured catalogue tariff data only; callers receive an isolated copy. */
+export function modelPricingSnapshot() {
+  return { checkedAt: PRICING_CHECKED_AT, inputOutputUsdPerMillion: structuredClone(PRICES) };
+}
 const FALLBACKS = {
   openai: [...Object.keys(PRICES.openai).filter(id => id !== 'gpt-5.6-cyber'), 'gpt-4o', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo', 'o4-mini', 'o3-mini', 'o1', 'o1-mini'],
   anthropic: [...Object.keys(PRICES.anthropic)],
@@ -52,7 +57,7 @@ function descriptor(provider, row, config, availability) {
     transport: provider === 'anthropic' ? 'messages' : legacy ? 'chat-completions' : 'responses',
     streaming: !/^gpt-3\.5/.test(base),
     limits: { maxPromptBytes: tier === 'limited' ? config.limitedPromptBytes ?? 8000 : config.standardPromptBytes ?? 24000, maxOutputTokens },
-    priceKnown: Boolean(rates), ...(rates ? { inputPricePerMillion: rates[0], outputPricePerMillion: rates[1], pricingCheckedAt: '2026-10-10' } : {}),
+    priceKnown: Boolean(rates), ...(rates ? { inputPricePerMillion: rates[0], outputPricePerMillion: rates[1], pricingCheckedAt: PRICING_CHECKED_AT } : {}),
     ...(row.lifecycle ? { lifecycle: row.lifecycle } : {}) };
 }
 

@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { createStore } from './store.js';
 import { createModelGateway } from './provider.js';
 import { createIngeniumTelemetry } from './telemetry.js';
+import { createMeasurementManifest } from './build-metadata.js';
 import { createChatService } from './chat.js';
 import { createStudyService } from './study.js';
 import { createBackupService } from './backup.js';
@@ -12,7 +13,12 @@ export function buildApplication({ config, provider: suppliedProvider } = {}) {
   const store = createStore({ dataDir: config.dataDir, maxBytes: config.backupBytes });
   const bank = JSON.parse(readFileSync(new URL('../content/medical-question-bank.json', import.meta.url), 'utf8'));
   const study = createStudyService({ store, bank });
-  const telemetry = createIngeniumTelemetry({ db: store.db, config });
+  let measurementManifest;
+  if (config.ingeniumKey && config.ingeniumOrganizationId) {
+    try { measurementManifest = createMeasurementManifest({ config }); }
+    catch { /* Optional build tagging cannot interrupt learner chat or legacy telemetry. */ }
+  }
+  const telemetry = createIngeniumTelemetry({ db: store.db, config, measurementManifest });
   const models = createModelGateway({ config, onSettled: metadata => telemetry.record(metadata) });
   const provider = suppliedProvider || models;
   const references = createReferenceDirectory();
