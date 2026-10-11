@@ -1,13 +1,24 @@
 import { createHash } from 'node:crypto';
 import { HttpError } from './errors.js';
 import { validChatId } from './chat.js';
-import { createConversationAudioService, conversationAudioId, CONVERSATION_TRANSCRIPTION_MODEL, CONVERSATION_AUDIO_LIMITS } from '../packages/conversation-agent/server/openai-transcription.js';
+import { createConversationAudioService, conversationAudioId, CONVERSATION_AUDIO_LIMITS } from '../packages/conversation-agent/server/openai-transcription.js';
+import { VOICES, VOICE_CHOICES, DEFAULT_VOICE } from './voice-catalogue.js';
 
-const SPEECH_ENDPOINT = 'https://api.openai.com/v1/audio/speech';
-const SPEECH_MODEL = 'gpt-4o-mini-tts';
-const VOICES = ['marin', 'cedar', 'coral', 'sage', 'ash'];
+const SPEECH_MODEL = 'kokoro-v1.0';
 const hash = value => createHash('sha256').update(value).digest('hex');
 const fail = (status, message, code) => { throw new HttpError(status, message, code); };
+
+function validSpeechWav(audio) {
+  if (audio.length <= 44) return false;
+  return audio.toString('ascii', 0, 4) === 'RIFF'
+    && audio.toString('ascii', 8, 16) === 'WAVEfmt '
+    && audio.readUInt32LE(4) === audio.length - 8 && audio.readUInt32LE(16) === 16
+    && audio.readUInt16LE(20) === 1 && audio.readUInt16LE(22) === 1
+    && audio.readUInt32LE(24) === 24000 && audio.readUInt32LE(28) === 48000
+    && audio.readUInt16LE(32) === 2 && audio.readUInt16LE(34) === 16
+    && audio.toString('ascii', 36, 40) === 'data'
+    && audio.readUInt32LE(40) === audio.length - 44 && (audio.length - 44) % 2 === 0;
+}
 
 // Stop even when a stale provider callback ignores cancellation.
 function abortable(promise, signal) {
@@ -22,12 +33,13 @@ function abortable(promise, signal) {
 
 export function createVoiceService({ db, chat, config = {}, fetchImpl = globalThis.fetch, now = Date.now } = {}) {
   if (!db?.prepare || typeof chat?.history !== 'function') throw new Error('Voice requires the shared database and chat history.');
-  if ((config.transcriptionModel || CONVERSATION_TRANSCRIPTION_MODEL) !== CONVERSATION_TRANSCRIPTION_MODEL) throw new Error('Use the pinned transcription model.');
-  if ((config.speechModel || SPEECH_MODEL) !== SPEECH_MODEL) throw new Error('Use gpt-4o-mini-tts for the configured voices.');
-  const key = (config.apiKey || '').trim(), audioBytes = config.audioBytes || 2 * 1024 * 1024;
+  const endpoint = (config.speechServiceUrl || '').replace(/\/$/, ''), key = (config.speechServiceToken || '').trim();
+  const configured = Boolean(endpoint && key.length >= 32), audioBytes = config.audioBytes || 2 * 1024 * 1024;
+  const speechAudioBytes = config.speechAudioBytes || 8 * 1024 * 1024;
+  const transcriptionModel = config.transcriptionModel || 'small.en';
   const timeoutMs = config.audioTimeoutMs || 45000, cacheMs = CONVERSATION_AUDIO_LIMITS.cacheMs;
   const active = new Map(), cache = new Map(), revisions = new Map();
-  let closed = false, epoch = 0;
+  let closed = false, epoch = 0, healthy = false, healthAt = -Infinity;
   db.exec(`CREATE TABLE IF NOT EXISTS speech_requests (
     request_id TEXT PRIMARY KEY, scope TEXT NOT NULL, fingerprint TEXT NOT NULL,
     status TEXT NOT NULL, created_at INTEGER NOT NULL, metadata TEXT);
@@ -49,7 +61,11 @@ export function createVoiceService({ db, chat, config = {}, fetchImpl = globalTh
       }
     };
   };
-  const transcription = createConversationAudioService({ db, env: { OPENAI_API_KEY: key }, fetchImpl: guardedFetch, now });
+  const serviceFetch = (path, options = {}) => guardedFetch(`${endpoint}/${path}`, { ...options, redirect: 'error', headers: { ...options.headers, Authorization: `Bearer ${key}` } });
+  const transcription = createConversationAudioService({ db, env: {}, now, provider: {
+    configured, name: 'self-hosted', model: transcriptionModel, paidRequest: false, timeoutMs: 95000,
+    request: ({ audio, signal }) => serviceFetch('transcribe', { method: 'POST', signal, headers: { 'Content-Type': 'audio/wav' }, body: audio })
+  } });
 
   function scope(input) {
     validChatId(input.conversationId, 'Conversation ID');
@@ -60,17 +76,40 @@ export function createVoiceService({ db, chat, config = {}, fetchImpl = globalTh
   function prune() { for (const [id, item] of cache) if (item.expiresAt <= now()) cache.delete(id); }
   function ready(input) {
     scope(input);
-    if (closed || !key) fail(503, 'AI voice is unavailable. Continue with typed chat.', 'voice_unavailable');
+    if (closed || !configured) fail(503, 'The free speech service is not connected. Continue with typed chat.', 'voice_unavailable');
     if (input.signal?.aborted || input.authorize?.() === false) fail(409, 'This audio operation was stopped.', 'voice_cancelled');
   }
   function options() {
-    return { ...transcription.options(), enabled: Boolean(key) && !closed, audio: { ...transcription.options().audio, maxBytes: audioBytes },
-      speechModel: SPEECH_MODEL, voices: [...VOICES], maxSpeechCharacters: 4096, speechFormat: 'mp3', aiGenerated: true };
+    return { ...transcription.options(), enabled: configured && healthy && !closed, audio: { ...transcription.options().audio, maxBytes: audioBytes },
+      speechModel: SPEECH_MODEL, voices: [...VOICES], voiceChoices: VOICE_CHOICES, defaultVoice: DEFAULT_VOICE,
+      maxSpeechCharacters: 4096, speechFormat: 'wav', aiGenerated: true,
+      unavailableReason: !configured ? 'The free speech service is not connected yet. Typed chat is available.' : !healthy ? 'The speech service is warming up or unavailable. Typed chat is available.' : null };
   }
-  function start(input) {
+  async function status({ signal } = {}) {
+    if (!configured || closed) return options();
+    if (healthy && now() - healthAt < 10000) return options();
+    const bounded = AbortSignal.any([AbortSignal.timeout(5000), ...(signal ? [signal] : [])]);
+    let reader;
+    try {
+      const response = await serviceFetch('health', { signal: bounded });
+      if (!response.ok || !/^application\/json(?:;|$)/i.test(response.headers.get('content-type') || '') || Number(response.headers.get('content-length')) > 8192 || !response.body?.getReader) throw new Error('Speech readiness unavailable.');
+      reader = response.body.getReader(); const pieces = []; let bytes = 0;
+      for (;;) { const part = await reader.read(); if (part.done) break; bytes += part.value.length; if (bytes > 8192) throw new Error('Speech readiness too large.'); pieces.push(Buffer.from(part.value)); }
+      const value = JSON.parse(Buffer.concat(pieces).toString('utf8'));
+      healthy = value.ready === true && value.transcriptionModel === transcriptionModel && value.speechModel === SPEECH_MODEL && VOICES.every(voice => value.voices?.includes(voice));
+    } catch { healthy = false; }
+    finally { if (reader) void reader.cancel().catch(() => {}); healthAt = now(); }
+    return options();
+  }
+  async function start(input) {
     ready(input);
+    const token = revision(input.conversationId);
     if (chat.history(input.conversationId).conversation?.readOnly) fail(409, 'Start a new conversation to use voice.', 'voice_read_only');
-    return transcription.start(input);
+    if (!(await status(input)).enabled) fail(503, options().unavailableReason, 'voice_unavailable');
+    ready(input);
+    if (token !== revision(input.conversationId)) fail(409, 'This voice operation was stopped.', 'voice_cancelled');
+    if (chat.history(input.conversationId).conversation?.readOnly) fail(409, 'Start a new conversation to use voice.', 'voice_read_only');
+    return { ...transcription.start(input), ...options() };
   }
   function end(input) { scope(input); const result = transcription.end(input); invalidate({ conversationId: input.conversationId, speechOnly: true }); return result; }
   async function transcribe(input) {
@@ -91,7 +130,7 @@ export function createVoiceService({ db, chat, config = {}, fetchImpl = globalTh
   async function speech(input) {
     ready(input); prune();
     const requestId = conversationAudioId(input.requestId), ownerScope = scope(input), reply = savedReply(input);
-    const voice = input.voice || 'marin';
+    const voice = input.voice || DEFAULT_VOICE;
     if (!VOICES.includes(voice)) fail(400, 'Choose a supported voice.', 'invalid_voice');
     const fingerprint = hash(`${input.messageId}\0${voice}\0${reply.content}`);
     const prior = db.prepare('SELECT * FROM speech_requests WHERE request_id=?').get(requestId);
@@ -99,7 +138,7 @@ export function createVoiceService({ db, chat, config = {}, fetchImpl = globalTh
     if (prior?.status === 'complete') {
       const saved = cache.get(requestId);
       if (!saved) fail(409, 'This audio is no longer in memory. No automatic regeneration was made.', 'speech_cache_expired');
-      return { audio: Buffer.from(saved.audio), contentType: 'audio/mpeg', cached: true };
+      return { audio: Buffer.from(saved.audio), contentType: 'audio/wav', cached: true };
     }
     if (prior) fail(409, 'The earlier audio request has an uncertain outcome. No automatic retry was made.', 'speech_request_uncertain');
     if (active.size) fail(409, 'Another reply is preparing audio.', 'speech_busy');
@@ -108,7 +147,7 @@ export function createVoiceService({ db, chat, config = {}, fetchImpl = globalTh
     const controller = new AbortController(), signal = input.signal ? AbortSignal.any([controller.signal, input.signal]) : controller.signal;
     const token = revision(input.conversationId), started = now();
     const timer = setTimeout(() => controller.abort(new HttpError(504, 'Audio preparation timed out. The reply remains available as text.', 'voice_timeout')), timeoutMs);
-    const metadata = { provider: 'openai', endpoint: 'audio/speech', model: SPEECH_MODEL, voice, usage: null, estimatedCostUsd: null };
+    const metadata = { provider: 'self-hosted', endpoint: 'speech', model: SPEECH_MODEL, voice, usage: null, estimatedCostUsd: 0, paidRequest: false, hostingCostIncluded: false };
     const allowed = () => {
       if (signal.aborted || closed || token !== revision(input.conversationId) || input.authorize?.() === false) fail(409, 'This audio operation was stopped.', 'voice_cancelled');
       const current = savedReply(input);
@@ -119,31 +158,32 @@ export function createVoiceService({ db, chat, config = {}, fetchImpl = globalTh
     let reader, responseBody, completed = false;
     try {
       allowed();
-      const response = await guardedFetch(SPEECH_ENDPOINT, { method: 'POST', redirect: 'error', signal,
-        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: SPEECH_MODEL, input: reply.content, voice, response_format: 'mp3' }) });
+      const response = await serviceFetch('speech', { method: 'POST', signal,
+        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: reply.content, voice }) });
       responseBody = response.body;
       if (!response.ok) { void response.body?.cancel?.().catch(() => {}); fail(response.status === 429 ? 429 : 502, 'Audio could not be prepared. The reply remains available as text.', 'speech_provider_failed'); }
-      if (!/^audio\/(?:mpeg|mp3)(?:;|$)/i.test(response.headers.get('content-type') || '') || Number(response.headers.get('content-length')) > audioBytes || !response.body?.getReader) fail(502, 'The speech provider returned unusable audio.', 'speech_provider_format');
+      if (!/^audio\/wav(?:;|$)/i.test(response.headers.get('content-type') || '') || Number(response.headers.get('content-length')) > speechAudioBytes || !response.body?.getReader) fail(502, 'The speech provider returned unusable audio.', 'speech_provider_format');
       reader = response.body.getReader();
       const pieces = []; let bytes = 0;
       for (;;) {
         const { done, value } = await reader.read();
         if (done) break;
         bytes += value.length;
-        if (bytes > audioBytes) fail(502, 'Audio exceeded its size limit. The reply remains available as text.', 'speech_audio_limit');
+        if (bytes > speechAudioBytes) fail(502, 'Audio exceeded its size limit. The reply remains available as text.', 'speech_audio_limit');
         pieces.push(Buffer.from(value));
       }
       allowed();
       if (!bytes) fail(502, 'The speech provider returned empty audio.', 'speech_provider_format');
       const audio = Buffer.concat(pieces);
+      if (!validSpeechWav(audio)) fail(502, 'The speech service returned an invalid WAV recording.', 'speech_provider_format');
       db.prepare("UPDATE speech_requests SET status='complete',metadata=? WHERE request_id=? AND status='pending'").run(JSON.stringify({ ...metadata, bytes, latencyMs: Math.max(0, now() - started) }), requestId);
       while (cache.size >= 10) cache.delete(cache.keys().next().value);
       cache.set(requestId, { audio, conversationId: input.conversationId, scope: ownerScope, expiresAt: now() + cacheMs });
       completed = true;
-      return { audio: Buffer.from(audio), contentType: 'audio/mpeg', cached: false };
+      return { audio: Buffer.from(audio), contentType: 'audio/wav', cached: false };
     } catch (error) {
-      db.prepare("UPDATE speech_requests SET status='uncertain',metadata=? WHERE request_id=? AND status='pending'").run(JSON.stringify({ ...metadata, cancelled: signal.aborted, billingOutcome: 'unknown' }), requestId);
+      db.prepare("UPDATE speech_requests SET status='uncertain',metadata=? WHERE request_id=? AND status='pending'").run(JSON.stringify({ ...metadata, cancelled: signal.aborted, billingOutcome: 'no_vendor_api_fee' }), requestId);
+      healthy = false;
       if (signal.aborted) throw signal.reason instanceof HttpError ? signal.reason : new HttpError(409, 'Audio preparation stopped. The reply remains available as text.', 'voice_cancelled');
       if (error instanceof HttpError) throw error;
       fail(502, 'Audio could not be prepared. No automatic retry was made.', 'speech_provider_failed');
@@ -176,6 +216,6 @@ export function createVoiceService({ db, chat, config = {}, fetchImpl = globalTh
     for (const [id, item] of cache) if (!conversationId || item.conversationId === conversationId) cache.delete(id);
     if (!input.speechOnly) transcription.invalidate();
   }
-  return { options, start, end, transcribe, cancel, speech, speak: speech, invalidate,
+  return { options, status, start, end, transcribe, cancel, speech, speak: speech, invalidate,
     close() { if (!closed) { invalidate(); transcription.close(); closed = true; } } };
 }

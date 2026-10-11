@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { randomUUID } from 'node:crypto';
+import { createServer } from 'node:http';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { buildApplication } from '../server/bootstrap.js';
@@ -8,6 +9,7 @@ import { loadConfig } from '../server/config.js';
 
 // Browser/audio fixtures exercise the actual capture VAD and conversation agent.
 // Provider text, transcription, and speech are fixtures: no paid requests run.
+// This verifies browser lifecycle and the app contract, not model accuracy/audio quality.
 const modulePath = process.env.PLAYWRIGHT_MODULE;
 const executablePath = process.env.CHROMIUM_EXECUTABLE;
 if (!modulePath || !executablePath) throw new Error('Set PLAYWRIGHT_MODULE and CHROMIUM_EXECUTABLE to external test tools. They are not app dependencies.');
@@ -16,19 +18,36 @@ const dataDir = mkdtempSync(`${tmpdir()}/studychat-voice-browser-`);
 const token = randomUUID();
 const calls = { model: 0, transcription: 0, speech: 0 };
 const speechBodies = [];
-const models = [{ id: 'gpt-4.1-mini', provider: 'openai', label: 'GPT-4.1 mini', tier: 'standard', available: true, limits: { maxPromptBytes: 24000, maxOutputTokens: 1200 } }];
+const modelSelections = [];
+const voices = [
+  { value: 'af_heart', label: 'Heart' }, { value: 'af_bella', label: 'Bella' }, { value: 'af_nicole', label: 'Nicole' },
+  { value: 'am_michael', label: 'Michael' }, { value: 'bf_emma', label: 'Emma' }
+];
+const models = [
+  { id: 'gpt-4.1-mini', provider: 'openai', label: 'GPT-4.1 mini', tier: 'standard', available: true, limits: { maxPromptBytes: 24000, maxOutputTokens: 1200 } },
+  { id: 'claude-haiku-5-5', provider: 'anthropic', label: 'Claude Haiku', tier: 'standard', available: true, limits: { maxPromptBytes: 24000, maxOutputTokens: 1200 } }
+];
 const provider = {
   available: true,
-  async catalogue() { return { providers: [{ id: 'openai', label: 'OpenAI', configured: true }], models, defaultSelection: { provider: 'openai', model: 'gpt-4.1-mini' } }; },
-  async resolveSelection(selection) { assert.equal(selection.provider, 'openai'); assert.equal(selection.model, 'gpt-4.1-mini'); return selection; },
+  async catalogue() { return { providers: [{ id: 'openai', label: 'OpenAI', configured: true }, { id: 'anthropic', label: 'Anthropic', configured: true }], models, defaultSelection: { provider: 'openai', model: 'gpt-4.1-mini' } }; },
+  async resolveSelection(selection) { assert.ok(models.some(model => model.provider === selection.provider && model.id === selection.model)); return selection; },
   async generate({ messages, selection, onDelta, signal }) {
     calls.model++; signal.throwIfAborted();
+    modelSelections.push({ ...selection });
     const content = `Voice fixture reply: ${messages.at(-1).content}`;
     onDelta(content);
     return { content, model: selection.model, provider: selection.provider };
   }
 };
-const app = buildApplication({ config: loadConfig({ HOST: '127.0.0.1', PORT: '0', DATA_DIR: dataDir, STUDY_ACCESS_TOKEN: token, OPENAI_API_KEY: 'voice-test-placeholder' }), provider });
+const speechToken = randomUUID();
+const speechFixture = createServer((request, response) => {
+  assert.equal(request.headers.authorization, `Bearer ${speechToken}`);
+  if (request.url !== '/health') { response.writeHead(500).end('Audio is intercepted by browser fixtures.'); return; }
+  response.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify({ ready: true, transcriptionModel: 'small.en', speechModel: 'kokoro-v1.0', voices: voices.map(voice => voice.value) }));
+});
+await new Promise(resolve => speechFixture.listen(0, '127.0.0.1', resolve));
+const speechOrigin = `http://127.0.0.1:${speechFixture.address().port}`;
+const app = buildApplication({ config: loadConfig({ HOST: '127.0.0.1', PORT: '0', DATA_DIR: dataDir, STUDY_ACCESS_TOKEN: token, SPEECH_SERVICE_URL: speechOrigin, SPEECH_SERVICE_TOKEN: speechToken }), provider });
 await new Promise(resolve => app.server.listen(0, '127.0.0.1', resolve));
 const origin = `http://127.0.0.1:${app.server.address().port}`;
 const errors = [], checks = [];
@@ -93,9 +112,9 @@ async function installAudioFixture(page, denyPermission = false) {
   await page.route('**/api/voice/speech', async route => {
     const body = route.request().postDataJSON();
     assert.ok(body.conversationId && body.messageId && body.requestId);
-    assert.ok(['marin', 'cedar', 'coral', 'sage', 'ash'].includes(body.voice));
+    assert.ok(voices.some(voice => voice.value === body.voice));
     calls.speech++; speechBodies.push(body);
-    await route.fulfill({ status: 200, contentType: 'audio/mpeg', body: Buffer.from('fixture-audio-bytes') });
+    await route.fulfill({ status: 200, contentType: 'audio/wav', body: Buffer.from('fixture-audio-bytes') });
   });
 }
 async function signIn(page) {
@@ -139,11 +158,9 @@ try {
   assert.equal(await page.evaluate(() => window.__voiceQA.permissionCalls), 0);
   await dialog().locator('.voice-channels').getByText(/Microphone off/).waitFor();
   const voice = dialog().getByLabel('Conversation voice', { exact: true });
-  assert.deepEqual(await voice.locator('option').evaluateAll(options => options.map(option => ({ value: option.value, label: option.textContent }))), [
-    { value: 'marin', label: 'Marin' }, { value: 'cedar', label: 'Cedar' }, { value: 'coral', label: 'Coral' }, { value: 'sage', label: 'Sage' }, { value: 'ash', label: 'Ash' }
-  ]);
-  const savedVoice = page.waitForResponse(response => response.url().endsWith('/api/settings') && response.request().postData()?.includes('coral'));
-  await voice.selectOption('coral'); assert.equal((await (await savedVoice).json()).voice, 'coral');
+  assert.deepEqual(await voice.locator('option').evaluateAll(options => options.map(option => ({ value: option.value, label: option.textContent }))), voices);
+  const savedVoice = page.waitForResponse(response => response.url().endsWith('/api/settings') && response.request().postData()?.includes('af_nicole'));
+  await voice.selectOption('af_nicole'); assert.equal((await (await savedVoice).json()).voice, 'af_nicole');
   await page.waitForFunction(() => document.activeElement?.closest('dialog[open]'));
   // Chromium can place focus on browser chrome (reported as BODY) at wrap;
   // native modal semantics must still prevent background app controls gaining focus.
@@ -151,7 +168,7 @@ try {
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   await page.keyboard.press('Escape'); await dialog().waitFor({ state: 'hidden' });
   assert.equal(await launch.evaluate(element => element === document.activeElement), true);
-  await openVoice(); assert.equal(await dialog().getByLabel('Conversation voice').inputValue(), 'coral');
+  await openVoice(); assert.equal(await dialog().getByLabel('Conversation voice').inputValue(), 'af_nicole');
   checks.push('native voice dialog opens without Settings opt-in or microphone capture; five choices save immediately; keyboard focus excludes background controls; Escape restores composer focus');
 
   await dialog().getByRole('button', { name: 'Start conversation', exact: true }).click();
@@ -170,12 +187,18 @@ try {
   page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   page.setDefaultTimeout(8000); page.on('pageerror', error => errors.push(error.message));
   await installAudioFixture(page); await signIn(page);
-  await openVoice(); assert.equal(await dialog().getByLabel('Conversation voice').inputValue(), 'coral');
+  const modelPicker = page.getByLabel('Chat model', { exact: true });
+  await modelPicker.locator('option').filter({ hasText: 'Claude Haiku' }).waitFor({ state: 'attached' });
+  const savedModel = page.waitForResponse(response => response.url().endsWith('/api/settings') && response.request().postData()?.includes('anthropic'));
+  await modelPicker.selectOption(JSON.stringify(['anthropic', 'claude-haiku-5-5']));
+  assert.equal((await (await savedModel).json()).aiProvider, 'anthropic');
+  await openVoice(); assert.equal(await dialog().getByLabel('Conversation voice').inputValue(), 'af_nicole');
   await startVoice(); assert.equal(await dialog().getByLabel('Conversation voice').isDisabled(), true);
   await page.evaluate(() => { window.__voiceQA.emit(0.12, 4); window.__voiceQA.emit(0, 10); });
   await dialog().getByText('Voice fixture reply: Explain a study concept', { exact: true }).waitFor();
   await dialog().getByRole('button', { name: 'Play prepared audio', exact: true }).waitFor();
-  assert.equal(calls.transcription, 1); assert.equal(calls.model, 2); assert.equal(calls.speech, 1); assert.equal(speechBodies[0].voice, 'coral');
+  assert.equal(calls.transcription, 1); assert.equal(calls.model, 2); assert.equal(calls.speech, 1); assert.equal(speechBodies[0].voice, 'af_nicole');
+  assert.deepEqual(modelSelections.at(-1), { provider: 'anthropic', model: 'claude-haiku-5-5' });
   await dialog().getByRole('button', { name: 'Play prepared audio', exact: true }).click();
   await dialog().locator('.voice-channels').getByText(/Reply playing/).waitFor();
   assert.equal(calls.speech, 1, 'Resume must reuse prepared audio instead of making another speech request');
@@ -183,6 +206,7 @@ try {
   await dialog().locator('.voice-channels').getByText(/Microphone on.*Ready/).waitFor();
   assert.equal(await page.evaluate(() => window.__voiceQA.playbackCalls), 2);
   checks.push('real local VAD encodes one utterance; one transcript produces one Coach turn and one chosen-voice speech request; blocked playback resumes cached audio and returns to listening');
+  checks.push('voice keeps the saved Anthropic model selection; speech never makes a second answering-model request');
 
   await dialog().getByRole('button', { name: 'Mute microphone', exact: true }).click();
   await assertReleased();
@@ -214,6 +238,43 @@ try {
   assert.equal(calls.transcription, 2); assert.equal(calls.model, 3); assert.equal(calls.speech, 2);
   checks.push('Close during a spoken reply pauses playback, detaches its callbacks, and preserves displayed chat text');
 
+  const nextFrame = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  let releaseTranscript, transcriptRequested;
+  const heldTranscript = new Promise(resolve => { releaseTranscript = resolve; });
+  const requestedTranscript = new Promise(resolve => { transcriptRequested = resolve; });
+  const delayedTranscript = async route => {
+    const body = route.request().postDataJSON(); calls.transcription++; transcriptRequested(); await heldTranscript;
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ text: 'Obsolete transcript', requestId: body.requestId }) });
+  };
+  await page.route('**/api/voice/transcribe', delayedTranscript);
+  await openVoice(); await startVoice();
+  await page.evaluate(() => { window.__voiceQA.emit(0.12, 4); window.__voiceQA.emit(0, 10); });
+  await requestedTranscript;
+  const modelsBeforeTranscriptClose = calls.model;
+  await dialog().getByRole('button', { name: 'Close voice', exact: true }).click(); await dialog().waitFor({ state: 'hidden' }); await assertReleased();
+  releaseTranscript(); await nextFrame(); await page.unroute('**/api/voice/transcribe', delayedTranscript);
+  assert.equal(calls.model, modelsBeforeTranscriptClose);
+  assert.equal(await page.getByText('Voice fixture reply: Obsolete transcript', { exact: true }).count(), 0);
+  checks.push('closing during delayed transcription releases capture; a stale transcript cannot submit another Coach turn');
+
+  let releaseSpeech, speechRequested;
+  const heldSpeech = new Promise(resolve => { releaseSpeech = resolve; });
+  const requestedSpeech = new Promise(resolve => { speechRequested = resolve; });
+  const delayedSpeech = async route => {
+    calls.speech++; speechBodies.push(route.request().postDataJSON()); speechRequested(); await heldSpeech;
+    await route.fulfill({ status: 200, contentType: 'audio/wav', body: Buffer.from('obsolete-fixture-audio') });
+  };
+  await page.route('**/api/voice/speech', delayedSpeech);
+  await openVoice(); await startVoice();
+  await page.evaluate(() => { window.__voiceQA.emit(0.12, 4); window.__voiceQA.emit(0, 10); });
+  await requestedSpeech;
+  const playbackBeforeSpeechClose = await page.evaluate(() => window.__voiceQA.playbackCalls);
+  await dialog().getByRole('button', { name: 'Close voice', exact: true }).click(); await dialog().waitFor({ state: 'hidden' }); await assertReleased();
+  releaseSpeech(); await nextFrame(); await page.unroute('**/api/voice/speech', delayedSpeech);
+  assert.equal(await page.evaluate(() => window.__voiceQA.playbackCalls), playbackBeforeSpeechClose);
+  assert.ok(await page.locator('.chat-log').getByText('Voice fixture reply: Explain a study concept', { exact: true }).count() > 0);
+  checks.push('closing during delayed speech preparation prevents stale audio playback and preserves the saved study reply');
+
   await page.setViewportSize({ width: 320, height: 740 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   const narrowLaunch = page.getByRole('button', { name: 'Start voice conversation', exact: true });
@@ -229,7 +290,7 @@ try {
   checks.push('320px layout stays in the viewport with a 44px launch target; reduced motion is honored; backdrop click closes safely');
 
   await page.locator('.tabbar [data-tab="settings"]').click();
-  assert.equal(await page.getByLabel('Voice', { exact: true }).inputValue(), 'coral');
+  assert.equal(await page.getByLabel('Voice', { exact: true }).inputValue(), 'af_nicole');
   assert.equal(await page.getByLabel('Enable optional voice', { exact: true }).count(), 0);
   checks.push('Close releases active capture; selected voice persists across authentication sessions and appears in Settings without an enablement gate');
 
@@ -251,11 +312,26 @@ try {
   assert.equal(await page.evaluate(() => window.__voiceQA.permissionCalls), capturesBeforeNavigate);
   checks.push('navigating while voice options load prevents a stale dialog from opening or requesting the microphone');
 
+  await page.unroute('**/api/voice');
+  await page.locator('.tabbar [data-tab="coach"]').click();
+  const unavailableOptions = async route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ enabled: false, unavailableReason: 'The self-hosted speech service is offline.', voices: voices.map(voice => voice.value) }) });
+  await page.route('**/api/voice', unavailableOptions);
+  const microphoneBeforeOutage = await page.evaluate(() => window.__voiceQA.permissionCalls);
+  await page.getByRole('button', { name: 'Start voice conversation', exact: true }).click();
+  await page.getByText(/self-hosted speech service is offline/).waitFor();
+  assert.equal(await page.locator('dialog[open]').count(), 0);
+  assert.equal(await page.evaluate(() => window.__voiceQA.permissionCalls), microphoneBeforeOutage);
+  await page.getByLabel('Message Coach').fill('Typed while speech is offline');
+  await page.getByRole('button', { name: 'Send message', exact: true }).click();
+  await page.getByText('Voice fixture reply: Typed while speech is offline', { exact: true }).waitFor();
+  assert.deepEqual(modelSelections.at(-1), { provider: 'anthropic', model: 'claude-haiku-5-5' });
+  checks.push('unavailable self-hosted speech prevents microphone access while typed chat still uses the selected answering model');
+
   assert.deepEqual(errors, []);
-  const result = { browser: await browser.version(), viewport: { width: 390, height: 844 }, mockedProvider: true, mockedCapture: true, mockedSpeech: true, actualPaidRequests: 0, calls, checks, errors };
+  const result = { browser: await browser.version(), viewport: { width: 390, height: 844 }, speechStack: 'Whisper + Kokoro + Pipecat', mockedProvider: true, mockedCapture: true, mockedTranscription: true, mockedSpeech: true, actualPaidRequests: 0, voices, modelSelections, calls, checks, errors };
   if (process.env.VOICE_RESULTS) writeFileSync(process.env.VOICE_RESULTS, JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result));
 } catch (error) {
   console.error(JSON.stringify({ failure: error.message, calls, checks, errors, body: await page?.locator('body').innerText() }));
   throw error;
-} finally { await browser?.close(); await app.shutdown(); rmSync(dataDir, { recursive: true, force: true }); }
+} finally { await browser?.close(); await app.shutdown(); await new Promise(resolve => speechFixture.close(resolve)); rmSync(dataDir, { recursive: true, force: true }); }

@@ -14,7 +14,7 @@ export const el = (tag, attrs = {}, ...children) => {
   return node;
 };
 export async function api(path, options = {}) {
-  const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), Math.min(60000, Math.max(1000, Number(options.timeoutMs) || 25000)));
+  const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), Math.min(path === '/api/voice/transcribe' ? 125000 : 60000, Math.max(1000, Number(options.timeoutMs) || 25000)));
   try {
     const response = await fetch(path, { credentials: 'same-origin', ...options,
       signal: options.signal ? AbortSignal.any([options.signal, controller.signal]) : controller.signal,
@@ -324,6 +324,14 @@ export async function enableVoice() { voiceModule = await import('/voice.js'); d
 export const getSession = () => session;
 export const getPage = () => page;
 export const updateSession = value => { session = { ...session, ...value }; };
+export function getVoiceChoices(options = {}) {
+  const voices = Array.isArray(options.voices) ? [...new Set(options.voices.filter(id => typeof id === 'string' && id))] : [];
+  return voices.map(id => {
+    const choice = options.voiceChoices?.find?.(value => value?.id === id);
+    const label = choice?.label || options.voiceLabels?.[id] || id;
+    return { id, label: typeof label === 'string' ? label : id };
+  });
+}
 export async function startCase(scenarioId) {
   agent?.stop('A new case is ready.'); voiceModule?.cleanup?.(); currentConversation = actionId(); conversationReadOnly = false;
   const result = await api('/api/cases', { method: 'POST', body: { actionId: actionId(), conversationId: currentConversation, scenarioId } });

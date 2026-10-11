@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+import { VOICES, VOICE_CHOICES, DEFAULT_VOICE } from './voice-catalogue.js';
 
 function integer(env, key, fallback, min, max) {
   const value = env[key] === undefined || env[key] === '' ? fallback : Number(env[key]);
@@ -6,6 +7,15 @@ function integer(env, key, fallback, min, max) {
   return value;
 }
 export function loadConfig(env = process.env) {
+  let speechServiceUrl = (env.SPEECH_SERVICE_URL || '').trim();
+  const speechServiceToken = (env.SPEECH_SERVICE_TOKEN || '').trim();
+  if (speechServiceUrl) {
+    const url = new URL(speechServiceUrl);
+    const privateHost = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname) || url.hostname.endsWith('.railway.internal');
+    if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash || url.pathname !== '/' || (url.protocol !== 'https:' && !privateHost)) throw new Error('SPEECH_SERVICE_URL must be an HTTPS origin or a local/private Railway HTTP origin.');
+    if (speechServiceToken.length < 32 || speechServiceToken.length > 512 || /\s/.test(speechServiceToken)) throw new Error('Speech requires a server-only SPEECH_SERVICE_TOKEN of 32–512 characters without whitespace.');
+    speechServiceUrl = url.origin;
+  }
   const host = env.HOST || '127.0.0.1';
   const accessToken = env.STUDY_ACCESS_TOKEN || '';
   if (!['127.0.0.1', 'localhost', '::1'].includes(host) && accessToken.length < 32) throw new Error('Remote access requires a STUDY_ACCESS_TOKEN of at least 32 characters.');
@@ -36,9 +46,9 @@ export function loadConfig(env = process.env) {
     standardPromptBytes, limitedPromptBytes, limitedOutputTokens,
     modelCatalogueTimeoutMs: 10000, modelCatalogueCacheMs: 600000,
     maxOutputChars: 20000, jsonBytes: 128 * 1024, backupBytes: 16 * 1024 * 1024,
-    audioBytes: 2 * 1024 * 1024, audioTimeoutMs: 45000, sessionMs: 12 * 60 * 60 * 1000,
-    transcriptionModel: env.OPENAI_TRANSCRIPTION_MODEL || 'gpt-4o-mini-transcribe',
-    speechModel: env.OPENAI_SPEECH_MODEL || 'gpt-4o-mini-tts',
-    voices: Object.freeze(['marin', 'cedar', 'coral', 'sage', 'ash'])
+    audioBytes: 2 * 1024 * 1024, speechAudioBytes: 8 * 1024 * 1024, audioTimeoutMs: 45000, sessionMs: 12 * 60 * 60 * 1000,
+    speechServiceUrl, speechServiceToken,
+    transcriptionModel: 'small.en', speechModel: 'kokoro-v1.0',
+    voices: VOICES, voiceChoices: VOICE_CHOICES, defaultVoice: DEFAULT_VOICE
   });
 }

@@ -1,5 +1,7 @@
 # Voice controls validation
 
+This records the earlier paid-speech implementation. The `feature/free-voice-pipecat` branch replaces that speech path; its current checks and limitations are recorded in [free-voice-validation.md](free-voice-validation.md).
+
 The compact waveform button beside the composer opens an accessible voice dialog. Voice capture no longer depends on the historical `voiceEnabled` Settings flag. The dialog offers Marin, Cedar, Coral, Sage, and Ash, saves the selected voice immediately, and requires an explicit Start conversation press before microphone capture. The voice cannot change during an active session. Escape, Close, Stop, mute, backgrounding, and navigation release capture; returning to the page does not automatically resume it.
 
 The same conversation agent, saved chat response, OpenAI transcription adapter, and speech endpoint remain in use. No production dependency, second chat engine, or extra model request was added. Prepared audio resumes after a browser playback restriction without making another paid speech request. The native dialog retains keyboard focus and provides a typed-chat fallback.

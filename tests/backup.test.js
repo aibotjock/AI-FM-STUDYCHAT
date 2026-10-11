@@ -80,7 +80,7 @@ test('version 1 backup migrates on a fresh database with source status and assis
   assert.deepEqual(legacy, originalCopy);
   const state = app.store.getState();
   assert.equal(state.settings.focus, 'exam-preparation'); assert.equal(state.settings.style, 'concise');
-  assert.equal(state.settings.sessionMinutes, 25); assert.equal(state.settings.newCardLimit, 7); assert.equal(state.settings.voice, 'cedar');
+  assert.equal(state.settings.sessionMinutes, 25); assert.equal(state.settings.newCardLimit, 7); assert.equal(state.settings.voice, 'af_heart');
   assert.deepEqual(state.historicalSelfAssessments.competencyRatings, { PC: 3, MK: 2 });
   assert.equal(state.cards[0].sourceVerified, false); assert.equal(state.cards[0].humanReview, false);
   assert.deepEqual(state.cards[0].importedSourceStatus, { verified: true, sourceVerified: true, humanReview: true });

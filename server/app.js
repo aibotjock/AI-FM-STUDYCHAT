@@ -33,7 +33,7 @@ export function createApp({ config, chat, study, references, voice, backup, mode
     try {
       const url = new URL(req.url, 'http://localhost'); const path = url.pathname;
       if (path === '/health' && req.method === 'GET') return json({ status: 'ok' });
-      if (path === '/api/session' && req.method === 'GET') { const authenticated = !!auth.session(req), settings = authenticated ? study?.settings() : null; return json({ authenticated, aiAvailable: !!(config.apiKey || config.anthropicApiKey), model: config.model, selected: authenticated ? { provider: settings?.aiProvider || 'openai', model: settings?.aiModel || (settings?.aiProvider === 'anthropic' ? config.anthropicModel : config.model) } : undefined, voices: config.voices, limits: { chatTimeoutMs: config.chatTimeoutMs, maxInputChars: config.maxInputChars } }); }
+      if (path === '/api/session' && req.method === 'GET') { const authenticated = !!auth.session(req), settings = authenticated ? study?.settings() : null; return json({ authenticated, aiAvailable: !!(config.apiKey || config.anthropicApiKey), model: config.model, selected: authenticated ? { provider: settings?.aiProvider || 'openai', model: settings?.aiModel || (settings?.aiProvider === 'anthropic' ? config.anthropicModel : config.model) } : undefined, voices: config.voices, voiceChoices: config.voiceChoices, defaultVoice: config.defaultVoice, limits: { chatTimeoutMs: config.chatTimeoutMs, maxInputChars: config.maxInputChars } }); }
       if (path.startsWith('/api/')) {
         if (!['GET', 'POST', 'DELETE'].includes(req.method)) throw new HttpError(405, 'Method is not supported.');
         if (req.method !== 'GET') auth.checkOrigin(req);
@@ -84,7 +84,7 @@ export function createApp({ config, chat, study, references, voice, backup, mode
         if (references && path === '/api/references/consult' && req.method === 'POST') { const body = await readBody(req, config.jsonBytes); references.resolveIds(body.referenceIds || []); throw new HttpError(501, 'Exact source reading is unavailable. Directory links are not consulted evidence.', 'source_reading_unavailable'); }
         if (backup && path === '/api/backup' && req.method === 'GET') { res.setHeader('Content-Disposition', 'attachment; filename="studychat-backup.json"'); return json(backup.export()); }
         if (backup && path === '/api/backup' && req.method === 'POST') { const result = backup.import(await readBody(req, config.backupBytes)); voice?.invalidate(); return json(result); }
-        if (voice && path === '/api/voice' && req.method === 'GET') return json(voice.options());
+        if (voice && path === '/api/voice' && req.method === 'GET') return json(await voice.status());
         if (voice && path.startsWith('/api/voice/') && req.method === 'POST') {
           const controller = new AbortController(); const untrack = track(session, controller); let ended = false;
           res.on('close', () => { if (!ended) controller.abort(); });
@@ -92,10 +92,10 @@ export function createApp({ config, chat, study, references, voice, backup, mode
             const limit = path === '/api/voice/transcribe' ? Math.ceil(config.audioBytes / 3) * 4 + 4096 : config.jsonBytes;
             const body = await readBody(req, limit);
             const input = { ...body, ownerKey: session, signal: controller.signal, authorize: () => auth.session(req) === session };
-            if (path === '/api/voice/start') return json(voice.start(input));
+            if (path === '/api/voice/start') return json(await voice.start(input));
             if (path === '/api/voice/end') return json(voice.end(input));
             if (path === '/api/voice/transcribe') return json(await voice.transcribe(input));
-            if (path === '/api/voice/speech') { const result = await voice.speech(input); res.writeHead(200, { 'Content-Type': result.contentType || 'audio/mpeg', 'Cache-Control': 'no-store' }); res.end(result.audio); return; }
+            if (path === '/api/voice/speech') { const result = await voice.speech(input); res.writeHead(200, { 'Content-Type': result.contentType || 'audio/wav', 'Cache-Control': 'no-store' }); res.end(result.audio); return; }
             if (path === '/api/voice/cancel') return json(voice.cancel(input));
           } finally { ended = true; untrack(); }
         }

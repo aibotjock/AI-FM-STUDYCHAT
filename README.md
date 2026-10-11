@@ -42,7 +42,11 @@ Choose a model in Coach or Settings. The authenticated catalogue reads each conf
 
 Models priced at $3 or more per million input tokens, $15 or more per million output tokens, or with unconfirmed prices use the limited budget. Prices are standard API rates checked October 10, 2026; account-specific and future prices may differ. Server limits cap prompt bytes and output tokens, with only one paid Coach reply active at a time. Older completed conversation pairs are dropped to fit the prompt budget; an oversized essential prompt is rejected before a paid request. These limits reduce spending, but are not a guaranteed dollar ceiling. OpenAI reasoning tokens can consume the output budget; a truncated reply is reported as incomplete. Modern OpenAI models use Responses, legacy compatible models use Chat Completions, and Claude uses Messages. Models documented without streaming use one buffered request.
 
-Voice is optional and loaded from the compact waveform button beside the message box. Choose Marin, Cedar, Coral, Sage, or Ash in the voice dialog or Settings; no Settings opt-in is required. Press Start conversation to allow microphone capture. Stop, close, or background the app to release it. Final transcripts follow the same chat contract. Speech reads a completed saved response; audio never delays text. Speech is AI-generated. Microphone capture needs a secure browser context and explicit permission. Browser mock tests cannot establish physical-phone echo cancellation or Bluetooth reliability.
+Voice is optional and loaded from the compact waveform button beside the message box. Choose Heart, Bella, Nicole, Michael, or Emma in the voice dialog or Settings; no Settings opt-in is required. Press Start conversation to allow microphone capture. Stop, close, or background the app to release it. Final transcripts follow the same chat contract and use the selected OpenAI/Claude answering model. Speech reads only a completed saved response; audio never delays text or generates a second answer. Speech is AI-generated. Microphone capture needs a secure browser context and explicit permission. Browser mock tests cannot establish physical-phone echo cancellation or Bluetooth reliability.
+
+The separate [speech service](services/speech/README.md) uses Pipecat's local Faster-Whisper recognition and Kokoro ONNX synthesis. It has no paid speech API or paid fallback. Only the Node backend connects to it; the browser never receives its URL or credential. The app checks model readiness before offering microphone capture. If speech is unavailable, typed chat remains usable. Existing paid voice preferences migrate to Heart when loading settings or backups. No speech models or Python dependencies are loaded into the Node app.
+
+Self-hosted speech removes vendor speech fees; CPU, RAM, hosting and the selected answering model are separate costs. Railway can host the speech worker privately in the same project and region. The worker's Docker image includes its models, so a separate model volume is unnecessary. Start with one worker and measure latency and memory before increasing resources; this turn-based architecture is not native simultaneous speech-to-speech.
 
 ## Settings and backups
 
@@ -58,7 +62,7 @@ The installable shell caches public interface files only. Saved study data still
 | `DATA_DIR` | `./data` | One durable SQLite database |
 | `APP_ORIGIN` | derived origin locally | Pin the hosted HTTPS origin |
 | `STUDY_ACCESS_TOKEN` | empty locally | Private owner login |
-| `OPENAI_API_KEY` | empty | Server-only OpenAI credential; also enables optional speech/transcription |
+| `OPENAI_API_KEY` | empty | Server-only OpenAI text-model credential |
 | `ANTHROPIC_API_KEY` | empty | Server-only Anthropic credential |
 | `OPENAI_MODEL` | `gpt-4.1-mini` | Default OpenAI text model |
 | `ANTHROPIC_MODEL` | `claude-haiku-5-5` | Default Anthropic text model |
@@ -69,10 +73,10 @@ The installable shell caches public interface files only. Saved study data still
 | `STANDARD_PROMPT_BYTES` | `24000` | Standard-model UTF-8 prompt bound |
 | `LIMITED_PROMPT_BYTES` | `8000` | Expensive or unpriced-model UTF-8 prompt bound |
 | `MAX_HISTORY_MESSAGES` | `12` | Completed context window |
-| `OPENAI_TRANSCRIPTION_MODEL` | `gpt-4o-mini-transcribe` | Pinned transcription adapter |
-| `OPENAI_SPEECH_MODEL` | `gpt-4o-mini-tts` | Completed-response speech |
+| `SPEECH_SERVICE_URL` | empty | Separate speech service origin: local/private Railway HTTP or remote HTTPS |
+| `SPEECH_SERVICE_TOKEN` | empty | Independent server-only bearer credential, at least 32 characters |
 
-Additional fixed bounds: 128 KiB ordinary JSON, 16 MiB backup/workspace, 2 MiB microphone upload, 20,000 chat output characters, 45-second audio deadline. These are request/resource bounds, not daily AI quotas. Transcription retains the pinned adapter's existing session safeguards. Unknown provider usage/cost remains unknown. Cancellation may still incur provider charges.
+Additional fixed bounds: 128 KiB ordinary JSON, 16 MiB backup/workspace, 2 MiB microphone upload (60 seconds at 16 kHz), 8 MiB speech output, 4,096 spoken text characters, 20,000 chat output characters, 45-second speech deadline and 95-second transcription deadline. The speech worker itself limits operations to 90 seconds. These are request/resource bounds, not daily AI quotas. Transcription retains the existing owner/session/request safeguards. Speech metadata records zero vendor API fees while explicitly excluding hosting costs. Cancellation can still incur answering-model charges or consume self-hosted CPU time.
 
 The app logs startup and terse error/status diagnostics without learner text or secrets. Model/provider failures are service errors, not invented medical abstentions. The tutor prompt supports honesty; it does not guarantee medical correctness.
 
@@ -89,3 +93,5 @@ Genuine requests are marked `app_observed`. Collector fixtures are marked `clien
 [Component manifest](docs/components.json) records exact source commits and local changes. Copied notices and reference restrictions remain in place. No commercial release or rights grant is implied.
 
 [Validation record](docs/validation.md) separates engine, deterministic provider, browser, actual-model, hosted, and physical-device evidence. Checks that have not run are identified explicitly.
+
+[Free speech validation](docs/free-voice-validation.md) records the Whisper/Kokoro/Pipecat branch's checks and separates local inference from browser fixtures and physical-phone testing.

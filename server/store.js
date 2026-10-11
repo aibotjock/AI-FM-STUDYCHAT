@@ -2,13 +2,15 @@ import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { HttpError } from './errors.js';
+import { VOICES, DEFAULT_VOICE, migrateVoice } from './voice-catalogue.js';
 
-export const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', style: 'guided-questions', sessionMinutes: 18, newCardLimit: 5, timeZone: 'America/New_York', voice: 'marin', voiceEnabled: false, aiProvider: 'openai', aiModel: '' });
+export const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', style: 'guided-questions', sessionMinutes: 18, newCardLimit: 5, timeZone: 'America/New_York', voice: DEFAULT_VOICE, voiceEnabled: false, aiProvider: 'openai', aiModel: '' });
 
 export function validateSettings(input, base = DEFAULT_SETTINGS) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new HttpError(400, 'Settings must be an object.');
-  const next = { ...base };
-  for (const [key, values] of Object.entries({ focus: ['clinical-reasoning', 'exam-preparation', 'balanced'], style: ['guided-questions', 'concise', 'detailed'], voice: ['marin', 'cedar', 'coral', 'sage', 'ash'], aiProvider: ['openai', 'anthropic'] })) {
+  const next = { ...base, voice: migrateVoice(base.voice) || DEFAULT_VOICE };
+  if (input.voice !== undefined) input = { ...input, voice: migrateVoice(input.voice) };
+  for (const [key, values] of Object.entries({ focus: ['clinical-reasoning', 'exam-preparation', 'balanced'], style: ['guided-questions', 'concise', 'detailed'], voice: VOICES, aiProvider: ['openai', 'anthropic'] })) {
     if (input[key] !== undefined) { if (!values.includes(input[key])) throw new HttpError(400, `Invalid ${key}.`); next[key] = input[key]; }
   }
   for (const [key, min, max] of [['sessionMinutes', 5, 120], ['newCardLimit', 0, 100]]) {

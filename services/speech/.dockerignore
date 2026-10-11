@@ -1,0 +1,10 @@
+__pycache__
+tests
+*.pyc
+*.json
+README.md
+compose.yml
+.venv
+models
+*.wav
+*.partial

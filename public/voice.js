@@ -1,6 +1,6 @@
 import { createBrowserAudioInput } from '/packages/conversation-agent/src/browser-audio.js';
 import { mountVoiceCircle } from '/packages/conversation-agent/src/voice-circle.js';
-import { el, actionId, updateSession } from '/app.js';
+import { el, actionId, updateSession, getVoiceChoices } from '/app.js';
 
 let current = null;
 let openingGeneration = 0;
@@ -56,7 +56,7 @@ export async function open({ api, conversationId, setAgent, isBusy, isCurrent, o
   const valid = () => epoch === openingGeneration && (!isCurrent || isCurrent());
   const options = await api('/api/voice');
   if (!valid()) return;
-  if (!options.enabled) { onError(new Error('Voice is unavailable. Continue with typed chat; practice and review are unaffected.')); return; }
+  if (!options.enabled) { onError(new Error(`${options.unavailableReason || 'The self-hosted voice service is unavailable.'} Continue with typed chat; practice and review are unaffected.`)); return; }
   const preferences = await api('/api/settings');
   if (!valid()) return;
   if (isBusy?.()) throw new Error('Stop the current reply before starting voice. Your displayed text remains available.');
@@ -64,16 +64,19 @@ export async function open({ api, conversationId, setAgent, isBusy, isCurrent, o
   if (typeof container.showModal !== 'function') { onError(new Error('Open the app in an up-to-date browser to use voice. Typed chat remains available.')); return; }
   if (!document.querySelector('#voice-circle-style')) document.head.append(el('link', { id: 'voice-circle-style', rel: 'stylesheet', href: '/packages/conversation-agent/voice-circle.css' }));
   const previousFocus = document.activeElement, settingsController = new AbortController();
-  const voices = ['marin', 'cedar', 'coral', 'sage', 'ash'].filter(voice => options.voices?.includes(voice));
-  if (voices.length !== 5) { onError(new Error('The voice list is unavailable. Continue with typed chat and try voice again later.')); return; }
-  let selectedVoice = voices.includes(preferences.voice) ? preferences.voice : 'marin';
+  const choices = getVoiceChoices(options), voices = choices.map(choice => choice.id);
+  if (choices.length !== 5) { onError(new Error('The voice list is unavailable. Continue with typed chat and try voice again later.')); return; }
+  const voiceLabel = id => choices.find(choice => choice.id === id)?.label || id;
+  let selectedVoice = voices.includes(preferences.voice) ? preferences.voice : voices.includes(options.defaultVoice) ? options.defaultVoice : voices[0];
   let circle, agent, voiceSessionId = null, savingVoice = false, destroyed = false;
   const input = createBrowserAudioInput({ sampleRate: 16000, maxDurationMs: 60000 });
   const playback = createPlayback({ voice: () => selectedVoice });
   const circleContainer = el('div');
-  const voicePicker = el('select', { id: 'conversation-voice', 'aria-label': 'Conversation voice' }, voices.map(voice => el('option', { value: voice, text: voice[0].toUpperCase() + voice.slice(1) })));
+  const voicePicker = el('select', { id: 'conversation-voice', 'aria-label': 'Conversation voice' }, choices.map(choice => el('option', { value: choice.id, text: choice.label })));
   voicePicker.value = selectedVoice;
   const voiceFeedback = el('p', { class: 'voice-preference-status', role: 'status', 'aria-live': 'polite', text: 'Choose a voice before starting.' });
+  const advertisedTimeoutMs = Number(options.transcriptionTimeoutMs);
+  const transcriptionTimeoutMs = (Number.isFinite(advertisedTimeoutMs) && advertisedTimeoutMs >= 1000 ? Math.min(120000, advertisedTimeoutMs) : 30000) + 5000;
   const update = state => {
     if (destroyed) return;
     circle?.update(state);
@@ -82,7 +85,7 @@ export async function open({ api, conversationId, setAgent, isBusy, isCurrent, o
   };
   const host = {
     async startSession({ signal }) { const bounded = boundedSignal(signal); try { const value = await api('/api/voice/start', { method: 'POST', body: { conversationId }, signal: bounded.signal }); voiceSessionId = value.sessionId; return { ...value, conversationId }; } finally { bounded.done(); } },
-    async transcribe(value) { const bounded = boundedSignal(value.signal); try { return await api('/api/voice/transcribe', { method: 'POST', body: { conversationId, sessionId: value.sessionId, requestId: value.requestId, audioBase64: await encodedAudio(value.audio) }, signal: bounded.signal, timeoutMs: 50000 }); } finally { bounded.done(); } },
+    async transcribe(value) { const bounded = boundedSignal(value.signal, transcriptionTimeoutMs); try { return await api('/api/voice/transcribe', { method: 'POST', body: { conversationId, sessionId: value.sessionId, requestId: value.requestId, audioBase64: await encodedAudio(value.audio) }, signal: bounded.signal, timeoutMs: transcriptionTimeoutMs }); } finally { bounded.done(); } },
     cancel(value) { return api('/api/voice/cancel', { method: 'POST', body: { conversationId, sessionId: voiceSessionId, requestId: value.requestId } }).catch(() => {}); },
     endSession(value) { return api('/api/voice/end', { method: 'POST', body: { conversationId, sessionId: value.sessionId } }).catch(() => {}); },
   };
@@ -99,12 +102,14 @@ export async function open({ api, conversationId, setAgent, isBusy, isCurrent, o
   voicePicker.addEventListener('change', async () => {
     if (destroyed || savingVoice || agent.active()) return;
     const previous = selectedVoice, next = voicePicker.value, savedFocus = document.activeElement;
+    if (!voices.includes(next)) { voicePicker.value = previous; return; }
     savingVoice = true; voiceFeedback.textContent = 'Saving voice…'; update(agent.state());
     try {
       const saved = await api('/api/settings', { method: 'POST', body: { actionId: actionId(), voice: next }, signal: settingsController.signal });
       if (destroyed || current !== view || !valid()) return;
+      if (!voices.includes(saved.voice)) throw new Error('The server did not confirm an available voice. Try again.');
       selectedVoice = saved.voice; voicePicker.value = selectedVoice;
-      updateSession({ settings: saved }); voiceFeedback.textContent = `${selectedVoice[0].toUpperCase() + selectedVoice.slice(1)} selected.`;
+      updateSession({ settings: saved }); voiceFeedback.textContent = `${voiceLabel(selectedVoice)} selected.`;
     } catch (error) {
       if (destroyed || current !== view || !valid()) return;
       selectedVoice = previous; voicePicker.value = previous; voiceFeedback.textContent = `Voice change was not confirmed. ${error.message}`;
@@ -121,7 +126,7 @@ export async function open({ api, conversationId, setAgent, isBusy, isCurrent, o
   });
   container.append(
     el('header', { class: 'voice-dialog-header' }, el('div', {}, el('div', { class: 'eyebrow', text: 'Study Coach' }), el('h2', { text: 'Voice conversation' })), el('button', { type: 'button', class: 'subtle', text: 'Close voice', onclick: () => close() })),
-    el('p', { id: 'voice-instructions', class: 'voice-instructions', text: 'Choose one of five AI voices, then tap Start conversation. Speak naturally; Coach will listen and reply aloud.' }),
+    el('p', { id: 'voice-instructions', class: 'voice-instructions', text: 'Choose one of five voices, then tap Start conversation. Speak naturally and pause when finished; Coach will listen and reply aloud.' }),
     el('div', { class: 'voice-picker' }, el('label', { for: 'conversation-voice', text: 'Conversation voice' }), voicePicker), voiceFeedback, circleContainer,
     el('footer', { class: 'voice-dialog-footer' }, el('button', { type: 'button', text: 'Use typed chat', onclick: () => close({ typed: true }) }), el('small', { text: 'AI-generated speech · Stop, close, or leave the app to turn the microphone off.' })),
   );

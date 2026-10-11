@@ -1,6 +1,6 @@
 # Isolated Railway deployment
 
-The rebuild is one Node 24 service with one new SQLite volume. Its Dockerfile has no package installation or frontend build step. Railway supplies `PORT`; the app binds to `HOST=0.0.0.0`. `/health` is unauthenticated, returns no learner data, and makes no provider calls.
+The rebuild is one Node 24 service with one SQLite volume. Optional self-hosted voice uses a separate private Python service; its model dependencies stay outside the Node app. The Node Dockerfile has no package installation or frontend build step. Railway supplies `PORT`; the app binds to `HOST=0.0.0.0`. `/health` is unauthenticated, returns no learner data, and makes no provider calls.
 
 ## Target and isolation
 
@@ -28,14 +28,14 @@ An inventory read on October 10, 2026 found one existing service and its 500 MB 
 | `PORT` | Leave to Railway's injected value |
 | `STUDY_ACCESS_TOKEN` | Private owner token, at least 32 characters; never commit or log it |
 | `APP_ORIGIN` | Exact generated HTTPS origin, without a trailing slash |
-| `OPENAI_API_KEY` | Server-only OpenAI credential; also used for optional voice |
+| `OPENAI_API_KEY` | Server-only OpenAI text credential |
 | `ANTHROPIC_API_KEY` | Server-only Claude credential; add to this new service to enable its selector choices |
 | `OPENAI_MODEL` | Default OpenAI text model, `gpt-4.1-mini` |
 | `ANTHROPIC_MODEL` | Default Claude text model, `claude-haiku-5-5` |
 | `STANDARD_PROMPT_BYTES`, `MAX_OUTPUT_TOKENS` | Optional standard budget overrides; defaults `24000`, `1200` |
 | `LIMITED_PROMPT_BYTES`, `LIMITED_OUTPUT_TOKENS` | Optional limited budget overrides; defaults `8000`, `768`; cannot exceed standard caps |
-| `OPENAI_TRANSCRIPTION_MODEL` | Default `gpt-4o-mini-transcribe` |
-| `OPENAI_SPEECH_MODEL` | Default `gpt-4o-mini-tts` |
+| `SPEECH_SERVICE_URL` | Optional private speech origin; see the voice-service configuration below |
+| `SPEECH_SERVICE_TOKEN` | Independent server-only speech credential; never send it to the browser |
 
 Secrets are supplied as service-scoped variables. Existing shared values may be referenced intentionally, but changing a shared value would affect the pilot and is unnecessary. The Docker image runs with the default root UID because Railway's mounted volume is root-owned. There are no secrets in image layers. SQLite migrations run at application startup, when the volume is mounted; pre-deploy commands must not open the database.
 
@@ -64,6 +64,16 @@ Connect the new service to the reviewed rebuild commit only after its configurat
 Railway detects the root `Dockerfile` automatically. No `railway.json` is included: Railway's current Config-as-Code documentation says that mechanism is deprecated, with legacy support through December 1, 2026. Setting the small service configuration directly avoids adding an infrastructure framework for one app.
 
 Creation and deployment use resources from the existing Railway account. No plan purchase, upgrade, app-store submission, public release, or pilot deletion is part of this setup.
+
+## Optional private speech worker
+
+The `feature/free-voice-pipecat` branch supplies a separate [Whisper/Kokoro/Pipecat service](../services/speech/README.md). This configuration is proposed; it does not establish a deployed speech worker. The owner is also considering inference on user devices, which requires a different client integration. No additional Railway speech runtime has been activated.
+
+For a server-hosted deployment, create one private `studychat-free-speech` service from the reviewed branch commit with root directory `/services/speech`, Dockerfile `Dockerfile`, health path `/health`, 300-second health timeout, and one `iad` replica. Initial resource limits are 2 vCPU and 3 GB RAM; disable sleeping to avoid repeatedly loading the models. Set `HOST=0.0.0.0`, `PORT=8081`, `OMP_NUM_THREADS=2`, and an independent random `SPEECH_SERVICE_TOKEN`. The image contains the fixed model assets, so this service needs no public domain, database, or volume.
+
+On the existing Node app, set `SPEECH_SERVICE_URL` to `http://${{studychat-free-speech.RAILWAY_PRIVATE_DOMAIN}}:${{studychat-free-speech.PORT}}` and `SPEECH_SERVICE_TOKEN` to `${{studychat-free-speech.SPEECH_SERVICE_TOKEN}}`. Pin both services to the reviewed free-voice commit. Keep the existing Node volume, provider credentials, authentication, and monitoring account. The older paid-speech environment variables are ignored by this branch.
+
+Inspect staged changes before applying them. Activate additional paid compute only after the owner chooses server hosting and approves its cost. [Railway resource prices](https://docs.railway.com/pricing/plans), checked October 10, 2026, are $10 per GB-month RAM and $20 per average vCPU-month, plus egress. These apply to actual consumption; the resource limits are not a guaranteed billing ceiling. Local measurements cannot establish Railway latency or actual monthly usage.
 
 ## Verification and recovery
 
