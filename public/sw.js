@@ -1,4 +1,4 @@
-const CACHE = 'studychat-shell-v2';
+const CACHE = 'studychat-shell-v3';
 const METADATA = 'studychat-device-voice-metadata';
 const MARKER = '/voice-assets/install-status.json';
 const MANIFEST = '/voice-assets/manifest.json';

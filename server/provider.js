@@ -1,7 +1,8 @@
+import { SEARCH_INSTRUCTIONS, searchTool, safeSource, searchOutcome } from './web-search.js';
 import { createModelCatalogue } from './models.js';
 import { randomUUID } from 'node:crypto';
 
-/** Fetch-only text transports. No tools, retry, or provider/model fallback.
+/** Fetch-only text transports. Bounded hosted search; no retry or provider/model fallback.
  * https://developers.openai.com/api/docs/guides/streaming-responses
  * https://platform.claude.com/docs/en/build-with-claude/streaming
  */
@@ -39,7 +40,7 @@ function settledMetadata(selected, state, result, error, signal) {
   const reasoningOutputTokens = tokenCount(selected.provider === 'anthropic' ? raw?.output_tokens_details?.thinking_tokens
     : raw?.output_tokens_details?.reasoning_tokens ?? raw?.completion_tokens_details?.reasoning_tokens);
   // Full base input rates overestimate cache reads; cache writes and uncertain tiers stay unpriced.
-  const priceKnown = !error && countsKnown && selected.priceKnown && state.returnedModel === selected.model && cacheWriteInputTokens === 0
+  const priceKnown = !state.searchAttempted && !error && countsKnown && selected.priceKnown && state.returnedModel === selected.model && cacheWriteInputTokens === 0
     && (selected.provider === 'anthropic' ? result?.serviceTier === 'standard' && raw?.inference_geo === 'global' : result?.serviceTier === 'default');
   const estimate = priceKnown ? (input * selected.inputPricePerMillion + output * selected.outputPricePerMillion) / 1_000_000 : null;
   return { requestId: state.requestId, provider: selected.provider, requestedModel: selected.model, returnedModel: state.returnedModel,
@@ -89,11 +90,12 @@ function responseText(response) {
   return (response.output || []).filter(item => item.type === 'message').flatMap(item => item.content || [])
     .map(part => part.type === 'output_text' ? part.text : part.type === 'refusal' ? part.refusal : '').join('');
 }
-export async function consumeResponseStream(body, { signal, onDelta = () => {}, maxOutputChars = 20000, onReported = () => {} } = {}) {
-  let content = '';
+export async function consumeResponseStream(body, { signal, onDelta = () => {}, maxOutputChars = 20000, onReported = () => {}, onSearch = () => {} } = {}) {
+  let content = '', searched = false, searchCompleted = false;
   for await (const data of sse(body,signal)) {
     if (data === '[DONE]') continue;
     const event = eventJson(data); if (typeof event.type !== 'string') malformed();
+    if (event.type.startsWith('response.web_search_call.')) { searched = true; if (event.type === 'response.web_search_call.completed') searchCompleted = true; onSearch(); }
     if (event.type === 'response.output_text.delta' || event.type === 'response.refusal.delta') content = appendText(content,event.delta,onDelta,maxOutputChars);
     else if (event.type === 'response.completed') {
       onReported({ model: event.response?.model, usage: event.response?.usage, serviceTier: event.response?.service_tier });
@@ -101,7 +103,17 @@ export async function consumeResponseStream(body, { signal, onDelta = () => {}, 
       const final = responseText(event.response);
       if (final && !content) content = appendText(content,final,onDelta,maxOutputChars);
       else if (final && final !== content) malformed();
-      requireText(content); return { content, usage: event.response.usage || null, model: event.response.model || null, serviceTier: event.response.service_tier || null };
+      const calls = (event.response.output || []).filter(item => item.type === 'web_search_call');
+      if (calls.length) { searched = true; if (calls.some(call => call.status === 'completed')) searchCompleted = true; onSearch(); }
+      const sources = []; let offset = 0;
+      for (const part of (event.response.output || []).filter(item => item.type === 'message').flatMap(item => item.content || [])) {
+        for (const citation of part.annotations || []) if (searchCompleted && citation.type === 'url_citation') {
+          const source = safeSource(citation,offset + citation.end_index,offset + citation.start_index);
+          if (source && Number.isInteger(source.startIndex) && Number.isInteger(source.endIndex) && source.startIndex >= offset && source.endIndex >= source.startIndex && source.endIndex <= offset + (part.text || '').length && sources.length < 12) sources.push(source);
+        }
+        offset += (part.text || part.refusal || '').length;
+      }
+      requireText(content); return { content, ...searchOutcome(searched,(searched && !searchCompleted) || calls.some(call => call.status !== 'completed'),sources), usage: event.response.usage || null, model: event.response.model || null, serviceTier: event.response.service_tier || null };
     } else if (['response.failed','response.incomplete','error'].includes(event.type)) {
       if (event.response) onReported({ model: event.response.model, usage: event.response.usage, serviceTier: event.response.service_tier });
       throw new ProviderError('AI could not complete this response. You can retry this turn.', event.type === 'response.incomplete' ? 'incomplete_response' : 'provider_error');
@@ -131,20 +143,32 @@ export async function consumeChatCompletionStream(body, { signal, onDelta = () =
   }
   throw new ProviderError('AI stream closed before completion. You can retry this turn.', 'early_close');
 }
-export async function consumeAnthropicStream(body, { signal, onDelta = () => {}, maxOutputChars = 20000, onReported = () => {} } = {}) {
-  let content = '', stop = null, model = null, usage = null, started = false;
+export async function consumeAnthropicStream(body, { signal, onDelta = () => {}, maxOutputChars = 20000, onReported = () => {}, onSearch = () => {} } = {}) {
+  let content = '', stop = null, model = null, usage = null, started = false, searched = false, searchFailed = false;
+  const retrieved = new Set(), sources = [];
+  const cite = citation => { const source = safeSource(citation,content.length); if (searched && citation?.type === 'web_search_result_location' && source && retrieved.has(source.url) && sources.length < 12) sources.push(source); };
   for await (const data of sse(body,signal)) {
     const event = eventJson(data); if (typeof event.type !== 'string') malformed();
     if (event.type === 'message_start') { if (!event.message || started) malformed(); started = true; model = event.message.model || null; usage = event.message.usage || null; }
-    else if (event.type === 'content_block_start') { if (!started || !event.content_block) malformed(); if (event.content_block.type === 'text' && event.content_block.text) content = appendText(content,event.content_block.text,onDelta,maxOutputChars); }
+    else if (event.type === 'content_block_start') {
+      if (!started || !event.content_block) malformed(); const block = event.content_block;
+      if (block.type === 'server_tool_use' && block.name === 'web_search') { searched = true; onSearch(); }
+      if (block.type === 'web_search_tool_result') {
+        searched = true; onSearch();
+        if (!Array.isArray(block.content)) searchFailed = true;
+        else for (const result of block.content) { const source = safeSource(result,0); if (result.type === 'web_search_result' && source) retrieved.add(source.url); }
+      }
+      if (block.type === 'text') { if (block.text) content = appendText(content,block.text,onDelta,maxOutputChars); for (const citation of block.citations || []) cite(citation); }
+    }
     else if (event.type === 'content_block_delta') {
       if (!started || !event.delta || typeof event.delta.type !== 'string') malformed();
       if (event.delta.type === 'text_delta') content = appendText(content,event.delta.text,onDelta,maxOutputChars);
+      else if (event.delta.type === 'citations_delta') cite(event.delta.citation);
     } else if (event.type === 'message_delta') { if (!started || !event.delta) malformed(); if (event.delta.stop_reason != null) stop = event.delta.stop_reason; if (event.usage) usage = { ...usage, ...event.usage }; }
     else if (event.type === 'message_stop') {
       if (started) onReported({ model, usage, serviceTier: usage?.service_tier });
       if (!started || !['end_turn','stop_sequence','refusal'].includes(stop)) throw new ProviderError('AI response did not complete.', 'incomplete_response');
-      requireText(content); return { content, model, usage, serviceTier: usage?.service_tier || null };
+      requireText(content); return { content, ...searchOutcome(searched,searchFailed,sources), model, usage, serviceTier: usage?.service_tier || null };
     } else if (event.type === 'error') throw new ProviderError('AI could not complete this response. You can retry this turn.', 'provider_error');
   }
   throw new ProviderError('AI stream closed before completion. You can retry this turn.', 'early_close');
@@ -161,7 +185,7 @@ function chatMessages(messages,model) {
   if (/^o1-(?:mini|preview)/.test(model)) return [{ role: 'user', content: messages.map(message => `${message.role.toUpperCase()}: ${message.content}`).join('\n\n') }];
   return messages.map(message => ({ role: message.role === 'developer' ? 'system' : message.role, content: message.content }));
 }
-async function requestText({ apiKey, provider, selection, messages, signal, onDelta, maxOutputChars, fetchImpl, observation }) {
+async function requestText({ apiKey, provider, selection, messages, signal, onDelta, maxOutputChars, fetchImpl, observation, onSearch }) {
   const { model, transport, limits } = selection, maxTokens = limits.maxOutputTokens;
   let url, headers, body;
   if (provider === 'anthropic') {
@@ -178,6 +202,7 @@ async function requestText({ apiKey, provider, selection, messages, signal, onDe
     url = 'https://api.openai.com/v1/responses'; headers = { Authorization: `Bearer ${apiKey}` };
     body = { model, service_tier: 'default', input: messages.map(message => message.role === 'assistant' ? { ...message, phase: 'final_answer' } : message), max_output_tokens: maxTokens, stream: true, store: false };
   }
+  if (selection.webSearchSupported) { body.tools = [searchTool(provider)]; if (provider === 'openai') { body.max_tool_calls = 2; body.tool_choice = 'auto'; } }
   if (observation) { observation.attempted = true; observation.started = performance.now(); }
   const response = await fetchImpl(url,{ method: 'POST', headers: { ...headers, 'Content-Type': 'application/json', Accept: selection.streaming === false ? 'application/json' : 'text/event-stream' }, body: JSON.stringify(body), signal });
   if (observation && !observation.settled && Number.isInteger(response.status) && response.status >= 100 && response.status <= 599) observation.statusCode = response.status;
@@ -195,7 +220,7 @@ async function requestText({ apiKey, provider, selection, messages, signal, onDe
       observation.reportedResult = { usage: reported.usage, serviceTier: reported.serviceTier };
     }
   };
-  const options = { signal, onDelta, maxOutputChars, onReported };
+  const options = { signal, onDelta, maxOutputChars, onReported, onSearch: () => { if (signal.aborted) return; if (observation) observation.searchAttempted = true; onSearch?.(); } };
   if (selection.streaming === false) {
     const value = await boundedJson(response.body,signal), choice = value.choices?.[0];
     onReported({ model: value.model, usage: value.usage, serviceTier: value.service_tier });
@@ -203,6 +228,9 @@ async function requestText({ apiKey, provider, selection, messages, signal, onDe
     const content = appendText('',choice.message?.content || choice.message?.refusal || '',onDelta,maxOutputChars); requireText(content);
     result = { content, model: value.model || null, usage: value.usage || null, serviceTier: value.service_tier || null };
   } else result = await (provider === 'anthropic' ? consumeAnthropicStream : transport === 'chat-completions' ? consumeChatCompletionStream : consumeResponseStream)(response.body,options);
+  if (observation?.searchAttempted && (!result.sources?.length || result.label?.includes('incomplete'))) {
+    result.content = appendText(result.content,'\n\nI could not verify the current guideline from supporting sources. Please check it in typed chat using a search-capable model or consult the official guideline directly.',onDelta,maxOutputChars);
+  }
   if (observation && !observation.settled) observation.returnedModel = observedModel(result.model);
   return { ...result, model: result.model || model, provider, usage: normalizeUsage(result.usage,provider) };
 }
@@ -231,10 +259,11 @@ export function createOpenAIProvider({ apiKey = '', model = 'gpt-4.1-mini', maxO
 export function createModelGateway({ config = {}, fetchImpl = globalThis.fetch, onSettled } = {}) {
   const models = createModelCatalogue({ config, fetchImpl }); let active = false;
   return { ...models, model: config.model || 'gpt-4.1-mini',
-    async generate({ messages, selection, signal, onDelta }) {
+    async generate({ messages, selection, signal, onDelta, onSearch }) {
       if (!Array.isArray(messages) || messages.some(message => !message || !['system','developer','user','assistant'].includes(message.role) || typeof message.content !== 'string')) throw new ProviderError('Invalid Coach request.', 'invalid_input', 400);
       const selected = await models.resolveSelection(selection);
       const bounded = messages.map(message => ({ role: message.role, content: message.content })); let historyPairsOmitted = 0;
+      if (config.webSearchEnabled === true) bounded.unshift({ role: 'system', content: selected.webSearchSupported ? SEARCH_INSTRUCTIONS : 'Live web search is unavailable for this selected model. Do not claim to have checked current sources. State uncertainty about current guidance. For guideline questions, tell the user you could not verify the guideline and to check it in typed chat using a search-capable model.' });
       // Drop complete oldest history pairs. The tutor rules, host state and newest input stay intact.
       const promptBytes = () => Buffer.byteLength(JSON.stringify(bounded.map(message => message.role === 'assistant' ? { ...message, phase: 'final_answer' } : message)),'utf8');
       while (promptBytes() > selected.limits.maxPromptBytes) {
@@ -249,8 +278,8 @@ export function createModelGateway({ config = {}, fetchImpl = globalThis.fetch, 
       let result, failure;
       try {
         result = await timedGeneration({ apiKey: selected.provider === 'openai' ? config.apiKey : config.anthropicApiKey,
-          provider: selected.provider, selection: selected, messages: bounded, onDelta, maxOutputChars: config.maxOutputChars ?? 20000, fetchImpl, observation },config.chatTimeoutMs ?? 90000,signal);
-        return { ...result, tier: selected.tier, limits: selected.limits, historyPairsOmitted };
+          provider: selected.provider, selection: selected, messages: bounded, onDelta, onSearch, maxOutputChars: config.maxOutputChars ?? 20000, fetchImpl, observation },config.chatTimeoutMs ?? 90000,signal);
+        return { ...result, ...(config.webSearchEnabled === true && !selected.webSearchSupported ? { label: 'Live search unavailable for this model · guidance unverified.' } : {}), tier: selected.tier, limits: selected.limits, historyPairsOmitted };
       } catch (error) {
         failure = error;
         if (observation.reportedResult) result = { ...observation.reportedResult, usage: normalizeUsage(observation.reportedResult.usage,selected.provider) };

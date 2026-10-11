@@ -26,7 +26,9 @@ export function loadConfig(env = process.env) {
     if (!['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname) && url.protocol !== 'https:') throw new Error('Remote APP_ORIGIN must use HTTPS.');
     appOrigin = url.origin;
   }
+  if (env.WEB_SEARCH_ENABLED && !['true','false'].includes(env.WEB_SEARCH_ENABLED)) throw new Error('WEB_SEARCH_ENABLED must be true or false.');
   return Object.freeze({
+    webSearchEnabled: env.WEB_SEARCH_ENABLED !== 'false',
     host, accessToken, appOrigin, model, apiKey: env.OPENAI_API_KEY || '', anthropicModel, anthropicApiKey: env.ANTHROPIC_API_KEY || '',
     ingeniumKey: env.INGENIUM_TELEMETRY_KEY || '', ingeniumOrganizationId: env.INGENIUM_TELEMETRY_ORGANIZATION_ID || '',
     port: integer(env, 'PORT', 3000, 0, 65535), dataDir: resolve(env.DATA_DIR || 'data'),

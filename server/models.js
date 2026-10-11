@@ -1,3 +1,4 @@
+import { searchCapable } from './web-search.js';
 /** Public model metadata only. Keys stay in the gateway; live lists do not provide prices.
  * Checked 2026-10-10 against official model/pricing documentation.
  */
@@ -50,6 +51,7 @@ function descriptor(provider, row, config, availability) {
   const maxOutputTokens = Math.min(tier === 'limited' ? config.limitedOutputTokens ?? 768 : config.maxOutputTokens ?? 1200, row.max_tokens > 0 ? row.max_tokens : Infinity);
   return { id: row.id, provider, label: row.display_name || row.id, tier, available: availability !== 'unconfigured', availability,
     transport: provider === 'anthropic' ? 'messages' : legacy ? 'chat-completions' : 'responses',
+    webSearchSupported: config.webSearchEnabled === true && !legacy && searchCapable(provider,row),
     streaming: !/^gpt-3\.5/.test(base),
     limits: { maxPromptBytes: tier === 'limited' ? config.limitedPromptBytes ?? 8000 : config.standardPromptBytes ?? 24000, maxOutputTokens },
     priceKnown: Boolean(rates), ...(rates ? { inputPricePerMillion: rates[0], outputPricePerMillion: rates[1], pricingCheckedAt: '2026-10-10' } : {}),

@@ -16,8 +16,9 @@ const modelChoices = [
   { id: 'gpt-4.1-mini', provider: 'openai', label: 'GPT-4.1 mini', tier: 'standard', available: true, limits: { maxPromptBytes: 24000, maxOutputTokens: 1200 } },
   { id: 'claude-opus-5-5', provider: 'anthropic', label: 'Claude Opus 5.5', tier: 'limited', available: true, limits: { maxPromptBytes: 8000, maxOutputTokens: 768 } }
 ];
-const provider = { available: true, async catalogue() { return { providers: [{ id: 'openai', label: 'OpenAI', configured: true }, { id: 'anthropic', label: 'Anthropic', configured: true }], models: modelChoices, defaultSelection: { provider: 'openai', model: 'gpt-4.1-mini' } }; }, async resolveSelection(selection) { if (!modelChoices.some(model => model.provider === selection.provider && model.id === selection.model)) throw new Error('Invalid fixture model'); return selection; }, async generate({ messages, selection, onDelta, signal }) {
+const provider = { available: true, async catalogue() { return { providers: [{ id: 'openai', label: 'OpenAI', configured: true }, { id: 'anthropic', label: 'Anthropic', configured: true }], models: modelChoices, defaultSelection: { provider: 'openai', model: 'gpt-4.1-mini' } }; }, async resolveSelection(selection) { if (!modelChoices.some(model => model.provider === selection.provider && model.id === selection.model)) throw new Error('Invalid fixture model'); return selection; }, async generate({ messages, selection, onDelta, onSearch, signal }) {
   calls++; const input = messages.at(-1).content;
+  if (input === 'Check guidelines') { onSearch(); await new Promise(resolve => setTimeout(resolve,250)); const content = 'Guidance: [1]'; onDelta(content); return { content, model: selection.model, provider: selection.provider, label: 'Live search citations · confirm guideline date and applicability.', sources: [{ url: 'https://www.cdc.gov/guidelines', title: 'CDC guidance', label: 'Live search citation', consulted: true, startIndex: 10, endIndex: 13 }] }; }
   if (input === 'Wait for Stop') await new Promise(resolve => signal.addEventListener('abort', resolve, { once: true }));
   signal.throwIfAborted(); const content = `Coach received: ${input}`; onDelta('Coach received: '); await new Promise(resolve => setTimeout(resolve, 60)); onDelta(input); return { content, model: selection.model, provider: selection.provider };
 } };
@@ -43,6 +44,10 @@ try {
   await page.reload(); assert.equal(await page.getByLabel('Chat model', { exact: true }).inputValue(), JSON.stringify(['anthropic', 'claude-opus-5-5']));
   await page.getByLabel('Message Coach').fill('Chosen Claude'); await page.getByRole('button', { name: 'Send message', exact: true }).click(); await page.getByText('Coach received: Chosen Claude', { exact: true }).waitFor(); checks.push('provider/model selection persists; limited-model caps visible; unified chat uses captured selection');
   await page.reload(); await page.getByText('Coach received: Hello', { exact: true }).waitFor(); checks.push('saved history after reload');
+  await page.getByLabel('Message Coach').fill('Check guidelines'); await page.getByRole('button', { name: 'Send message', exact: true }).click();
+  await page.getByText('Checking current sources…', { exact: true }).first().waitFor();
+  const inline = page.locator('.message-body a[href="https://www.cdc.gov/guidelines"]'); await inline.waitFor(); assert.equal(await inline.innerText(),'[1]');
+  await page.reload(); await inline.waitFor(); await page.getByText(/Live search citations · confirm guideline/).first().waitFor(); checks.push('live lookup progress, clickable inline citations and source status survive history reload');
   await page.getByLabel('Message Coach').fill('Wait for Stop'); await page.getByRole('button', { name: 'Send message', exact: true }).click(); await page.getByRole('button', { name: 'Stop', exact: true }).click();
   await page.getByText(/Cancelled/).first().waitFor(); checks.push('Stop visibly cancels');
   await page.locator('.tabbar [data-tab="practice"]').click(); await page.getByRole('button', { name: 'Start practice', exact: true }).click(); await page.getByRole('button', { name: 'Check answer', exact: true }).waitFor();

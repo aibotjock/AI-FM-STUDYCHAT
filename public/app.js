@@ -170,12 +170,25 @@ function sourceLabels(target, list = []) {
   target.replaceChildren();
   for (const source of list) { if (!source.url || !/^https:\/\//i.test(source.url)) continue; target.append(el('a', { href: source.url, target: '_blank', rel: 'noopener noreferrer', text: `${source.label || (source.consulted ? 'Consulted source' : 'Reference link')}: ${source.title || source.id || 'Source'}` })); }
 }
+function renderCitations(body, text, sources) {
+  const citations = sources.filter(source => source.label === 'Live search citation' && /^https:\/\//i.test(source.url) && Number.isInteger(source.startIndex) && Number.isInteger(source.endIndex) && source.startIndex >= 0 && source.endIndex >= source.startIndex && source.endIndex <= text.length).sort((a,b) => a.startIndex - b.startIndex);
+  if (!citations.length) return;
+  body.replaceChildren(); let cursor = 0;
+  citations.forEach((source,index) => {
+    if (source.startIndex < cursor) return;
+    body.append(document.createTextNode(text.slice(cursor,source.startIndex)), el('a',{ href: source.url, target: '_blank', rel: 'noopener noreferrer', text: source.endIndex > source.startIndex && !text.slice(source.startIndex,source.endIndex).includes('') ? text.slice(source.startIndex,source.endIndex) : `[${index + 1}]`, 'aria-label': source.title || 'Search citation' }));
+    cursor = source.endIndex;
+  });
+  body.append(document.createTextNode(text.slice(cursor)));
+}
 function finishBubble(item, value) {
   if (value.content && item.bubble.body.textContent !== value.content) item.bubble.body.textContent = value.content;
   const status = value.status || 'completed'; item.status = status;
   item.bubble.state.classList.toggle('error', status !== 'completed');
   const modelLabel = value.model && value.provider ? ` · ${value.provider === 'openai' ? 'OpenAI' : value.provider === 'anthropic' ? 'Anthropic' : value.provider} ${value.model}` : '';
   item.bubble.state.textContent = status === 'completed' ? `Saved${modelLabel}` : `${status[0].toUpperCase() + status.slice(1)}${value.error || value.message ? ` · ${value.error?.message || value.error || value.message}` : ''}${item.bubble.body.textContent ? ' · Partial response' : ''}`;
+  if (status === 'completed' && value.label) item.bubble.state.append(` · ${value.label}`);
+  renderCitations(item.bubble.body,value.content || item.bubble.body.textContent,value.sources || []);
   sourceLabels(item.bubble.sources, value.sources || value.references || []);
   if (['pending', 'running'].includes(status)) {
     item.bubble.state.textContent = 'This saved request is still running. Reload history to recover its outcome, or stop it.';
@@ -245,7 +258,7 @@ export function modelSelector(location = 'coach') {
     if (choice?.limits?.maxPromptBytes) caps.push(`${Math.round(choice.limits.maxPromptBytes / 1024)} KiB prompt`);
     if (choice?.limits?.maxOutputTokens) caps.push(`${choice.limits.maxOutputTokens.toLocaleString()} output tokens`);
     const budgetLabel = choice?.tier === 'limited' ? choice.priceKnown === false ? 'Price unconfirmed · limited budget' : 'Higher-cost model · limited budget' : 'Standard model budget';
-    detail.textContent = `${budgetLabel}${caps.length ? `: ${caps.join(' · ')}` : ''}. Changes apply to the next attempt; the current reply keeps its model.${choice?.availability === 'unconfirmed' ? ' Account access unconfirmed; the live model list could not be loaded.' : ''}`;
+    detail.textContent = `${budgetLabel}${caps.length ? `: ${caps.join(' · ')}` : ''}. ${choice?.webSearchSupported ? 'Live guideline search available · up to 2 search calls per reply; provider search fees apply.' : 'Live search unavailable for this model.'} Changes apply to the next attempt; the current reply keeps its model.${choice?.availability === 'unconfirmed' ? ' Account access unconfirmed; the live model list could not be loaded.' : ''}`;
   }
   async function load(refresh = false) {
     try {
@@ -357,6 +370,7 @@ async function sendTurn({ text, turnId, signal }) {
         const type = event.type || block.split('\n').find(line => line.startsWith('event:'))?.slice(6).trim();
         if (item.status !== 'running') continue;
         if (type === 'delta') { const delta = event.delta ?? event.text; if (typeof delta !== 'string') throw new Error('The chat stream contained an invalid text event.'); content += delta; if (content.length > 50000) throw new Error('The reply exceeded the allowed size.'); if (item.bubble.body.textContent !== content) item.bubble.body.textContent = content; showStatus('Coach is responding…', true); scrollLog(); }
+        else if (type === 'search') { item.bubble.state.textContent = 'Checking current sources…'; showStatus('Checking current sources…', true); }
         else if (type === 'done' || type === 'error') { terminal = { ...event, content: event.content ?? content, status: event.status || (type === 'done' ? 'completed' : 'failed') }; }
         else if (type !== 'start') throw new Error('The chat stream contained an unknown event.');
       }

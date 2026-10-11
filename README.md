@@ -93,3 +93,5 @@ Genuine requests are marked `app_observed`. Collector fixtures are marked `clien
 [Validation record](docs/validation.md) separates engine, deterministic provider, browser, actual-model, hosted, and physical-device evidence. Checks that have not run are identified explicitly.
 
 [Device speech validation](docs/device-voice-validation.md) records the local Whisper/Kokoro checks and separates real browser inference from fixtures and physical-phone testing. The earlier server prototype remains on `feature/free-voice-pipecat` for reference.
+
+Live guideline lookup is available in typed chat and voice on supported OpenAI and Claude models, with official-source domain filters, citations, and two hosted tool calls per reply. Provider search fees apply. See [live guideline search](docs/live-guideline-search.md) for configuration, evidence limits and validation.

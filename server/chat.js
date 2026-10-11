@@ -178,7 +178,7 @@ export function createChatService({ db, provider, config = {}, getContext = () =
         if (resolved) return resolved;
         const context = await getContext({ ...request, text: input, signal: item.controller.signal });
         item.controller.signal.throwIfAborted();
-        return provider.generate({ messages: coachMessages({ history: completedContext(conversationId), input, context }), selection, signal: item.controller.signal, onDelta: delta });
+        return provider.generate({ messages: coachMessages({ history: completedContext(conversationId), input, context }), selection, signal: item.controller.signal, onDelta: delta, onSearch: () => { if (!item.controller.signal.aborted && ACTIVE.has(findAttempt.get(attemptId)?.status)) notify(item,{ type: 'search', conversationId, turnId, attemptId }); } });
       });
       const result = await Promise.race([work, deadline, aborted]);
       if (!ACTIVE.has(findAttempt.get(attemptId)?.status)) return outcome(findAttempt.get(attemptId), turn);
