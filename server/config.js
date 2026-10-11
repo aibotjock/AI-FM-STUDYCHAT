@@ -29,6 +29,7 @@ export function loadConfig(env = process.env) {
   return Object.freeze({
     host, accessToken, appOrigin, model, apiKey: env.OPENAI_API_KEY || '', anthropicModel, anthropicApiKey: env.ANTHROPIC_API_KEY || '',
     ingeniumKey: env.INGENIUM_TELEMETRY_KEY || '', ingeniumOrganizationId: env.INGENIUM_TELEMETRY_ORGANIZATION_ID || '',
+    ingeniumLegacyOrganizationId: env.INGENIUM_TELEMETRY_LEGACY_ORGANIZATION_ID || '',
     port: integer(env, 'PORT', 3000, 0, 65535), dataDir: resolve(env.DATA_DIR || 'data'),
     chatTimeoutMs: integer(env, 'CHAT_TIMEOUT_MS', 90000, 1000, 180000),
     maxInputChars: integer(env, 'MAX_INPUT_CHARS', 8000, 64, 20000),
