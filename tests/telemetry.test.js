@@ -76,6 +76,76 @@ test('a transient failed observation survives restart and is delivered once with
   } finally { telemetry.close(); await immediate(); db.close(); rmSync(directory, { recursive: true, force: true }); }
 });
 
+test('durable organization binding blocks cross-tenant replay while same-organization key rotation preserves original bytes', async () => {
+  const directory = mkdtempSync(join(tmpdir(), 'studychat-tenant-')), filename = join(directory, 'events.sqlite'), value = event();
+  let clock = 100_000, db = new DatabaseSync(filename), calls = 0, original;
+  let telemetry = createIngeniumTelemetry({ db, config, now: () => clock, fetchImpl: async () => new Response('', { status: 503 }) });
+  try {
+    assert.equal(telemetry.record(value), true); await until(() => telemetry.status().lastError === 'receiver_http');
+    original = db.prepare('SELECT * FROM ingenium_outbox').get();
+    telemetry.close(); await immediate(); db.close(); clock += 2000; db = new DatabaseSync(filename);
+    const otherOrganization = randomUUID();
+    const other = { ingeniumOrganizationId: otherOrganization, ingeniumKey: 'ia_other-private-key',
+      ingeniumLegacyOrganizationId: otherOrganization };
+    telemetry = createIngeniumTelemetry({ db, config: other, now: () => clock, fetchImpl: async () => { calls++; return ack(value.requestId); } });
+    await immediate(); assert.equal(calls, 0); assert.equal(telemetry.record(event()), false);
+    assert.equal(telemetry.status().lastError, 'receiver_organization_mismatch'); assert.equal(telemetry.status().pending, 1);
+    assert.deepEqual(db.prepare('SELECT * FROM ingenium_outbox').get(), original);
+    assert.equal(db.prepare('SELECT organization_id FROM ingenium_outbox_owner').get().organization_id, config.ingeniumOrganizationId);
+    assert.doesNotMatch(JSON.stringify(telemetry.status()), /private-key/);
+    telemetry.close(); await immediate(); db.close(); db = new DatabaseSync(filename);
+    telemetry = createIngeniumTelemetry({ db, config: { ...config, ingeniumOrganizationId: config.ingeniumOrganizationId.toUpperCase(),
+      ingeniumKey: 'ia_rotated-private-key' }, now: () => clock, fetchImpl: async (_url, options) => {
+        calls++; assert.equal(options.headers['x-ingenium-key'], 'ia_rotated-private-key');
+        assert.equal(options.headers['x-ingenium-organization'], config.ingeniumOrganizationId); assert.equal(options.body, original.payload);
+        return ack(value.requestId);
+      } });
+    await until(() => telemetry.status().delivered === 1);
+    assert.equal(calls, 1); assert.equal(telemetry.status().pending, 0);
+    assert.equal(db.prepare('SELECT payload FROM ingenium_outbox').get().payload, original.payload);
+    assert.doesNotMatch(JSON.stringify(db.prepare('SELECT * FROM ingenium_outbox_owner').all()), /ia_|private-key/);
+  } finally { telemetry.close(); await immediate(); db.close(); rmSync(directory, { recursive: true, force: true }); }
+});
+
+test('unbound legacy observations fail closed until their original organization is explicitly attested', async () => {
+  const directory = mkdtempSync(join(tmpdir(), 'studychat-legacy-owner-')), filename = join(directory, 'events.sqlite'), value = event();
+  let clock = 100_000, db = new DatabaseSync(filename), calls = 0, original;
+  let telemetry = createIngeniumTelemetry({ db, config, now: () => clock, fetchImpl: async () => new Response('', { status: 503 }) });
+  try {
+    telemetry.record(value); await until(() => telemetry.status().lastError === 'receiver_http');
+    original = db.prepare('SELECT * FROM ingenium_outbox').get();
+    telemetry.close(); await immediate(); db.exec('DROP TABLE ingenium_outbox_owner'); db.close(); clock += 2000;
+    for (const assertion of [undefined, randomUUID()]) {
+      db = new DatabaseSync(filename);
+      telemetry = createIngeniumTelemetry({ db, config: { ...config, ingeniumLegacyOrganizationId: assertion }, now: () => clock,
+        fetchImpl: async () => { calls++; return ack(value.requestId); } });
+      await immediate(); assert.equal(calls, 0); assert.equal(telemetry.record(event()), false);
+      assert.equal(telemetry.status().lastError, 'receiver_organization_unbound');
+      assert.equal(db.prepare('SELECT COUNT(*) AS count FROM ingenium_outbox_owner').get().count, 0);
+      assert.deepEqual(db.prepare('SELECT * FROM ingenium_outbox').get(), original);
+      telemetry.close(); await immediate(); db.close();
+    }
+    db = new DatabaseSync(filename);
+    telemetry = createIngeniumTelemetry({ db, config: { ...config, ingeniumLegacyOrganizationId: config.ingeniumOrganizationId }, now: () => clock,
+      fetchImpl: async (_url, options) => { calls++; assert.equal(options.body, original.payload); return ack(value.requestId, true); } });
+    await until(() => telemetry.status().delivered === 1);
+    assert.equal(calls, 1); assert.equal(db.prepare('SELECT payload FROM ingenium_outbox').get().payload, original.payload);
+    assert.equal(db.prepare('SELECT organization_id FROM ingenium_outbox_owner').get().organization_id, config.ingeniumOrganizationId);
+  } finally { telemetry.close(); await immediate(); db.close(); rmSync(directory, { recursive: true, force: true }); }
+});
+
+test('an invalid organization cannot be persisted as queue identity or sent to the receiver', async () => {
+  const db = memory(); let calls = 0;
+  const telemetry = createIngeniumTelemetry({ db, config: { ...config, ingeniumOrganizationId: 'private-person@example.invalid' },
+    fetchImpl: async () => { calls++; return ack(randomUUID()); } });
+  assert.equal(telemetry.record(event()), false); await immediate(); assert.equal(calls, 0);
+  assert.equal(telemetry.status().lastError, 'receiver_organization_invalid');
+  assert.equal(telemetry.status().organizationId, null);
+  assert.doesNotMatch(JSON.stringify(telemetry.status()), /private-person/);
+  assert.equal(db.prepare('SELECT COUNT(*) AS count FROM ingenium_outbox_owner').get().count, 0);
+  telemetry.close(); db.close();
+});
+
 test('receiver authentication failure is visible and pauses further sends while preserving pending observations', async () => {
   const db = memory(); let calls = 0;
   const telemetry = createIngeniumTelemetry({ db, config, fetchImpl: async () => { calls++; return new Response('', { status: 401 }); } });

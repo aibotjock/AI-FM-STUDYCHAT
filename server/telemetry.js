@@ -71,7 +71,36 @@ export function createIngeniumTelemetry({ db, config = {}, measurementManifest, 
     id INTEGER PRIMARY KEY CHECK(id=1), delivered INTEGER NOT NULL DEFAULT 0,
     rejected INTEGER NOT NULL DEFAULT 0, dropped INTEGER NOT NULL DEFAULT 0,
     last_delivery_at TEXT, last_error TEXT
-  ); INSERT OR IGNORE INTO ingenium_state(id) VALUES(1);`);
+  ); INSERT OR IGNORE INTO ingenium_state(id) VALUES(1);
+  CREATE TABLE IF NOT EXISTS ingenium_outbox_owner (
+    id INTEGER PRIMARY KEY CHECK(id=1), organization_id TEXT NOT NULL
+  );`);
+  // Payloads deliberately contain no tenant field, so their durable queue must
+  // carry a separate organization binding. Never reassign pending observations
+  // just because credentials/configuration changed between process starts.
+  let bindingError = null;
+  const organizationId = typeof config.ingeniumOrganizationId === 'string' && UUID.test(config.ingeniumOrganizationId)
+    ? config.ingeniumOrganizationId.toLowerCase() : null;
+  const legacyOrganizationId = typeof config.ingeniumLegacyOrganizationId === 'string' && UUID.test(config.ingeniumLegacyOrganizationId)
+    ? config.ingeniumLegacyOrganizationId.toLowerCase() : null;
+  transaction(() => {
+    if (!organizationId) { bindingError = 'receiver_organization_invalid'; return; }
+    const owner = db.prepare('SELECT organization_id FROM ingenium_outbox_owner WHERE id=1').get();
+    if (owner) {
+      if (owner.organization_id !== organizationId) bindingError = 'receiver_organization_mismatch';
+      return;
+    }
+    const state = db.prepare('SELECT delivered,rejected,dropped FROM ingenium_state WHERE id=1').get();
+    const legacyData = db.prepare('SELECT COUNT(*) AS count FROM ingenium_outbox').get().count > 0
+      || state.delivered > 0 || state.rejected > 0 || state.dropped > 0;
+    // Existing unbound data has no trustworthy tenant provenance. An operator
+    // may explicitly attest its original organization after verifying it; the
+    // assertion must match current configuration and never rewrites events.
+    if (legacyData && legacyOrganizationId !== organizationId) {
+      bindingError = 'receiver_organization_unbound'; return;
+    }
+    db.prepare('INSERT INTO ingenium_outbox_owner(id,organization_id) VALUES(1,?)').run(organizationId);
+  });
   let closed = false, scheduled = false, pumping = false, timer = null, controller = null, authBlocked = false;
   const time = () => Math.trunc(now());
   const lastError = code => db.prepare('UPDATE ingenium_state SET last_error=? WHERE id=1').run(code);
@@ -81,7 +110,7 @@ export function createIngeniumTelemetry({ db, config = {}, measurementManifest, 
   }
   const pruneDelivered = () => db.exec("DELETE FROM ingenium_outbox WHERE request_id IN (SELECT request_id FROM ingenium_outbox WHERE status='delivered' ORDER BY created_at DESC, rowid DESC LIMIT -1 OFFSET 100)");
   function schedule() {
-    if (closed || scheduled || pumping || authBlocked) return;
+    if (closed || scheduled || pumping || authBlocked || bindingError) return;
     if (timer) { clearTimeout(timer); timer = null; }
     scheduled = true;
     queueMicrotask(() => { scheduled = false; if (!closed && !authBlocked) void pump(); });
@@ -96,7 +125,7 @@ export function createIngeniumTelemetry({ db, config = {}, measurementManifest, 
     const activeController = controller, deadline = setTimeout(() => activeController.abort(new Error('delivery_timeout')), DEADLINE_MS);
     try {
       const response = await abortable(fetchImpl(ENDPOINT, { method: 'POST', redirect: 'error', headers: { 'Content-Type': 'application/json',
-        'x-ingenium-key': config.ingeniumKey, 'x-ingenium-organization': config.ingeniumOrganizationId }, body: row.payload, signal: activeController.signal }), activeController.signal);
+        'x-ingenium-key': config.ingeniumKey, 'x-ingenium-organization': organizationId }, body: row.payload, signal: activeController.signal }), activeController.signal);
       activeController.signal.throwIfAborted();
       if (!response.ok) {
         void response.body?.cancel().catch(() => {});
@@ -119,7 +148,7 @@ export function createIngeniumTelemetry({ db, config = {}, measurementManifest, 
     } finally { clearTimeout(deadline); if (controller === activeController) controller = null; }
   }
   async function pump() {
-    if (pumping || closed || authBlocked) return; pumping = true;
+    if (pumping || closed || authBlocked || bindingError) return; pumping = true;
     try {
       for (let count = 0; count < 20 && !closed && !authBlocked; count++) {
         const row = db.prepare("SELECT * FROM ingenium_outbox WHERE status='pending' AND next_attempt_at<=? ORDER BY created_at,rowid LIMIT 1").get(time());
@@ -136,7 +165,7 @@ export function createIngeniumTelemetry({ db, config = {}, measurementManifest, 
     }
   }
   function record(metadata) {
-    if (closed) return false;
+    if (closed || bindingError) return false;
     try {
       const payload = eventPayload(metadata, measurementManifest);
       if (!payload) { db.prepare("UPDATE ingenium_state SET dropped=dropped+1,last_error='invalid_event' WHERE id=1").run(); return false; }
@@ -162,9 +191,9 @@ export function createIngeniumTelemetry({ db, config = {}, measurementManifest, 
   }
   function status() {
     const state = db.prepare('SELECT * FROM ingenium_state WHERE id=1').get(), counts = db.prepare("SELECT COUNT(*) AS retained,SUM(status='pending') AS pending FROM ingenium_outbox").get();
-    return { configured: true, organizationId: config.ingeniumOrganizationId, pending: counts.pending || 0,
+    return { configured: true, organizationId, pending: counts.pending || 0,
       delivered: state.delivered, rejected: state.rejected, dropped: state.dropped, lastDeliveryAt: state.last_delivery_at,
-      lastError: state.last_error, retainedEvents: counts.retained };
+      lastError: bindingError || state.last_error, retainedEvents: counts.retained };
   }
   schedule();
   return { record, status, close() { closed = true; if (timer) clearTimeout(timer); timer = null; controller?.abort(new Error('closed')); } };
