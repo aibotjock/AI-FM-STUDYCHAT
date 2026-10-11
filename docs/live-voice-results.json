@@ -1,0 +1,43 @@
+{
+  "checkedAt": "2026-10-10T23:05:11.727Z",
+  "origin": "https://studychat-no-rag-test-private-test.up.railway.app",
+  "realProviderCalls": true,
+  "voices": [
+    {
+      "voice": "marin",
+      "status": 200,
+      "bytes": 40320,
+      "elapsedMs": 4777
+    },
+    {
+      "voice": "cedar",
+      "status": 200,
+      "bytes": 45696,
+      "elapsedMs": 4110
+    },
+    {
+      "voice": "coral",
+      "status": 200,
+      "bytes": 58368,
+      "elapsedMs": 5497
+    },
+    {
+      "voice": "sage",
+      "status": 200,
+      "bytes": 56064,
+      "elapsedMs": 4312
+    },
+    {
+      "voice": "ash",
+      "status": 200,
+      "bytes": 83328,
+      "elapsedMs": 4333
+    }
+  ],
+  "transcription": {
+    "status": 200,
+    "text": "Hello, I am ready to help you study."
+  },
+  "note": "Synthetic greeting only. Actual API audio verified; physical phone microphone and sound quality require owner testing.",
+  "syntheticConversationRemoved": true
+}

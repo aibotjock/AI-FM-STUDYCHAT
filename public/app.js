@@ -1,528 +1,408 @@
-import { getDueCards, previewIntervals, studyStats } from '/shared/scheduler.js';
-import { SCENARIOS, COMPETENCIES } from '/shared/content.js';
+import { createConversationAgent } from '/packages/conversation-agent/src/conversation-core.js';
 
-const $ = selector => document.querySelector(selector);
-const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
-const icons = {
-  today:'<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8 10h8m-8 4h5"/>',
-  coach:'<path d="M20 11.5a8 8 0 0 1-8 8H5l-3 3V11.5a9 9 0 0 1 18 0Z"/><path d="M7 10h8m-8 4h5"/>',
-  review:'<rect x="6" y="5" width="14" height="16" rx="3"/><path d="M4 17V5a3 3 0 0 1 3-3h9m-6 9h6m-6 4h4"/>',
-  library:'<path d="M3 5c3-1 6 0 9 2 3-2 6-3 9-2v14c-3-1-6 0-9 2-3-2-6-3-9-2V5Z"/><path d="M12 7v14"/>',
-  progress:'<path d="M4 20h17M7 16V9m5 7V4m5 12v-5"/>',
-  plus:'<path d="M12 5v14M5 12h14"/>',
-  arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>',
-  send:'<path d="m5 12 7-7 7 7m-7 7V5"/>',
-  mic:'<rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/>',
-  history:'<path d="M3 11a9 9 0 1 1 2.5 7M3 4v7h7m2-4v6l4 2"/>',
-  edit:'<path d="m14 5 5 5M4 20l1-6L17 2l5 5L10 19l-6 1Z"/>',
-  trash:'<path d="M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7"/>',
-  close:'<path d="m6 6 12 12M6 18 18 6"/>',
-  check:'<path d="m5 12 4 4L19 6"/>',
-  streak:'<path d="M12 2c0 5 5 5 5 9a3 3 0 0 1-3 3c2-4-3-4-3-7-3 3-6 6-6 9a7 7 0 0 0 14 0c0-5-3-6-7-14Z"/>',
-  target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
-  pause:'<path d="M8 5v14m8-14v14"/>',
-  play:'<path d="m8 4 12 8-12 8V4Z"/>',
-  voice:'<path d="M11 4 5 9H2v6h3l6 5V4Zm5 4a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>',
+export const el = (tag, attrs = {}, ...children) => {
+  const node = document.createElement(tag);
+  for (const [name, value] of Object.entries(attrs)) {
+    if (name.startsWith('on') && typeof value === 'function') node.addEventListener(name.slice(2).toLowerCase(), value);
+    else if (name === 'class') node.className = value;
+    else if (name === 'text') node.textContent = value;
+    else if (name === 'value') node.value = value;
+    else if (value === true) node.setAttribute(name, '');
+    else if (value !== false && value != null) node.setAttribute(name, value);
+  }
+  node.append(...children.flat().filter(child => child != null).map(child => typeof child === 'string' ? document.createTextNode(child) : child));
+  return node;
 };
-const icon = name => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.coach}</svg>`;
-const navItems = [['today', 'Today'], ['coach', 'Coach'], ['review', 'Review'], ['library', 'Library'], ['progress', 'Progress']];
-const state = { cards: [], reviews: [], conversations: [], settings: { focus: 'clinical-reasoning', coachStyle: 'socratic', dailyMinutes: 18, newCardsPerDay: 5, competencyRatings: {} } };
-let status = { authenticated: false, aiConfigured: false, authRequired: false };
-let screen = ['today','coach','review','library','progress'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'coach';
-let currentConversationId = null;
-let libraryTab = 'cards';
-let searchTerm = '';
-let topicFilter = '';
-let chatBusy = false;
-let chatDraft = '';
-let chatError = '';
-let pendingChatRequest = null;
-let reviewSession = null;
-let answerVisible = false;
-let reviewBusy = false;
-let toastTimer;
-let recognition;
-let recording = false;
-let recognitionBase = '';
-let draftCards = [];
-let draftsOffline = false;
-let formBusy = false;
-let isLoaded = false;
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-function notify(message) {
-  clearTimeout(toastTimer);
-  $('#toast').textContent = message;
-  $('#toast').hidden = false;
-  toastTimer = setTimeout(() => { $('#toast').hidden = true; }, 4500);
-}
-
-async function api(path, options = {}) {
-  const response = await fetch(path, { ...options, headers: { 'Content-Type': 'application/json', ...options.headers } });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    if (response.status === 401 && path !== '/api/login') { status.authenticated = false; renderLogin(); }
-    throw new Error(payload.error || payload.message || `The request failed (${response.status}). Please try again.`);
-  }
-  return payload;
-}
-function mutate(path, method, body) { return api(path, { method, body: body === undefined ? undefined : JSON.stringify(body) }); }
-
-async function refreshState() {
-  const data = await api('/api/state');
-  state.cards = Array.isArray(data.cards) ? data.cards : [];
-  state.reviews = Array.isArray(data.reviews) ? data.reviews : [];
-  state.conversations = Array.isArray(data.conversations) ? data.conversations.sort((a,b) => (b.messages?.at(-1)?.createdAt || b.createdAt || 0) - (a.messages?.at(-1)?.createdAt || a.createdAt || 0)) : [];
-  state.settings = { ...state.settings, ...data.settings };
-  if (!currentConversationId && state.conversations.length) currentConversationId = state.conversations[0].id;
-  if (!state.conversations.some(item => item.id === currentConversationId)) currentConversationId = null;
-  isLoaded = true;
-}
-
-function stats() { return studyStats(state.cards, state.reviews, Date.now(), { timeZone: state.settings.timeZone, newLimit: state.settings.newCardsPerDay }); }
-function dueCards() { return getDueCards(state.cards, { now: Date.now(), newLimit: state.settings.newCardsPerDay, reviews: state.reviews, timeZone: state.settings.timeZone }); }
-function conversation() { return state.conversations.find(item => item.id === currentConversationId); }
-function dateString(value) { return value ? new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Not reviewed'; }
-function safeUrl(value) { try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) ? url.href : ''; } catch { return ''; } }
-function sourceHtml(card) { const url = safeUrl(card.sourceUrl); return url ? `<a class="source-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(card.sourceTitle || 'Reference')} ↗</a>` : `<span>${esc(card.sourceTitle || 'Personal study note')}</span>`; }
-function todayLabel() { return new Date().toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' }); }
-function styleLabel() { return ({ socratic: 'Socratic · one question at a time', 'teach-quiz': 'Teach, then quiz', direct:'Clear, direct explanations' })[state.settings.coachStyle] || 'Socratic coaching'; }
-function focusLabel() { return ({ 'clinical-reasoning': 'Clinical reasoning', exam:'Exam preparation', balanced:'Balanced study' })[state.settings.focus] || 'Clinical reasoning'; }
-
-function renderNav() {
-  const count = isLoaded ? dueCards().length : 0;
-  const html = navItems.map(([id, label]) => `<a href="#${id}" class="nav-link ${id === screen ? 'active' : ''}" ${id === screen ? 'aria-current="page"' : ''}>${icon(id)}<span>${label}</span>${id === 'review' && count ? `<span class="count">${count}</span>` : ''}</a>`).join('');
-  $('#desktop-nav').innerHTML = html;
-  $('#bottom-nav').innerHTML = html;
-  const badge = $('#connection-badge');
-  badge.textContent = !navigator.onLine ? 'Offline' : status.aiConfigured ? 'AI configured' : 'Guided practice';
-  badge.classList.toggle('live', status.aiConfigured && navigator.onLine);
-  $('#network-notice').hidden = navigator.onLine;
-}
-
-function navigate(next) {
-  if (!navItems.some(([id]) => id === next)) return;
-  if (recording) stopDictation();
-  if ($('#chat-input')) chatDraft = $('#chat-input').value;
-  screen = next;
-  if (location.hash !== `#${next}`) history.replaceState(null, '', `#${next}`);
-  if (screen === 'review' && !reviewSession) beginReview();
-  render();
-  window.scrollTo({ top: 0, behavior: 'instant' });
-}
-function render() {
-  renderNav();
-  if (status.authRequired && !status.authenticated) return renderLogin();
-  if (!isLoaded) return;
-  $('#main').innerHTML = ({ today: renderToday, coach: renderCoach, review: renderReview, library: renderLibrary, progress: renderProgress })[screen]();
-  if (screen === 'coach') { scrollChat(); resizeComposer(); }
-}
-
-function pageHead(eyebrow, title, subtitle, action = '') {
-  return `<div class="page-head"><div><span class="eyebrow">${esc(eyebrow)}</span><h1>${esc(title)}</h1><p class="subtitle">${esc(subtitle)}</p></div>${action}</div>`;
-}
-
-function metric(label, value, foot, name, suffix = '') {
-  return `<div class="metric"><div class="metric-label">${esc(label)}${icon(name)}</div><span class="metric-value">${esc(value)}${suffix ? `<small>${esc(suffix)}</small>` : ''}</span><span class="metric-foot">${esc(foot)}</span></div>`;
-}
-
-function renderToday() {
-  const s = stats();
-  const due = dueCards().length;
-  const weak = s.weakTopics.slice(0, 4);
-  return `${pageHead(todayLabel(), 'Small steps. Lasting knowledge.', 'A focused daily rhythm for clearer clinical reasoning.')}
-    <section class="hero"><div><span class="eyebrow">YOUR NEXT ${esc(state.settings.dailyMinutes)} MINUTES, MADE INTENTIONAL</span><h2 class="hero-title">Turn what you know into<br>what you can recall.</h2><p>${due ? `${due} cards are ready. Start with recall, then work through one clinical question with your coach.` : 'Your reviews are complete. Strengthen your reasoning with one thoughtful conversation.'}</p><button class="button gold" data-action="${due ? 'start-review' : 'navigate'}" data-screen="coach">${due ? 'Start today’s reviews' : 'Talk with your coach'} ${icon('arrow')}</button></div><div class="hero-number">${due}<span>CARDS READY</span></div></section>
-    <div class="metrics">${metric('Your daily rhythm', s.streak, s.streak ? 'Keep the habit growing' : 'Your first review starts it', 'streak', s.streak === 1 ? 'day' : 'days')}${metric('Reviewed today', s.reviewedToday, `Up to ${state.settings.newCardsPerDay} new cards each day`, 'review')}${metric('Recall success', s.recallRate === null ? '—' : `${s.recallRate}%`, s.totalReviews ? 'Self-rated Good or Easy' : 'Appears after your first review', 'target')}</div>
-    <div class="today-grid"><section class="card"><div class="section-head"><h2>Your daily study plan</h2><span class="pill gold">${esc(state.settings.dailyMinutes)} min</span></div>
-      <div class="daily-step"><span class="step-icon">${icon('review')}</span><div><h3>Recall before you reveal</h3><p>${due} cards ready · ${s.newRemaining} new available</p></div><button class="text-button" data-action="start-review">Review ↗</button></div>
-      <div class="daily-step"><span class="step-icon">${icon('coach')}</span><div><h3>Think through a clinical problem</h3><p>Make your reasoning visible, one question at a time</p></div><button class="text-button" data-action="starter" data-prompt="Coach me through a complex family medicine patient. Ask me one question at a time, and help me synthesize the key problems.">Start ↗</button></div>
-      <div class="daily-step"><span class="step-icon">${icon('library')}</span><div><h3>Keep the insight that matters</h3><p>Turn a learning point into a focused recall card</p></div><button class="text-button" data-action="new-card">Add card ↗</button></div>
-    </section><section class="card"><div class="section-head"><h2>Worth another look</h2><button class="text-button" data-action="navigate" data-screen="progress">Progress ↗</button></div>
-    ${weak.length ? weak.map(item => `<div class="weak-row"><div><strong>${esc(item.topic)}</strong><small>${item.reviews} self-rated reviews</small></div><button class="pill ${item.recallRate < 70 ? 'gold' : 'green'}" data-action="topic-coach" data-topic="${esc(item.topic)}">${Math.round(item.recallRate)}% recall ↗</button></div>`).join('') : `<p class="subtitle" style="font-size:12px;margin:18px 0">Your reviews will reveal the topics that need more practice. Begin with an honest recall rating.</p><div class="focus-strip"><span class="topic-pill">Clinical synthesis</span><span class="topic-pill">Differential diagnosis</span><span class="topic-pill">Next best step</span></div>`}
-    </section></div><p class="footer-note">${focusLabel()} · ${styleLabel()} · Study data is saved on your app’s server. Educational use only; verify clinical details with current authoritative references.</p>`;
-}
-
-function renderCoach() {
-  const current = conversation();
-  const messages = current?.messages || [];
-  const lastAssistant = messages.filter(item => item.role === 'assistant').at(-1);
-  return `<div class="chat-page"><div class="chat-header"><div><span class="eyebrow">A SPACE TO THINK OUT LOUD</span><h1>Your study coach</h1><p class="subtitle">${esc(focusLabel())} · ${esc(state.settings.dailyMinutes)} minutes at your pace</p></div><div class="chat-title-tools"><button class="icon-button" data-action="history" aria-label="Open conversation history" title="Conversation history">${icon('history')}</button><button class="icon-button" data-action="new-chat" aria-label="Start a new conversation" title="New conversation">${icon('plus')}</button></div></div>
-    ${!status.aiConfigured ? '<div class="notice info" style="margin-bottom:13px">Guided practice is active. Your app owner can connect an AI provider on the server for personalized conversational coaching.</div>' : ''}
-    <section class="chat-window" aria-label="Coach conversation"><div class="chat-toolbar"><div class="coach-id"><span class="coach-avatar">✦</span><div><strong>${esc(current?.title || 'FM Study Coach')}</strong><small>${status.aiConfigured ? 'Personalized coaching' : 'Guided practice · scripted coaching'}</small></div></div><span class="chat-mode">${esc(current?.mode === 'simulation' ? 'Clinical case' : current?.mode === 'practice' ? 'Active recall' : styleLabel())}</span></div>
-    <div id="chat-messages" class="chat-messages" role="log" aria-label="Conversation messages" aria-live="polite" aria-relevant="additions">
-    ${messages.length ? messages.map(renderMessage).join('') : `<div class="chat-intro"><span class="intro-symbol" aria-hidden="true">✦</span><h1>Let’s make the next<br>clinical decision clearer.</h1><p>Bring a topic, a fictional case, or a question you find difficult. I’ll help you reason it through and remember what matters.</p><div class="prompt-grid">${[
-      ['Help me synthesize a complex patient', 'Coach me through synthesizing a complex family medicine patient. Use a fictional case and ask me one question at a time.'],
-      ['Quiz me on my weak topics', 'Quiz me on the topics I need to strengthen. Ask one active recall question at a time, wait for my answer, and give specific feedback.'],
-      ['Walk through a differential', 'Give me a fictional clinical presentation and coach me through a prioritized differential diagnosis, one question at a time.'],
-      ['Teach, then test my understanding', 'Help me learn a family medicine topic. Ask which topic I want first, teach it clearly, and then test my understanding.'],
-    ].map(([label,prompt]) => `<button class="prompt-chip" data-action="starter" data-prompt="${esc(prompt)}">${esc(label)}<span>↗</span></button>`).join('')}</div></div>`}
-    ${chatBusy ? '<div class="message assistant"><div class="avatar">✦</div><div class="message-body"><div class="message-label">Coach is thinking</div><div class="typing" role="status" aria-label="Coach is thinking"><i></i><i></i><i></i></div></div></div>' : ''}
-    </div><div class="chat-compose">${chatError ? `<div class="notice error" style="margin-bottom:10px">${esc(chatError)} <button class="text-button" data-action="dismiss-chat-error">Dismiss</button></div>` : ''}<form id="chat-form"><div class="compose-row"><label class="screen-reader" for="chat-input">Message your study coach</label><textarea id="chat-input" name="content" rows="1" placeholder="Ask, think out loud, or try an answer…" ${chatBusy ? 'disabled' : ''} maxlength="12000">${esc(chatDraft)}</textarea>${SpeechRecognition ? `<button type="button" class="icon-button mic-button ${recording ? 'recording' : ''}" data-action="dictate" aria-label="${recording ? 'Stop dictation' : 'Dictate a message'}" title="${recording ? 'Stop dictation' : 'Dictate a message'}" ${chatBusy ? 'disabled' : ''}>${icon('mic')}</button>` : ''}<button type="submit" class="icon-button send-button" aria-label="Send message" ${chatBusy ? 'disabled' : ''}>${icon('send')}</button></div><div class="composer-note"><span id="voice-status">${recording ? 'Listening… tap the microphone to stop.' : SpeechRecognition ? 'Type or tap the mic to speak. Review your words before sending.' : 'Type here or use the microphone on your phone’s keyboard.'}</span><span>Enter to send · Shift + Enter for a new line</span></div></form></div></section>
-    <div class="chat-under"><small>Use fictional or de-identified cases. Verify clinical advice before applying it.</small><button class="text-button" data-action="draft-cards" ${!lastAssistant || chatBusy ? 'disabled' : ''}>Create recall cards ↗</button></div></div>`;
-}
-
-function renderMessage(message) {
-  const role = message.role === 'user' ? 'user' : 'assistant';
-  return `<div class="message ${role}" data-message-id="${esc(message.id)}"><div class="avatar">${role === 'user' ? 'YOU' : '✦'}</div><div class="message-body"><div class="message-label">${role === 'user' ? 'You' : 'Study coach'}</div><div class="message-text">${esc(message.content)}</div>${role === 'assistant' ? `<div class="message-actions">${'speechSynthesis' in window ? `<button data-action="read-message" data-id="${esc(message.id)}">Read aloud</button>` : ''}<button data-action="card-from-message" data-id="${esc(message.id)}">Save as a card</button><button data-action="copy-message" data-id="${esc(message.id)}">Copy</button></div>` : ''}</div></div>`;
-}
-
-function beginReview() {
-  const queue = dueCards().map(card => card.id);
-  reviewSession = { queue, total: queue.length, completed: 0, good: 0 };
-  answerVisible = false;
-}
-function renderReview() {
-  if (!reviewSession) beginReview();
-  const current = state.cards.find(card => card.id === reviewSession.queue[0]);
-  if (!current) return `<div class="review-layout">${pageHead('DAILY ACTIVE RECALL', 'Make it stick.', 'A little effort now makes retrieval easier later.')}<section class="review-complete"><span class="completion-symbol">${reviewSession.completed ? '✦' : '✓'}</span><h1>${reviewSession.completed ? 'That’s a good day’s work.' : 'You’re up to date.'}</h1><p>${reviewSession.completed ? `You completed ${reviewSession.completed} reviews. ${reviewSession.good} answers felt clear on recall.` : 'There are no cards ready right now. Add a useful insight or keep thinking with your coach.'}</p><button class="button gold" data-action="starter" data-prompt="Coach me through a brief fictional family medicine case. Ask me one question at a time.">Practice with your coach ${icon('arrow')}</button><div><button class="text-button" style="color:#bdcbd3;margin-top:15px" data-action="reload-review">Check for more due cards</button></div></section><p class="footer-note">Again cards return after their short learning interval. Reviews reflect your own recall ratings, not a formal competency assessment.</p></div>`;
-  const intervals = previewIntervals(current, Date.now());
-  return `<div class="review-layout">${pageHead('DAILY ACTIVE RECALL', 'Recall. Reflect. Repeat.', 'Try your answer before turning the card over.')}<div class="review-topline"><span>${reviewSession.completed + 1} of ${reviewSession.total} cards</span><span>${esc(current.state === 'new' ? 'New learning' : 'Scheduled review')}</span></div><div class="progress-track"><div class="progress-fill" style="width:${reviewSession.total ? reviewSession.completed / reviewSession.total * 100 : 0}%"></div></div><section class="review-card"><div class="section-head"><span class="pill gold">${esc(current.topic)}</span><button class="text-button" data-action="edit-card" data-id="${esc(current.id)}">Edit card ↗</button></div><h2 class="card-question">${esc(current.front)}</h2>${answerVisible ? `<div class="answer"><span class="answer-label">Compare with your answer</span>${esc(current.back)}</div><div class="source-link">${sourceHtml(current)}${current.verified ? ' · Marked verified by you' : ' · Verify this learning point'}</div>` : `<p class="recall-prompt">Say it out loud, write it down, or form a complete answer in your mind. The effort of retrieving is the useful part.</p><button class="button full reveal-button" data-action="reveal-answer">Reveal answer ${icon('arrow')}</button>`}</section>${answerVisible ? `<div class="ratings" aria-label="Rate your recall">${[['again','Again'],['hard','Hard'],['good','Good'],['easy','Easy']].map(([rating,label]) => `<button class="rating-button ${rating}" data-action="rate-card" data-rating="${rating}" ${reviewBusy ? 'disabled' : ''}>${label}<small>${esc(intervals[rating])}</small></button>`).join('')}</div><p class="rating-help">Again: missed it · Hard: recalled with difficulty<br>Good: correct with effort · Easy: immediate, confident recall</p>` : '<p class="rating-help">On a keyboard, press Space to reveal the answer.</p>'}${current.lapses >= 8 ? '<div class="notice" style="margin-top:18px">This card has repeated lapses. Try splitting it into smaller questions or ask your coach to explain the concept.</div>' : ''}</div>`;
-}
-
-function renderLibrary() {
-  return `${pageHead('BUILD YOUR KNOWLEDGE BASE', 'Your learning library.', 'Focused recall cards and cases to turn knowledge into judgment.', `<button class="button" data-action="new-card">${icon('plus')} Add card</button>`)}
-    <div class="segmented" aria-label="Library section"><button data-action="library-tab" data-tab="cards" class="${libraryTab === 'cards' ? 'active' : ''}" aria-pressed="${libraryTab === 'cards'}">Recall cards</button><button data-action="library-tab" data-tab="cases" class="${libraryTab === 'cases' ? 'active' : ''}" aria-pressed="${libraryTab === 'cases'}">Clinical cases</button><button data-action="library-tab" data-tab="practice" class="${libraryTab === 'practice' ? 'active' : ''}" aria-pressed="${libraryTab === 'practice'}">Practice</button></div>
-    ${libraryTab === 'cards' ? renderCards() : libraryTab === 'cases' ? renderCases() : renderPractice()}`;
-}
-
-function renderCards() {
-  const topics = [...new Set(state.cards.map(card => card.topic))].sort();
-  const filtered = state.cards.filter(card => (!topicFilter || card.topic === topicFilter) && `${card.front} ${card.back} ${card.topic}`.toLowerCase().includes(searchTerm.toLowerCase()));
-  return `<div class="library-tools"><label class="screen-reader" for="card-search">Search recall cards</label><input id="card-search" class="search-input" placeholder="Search your cards…" value="${esc(searchTerm)}" type="search"><label class="screen-reader" for="topic-filter">Filter cards by topic</label><select id="topic-filter" class="filter-select"><option value="">All topics</option>${topics.map(topic => `<option value="${esc(topic)}" ${topic === topicFilter ? 'selected' : ''}>${esc(topic)}</option>`).join('')}</select></div><div class="library-summary"><span>${filtered.length} cards · ${state.cards.filter(card => card.suspended).length} suspended</span><button class="text-button" data-action="import-cards">Import cards ↗</button></div><div id="card-results">${renderCardResults(filtered)}</div><p class="footer-note">Starter cards are educational summaries. References help you check details; your verified flag records your own review. Edit cards as guidance changes.</p>`;
-}
-
-function renderCardResults(cards) {
-  return cards.length ? `<div class="card-list">${cards.map(card => `<article class="library-card ${card.suspended ? 'suspended' : ''}"><div class="card-info"><div class="card-meta"><span class="pill">${esc(card.topic)}</span>${card.suspended ? '<span>Suspended</span>' : `<span>${card.state === 'new' ? 'New' : `Due ${dateString(card.dueAt)}`}</span>`}${card.lapses >= 8 ? '<span class="pill red">Consider rewriting</span>' : ''}</div><span class="card-front">${esc(card.front)}</span><details><summary class="text-button" style="padding-left:0;display:list-item;width:fit-content">Answer & reference</summary><p class="card-back">${esc(card.back)}</p><div class="card-meta">${sourceHtml(card)}<span>${card.verified ? 'Verified by you' : 'Verification recommended'}</span></div></details></div><div class="card-actions"><button class="icon-button" data-action="edit-card" data-id="${esc(card.id)}" aria-label="Edit card">${icon('edit')}</button><button class="icon-button" data-action="suspend-card" data-id="${esc(card.id)}" aria-label="${card.suspended ? 'Resume' : 'Suspend'} card" title="${card.suspended ? 'Resume' : 'Suspend'} card">${icon(card.suspended ? 'play' : 'pause')}</button><button class="icon-button" data-action="delete-card" data-id="${esc(card.id)}" aria-label="Delete card">${icon('trash')}</button></div></article>`).join('')}</div>` : `<div class="empty-state"><h2>${state.cards.length ? 'No cards match yet.' : 'Keep one useful insight.'}</h2><p>${state.cards.length ? 'Try a broader search or choose another topic.' : 'A good card asks one clear question and gives one focused answer.'}</p><button class="button secondary" data-action="new-card">Create a recall card</button></div>`;
-}
-
-function renderCases() {
-  return `<div class="notice info" style="margin-bottom:20px">These are fictional educational cases. Your coach helps you explain your thinking; it does not assess your real clinical competence.</div><div class="scenario-grid">${SCENARIOS.map(scenario => `<article class="scenario-card"><div class="scenario-top"><span class="pill gold">${esc(scenario.category)}</span><span class="pill">${esc(scenario.difficulty)}</span></div><h3>${esc(scenario.title)}</h3><p>${esc(scenario.description)}</p><div class="scenario-bottom"><small>${esc(scenario.estimatedMinutes || 10)} minute practice</small><button class="button secondary" data-action="start-case" data-id="${esc(scenario.id)}">Work through case ${icon('arrow')}</button></div></article>`).join('')}</div>`;
-}
-
-function renderPractice() {
-  return `<section class="practice-card"><span class="eyebrow">MAKE YOUR THINKING VISIBLE</span><h2>Practice the decisions behind the answer.</h2><p>Choose an exercise. Explain your reasoning before your coach gives feedback. Use specific cases and repeat the areas that feel uncertain.</p><div class="practice-options">${[
-    ['Clinical synthesis', 'Help me practice clinical synthesis with a fictional complex family medicine patient. Ask for my concise problem representation, then challenge my prioritization, one question at a time.'],
-    ['Differential diagnosis', 'Give me a fictional family medicine case to practice differential diagnosis. Ask me to prioritize diagnoses and explain evidence for and against each, one question at a time.'],
-    ['Next best step', 'Quiz me on next best steps in family medicine. Present one fictional case, ask for my next step and reasoning, and wait for my answer.'],
-    ['Teach-back', 'Ask me to choose a family medicine concept and explain it in my own words. Identify gaps in my understanding and help me correct them with a short follow-up question.'],
-  ].map(([label,prompt]) => `<button class="button" data-action="practice-prompt" data-prompt="${esc(prompt)}">${esc(label)} ↗</button>`).join('')}</div></section><div class="card"><h2>Build a useful study loop</h2><p class="subtitle" style="font-size:13px">Try a question without help. Explain why your answer fits. Compare it with reliable guidance. Save a small recall card for the gap you found, then revisit it when due.</p><button class="button secondary" data-action="starter" data-prompt="Help me plan a ${esc(state.settings.dailyMinutes)} minute study session focused on ${esc(focusLabel().toLowerCase())}. Start with one question to identify what I should work on.">Plan a study session ${icon('arrow')}</button></div>`;
-}
-
-function renderProgress() {
-  const s = stats();
-  const activity = s.activity.slice(-14);
-  const max = Math.max(1, ...activity.map(item => item.count));
-  return `${pageHead('LEARN FROM YOUR OWN PATTERNS', 'Progress you can see.', 'Honest recall, consistent practice, and a clearer view of what needs attention.')}
-    <div class="metrics progress-metrics">${metric('Total reviews',s.totalReviews,'Every effort to retrieve counts','review')}${metric('Recall success',s.recallRate === null ? '—' : `${s.recallRate}%`,'Self-rated Good or Easy','target')}${metric('Current streak',s.streak,'Days with at least one review','streak',s.streak === 1 ? 'day' : 'days')}</div>
-    <div class="grid two"><section class="card"><div class="section-head"><h2>Your review rhythm</h2><span class="pill">Last 14 days</span></div><div class="chart-bars" role="img" aria-label="Review activity: ${esc(activity.map(item => `${item.date}: ${item.count} reviews`).join('; '))}">${activity.map((item,index) => `<div class="chart-day"><span class="chart-count">${item.count || ''}</span><div class="chart-bar ${index === activity.length - 1 ? 'today' : ''}" style="height:${Math.max(3,item.count/max*85)}px"></div><small>${esc(new Date(`${item.date}T12:00:00`).toLocaleDateString(undefined,{weekday:'narrow'}))}</small></div>`).join('')}</div><p class="footer-note" style="margin-bottom:0">Consistency creates more chances to retrieve. There’s no requirement for a perfect streak.</p></section>
-    <section class="card"><div class="section-head"><h2>Topics to revisit</h2><span class="pill">Recall ratings</span></div>${s.weakTopics.length ? s.weakTopics.slice(0,4).map(topic => `<div class="weak-row"><div><strong>${esc(topic.topic)}</strong><small>${topic.reviews} reviews · ${topic.lapses} Again ratings</small></div><button class="text-button" data-action="topic-coach" data-topic="${esc(topic.topic)}">${Math.round(topic.recallRate)}% ↗</button></div>`).join('') : '<p class="subtitle" style="font-size:12px;margin-top:20px">Your first reviews will start to show your strengths and gaps. These statistics measure self-rated card recall.</p>'}</section></div>
-    <div class="section-head" style="margin-top:30px"><h2>Reflect on your practice</h2><span class="pill">Self-assessment</span></div><div class="notice info">These six broad competency areas are prompts for reflection. Your personal confidence ratings are educational and are not ACGME milestone levels, board readiness, or an official clinical assessment.</div>
-    <div class="competency-list">${COMPETENCIES.map(item => `<section class="competency-card"><div class="competency-top"><span class="competency-abbr">${esc(item.abbr)}</span><h3>${esc(item.name)}</h3></div><p>${esc(item.description)}</p><label class="confidence-label" for="confidence-${esc(item.id)}">My confidence in deliberate practice</label><select id="confidence-${esc(item.id)}" class="confidence-select" data-competency="${esc(item.id)}"><option value="">Choose your confidence</option>${[[1,'Starting to explore'],[2,'I need frequent support'],[3,'I can explain with support'],[4,'I can explain consistently'],[5,'I can teach my reasoning']].map(([value,label]) => `<option value="${value}" ${Number(state.settings.competencyRatings?.[item.id]) === value ? 'selected' : ''}>${esc(label)}</option>`).join('')}</select><button class="text-button" style="padding-left:0" data-action="starter" data-prompt="Help me practice ${esc(item.name.toLowerCase())} through a fictional family medicine scenario. Ask me one question at a time, then provide specific educational feedback.">Practice this area ↗</button></section>`).join('')}</div>
-    <p class="footer-note">${s.leeches ? `${s.leeches} card${s.leeches === 1 ? '' : 's'} has repeated lapses. Rewrite these into smaller, clearer questions. ` : ''}Scheduling supports practice; it cannot guarantee durable learning or safe clinical performance.</p>`;
-}
-
-function dialog(title, subtitle, body, footer = '') {
-  $('#dialog-content').innerHTML = `<div class="dialog-head"><div><h2 id="dialog-title">${esc(title)}</h2><p>${esc(subtitle)}</p></div><button class="icon-button" data-action="close-dialog" aria-label="Close dialog">${icon('close')}</button></div><div class="dialog-body">${body}</div>${footer ? `<div class="dialog-footer">${footer}</div>` : ''}`;
-  if (!$('#app-dialog').open) $('#app-dialog').showModal();
-}
-function closeDialog() { if (formBusy) return; $('#app-dialog').close(); }
-
-function settingsDialog() {
-  const s = state.settings;
-  dialog('A study rhythm that fits.', 'Adjust your coach and your daily learning load.', `<form id="settings-form"><div class="form-field"><label for="study-focus">Study focus</label><select id="study-focus" name="focus">${[['clinical-reasoning','Clinical reasoning & synthesis'],['exam','Exam preparation'],['balanced','Balanced learning']].map(([value,label]) => `<option value="${value}" ${s.focus === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-field"><label for="coach-style">Coaching style</label><select id="coach-style" name="coachStyle">${[['socratic','Socratic: one question at a time'],['teach-quiz','Explain first, then quiz me'],['direct','Give clear, direct explanations']].map(([value,label]) => `<option value="${value}" ${s.coachStyle === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div><div class="form-row"><div class="form-field"><label for="daily-minutes">Minutes per day</label><input id="daily-minutes" name="dailyMinutes" type="number" min="5" max="120" required value="${s.dailyMinutes}"></div><div class="form-field"><label for="new-limit">New cards per day</label><input id="new-limit" name="newCardsPerDay" type="number" min="0" max="50" required value="${s.newCardsPerDay}"></div></div><div class="form-field"><label for="study-timezone">Study timezone</label><input id="study-timezone" name="timeZone" value="${esc(s.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone)}" required><small>Used for daily limits and streaks. Example: America/New_York.</small></div><div class="notice info">${status.aiConfigured ? `AI coaching is configured${status.model ? ` using ${esc(status.model)}` : ''}. Your API key stays on the server.` : 'Guided practice is available now. To enable conversational AI, configure the server with OPENAI_API_KEY. Keys are never entered in this browser.'}</div><div id="settings-error" class="form-error" role="alert"></div></form><div class="form-section"><h3>Take your learning with you</h3><div class="inline-actions"><button class="button secondary" data-action="export">Export backup</button><button class="button secondary" data-action="import-backup">Restore backup</button></div><p class="footer-note" style="margin-bottom:0">Backups include your cards, review history, conversations, and preferences. Keep the file private.</p></div><div class="form-section"><h3>Use it from your phone</h3><p class="subtitle" style="font-size:12px">Open your hosted app’s HTTPS address. On Android, choose “Install app” or “Add to Home screen” in your browser menu. On iPhone, open Safari, tap Share, then “Add to Home Screen”.</p><p class="footer-note" style="margin:0">${SpeechRecognition ? 'The microphone button uses your browser’s speech recognition service. Review dictated text before sending.' : 'Use your phone keyboard’s microphone to dictate. Read-aloud is available where your browser supports it.'} Chat and saved progress require a connection.</p></div>${status.authRequired ? '<div class="form-section"><button class="button secondary" data-action="logout">Lock study space</button></div>' : ''}`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button type="submit" form="settings-form" class="button">Save preferences</button>');
-}
-
-function cardDialog(card = null, preset = {}) {
-  const data = card || preset;
-  dialog(card ? 'Make this card clearer.' : 'Keep one useful insight.', 'One focused question. One answer you can check.', `<form id="card-form" data-id="${esc(card?.id || '')}"><div class="form-field"><label for="card-front">Question / prompt</label><textarea id="card-front" name="front" required maxlength="2000" placeholder="What should I be able to recall?">${esc(data.front)}</textarea></div><div class="form-field"><label for="card-back">Answer</label><textarea id="card-back" name="back" required maxlength="8000" placeholder="A focused answer, in your own words.">${esc(data.back)}</textarea></div><div class="form-field"><label for="card-topic">Topic</label><input id="card-topic" name="topic" required maxlength="100" placeholder="e.g. Clinical synthesis" value="${esc(data.topic || 'Family medicine')}"></div><div class="form-field"><label for="source-title">Reference title</label><input id="source-title" name="sourceTitle" maxlength="300" value="${esc(data.sourceTitle)}" placeholder="Guideline, textbook, or personal study note"></div><div class="form-field"><label for="source-url">Reference link</label><input id="source-url" name="sourceUrl" type="url" maxlength="2000" value="${esc(data.sourceUrl)}" placeholder="https://…"><small>Check source details and the current recommendation before clinical use.</small></div><label class="check-field"><input type="checkbox" name="verified" ${data.verified ? 'checked' : ''}>I checked this answer against a reliable source</label><div id="card-error" class="form-error" role="alert"></div></form>`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button class="button" type="submit" form="card-form">Save recall card</button>');
-}
-
-function historyDialog() {
-  dialog('Your conversations.', 'Return to a thought or start fresh.', `<div class="history-list">${state.conversations.length ? state.conversations.map(item => `<div class="history-item"><button data-action="select-conversation" data-id="${esc(item.id)}">${esc(item.title || 'Study conversation')}<small>${esc(dateString(item.updatedAt || item.createdAt))} · ${(item.messages || []).length} messages</small></button><button class="icon-button" data-action="delete-conversation" data-id="${esc(item.id)}" aria-label="Delete ${esc(item.title || 'conversation')}">${icon('trash')}</button></div>`).join('') : '<p class="subtitle" style="font-size:12px">Your conversations will appear here after your first message.</p>'}</div>`, '<button class="button" data-action="new-chat">Start a new conversation</button>');
-}
-
-function confirmDialog(title, message, action, id, label = 'Delete') {
-  dialog(title, message, '<p class="subtitle" style="font-size:13px">This action cannot be undone from within the app. Export a backup first if you need a copy.</p>', `<button class="button secondary" data-action="close-dialog">Keep it</button><button class="button danger" data-action="${esc(action)}" data-id="${esc(id)}">${esc(label)}</button>`);
-}
-
-async function createConversation(options = {}) {
-  const result = await mutate('/api/conversations', 'POST', { title: 'Study conversation', mode: 'coach', ...options });
-  const item = result.conversation || result;
-  await refreshState();
-  currentConversationId = item.id;
-  chatDraft = '';
-  chatError = '';
-  navigate('coach');
-  return item;
-}
-
-async function sendMessage(content) {
-  if (!content.trim() || chatBusy) return;
-  if (!navigator.onLine) { notify('Reconnect to send a message. Your draft is still here.'); return; }
-  stopDictation();
-  const submitted = content.trim();
-  chatBusy = true;
-  render();
+export async function api(path, options = {}) {
+  const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), Math.min(60000, Math.max(1000, Number(options.timeoutMs) || 25000)));
   try {
-    if (!conversation()) await createConversation({ title: submitted.length > 55 ? `${submitted.slice(0,52)}…` : submitted });
-    chatBusy = true;
-    chatError = '';
-    chatDraft = '';
-    const activeConversationId = currentConversationId;
-    if (!pendingChatRequest || pendingChatRequest.conversationId !== activeConversationId || pendingChatRequest.content !== submitted) pendingChatRequest = { conversationId: activeConversationId, content: submitted, requestId: crypto.randomUUID() };
-    const current = conversation();
-    current.messages = [...(current.messages || []), { id: `pending-${Date.now()}`, role: 'user', content: submitted }];
-    render();
-    const result = await mutate('/api/chat', 'POST', { ...pendingChatRequest });
-    if (result.conversation) {
-      const index = state.conversations.findIndex(item => item.id === activeConversationId);
-      if (index >= 0) state.conversations[index] = result.conversation;
-    } else await refreshState();
-    pendingChatRequest = null;
-  } catch (error) {
-    chatError = error.message;
-    chatDraft = submitted;
-    await refreshState().catch(() => {});
-  } finally {
-    chatBusy = false;
-    render();
-    if (screen === 'coach') $('#chat-input')?.focus({ preventScroll:true });
-  }
+    const response = await fetch(path, { credentials: 'same-origin', ...options,
+      signal: options.signal ? AbortSignal.any([options.signal, controller.signal]) : controller.signal,
+      headers: { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...options.headers },
+      body: options.body && typeof options.body !== 'string' ? JSON.stringify(options.body) : options.body });
+    let value;
+    try { value = await response.json(); } catch { throw new Error('The server returned an unreadable response.'); }
+    if (!response.ok) { if (response.status === 401) logoutLocal(); throw new Error(value.error?.message || value.error || value.message || `Request failed (${response.status}).`); }
+    return value;
+  } catch (error) { if (controller.signal.aborted) throw new Error('The connection timed out. Check saved state before repeating an action.'); throw error; }
+  finally { clearTimeout(timeout); }
 }
+export const actionId = () => crypto.randomUUID();
+export const notice = (text, type = '') => el('div', { class: `notice ${type}`, role: type === 'error' ? 'alert' : 'status', text });
+export const field = (label, input) => { const id = input.id || actionId(); input.id = id; return el('div', { class: 'field' }, el('label', { for: id, text: label }), input); };
+export const pageIntro = (label, title, description, action) => el('div', { class: 'page-intro' }, el('div', {}, el('div', { class: 'eyebrow', text: label }), el('h1', { text: title }), el('p', { text: description })), action);
 
-function scrollChat() { const log = $('#chat-messages'); if (log) log.scrollTop = log.scrollHeight; }
-function resizeComposer() { const input = $('#chat-input'); if (!input) return; input.style.height = 'auto'; input.style.height = `${Math.min(140, Math.max(38,input.scrollHeight))}px`; }
-
-function startDictation() {
-  if (!SpeechRecognition) { notify('Use the microphone on your phone’s keyboard to dictate.'); return; }
-  if (!window.isSecureContext) { notify('Dictation needs HTTPS. You can also use your phone keyboard’s microphone.'); return; }
-  if (recording) return stopDictation();
-  recognition = new SpeechRecognition();
-  recognition.lang = navigator.language || 'en-US';
-  recognition.continuous = true;
-  recognition.interimResults = true;
-  recognitionBase = $('#chat-input')?.value || chatDraft;
-  recognition.onresult = event => {
-    const transcript = Array.from(event.results).map(result => result[0].transcript).join(' ');
-    chatDraft = `${recognitionBase}${recognitionBase && transcript ? ' ' : ''}${transcript}`.slice(0,12000);
-    const input = $('#chat-input');
-    if (input) { input.value = chatDraft; resizeComposer(); }
+const root = document.querySelector('#app');
+const tabs = [['coach', 'Coach', '◌'], ['practice', 'Practice', '▤'], ['review', 'Review', '↻'], ['library', 'Library', '▥'], ['progress', 'Progress', '▥'], ['settings', 'Settings', '⚙']];
+let session = {}, currentTab = 'coach', page, globalNotice, agent, currentConversation = null, conversations = [], log, input, chatStatus, stopButton, nextTurnId = null, active = null, conversationReadOnly = false;
+let studyModule = null, voiceModule = null, voiceOpening = false, navigationVersion = 0;
+let selectedModel = null, modelCataloguePromise = null, modelController = null, modelSaveQueue = Promise.resolve();
+let deviceVoiceModulePromise = null, installPrompt = null;
+const installPanels = new Set();
+const installedApp = () => window.matchMedia?.('(display-mode: standalone)').matches || navigator.standalone === true;
+window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; for (const panel of installPanels) panel.refresh(); });
+window.addEventListener('appinstalled', () => { installPrompt = null; for (const panel of installPanels) panel.refresh(); });
+export function loadDeviceVoice() { deviceVoiceModulePromise ||= import('/device-voice.js').catch(error => { deviceVoiceModulePromise = null; throw error; }); return deviceVoiceModulePromise; }
+const megabytes = bytes => `${(Math.max(0, Number(bytes) || 0) / 1000000).toLocaleString(undefined, { maximumFractionDigits: 1 })} MB`;
+export function createDeviceInstallPanel({ compact = false, autoInstall = false } = {}) {
+  let status = null, controller = null, loading = false, refreshGeneration = 0;
+  const message = el('p', { class: 'bottom-note', role: 'status', 'aria-live': 'polite', text: 'Checking voice files on this device…' });
+  const progress = el('progress', { max: '1', value: '0', hidden: true, 'aria-label': 'Voice download progress' });
+  const download = el('button', { type: 'button', class: compact ? 'subtle' : 'primary', text: 'Download app + voices', disabled: true, onclick: () => { void downloadPack(); } });
+  const cancel = el('button', { type: 'button', class: 'subtle', text: 'Cancel download', hidden: true, onclick: () => controller?.abort() });
+  const nativeInstall = el('button', { type: 'button', class: 'subtle', text: 'Install app', hidden: true, onclick: async () => {
+    const event = installPrompt; if (!event) return;
+    nativeInstall.disabled = true;
+    try { await event.prompt(); const result = await event.userChoice; installPrompt = null; message.textContent = result.outcome === 'accepted' ? 'App installation requested. Voice files are ready on this device.' : 'Voice files are ready. You can install the app later from your browser menu.'; }
+    catch { message.textContent = 'Voice files are ready. Use your browser menu to install the app or add it to your Home Screen.'; }
+    finally { nativeInstall.disabled = false; nativeInstall.hidden = true; }
+  } });
+  const panel = el('div', { class: compact ? 'device-install compact' : 'device-install', 'data-device-install': '' }, compact ? null : el('h3', { text: 'App download with voices' }), message, progress, el('div', { class: 'row' }, download, cancel, nativeInstall));
+  const refreshButtons = () => {
+    download.disabled = loading || !status?.supported;
+    download.hidden = Boolean(status?.installed && !status?.updateAvailable);
+    download.textContent = status?.updateAvailable ? 'Update app voices' : 'Download app + voices';
+    cancel.hidden = !loading;
+    nativeInstall.hidden = loading || !status?.installed || installedApp() || !installPrompt;
   };
-  recognition.onerror = event => { notify(event.error === 'not-allowed' ? 'Microphone access wasn’t granted. Use typing or your keyboard’s microphone.' : 'Dictation stopped. You can keep typing or try the microphone again.'); stopDictation(); };
-  recognition.onend = () => { recording = false; updateDictationUI(); };
-  try { recognition.start(); recording = true; updateDictationUI(); } catch { notify('Dictation is unavailable right now. Use your phone keyboard’s microphone.'); }
-}
-function stopDictation() { if (recognition && recording) recognition.stop(); recording = false; updateDictationUI(); }
-function updateDictationUI() {
-  const button = $('.mic-button');
-  if (button) { button.classList.toggle('recording', recording); button.setAttribute('aria-label', recording ? 'Stop dictation' : 'Dictate a message'); }
-  if ($('#voice-status')) $('#voice-status').textContent = recording ? 'Listening… tap the microphone to stop.' : SpeechRecognition ? 'Type or tap the mic to speak. Review your words before sending.' : 'Type here or use the microphone on your phone’s keyboard.';
-}
-function readMessage(id) {
-  const message = conversation()?.messages?.find(item => item.id === id);
-  if (!message || !('speechSynthesis' in window)) return;
-  if (speechSynthesis.speaking) { speechSynthesis.cancel(); notify('Read-aloud stopped.'); return; }
-  const speech = new SpeechSynthesisUtterance(message.content);
-  speech.lang = navigator.language || 'en-US';
-  speech.rate = .95;
-  speech.onerror = () => notify('Read-aloud is unavailable on this browser.');
-  speechSynthesis.speak(speech);
-}
-
-async function ratingAction(rating) {
-  if (!answerVisible || reviewBusy || !reviewSession.queue.length) return;
-  reviewBusy = true;
-  render();
-  try {
-    await mutate('/api/reviews','POST',{ cardId:reviewSession.queue[0],rating });
-    await refreshState();
-    reviewSession.queue.shift();
-    reviewSession.completed++;
-    if (rating === 'good' || rating === 'easy') reviewSession.good++;
-    answerVisible = false;
-  } catch (error) { notify(error.message); }
-  finally { reviewBusy = false; render(); }
-}
-
-async function generateCards() {
-  if (!conversation() || chatBusy) return;
-  dialog('Keep the useful learning points.', status.aiConfigured ? 'Drafting focused recall cards from this conversation…' : 'Preparing guided practice worksheet cards…', '<div class="loading-line"><span class="spinner"></span>Preparing cards to review</div>');
-  try {
-    const result = await mutate('/api/chat/cards','POST',{conversationId:currentConversationId});
-    draftCards = result.cards || [];
-    draftsOffline = result.offline === true;
-    if (!draftCards.length) return dialog('No cards suggested yet.', 'Add more learning points to your conversation first.', '<p class="subtitle">Continue studying, then try creating cards again.</p>', '<button class="button" data-action="close-dialog">Keep studying</button>');
-    renderDraftDialog();
-  } catch (error) { dialog('Cards couldn’t be created.', 'Your conversation is still saved.', `<div class="notice error">${esc(error.message)}</div>`, '<button class="button secondary" data-action="close-dialog">Close</button>'); }
-}
-function renderDraftDialog() {
-  dialog(draftsOffline ? 'Keep a useful study habit.' : 'Keep the useful learning points.', draftsOffline ? 'Guided practice worksheets; edit them to fit your learning.' : 'Review every draft. Check clinical facts before you accept it.', `<div class="notice" style="margin-bottom:20px">${draftsOffline ? 'These are reusable worksheet prompts, not AI-generated summaries of your chat. Review the suggested answers and adapt them to your learning before saving.' : 'AI drafts may contain errors. Edit each question and answer, then add a reliable reference. Accepted drafts remain unverified until you check them.'}</div><form id="draft-form">${draftCards.map((card,index) => `<div class="draft-card" data-draft="${index}"><p class="draft-label">DRAFT CARD ${index + 1}</p><label class="check-field"><input type="checkbox" name="accept-${index}" checked>Keep this card</label><div class="form-field"><label for="draft-front-${index}">Question</label><textarea id="draft-front-${index}" name="front-${index}" maxlength="2000">${esc(card.front)}</textarea></div><div class="form-field"><label for="draft-back-${index}">Answer</label><textarea id="draft-back-${index}" name="back-${index}" maxlength="8000">${esc(card.back)}</textarea></div><div class="form-field"><label for="draft-topic-${index}">Topic</label><input id="draft-topic-${index}" name="topic-${index}" value="${esc(card.topic || 'Family medicine')}" maxlength="100"></div><div class="form-field"><label for="draft-source-${index}">Reference link (optional)</label><input type="url" id="draft-source-${index}" name="sourceUrl-${index}" value="${esc(card.sourceUrl || '')}" maxlength="2000"></div></div>`).join('')}<div id="draft-error" class="form-error" role="alert"></div></form>`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button class="button" type="submit" form="draft-form">Save selected cards</button>');
-}
-
-function importCardsDialog() {
-  dialog('Bring your recall cards.', 'Paste a JSON array of cards, or select a JSON file.', `<form id="import-cards-form"><div class="form-field"><label for="import-json">Cards as JSON</label><textarea id="import-json" name="json" rows="8" placeholder='[{"front":"Your question","back":"Your answer","topic":"Family medicine"}]'></textarea><small>Each card needs front and back. Optional fields: topic, sourceTitle, sourceUrl, verified.</small></div><label class="button secondary" for="cards-file">Choose JSON file</label><input id="cards-file" class="import-file" type="file" accept="application/json,.json"><div id="import-error" class="form-error" role="alert" style="margin-top:15px"></div></form>`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button class="button" type="submit" form="import-cards-form">Import cards</button>');
-}
-
-async function exportBackup() {
-  try {
-    const backup = await api('/api/export');
-    const blob = new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href=url; link.download=`fm-study-coach-backup-${new Date().toISOString().slice(0,10)}.json`; link.click();
-    setTimeout(() => URL.revokeObjectURL(url),1000);
-    notify('Your private study backup is ready.');
-  } catch(error) { notify(error.message); }
-}
-
-function importBackupDialog() {
-  dialog('Restore your study backup.', 'This replaces the saved study data on this server.', `<div class="notice" style="margin-bottom:18px">Export your current data first if you want to keep it. Restoring a backup replaces cards, reviews, conversations, and preferences.</div><form id="restore-form"><div class="form-field"><label for="backup-file">Choose your backup JSON file</label><input id="backup-file" name="backup" type="file" accept="application/json,.json" required></div><label class="check-field"><input type="checkbox" name="confirmed" required>I understand this will replace my current study data</label><div id="restore-error" class="form-error" role="alert"></div></form>`, '<button class="button secondary" data-action="close-dialog">Cancel</button><button class="button" type="submit" form="restore-form">Restore backup</button>');
-}
-
-function renderLogin() {
-  renderNav();
-  $('#main').innerHTML = `<section class="card auth-card"><span class="eyebrow">YOUR PRIVATE STUDY SPACE</span><h1>Welcome back.</h1><p class="subtitle">Unlock your coach, recall cards, and learning history.</p><form id="login-form"><div class="form-field"><label for="access-token">App access token</label><input id="access-token" name="token" type="password" autocomplete="current-password" required placeholder="Enter your access token"></div><div id="login-error" class="form-error" role="alert"></div><button class="button full" type="submit">Open study space ${icon('arrow')}</button></form><p class="signin-note">Use the access token configured by your app’s owner. Your browser keeps a secure session after you unlock.</p></section>`;
-}
-
-async function handleAction(button) {
-  const {action,id,rating,prompt,topic,tab} = button.dataset;
-  if (chatBusy && ['new-chat','history','select-conversation','start-case','practice-prompt','starter','topic-coach'].includes(action)) return notify('Wait for your coach’s reply before starting another conversation.');
-  switch(action) {
-    case 'navigate': return navigate(button.dataset.screen);
-    case 'settings': if (isLoaded) settingsDialog(); return;
-    case 'close-dialog': return closeDialog();
-    case 'start-review': beginReview(); return navigate('review');
-    case 'reload-review': await refreshState(); beginReview(); return render();
-    case 'reveal-answer': answerVisible = true; return render();
-    case 'rate-card': return ratingAction(rating);
-    case 'new-card': return cardDialog();
-    case 'edit-card': return cardDialog(state.cards.find(card => card.id === id));
-    case 'delete-card': return confirmDialog('Delete this recall card?', 'The card will be removed from your library. Historical review statistics are retained.', 'confirm-delete-card',id);
-    case 'confirm-delete-card': await mutate(`/api/cards/${encodeURIComponent(id)}`,'DELETE'); closeDialog(); await refreshState(); if(reviewSession) reviewSession.queue = reviewSession.queue.filter(cardId => cardId !== id); render(); return notify('Recall card deleted.');
-    case 'suspend-card': { const card=state.cards.find(item=>item.id===id); await mutate(`/api/cards/${encodeURIComponent(id)}`,'PUT',{suspended:!card.suspended}); await refreshState(); render(); return notify(card.suspended ? 'Card resumed.' : 'Card suspended.'); }
-    case 'library-tab': libraryTab=tab; return render();
-    case 'starter': navigate('coach'); return sendMessage(prompt);
-    case 'practice-prompt': await createConversation({ title:prompt.slice(0,50),mode:'practice' }); return sendMessage(prompt);
-    case 'topic-coach': navigate('coach'); return sendMessage(`Help me strengthen my understanding of ${topic}. Ask one active recall question at a time, wait for my answer, and help me correct gaps in my reasoning.`);
-    case 'start-case': { const scenario=SCENARIOS.find(item=>item.id===id); await createConversation({ title:scenario.title,mode:'simulation',scenarioId:id }); return sendMessage('Start this fictional case. Ask me one question at a time and wait for my answer before giving feedback.'); }
-    case 'new-chat': closeDialog(); await createConversation(); return notify('A fresh study conversation is ready.');
-    case 'history': return historyDialog();
-    case 'select-conversation': currentConversationId=id; chatDraft=''; chatError=''; closeDialog(); return navigate('coach');
-    case 'delete-conversation': return confirmDialog('Delete this conversation?', 'All messages in this conversation will be removed.', 'confirm-delete-conversation',id);
-    case 'confirm-delete-conversation': await mutate(`/api/conversations/${encodeURIComponent(id)}`,'DELETE'); await refreshState(); closeDialog(); render(); return notify('Conversation deleted.');
-    case 'dictate': return startDictation();
-    case 'dismiss-chat-error': chatError=''; return render();
-    case 'read-message': return readMessage(id);
-    case 'copy-message': { const message=conversation()?.messages?.find(item=>item.id===id); if(message) { try { await navigator.clipboard.writeText(message.content); notify('Learning point copied.'); } catch { notify('Copy is unavailable on this browser. Select the message text to copy it.'); } } return; }
-    case 'card-from-message': { const message=conversation()?.messages?.find(item=>item.id===id); return cardDialog(null,{back:message?.content || '',topic:'Family medicine'}); }
-    case 'draft-cards': return generateCards();
-    case 'import-cards': return importCardsDialog();
-    case 'export': return exportBackup();
-    case 'import-backup': return importBackupDialog();
-    case 'logout': await mutate('/api/logout','POST'); closeDialog(); status.authenticated=false; isLoaded=false; state.cards=[];state.conversations=[];state.reviews=[]; return renderLogin();
+  const installedMessage = () => status?.updateAvailable ? `Voices are installed on this device. Updated voice files are available (${megabytes(status.totalBytes)}).` : installedApp() ? 'Voices are installed on this device. They run locally when you start voice chat.' : installPrompt ? 'Voice files are ready on this device. Choose Install app to finish.' : 'Voice files are ready. Use your browser menu to install the app. On iPhone or iPad, open Safari, tap Share, then Add to Home Screen.';
+  async function refresh() {
+    if (loading) return;
+    const epoch = ++refreshGeneration;
+    try { const module = await loadDeviceVoice(), next = await module.getDeviceVoiceStatus(); if (!panel.isConnected || loading || epoch !== refreshGeneration) return; status = next; message.textContent = status.reason ? `${status.reason} Typed chat remains available.` : !status.supported ? 'On-device voice is unavailable in this browser. Typed chat remains available.' : status.installed ? installedMessage() : `Download ${megabytes(status.totalBytes)} of voice files with the app. Your microphone stays off; typed chat remains available.`; refreshButtons(); }
+    catch (error) { if (panel.isConnected && !loading && epoch === refreshGeneration) { message.textContent = `Voice files could not be checked. ${error.message} Typed chat remains available.`; download.disabled = false; } }
   }
+  async function downloadPack() {
+    if (loading) return;
+    refreshGeneration++;
+    controller = new AbortController(); loading = true; refreshButtons(); progress.hidden = false; message.textContent = 'Downloading voices to this device. Your microphone is off.';
+    try {
+      const module = await loadDeviceVoice();
+      status = await module.installDeviceVoice({ signal: controller.signal, onProgress: value => {
+        if (!panel.isConnected || controller.signal.aborted) return;
+        const total = Number(value.totalBytes) || status?.totalBytes || 1, downloaded = Number(value.downloadedBytes) || 0;
+        progress.max = total; progress.value = Math.min(total, downloaded);
+        message.textContent = `${value.stage === 'verifying' ? 'Checking' : 'Downloading'} voice files: ${megabytes(downloaded)} of ${megabytes(total)}. Your microphone is off.`;
+      } });
+      if (controller.signal.aborted) return;
+      message.textContent = installedMessage();
+      panel.dispatchEvent(new CustomEvent('devicevoiceinstalled', { bubbles: true }));
+      for (const entry of installPanels) entry.refresh();
+    } catch (error) { if (panel.isConnected) message.textContent = controller.signal.aborted ? `Voice download cancelled. Choose ${status?.updateAvailable ? 'Update app voices' : 'Download app + voices'} to try again. ${status?.installed ? 'Installed voices remain available.' : 'Typed chat is ready.'}` : `Voice download did not finish. ${error.message} Typed chat remains available.`; }
+    finally { controller = null; loading = false; progress.hidden = true; refreshButtons(); }
+  }
+  function onHidden() { if (document.hidden) controller?.abort(); }
+  document.addEventListener('visibilitychange', onHidden);
+  const entry = { refresh, destroy() { refreshGeneration++; controller?.abort(); installPanels.delete(entry); document.removeEventListener('visibilitychange', onHidden); } };
+  installPanels.add(entry);
+  panel.dispose = () => entry.destroy();
+  queueMicrotask(async () => { await refresh(); if (autoInstall && panel.isConnected && installedApp() && status?.supported && !status.installed) void downloadPack(); });
+  return panel;
 }
-
-document.addEventListener('click', event => {
-  const button = event.target.closest('[data-action]');
-  if (!button || button.disabled) return;
-  event.preventDefault();
-  handleAction(button).catch(error=>notify(error.message));
-});
-
-document.addEventListener('submit', async event => {
-  event.preventDefault();
-  const form=event.target;
-  if(form.id==='chat-form') return sendMessage($('#chat-input').value);
-  if(formBusy) return;
-  const data=new FormData(form);
-  const submit=event.submitter;
-  formBusy=true;
-  if(submit) submit.disabled=true;
-  let errorId;
-  try {
-    if(form.id==='login-form') {
-      errorId='login-error';
-      await mutate('/api/login','POST',{token:data.get('token')});
-      status=await api('/api/status');
-      await refreshState();render();
-    } else if(form.id==='settings-form') {
-      errorId='settings-error';
-      await mutate('/api/settings','PUT',{focus:data.get('focus'),coachStyle:data.get('coachStyle'),dailyMinutes:Number(data.get('dailyMinutes')),newCardsPerDay:Number(data.get('newCardsPerDay')),timeZone:data.get('timeZone').trim()});
-      await refreshState();reviewSession=null;$('#app-dialog').close();render();notify('Your study preferences are saved.');
-    } else if(form.id==='card-form') {
-      errorId='card-error';
-      const payload={front:data.get('front').trim(),back:data.get('back').trim(),topic:data.get('topic').trim(),sourceTitle:data.get('sourceTitle').trim(),sourceUrl:data.get('sourceUrl').trim(),verified:data.get('verified')==='on'};
-      if(!payload.front || !payload.back) throw new Error('Add a focused question and answer before saving.');
-      if(payload.sourceUrl && !safeUrl(payload.sourceUrl)) throw new Error('Use an http:// or https:// reference link.');
-      await mutate(form.dataset.id ? `/api/cards/${encodeURIComponent(form.dataset.id)}` : '/api/cards',form.dataset.id?'PUT':'POST',payload);
-      await refreshState();$('#app-dialog').close();render();notify('Recall card saved.');
-    } else if(form.id==='draft-form') {
-      errorId='draft-error';
-      const selected=draftCards.map((card,index)=>({card,index})).filter(({index})=>data.get(`accept-${index}`)==='on').map(({card,index})=>({front:data.get(`front-${index}`).trim(),back:data.get(`back-${index}`).trim(),topic:data.get(`topic-${index}`).trim() || 'Family medicine',sourceTitle:card.sourceTitle || 'AI draft — verify against a reliable source',sourceUrl:data.get(`sourceUrl-${index}`).trim(),verified:false}));
-      if(!selected.length) throw new Error('Select at least one draft to save.');
-      if(selected.some(card=>!card.front || !card.back)) throw new Error('Each selected card needs a question and answer.');
-      await mutate('/api/cards/import','POST',{cards:selected});
-      await refreshState();$('#app-dialog').close();render();notify(`${selected.length} recall cards saved for review.`);
-    } else if(form.id==='import-cards-form') {
-      errorId='import-error';
-      const parsed=JSON.parse(data.get('json'));
-      const cards=Array.isArray(parsed)?parsed:parsed.cards;
-      if(!Array.isArray(cards) || !cards.length) throw new Error('Paste a JSON array with at least one card.');
-      await mutate('/api/cards/import','POST',{cards});
-      await refreshState();$('#app-dialog').close();render();notify(`${cards.length} cards imported.`);
-    } else if(form.id==='restore-form') {
-      errorId='restore-error';
-      const file=data.get('backup');
-      if(!file?.size) throw new Error('Choose a backup JSON file first.');
-      if(file.size>10*1024*1024) throw new Error('The backup is too large. The maximum is 10 MB.');
-      const backup=JSON.parse(await file.text());
-      await mutate('/api/import','POST',backup);
-      currentConversationId=null;reviewSession=null;await refreshState();$('#app-dialog').close();render();notify('Your study backup is restored.');
+function disposeInstallPanels(container) { for (const panel of container?.querySelectorAll?.('[data-device-install]') || []) panel.dispose?.(); }
+const requests = new Map();
+const brand = () => el('div', { class: 'brand' }, el('span', { class: 'brand-mark', 'aria-hidden': 'true', text: '+' }), el('div', {}, 'StudyChat', el('small', { text: 'FAMILY MEDICINE' })));
+function voiceIcon() {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  for (const [name, value] of Object.entries({ viewBox: '0 0 24 24', width: '24', height: '24', 'aria-hidden': 'true', focusable: 'false' })) svg.setAttribute(name, value);
+  [8, 16, 22, 14, 6].forEach((height, index) => {
+    const bar = document.createElementNS(svg.namespaceURI, 'rect');
+    for (const [name, value] of Object.entries({ x: 2 + index * 4, y: (24 - height) / 2, width: 2.5, height, rx: 1.25, fill: 'currentColor' })) bar.setAttribute(name, String(value));
+    svg.append(bar);
+  });
+  return svg;
+}
+const navigation = className => el('nav', { class: className, 'aria-label': 'Main navigation' }, tabs.map(([id, label, symbol]) => el('button', { type: 'button', 'data-tab': id, 'aria-current': currentTab === id ? 'page' : null, onclick: () => navigate(id) }, el('span', { class: 'nav-icon', 'aria-hidden': 'true', text: symbol }), label)));
+function showStatus(text, busy = false) { if (chatStatus) { chatStatus.textContent = text; chatStatus.classList.toggle('loading', busy); } if (stopButton) stopButton.classList.toggle('hidden', !busy); }
+function logoutLocal() { agent?.destroy(); agent = null; voiceModule?.cleanup?.(); disposeInstallPanels(root); modelController?.abort(); modelController = null; modelCataloguePromise = null; selectedModel = null; modelSaveQueue = Promise.resolve(); session = { authenticated: false }; currentConversation = null; nextTurnId = null; active = null; showLogin(); }
+export function showGlobalError(error) { if (globalNotice) globalNotice.replaceChildren(notice(error?.message || String(error), 'error')); }
+export function clearGlobalError() { globalNotice?.replaceChildren(); }
+async function boot() {
+  root.replaceChildren(el('div', { class: 'login' }, brand(), el('div', { class: 'loading', role: 'status', text: 'Opening your study workspace…' })));
+  try { session = await api('/api/session'); session.authenticated ? await showWorkspace() : showLogin(); }
+  catch (error) { showLogin(error.message); }
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+function showLogin(error = '') {
+  disposeInstallPanels(root);
+  const token = el('input', { type: 'password', name: 'token', autocomplete: 'current-password', required: true, placeholder: 'Your private study token', maxlength: '500' });
+  const feedback = el('div', { role: 'status' }, error ? notice(error, 'error') : null);
+  const button = el('button', { class: 'primary full-width', type: 'submit', text: 'Open workspace' });
+  const form = el('form', { onsubmit: async event => { event.preventDefault(); if (button.disabled) return; button.disabled = true; feedback.replaceChildren(); try { await api('/api/login', { method: 'POST', body: { token: token.value } }); token.value = ''; session = await api('/api/session'); await showWorkspace(); } catch (err) { feedback.replaceChildren(notice(err.message, 'error')); button.disabled = false; } } }, field('Study access token', token), button, feedback);
+  root.replaceChildren(el('main', { class: 'login', id: 'main' }, brand(), el('div', { class: 'eyebrow', text: 'Your private study space' }), el('h1', { class: 'preserve-lines', text: 'Small steps.\nStronger reasoning.' }), el('p', { class: 'muted', text: 'A focused workspace for family medicine. Converse, practice, and return to what matters.' }), el('div', { class: 'panel' }, form), el('p', { class: 'bottom-note', text: 'Study support only. Your access token is separate from your AI API key.' })));
+}
+async function showWorkspace() {
+  disposeInstallPanels(root);
+  modelController?.abort(); modelController = new AbortController(); modelCataloguePromise = null;
+  selectedModel = session.selected || { provider: 'openai', model: session.model };
+  globalNotice = el('div'); page = el('main', { id: 'main', class: 'page', tabindex: '-1' });
+  const status = el('span', { class: `tag ${session.aiAvailable ? 'good' : 'alert'}`, text: session.aiAvailable ? 'AI connected' : 'AI unavailable' });
+  root.replaceChildren(el('div', { class: 'layout' }, el('aside', { class: 'sidebar' }, brand(), navigation('nav'), el('div', { class: 'sidebar-foot' }, el('div', { class: 'owner-tag' }, el('span', { class: 'status-dot' }), 'Private workspace'), el('div', { class: 'muted', text: 'Clinical reasoning, one useful step at a time.' }), el('button', { class: 'subtle', onclick: logout, text: 'Sign out' }))), el('div', { class: 'workspace' }, el('header', { class: 'topbar' }, el('div', { class: 'mobile-brand' }, brand()), el('div', {}, el('div', { class: 'topbar-title', text: 'A little practice, every day' }), el('div', { class: 'date-label', text: new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).format(new Date()) })), status), createDeviceInstallPanel({ compact: true, autoInstall: true }), globalNotice, page), navigation('tabbar')));
+  studyModule ||= await import('/study.js');
+  await loadConversations({ selectLatest: true }); await navigate('coach');
+}
+async function logout() { agent?.stop('Signed out. Your microphone is off.'); voiceModule?.cleanup?.(); try { await api('/api/logout', { method: 'POST', body: {} }); } catch {} logoutLocal(); }
+async function loadConversations({ selectLatest = false } = {}) { try { const result = await api('/api/conversations'); conversations = result.conversations || []; if (selectLatest && !currentConversation && conversations.length) currentConversation = conversations[0].id;
+  const picker = document.querySelector('#conversation-picker'); if (picker) { picker.replaceChildren(el('option', { value: '', text: 'New conversation' }), conversations.map(conversation => el('option', { value: conversation.id, text: conversation.title || 'Study conversation' }))); picker.value = currentConversation || ''; }
+} catch (error) { showGlobalError(error); } }
+export async function navigate(id) {
+  navigationVersion++;
+  studyModule?.cleanup?.();
+  voiceModule?.cleanup?.();
+  disposeInstallPanels(page);
+  currentTab = id; clearGlobalError();
+  document.querySelectorAll('[data-tab]').forEach(button => button.setAttribute('aria-current', button.dataset.tab === id ? 'page' : 'false'));
+  if (id !== 'coach') agent?.stop('Conversation paused.');
+  const nextPage = el('main', { id: 'main', class: 'page', tabindex: '-1' }); page.replaceWith(nextPage); page = nextPage;
+  if (id === 'coach') return renderCoach();
+  page.replaceChildren(pageIntro('Focused study', tabs.find(item => item[0] === id)[1], 'Your study tools are being connected.'), el('div', { class: 'panel empty' }, el('p', { text: 'Typed Coach is ready. The study tools will appear here when their integration is complete.' })));
+  if (studyModule) { try { await studyModule.render(id, page); } catch (error) { showGlobalError(error); } }
+}
+function bubble(role, text, status = '') {
+  const body = el('div', { class: 'message-body', text });
+  const state = el('div', { class: 'message-state', text: status });
+  const sources = el('div', { class: 'message-sources' });
+  const node = el('article', { class: `message ${role}`, 'aria-label': role === 'user' ? 'Your message' : 'Coach response' }, el('div', { class: 'message-label', text: role === 'user' ? 'You' : 'Coach' }), body, sources, state);
+  return { node, body, state, sources };
+}
+function scrollLog() { if (log && log.scrollHeight - log.scrollTop - log.clientHeight < 200) log.scrollTop = log.scrollHeight; }
+function sourceLabels(target, list = []) {
+  target.replaceChildren();
+  for (const source of list) { if (!source.url || !/^https:\/\//i.test(source.url)) continue; target.append(el('a', { href: source.url, target: '_blank', rel: 'noopener noreferrer', text: `${source.label || (source.consulted ? 'Consulted source' : 'Reference link')}: ${source.title || source.id || 'Source'}` })); }
+}
+function finishBubble(item, value) {
+  if (value.content && item.bubble.body.textContent !== value.content) item.bubble.body.textContent = value.content;
+  const status = value.status || 'completed'; item.status = status;
+  item.bubble.state.classList.toggle('error', status !== 'completed');
+  const modelLabel = value.model && value.provider ? ` · ${value.provider === 'openai' ? 'OpenAI' : value.provider === 'anthropic' ? 'Anthropic' : value.provider} ${value.model}` : '';
+  item.bubble.state.textContent = status === 'completed' ? `Saved${modelLabel}` : `${status[0].toUpperCase() + status.slice(1)}${value.error || value.message ? ` · ${value.error?.message || value.error || value.message}` : ''}${item.bubble.body.textContent ? ' · Partial response' : ''}`;
+  sourceLabels(item.bubble.sources, value.sources || value.references || []);
+  if (['pending', 'running'].includes(status)) {
+    item.bubble.state.textContent = 'This saved request is still running. Reload history to recover its outcome, or stop it.';
+    item.bubble.state.append(' ', el('button', { type: 'button', class: 'button-link', text: 'Reload history', onclick: () => history().catch(showGlobalError) }), ' ', el('button', { type: 'button', class: 'button-link', text: 'Stop request', onclick: async () => { try { await api('/api/chat/cancel', { method: 'POST', body: { conversationId: currentConversation, attemptId: item.attemptId } }); await history(); } catch (error) { showGlobalError(error); } } }));
+  } else if (status !== 'completed') item.bubble.state.append(' ', el('button', { type: 'button', class: 'button-link', text: 'Retry this turn', onclick: () => retryTurn(item) }));
+  if (active === item) { active = null; showStatus(status === 'completed' ? 'Ready for your next question.' : 'No automatic retry was made.'); }
+  scrollLog();
+}
+async function history() {
+  if (!currentConversation) return;
+  const conversationForPage = currentConversation, logForPage = log;
+  const result = await api(`/api/conversations/${encodeURIComponent(conversationForPage)}`);
+  if (currentTab !== 'coach' || currentConversation !== conversationForPage || log !== logForPage) return;
+  conversationReadOnly = Boolean(result.readOnly || result.conversation?.readOnly);
+  if (input) { input.readOnly = conversationReadOnly; input.placeholder = conversationReadOnly ? 'Imported history is read only. Start a new chat to continue.' : 'Ask Coach, or just start a conversation…'; }
+  log.replaceChildren();
+  for (const record of result.legacyMessages || []) { const message = bubble(record.role === 'user' ? 'user' : 'assistant', record.content || record.text || '', 'Imported history · sources unverified'); log.append(message.node); }
+  for (const turn of result.turns || []) log.append(savedTurn(turn));
+  if (result.page?.hasOlder) {
+    const loaded = new Set((result.turns || []).map(turn => turn.turnId)), conversationId = currentConversation; let beforeSeq = result.page.beforeSeq;
+    const older = el('button', { type: 'button', class: 'subtle full-width', text: 'Load older messages', onclick: async () => {
+      if (older.disabled) return; older.disabled = true;
+      try {
+        const previous = await api(`/api/conversations/${encodeURIComponent(conversationId)}?beforeSeq=${encodeURIComponent(beforeSeq)}`);
+        if (conversationId !== currentConversation || currentTab !== 'coach' || log !== logForPage) return;
+        const fragment = document.createDocumentFragment();
+        for (const turn of previous.turns || []) if (!loaded.has(turn.turnId)) { fragment.append(savedTurn(turn)); loaded.add(turn.turnId); }
+        const oldHeight = log.scrollHeight, oldTop = log.scrollTop; older.after(fragment); log.scrollTop = oldTop + log.scrollHeight - oldHeight;
+        beforeSeq = previous.page?.beforeSeq; if (!previous.page?.hasOlder) older.remove();
+      } catch (error) { showGlobalError(error); } finally { older.disabled = false; }
+    } }); log.prepend(older);
+  }
+  if (result.legacyRecords?.length) {
+    const archive = el('details', { class: 'list-item' }, el('summary', { text: `${result.legacyRecords.length} archived imported messages` }));
+    for (const record of result.legacyRecords) { const message = bubble(record.role === 'user' ? 'user' : 'assistant', record.content || record.text || '', 'Imported archive · original record retained'); archive.append(message.node); }
+    log.append(archive);
+  }
+  if (!log.children.length) welcome();
+  if (conversationReadOnly) showStatus('Read-only imported history. Start a new conversation to use Coach.');
+  log.scrollTop = log.scrollHeight;
+}
+function savedTurn(turn) {
+  const user = bubble('user', turn.input || turn.userContent || ''), answer = bubble('assistant', turn.content || ''), fragment = document.createDocumentFragment();
+  user.node.dataset.turnId = turn.turnId || turn.id; answer.node.dataset.turnId = turn.turnId || turn.id;
+  finishBubble({ bubble: answer, turnId: turn.turnId || turn.id, input: turn.input || turn.userContent, attemptId: turn.attemptId }, turn);
+  fragment.append(user.node, answer.node); return fragment;
+}
+const selectionKey = selection => JSON.stringify([selection.provider, selection.model || selection.id]);
+export function getModelCatalogue({ refresh = false } = {}) {
+  if (refresh) modelCataloguePromise = null;
+  modelCataloguePromise ||= api('/api/models', { signal: modelController?.signal });
+  return modelCataloguePromise;
+}
+export function modelSelector(location = 'coach') {
+  const selectedAtMount = selectedModel || session.selected || { provider: 'openai', model: session.model };
+  const picker = el('select', { id: `chat-model-${location}`, 'aria-label': 'Chat model' }, el('option', { value: selectionKey(selectedAtMount), text: selectedAtMount.model || 'Configured default model' }));
+  picker.value = selectionKey(selectedAtMount);
+  const detail = el('small', { class: 'model-limit', role: 'status', text: 'Loading available models. Your saved model remains selected.' });
+  const widget = el('div', { class: `model-controls ${location === 'settings' ? 'model-settings' : ''}` }, el('div', { class: 'model-picker-row' }, el('label', { for: picker.id, text: 'Chat model' }), picker), detail);
+  let catalogue = null;
+  function updateDetail() {
+    const choice = catalogue?.models?.find(model => selectionKey(model) === selectionKey(selectedModel || selectedAtMount));
+    detail.classList.toggle('limited', choice?.tier === 'limited');
+    const provider = catalogue?.providers?.find(value => value.id === (selectedModel || selectedAtMount).provider);
+    if (choice && !choice.available) { detail.textContent = `${provider?.label || choice.provider} is unavailable. Configure its server key or choose an available model.`; return; }
+    const caps = [];
+    if (choice?.limits?.maxPromptBytes) caps.push(`${Math.round(choice.limits.maxPromptBytes / 1024)} KiB prompt`);
+    if (choice?.limits?.maxOutputTokens) caps.push(`${choice.limits.maxOutputTokens.toLocaleString()} output tokens`);
+    const budgetLabel = choice?.tier === 'limited' ? choice.priceKnown === false ? 'Price unconfirmed · limited budget' : 'Higher-cost model · limited budget' : 'Standard model budget';
+    detail.textContent = `${budgetLabel}${caps.length ? `: ${caps.join(' · ')}` : ''}. Changes apply to the next attempt; the current reply keeps its model.${choice?.availability === 'unconfirmed' ? ' Account access unconfirmed; the live model list could not be loaded.' : ''}`;
+  }
+  async function load(refresh = false) {
+    try {
+      catalogue = await getModelCatalogue({ refresh });
+      if (!widget.isConnected || !session.authenticated) return;
+      // The session endpoint supplies the effective saved selection; directory loading cannot replace a newer user choice.
+      selectedModel ||= catalogue.selected || catalogue.defaultSelection || selectedAtMount;
+      const groups = (catalogue.providers || []).map(provider => {
+        const group = el('optgroup', { label: `${provider.label}${provider.configured ? '' : ' · key unavailable'}` });
+        for (const model of (catalogue.models || []).filter(value => value.provider === provider.id)) group.append(el('option', { value: selectionKey(model), disabled: !model.available, text: `${model.label || model.id}${model.tier === 'limited' ? ' · limited' : ''}${model.available ? '' : ' · unavailable'}` }));
+        return group;
+      });
+      if (!(catalogue.models || []).some(model => selectionKey(model) === selectionKey(selectedModel))) groups.unshift(el('option', { value: selectionKey(selectedModel), text: `${selectedModel.model} · saved selection` }));
+      picker.replaceChildren(...groups); picker.value = selectionKey(selectedModel); updateDetail();
+    } catch (error) {
+      if (!widget.isConnected || !session.authenticated) return;
+      detail.replaceChildren('Model list unavailable. Your saved model remains selected. ', el('button', { type: 'button', class: 'button-link', text: 'Try loading models again', onclick: () => load(true) }));
     }
-  } catch(error) {
-    const target=errorId && document.getElementById(errorId);
-    if(target) target.textContent=error instanceof SyntaxError ? 'This JSON is not valid. Check the file or pasted content and try again.' : error.message;
-    else notify(error.message);
-  } finally { formBusy=false;if(submit) submit.disabled=false; }
-});
-
-document.addEventListener('input', event=>{
-  if(event.target.id==='chat-input') {chatDraft=event.target.value;resizeComposer();}
-  if(event.target.id==='card-search') { searchTerm=event.target.value;const filtered=state.cards.filter(card=>(!topicFilter || card.topic===topicFilter) && `${card.front} ${card.back} ${card.topic}`.toLowerCase().includes(searchTerm.toLowerCase()));$('#card-results').innerHTML=renderCardResults(filtered);$('.library-summary span').textContent=`${filtered.length} cards · ${state.cards.filter(card=>card.suspended).length} suspended`; }
-});
-document.addEventListener('change',async event=>{
-  try {
-    if(event.target.id==='topic-filter') {topicFilter=event.target.value;render();}
-    if(event.target.id==='cards-file') {const file=event.target.files[0];if(file) {if(file.size>2*1024*1024) throw new Error('Card imports must be under 2 MB.');$('#import-json').value=await file.text();}}
-    if(event.target.dataset.competency) { const ratings={...state.settings.competencyRatings};if(event.target.value) ratings[event.target.dataset.competency]=Number(event.target.value);else delete ratings[event.target.dataset.competency]; await mutate('/api/settings','PUT',{competencyRatings:ratings});await refreshState();notify('Your reflection is saved.'); }
-  } catch(error) {notify(error.message);}
-});
-document.addEventListener('keydown',event=>{
-  if(event.target.id==='chat-input' && event.key==='Enter' && !event.shiftKey && !event.isComposing && !navigator.maxTouchPoints) {event.preventDefault();sendMessage(event.target.value);}
-  if(screen==='review' && !$('#app-dialog').open && !['INPUT','TEXTAREA','SELECT','BUTTON'].includes(event.target.tagName)) {
-    if(event.code==='Space' && !answerVisible) {event.preventDefault();answerVisible=true;render();}
-    else if(answerVisible && ['1','2','3','4'].includes(event.key)) {event.preventDefault();ratingAction(['again','hard','good','easy'][Number(event.key)-1]);}
   }
-});
-$('#app-dialog').addEventListener('cancel',event=>{if(formBusy) event.preventDefault();});
-$('#app-dialog').addEventListener('click',event=>{if(event.target===$('#app-dialog')) {const rect=$('#app-dialog').getBoundingClientRect();if(event.clientX<rect.left || event.clientX>rect.right || event.clientY<rect.top || event.clientY>rect.bottom) closeDialog();}});
-window.addEventListener('hashchange',()=>navigate(location.hash.slice(1)));
-window.addEventListener('online',()=>{renderNav();notify('Connected again. Your study space is ready.');});
-window.addEventListener('offline',()=>{renderNav();notify('You’re offline. Reconnect to chat or save progress.');});
-
-async function initialize() {
-  renderNav();
-  try {
-    status=await api('/api/status');
-    if(status.authRequired && !status.authenticated) return renderLogin();
-    await refreshState();
-    if(!state.settings.timeZone) { await mutate('/api/settings','PUT',{timeZone:Intl.DateTimeFormat().resolvedOptions().timeZone});await refreshState(); }
-    render();
-  } catch(error) {
-    $('#main').innerHTML=`<div class="empty-state"><h1>Your study space is waiting.</h1><p>${esc(error.message)} Reconnect and reload to open your saved cards and conversations.</p><button class="button" id="retry-load">Try again</button></div>`;
-    $('#retry-load').addEventListener('click',initialize);
-  }
-  if('serviceWorker' in navigator && window.isSecureContext) navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  picker.addEventListener('change', () => {
+    const choice = catalogue?.models?.find(model => selectionKey(model) === picker.value);
+    if (!choice?.available) { picker.value = selectionKey(selectedModel || selectedAtMount); showGlobalError(new Error('Choose a model whose provider is configured and available.')); return; }
+    const previous = selectedModel, selection = { provider: choice.provider, model: choice.id }, signal = modelController?.signal;
+    selectedModel = selection; updateDetail();
+    // Serialize preference writes only. Chat requests are independent and snapshot the visible choice immediately.
+    modelSaveQueue = modelSaveQueue.catch(() => {}).then(async () => {
+      if (signal?.aborted) return;
+      try { const saved = await api('/api/settings', { method: 'POST', signal, body: { actionId: actionId(), aiProvider: selection.provider, aiModel: selection.model } }); session.settings = { ...session.settings, ...saved }; session.selected = selection; }
+      catch (error) { if (signal?.aborted) return; if (selectionKey(selectedModel) === selectionKey(selection)) { selectedModel = session.selected || previous; picker.value = selectionKey(selectedModel); updateDetail(); } showGlobalError(new Error(`The model preference could not be saved. ${error.message}`)); }
+    });
+  });
+  queueMicrotask(() => load()); return widget;
 }
-initialize();
+function modelSnapshot() { return { ...(selectedModel || session.selected || { provider: 'openai', model: session.model }) }; }
+function welcome() {
+  log.replaceChildren(el('div', { class: 'chat-welcome' }, el('div', { class: 'coach-symbol', 'aria-hidden': 'true', text: '✦' }), el('div', { class: 'eyebrow', text: 'Meet your study coach' }), el('h2', { text: 'Where would you like to begin?' }), el('p', { text: 'Think through a concept, plan a focused session, or talk through what feels difficult. A source match is never required to start a conversation.' }), el('div', { class: 'suggestions' }, ['Plan an 18-minute session', 'Help me reason through a case', 'Explain a concept simply'].map(text => el('button', { type: 'button', text, onclick: () => { input.value = text; input.focus(); } })))));
+}
+function setupAgent(voiceAdapters = null) {
+  agent?.destroy();
+  agent = createConversationAgent({
+    input: voiceAdapters?.input, playback: voiceAdapters?.playback,
+    createId: () => { const id = nextTurnId; nextTurnId = null; return id || actionId(); },
+    host: { ...voiceAdapters?.host, startSession: voiceAdapters?.host?.startSession || (() => ({ conversationId: currentConversation })), sendTurn: sendTurn,
+      cancel: value => { const item = requests.get(value.turnId); if (item && item.status === 'running') { finishBubble(item, { status: 'cancelled', message: 'You stopped this request.' }); void api('/api/chat/cancel', { method: 'POST', body: { conversationId: item.conversationId, attemptId: item.attemptId } }).catch(() => {}); } void voiceAdapters?.host?.cancel?.(value); } },
+    onState: state => { if (active && state.outputState === 'generating') showStatus('Coach is responding…', true); voiceAdapters?.onState?.(state); },
+  });
+  return agent;
+}
+async function renderCoach() {
+  const picker = el('select', { id: 'conversation-picker', 'aria-label': 'Saved conversation', onchange: async () => { agent?.stop('Conversation changed.'); voiceModule?.cleanup?.(); currentConversation = picker.value || null; conversationReadOnly = false; input.readOnly = false; setupAgent(); if (!currentConversation) welcome(); try { await history(); } catch (error) { showGlobalError(error); } } }, el('option', { value: '', text: 'New conversation' }), conversations.map(conversation => el('option', { value: conversation.id, text: conversation.title || 'Study conversation' })));
+  picker.value = currentConversation || '';
+  log = el('div', { class: 'chat-log', id: 'chat-log', 'aria-label': 'Conversation history' });
+  input = el('textarea', { id: 'chat-input', rows: '2', placeholder: 'Ask Coach, or just start a conversation…', 'aria-label': 'Message Coach', maxlength: String(session.limits?.maxInputChars || 8000), onkeydown: event => { if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); submit(); } } });
+  stopButton = el('button', { type: 'button', class: 'subtle danger hidden', text: 'Stop', onclick: () => { agent?.interrupt(); voiceModule?.stopPlayback?.(); showStatus('Cancelled. Your typed input is ready.'); } });
+  chatStatus = el('div', { class: 'chat-status', role: 'status', 'aria-live': 'polite', text: 'Ready for your next question.' });
+  const voiceButton = el('button', { type: 'button', class: 'voice-launch', id: 'voice-start', title: 'Start voice conversation', 'aria-label': 'Start voice conversation', 'aria-haspopup': 'dialog', onclick: () => { clearGlobalError(); openVoice().catch(showGlobalError); } }, voiceIcon());
+  page.replaceChildren(pageIntro('Coach · clinical reasoning', 'Make room for understanding.', 'A concise tutor for thoughtful practice and useful conversation.'), !session.aiAvailable ? notice('AI is unavailable. Your messages receive a clear service outcome; practice, cards, and review remain available.') : document.createDocumentFragment(),
+    el('section', { class: 'panel chat-card', 'aria-label': 'Coach' }, el('div', { class: 'chat-toolbar' }, picker, el('div', { class: 'row' }, el('button', { type: 'button', class: 'subtle', text: '+ New chat', onclick: () => { agent?.stop('New conversation.'); voiceModule?.cleanup?.(); currentConversation = null; conversationReadOnly = false; input.readOnly = false; input.placeholder = 'Ask Coach, or just start a conversation…'; picker.value = ''; setupAgent(); welcome(); showStatus('New conversation.'); } }))), modelSelector(), log,
+      el('form', { class: 'composer', onsubmit: event => { event.preventDefault(); submit(); } }, el('div', { class: 'composer-box' }, input, el('button', { class: 'primary', type: 'submit', title: 'Send message', 'aria-label': 'Send message', text: '↑' }), voiceButton), el('div', { class: 'composer-footer' }, chatStatus, stopButton), el('div', { class: 'composer-footer' }, el('small', { text: 'Enter to send · Shift + Enter for a new line' }), el('small', { text: 'Private study workspace' })))), el('p', { class: 'bottom-note', text: 'For education and reflection. Coach can be wrong; reference links are distinguished from material actually consulted.' }));
+  setupAgent(); welcome();
+  if (currentConversation) { try { await history(); } catch (error) { showGlobalError(error); } }
+  if (voiceModule) voiceButton.classList.remove('hidden');
+}
+async function submit() {
+  if (conversationReadOnly) { showStatus('Start a new chat to continue. Imported messages remain read only.'); return; }
+  const text = input?.value.trim(); if (!text) { input?.focus(); return; }
+  if (document.querySelector('.chat-welcome')) log.replaceChildren();
+  currentConversation ||= actionId();
+  const user = bubble('user', text); const answer = bubble('assistant', '', 'Connecting…'); log.append(user.node, answer.node); input.value = '';
+  const item = { conversationId: currentConversation, turnId: actionId(), attemptId: actionId(), input: text, bubble: answer, status: 'running', selection: modelSnapshot() }; nextTurnId = item.turnId; requests.set(item.turnId, item);
+  log.scrollTop = log.scrollHeight; await agent.sendText(text);
+}
+async function retryTurn(item) {
+  if (active || !item.input || !item.turnId) return;
+  const last = log.querySelector('.message.assistant:last-child');
+  if (last !== item.bubble.node) { showStatus('Only the most recent unsuccessful turn can be retried. Send a new message to revisit an older question.'); return; }
+  const retry = { ...item, conversationId: currentConversation, attemptId: actionId(), retry: true, status: 'running', selection: modelSnapshot() }; nextTurnId = retry.turnId; requests.set(retry.turnId, retry);
+  item.bubble.state.replaceChildren('Retrying…'); await agent.sendText(item.input);
+}
+async function sendTurn({ text, turnId, signal }) {
+  let item = requests.get(turnId);
+  if (!item) {
+    if (document.querySelector('.chat-welcome')) log.replaceChildren();
+    currentConversation ||= actionId(); const user = bubble('user', text), answer = bubble('assistant', '', 'Connecting…'); log.append(user.node, answer.node);
+    item = { conversationId: currentConversation, turnId, attemptId: actionId(), input: text, bubble: answer, status: 'running', selection: modelSnapshot() };
+    log.scrollTop = log.scrollHeight;
+  }
+  active = item; item.status = 'running'; requests.set(turnId, item);
+  const timerController = new AbortController();
+  const timeout = setTimeout(() => timerController.abort(new Error('Response timed out.')), (session.limits?.chatTimeoutMs || 90000) + 5000);
+  const combined = AbortSignal.any([signal, timerController.signal]);
+  let terminal = null;
+  try {
+    const response = await fetch('/api/chat', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ conversationId: item.conversationId, turnId: item.turnId, attemptId: item.attemptId, input: text, retry: Boolean(item.retry), referenceIds: [], provider: item.selection?.provider, model: item.selection?.model }), signal: combined });
+    if (!response.ok) { let value = {}; try { value = await response.json(); } catch {} throw new Error(value.error?.message || value.error || value.message || `Chat request failed (${response.status}).`); }
+    if (!response.body || !response.headers.get('content-type')?.includes('text/event-stream')) throw new Error('The chat stream was not available.');
+    const reader = response.body.getReader(), decoder = new TextDecoder(); let buffer = '', content = '';
+    while (!terminal) {
+      const next = await reader.read(); if (next.done) break;
+      buffer += decoder.decode(next.value, { stream: true }).replace(/\r\n/g, '\n');
+      if (buffer.length > 128000) throw new Error('A chat event exceeded the allowed size.');
+      let boundary;
+      while ((boundary = buffer.indexOf('\n\n')) >= 0 && !terminal) {
+        const block = buffer.slice(0, boundary); buffer = buffer.slice(boundary + 2);
+        const raw = block.split('\n').filter(line => line.startsWith('data:')).map(line => line.slice(5).trimStart()).join('\n');
+        if (!raw) continue;
+        let event; try { event = JSON.parse(raw); } catch { throw new Error('The chat stream contained an unreadable event.'); }
+        if (event.attemptId && event.attemptId !== item.attemptId) continue;
+        const type = event.type || block.split('\n').find(line => line.startsWith('event:'))?.slice(6).trim();
+        if (item.status !== 'running') continue;
+        if (type === 'delta') { const delta = event.delta ?? event.text; if (typeof delta !== 'string') throw new Error('The chat stream contained an invalid text event.'); content += delta; if (content.length > 50000) throw new Error('The reply exceeded the allowed size.'); if (item.bubble.body.textContent !== content) item.bubble.body.textContent = content; showStatus('Coach is responding…', true); scrollLog(); }
+        else if (type === 'done' || type === 'error') { terminal = { ...event, content: event.content ?? content, status: event.status || (type === 'done' ? 'completed' : 'failed') }; }
+        else if (type !== 'start') throw new Error('The chat stream contained an unknown event.');
+      }
+    }
+    if (!terminal) throw new Error('The connection ended before Coach completed the reply.');
+    if (terminal.status === 'completed' && !terminal.content?.trim()) throw new Error('Coach returned an empty reply.');
+    finishBubble(item, terminal);
+    if (terminal.status !== 'completed') throw new Error(terminal.error?.message || terminal.error || terminal.message || 'Your message did not complete.');
+    return { content: terminal.content, conversationId: item.conversationId, messageId: terminal.messageId || item.attemptId, readoutAllowed: true };
+  } catch (error) {
+    if (item.status === 'running') finishBubble(item, { status: signal.aborted ? 'cancelled' : 'failed', message: timerController.signal.aborted ? 'The client timeout was reached. Retry when ready.' : error.message });
+    if (timerController.signal.aborted) void api('/api/chat/cancel', { method: 'POST', body: { conversationId: item.conversationId, attemptId: item.attemptId } }).catch(() => {});
+    throw error;
+  } finally { clearTimeout(timeout); if (active === item) active = null; if (requests.get(turnId) === item) requests.delete(turnId); if (session.authenticated) void loadConversations(); }
+}
+async function openVoice() {
+  if (voiceOpening) return;
+  if (conversationReadOnly) throw new Error('Start a new chat to use voice. Imported history remains read only.');
+  if (active) throw new Error('Stop the current reply before starting voice. Your text remains visible.');
+  currentConversation ||= actionId(); const conversationId = currentConversation, version = navigationVersion;
+  const isCurrent = () => currentTab === 'coach' && currentConversation === conversationId && session.authenticated && navigationVersion === version;
+  voiceOpening = true;
+  try { voiceModule ||= await import('/voice.js'); if (!isCurrent()) return;
+    await voiceModule.open({ conversationId, api, setAgent: setupAgent, isBusy: () => Boolean(active), isCurrent, onError: showGlobalError });
+  } finally { voiceOpening = false; }
+}
+
+// Study and microphone modules are enabled only after the typed-chat gate passes.
+export async function enableStudy() { studyModule = await import('/study.js'); await navigate(currentTab); }
+export async function enableVoice() { voiceModule = await import('/voice.js'); document.querySelector('#voice-start')?.classList.remove('hidden'); }
+export const getSession = () => session;
+export const getPage = () => page;
+export const updateSession = value => { session = { ...session, ...value }; };
+export function getVoiceChoices(options = {}) {
+  const voices = Array.isArray(options.voices) ? [...new Set(options.voices.filter(id => typeof id === 'string' && id))] : [];
+  return voices.map(id => {
+    const choice = options.voiceChoices?.find?.(value => value?.id === id);
+    const label = choice?.label || options.voiceLabels?.[id] || id;
+    return { id, label: typeof label === 'string' ? label : id };
+  });
+}
+export async function startCase(scenarioId) {
+  agent?.stop('A new case is ready.'); voiceModule?.cleanup?.(); currentConversation = actionId(); conversationReadOnly = false;
+  const result = await api('/api/cases', { method: 'POST', body: { actionId: actionId(), conversationId: currentConversation, scenarioId } });
+  await navigate('coach');
+  input.value = `Let's work through ${result.scenario?.title || 'the selected case'} with guided questions.`;
+  showStatus('Case selected. Send your message when ready.'); input.focus();
+}
+void boot();

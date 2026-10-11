@@ -1,0 +1,29 @@
+{
+  "browser": "153.0.8010.0",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "mockedProvider": true,
+  "mockedCapture": true,
+  "mockedSpeech": true,
+  "actualPaidRequests": 0,
+  "calls": {
+    "model": 3,
+    "transcription": 2,
+    "speech": 2
+  },
+  "checks": [
+    "phone composer has a compact black waveform control with a 44px minimum touch target; microphone stays off at boot",
+    "native voice dialog opens without Settings opt-in or microphone capture; five choices save immediately; keyboard focus excludes background controls; Escape restores composer focus",
+    "permission denial closes audio resources; Use typed chat focuses the composer; typed streaming remains usable without audio calls",
+    "real local VAD encodes one utterance; one transcript produces one Coach turn and one chosen-voice speech request; blocked playback resumes cached audio and returns to listening",
+    "mute releases tracks/context; unmute explicitly reacquires one microphone; Stop releases resources and unlocks voice selection",
+    "backgrounding stops capture and does not auto-resume; Escape during capture releases every track",
+    "Close during a spoken reply pauses playback, detaches its callbacks, and preserves displayed chat text",
+    "320px layout stays in the viewport with a 44px launch target; reduced motion is honored; backdrop click closes safely",
+    "Close releases active capture; selected voice persists across authentication sessions and appears in Settings without an enablement gate",
+    "navigating while voice options load prevents a stale dialog from opening or requesting the microphone"
+  ],
+  "errors": []
+}

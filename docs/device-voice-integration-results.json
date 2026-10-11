@@ -1,0 +1,88 @@
+{
+  "checkedAt": "2026-10-11T00:17:13.353Z",
+  "browser": "153.0.8010.0",
+  "backend": "CPU/WASM, one ONNX thread",
+  "actualModels": true,
+  "actualMicrophone": false,
+  "physicalPhoneTested": false,
+  "paidApiRequests": 0,
+  "serverSpeechRequests": 0,
+  "installed": {
+    "version": "studychat-device-voice-v1-1f4e2769bb9f98877d65",
+    "totalBytes": 187449793,
+    "installed": true,
+    "installMs": 1691
+  },
+  "warmMs": 1979,
+  "voices": [
+    {
+      "voice": "af_heart",
+      "bytes": 120044,
+      "durationSeconds": 2.5,
+      "sha256": "932ba2692fa66947316912b7eecea76fab8f8856fd7450ec6f271d739ac74aad",
+      "latencyMs": 5279
+    },
+    {
+      "voice": "af_bella",
+      "bytes": 140444,
+      "durationSeconds": 2.925,
+      "sha256": "dd6e644eb418618f4935c78bf873f9a316283a35d1ea4727b93f1a8c6bad4140",
+      "latencyMs": 5965
+    },
+    {
+      "voice": "af_nicole",
+      "bytes": 162044,
+      "durationSeconds": 3.375,
+      "sha256": "658d64cdac113faca279f88d0ccba1ab8935eaab259beb7dfec41c3dd215fa55",
+      "latencyMs": 7019
+    },
+    {
+      "voice": "am_michael",
+      "bytes": 141644,
+      "durationSeconds": 2.95,
+      "sha256": "313fd6dcdfa37d1c51202d7ec19e555aeb0a4075625e9476cd0f560be26c44f1",
+      "latencyMs": 6312
+    },
+    {
+      "voice": "bf_emma",
+      "bytes": 134444,
+      "durationSeconds": 2.8,
+      "sha256": "ff4fce17c7d19896732594fffd95f5e6d9b3ce12e0a7f9a28c7a3c0346e116ac",
+      "latencyMs": 5877
+    }
+  ],
+  "transcription": {
+    "text": "Hello, I would like to study today.",
+    "metadata": {
+      "provider": "device-whisper",
+      "durationSeconds": 2.5,
+      "elapsedMs": 3518
+    }
+  },
+  "longReply": {
+    "bytes": 1281644,
+    "durationSeconds": 26.7,
+    "latencyMs": 54386,
+    "characters": 384,
+    "endingRecognized": true
+  },
+  "offline": {
+    "installed": true,
+    "bytes": 127244,
+    "elapsedMs": 7413
+  },
+  "postInstallAssetRequests": [
+    "/voice-assets/runtime.js",
+    "/voice-assets/ort/ort-wasm-simd-threaded.mjs"
+  ],
+  "checks": [
+    "actual SHA-256-verified local model/runtime pack installed in browser Cache Storage",
+    "actual local module worker initializes both CPU/WASM speech models under production CSP",
+    "all five actual Kokoro device voices produce distinct, non-silent PCM16 mono 24 kHz WAV audio",
+    "actual quantized Whisper recognizes the actual Kokoro synthetic greeting entirely on device",
+    "a reply exceeding the worker chunk limit speaks its ending; actual Whisper recognizes its final apple marker",
+    "offline cached-shell reload initializes a fresh worker from installed files and produces real speech without a network",
+    "no server speech endpoint, external CDN or uploaded audio requests; no paid answering-model calls or page errors"
+  ],
+  "errors": []
+}
