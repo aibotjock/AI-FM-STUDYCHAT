@@ -202,3 +202,27 @@ test('circle recovery uses the actual host agent without submitting another stud
   assert.equal(resumed, 1);
   assert.equal(mounted.showComposer, false);
 });
+
+test('on-device voice sends recognized text through the authenticated voice session without any transcription request', async t => {
+  const app = await fixture(t);
+  const callbacks = {};
+  const plays = [];
+  const input = { outputText: null, start(value) { Object.assign(callbacks, value); value.onState?.({ phase: 'monitoring' }); }, stop() {}, setMuted() {}, setOutputActive() {}, setOutputText(text) { this.outputText = text; }, destroy() {} };
+  const playback = { play(options) { plays.push(options); options.onPreparing?.({ chunkIndex: 0, chunkCount: 1 }); options.onStart?.(); }, stop() {}, state() { return {}; } };
+  const states = [];
+  const agent = createStudyConversationAgent({ api: app.api, sendTurn: shippedCallback(app.api, await app.api('/api/state'), app.conversation.id, 'coach', () => {}), speechPlayer: null, onDevice: { input, playback }, onState: value => states.push(value),
+    windowImpl: Object.assign(new EventTarget(), { crypto: { randomUUID } }), documentImpl: Object.assign(new EventTarget(), { hidden: false }) });
+  t.after(async () => { await agent.stop(); agent.destroy(); });
+  await agent.start({ conversationId: app.conversation.id });
+  callbacks.onSpeechStart(); callbacks.onPartial('Quiz me');
+  assert.equal(agent.state().userCaption, 'Quiz me');
+  callbacks.onUtterance({ text: 'Quiz me on asthma.', utteranceId: 'local-1-1', durationMs: 900, mimeType: 'text/plain', audio: null });
+  await waitFor(() => plays.length === 1);
+  const chat = app.apiCalls.find(item => item.path === '/api/chat');
+  assert.equal(chat.body.content, 'Quiz me on asthma.'); assert.ok(chat.body.voiceSessionId);
+  assert.equal(app.apiCalls.some(item => item.path.endsWith('/transcribe')), false);
+  assert.equal(app.providerCalls.filter(item => String(item.url).includes('/audio/')).length, 0, 'No paid transcription or speech request.');
+  assert.ok(plays[0].messageId); assert.equal(input.outputText, plays[0].content);
+  plays[0].onEnd(); await waitFor(() => app.apiCalls.some(item => item.path.endsWith('/checkpoint')));
+  assert.equal(app.apiCalls.find(item => item.path.endsWith('/checkpoint')).body.complete, true);
+});

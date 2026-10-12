@@ -36,5 +36,13 @@ if (existsSync(serverSource)) {
   copyFileSync(serverSource, destination);
   serverHashes['server/openai-transcription.js'] = createHash('sha256').update(readFileSync(destination)).digest('hex');
 }
+// The on-device speech download script runs during the container build (see Dockerfile).
+const speechScript = join(source, 'scripts', 'fetch-sherpa-assets.mjs');
+if (existsSync(speechScript)) {
+  const destination = join(root, 'scripts', 'vendor', 'fetch-sherpa-assets.mjs');
+  mkdirSync(dirname(destination), { recursive: true });
+  copyFileSync(speechScript, destination);
+  serverHashes['scripts/fetch-sherpa-assets.mjs'] = createHash('sha256').update(readFileSync(destination)).digest('hex');
+}
 writeFileSync(join(target, 'release.json'), JSON.stringify({ repository: 'https://github.com/aibotjock/Conversation-Agent', version: pkg.version, sourceRevision: process.argv[3] || null, files: hashes, serverFiles: serverHashes }, null, 2) + '\n');
 console.log(`Generated ${Object.keys(hashes).length} runtime files from Conversation-Agent ${pkg.version}.`);

@@ -1,9 +1,9 @@
 import { getDueCards, previewIntervals, studyStats } from '/shared/scheduler.js';
 import { ABFM_BLUEPRINT } from '/shared/blueprint.js';
 import { SCENARIOS, COMPETENCIES } from '/shared/content.js';
-import { createStudyConversationAgent, conversationAudioSupported, mountVoiceCircle } from '/conversation-agent-adapter.js';
+import { createStudyConversationAgent, createOnDeviceVoice, conversationAudioSupported, mountVoiceCircle } from '/conversation-agent-adapter.js';
 import { COACH_VOICES, DEFAULT_COACH_VOICE, createPremiumSpeechPlayer } from '/premium-speech.js';
-const voiceSupported = () => conversationAudioSupported() && voiceOptions?.conversationAgent?.enabled === true && premiumVoiceAvailable() && !window.FMNativeBilling;
+const voiceSupported = () => conversationAudioSupported() && voiceOptions?.conversationAgent?.enabled === true && typeof window.Worker === 'function' && 'speechSynthesis' in window && !window.FMNativeBilling;
 
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -134,9 +134,22 @@ const premiumSpeech = createPremiumSpeechPlayer({
   onState: next => { const timingOnly=next.phase===premiumState.phase&&next.message===premiumState.message&&next.active===premiumState.active&&next.audioBlocked===premiumState.audioBlocked;premiumState=next;updateVoiceUI(timingOnly); },
   onUnauthorized: () => endStudySession(),
 });
+// On-device voice preferences are per device, because the available voices differ by phone.
+const VOICE_PREFS_KEY = 'fm-coach-device-voice';
+const deviceVoicePrefs = (() => { try { const value = JSON.parse(localStorage.getItem(VOICE_PREFS_KEY) || '{}'); return { voiceId: typeof value.voiceId === 'string' ? value.voiceId : null, sensitivity: ['low','normal','high'].includes(value.sensitivity) ? value.sensitivity : 'normal' }; } catch { return { voiceId: null, sensitivity: 'normal' }; } })();
+let deviceVoiceChoices = [], voiceDownload = null;
+const saveDeviceVoicePrefs = () => { try { localStorage.setItem(VOICE_PREFS_KEY, JSON.stringify(deviceVoicePrefs)); } catch {} };
+const onDeviceVoice = createOnDeviceVoice({ voiceId: deviceVoicePrefs.voiceId, sensitivity: deviceVoicePrefs.sensitivity,
+  onLoadProgress: progress => { voiceDownload = progress.phase === 'loading' ? progress : null; updateVoiceUI(); } });
+onDeviceVoice.voiceChoices().then(choices => {
+  deviceVoiceChoices = choices;
+  if (!choices.some(choice => choice.id === deviceVoicePrefs.voiceId)) deviceVoicePrefs.voiceId = choices[0]?.id || null;
+  onDeviceVoice.setVoice(deviceVoicePrefs.voiceId); updateVoiceUI();
+});
 const voiceCoach = createStudyConversationAgent({
   api,
   speechPlayer: premiumSpeech,
+  onDevice: onDeviceVoice,
   onState: next => { const timingOnly=next.phase===voiceState.phase&&next.active===voiceState.active&&next.inputState===voiceState.inputState&&next.outputState===voiceState.outputState&&next.message===voiceState.message&&next.muted===voiceState.muted&&next.audioBlocked===voiceState.audioBlocked&&next.userCaption===voiceState.userCaption&&next.assistantCaption===voiceState.assistantCaption&&next.warning===voiceState.warning;voiceState=next;updateVoiceUI(timingOnly); },
   sendTurn: async ({ content, conversationId, sessionId, requestId, signal }) => {
     const linkedCondition=state.conversations.find(item=>item.id===conversationId)?.curriculumConditionId;
@@ -338,9 +351,19 @@ function updateAudioTiming() {
 function premiumAudioControlsHtml() {
   return `${!voiceState.active && premiumState.audioBlocked ? '<button class="button secondary" data-action="premium-resume">Play audio</button>' : ''}${!voiceState.active && premiumState.active ? '<button class="button secondary" data-action="premium-stop">Stop audio</button>' : ''}<p class="premium-audio-status" role="status" aria-live="polite">${esc(premiumState.message)}</p><p class="audio-timing">${esc(audioTimingText())}</p>`;
 }
+function deviceVoicePickerHtml(active) {
+  const voices = deviceVoiceChoices.length ? deviceVoiceChoices.map(voice=>`<option value="${esc(voice.id)}" ${voice.id===deviceVoicePrefs.voiceId?'selected':''}>${esc(voice.label)}${voice.offline?'':' (uses internet)'}</option>`).join('') : '<option value="">Phone default voice</option>';
+  const levels = [['low','Low — noisy room'],['normal','Normal'],['high','High — quiet voice']].map(([value,label])=>`<option value="${value}" ${value===deviceVoicePrefs.sensitivity?'selected':''}>${label}</option>`).join('');
+  return `<div class="coach-voice-picker"><div class="form-field"><label for="coach-phone-voice">Coach voice</label><select id="coach-phone-voice" ${active || !deviceVoiceChoices.length ? 'disabled' : ''}>${voices}</select></div><button class="button secondary" data-action="phone-voice-preview" ${active || !deviceVoiceChoices.length ? 'disabled' : ''}>Preview voice</button><div class="form-field"><label for="coach-mic-sensitivity">Microphone sensitivity</label><select id="coach-mic-sensitivity">${levels}</select></div></div>`;
+}
+function voiceDownloadText() {
+  if (!voiceDownload) return '';
+  const mb = value => (value / 1048576).toFixed(0);
+  return `Downloading the speech engine (one time only)… ${mb(voiceDownload.loadedBytes)}${voiceDownload.totalBytes ? ` of ${mb(voiceDownload.totalBytes)}` : ''} MB`;
+}
 function voiceControlsHtml() {
-  const active = voiceState.active, label = COACH_VOICES.find(voice=>voice.id===selectedVoice()).label;
-  return `<div class="conversation-voice-panel"><div id="conversation-circle" class="conversation-circle-host"></div><div class="conversation-voice-guidance"><strong>${active ? 'Speak naturally. You can interrupt Coach.' : 'Tap the circle to talk with Coach.'}</strong><span>${active ? voiceState.muted ? 'Microphone muted. Unmute to speak.' : voiceState.inputState === 'unavailable' ? 'Microphone unavailable. Type below, or end voice and try again.' : ['starting','off'].includes(voiceState.inputState) ? 'Microphone is off while the session starts.' : 'Microphone on. Speak when you are ready.' : 'One tap starts a conversation, with source links kept in chat.'}</span></div></div><div class="coach-voice-picker"><div class="form-field">${voiceSelectHtml('coach-voice')}</div><button class="button secondary" data-action="voice-preview" ${active || !premiumVoiceAvailable() ? 'disabled' : ''}>Preview voice</button><span class="pill ai-voice-badge">AI voice · ${label}</span></div><div class="voice-actions">${active ? `<button class="button secondary" data-action="voice-mute" aria-pressed="${voiceState.muted}">${voiceState.muted ? 'Unmute microphone' : 'Mute microphone'}</button><button class="button" data-action="voice-stop">End conversation</button><details class="voice-recovery"><summary>Audio controls</summary><button class="button secondary" data-action="voice-interrupt" ${voiceState.phase === 'starting' ? 'disabled' : ''}>Interrupt audio</button></details>` : ''}${premiumAudioControlsHtml()}</div><p class="reply-timing">${esc(replyTimingText())}</p><details class="voice-details"><summary>Voice, privacy and audio help</summary><p class="audio-output-hint">Hard to hear? Check your phone’s media volume and whether sound is routed to Bluetooth or headphones.</p><p class="voice-note">These five voices are AI-generated by OpenAI. ${voiceSupported() ? 'While unmuted, your microphone captures short turns, including interruptions. Each completed turn is sent through this app’s authenticated server to OpenAI for transcription. Keep this page visible; sessions end after 10 minutes.' : premiumVoiceAvailable() ? 'Hands-free voice needs HTTPS, microphone permission and supported browser audio. Use typing, dictation or Read aloud if unavailable.' : 'AI voice is not configured. Type or use your phone keyboard microphone.'} Only server-authorized replies can be spoken. The app keeps short audio buffers in memory, saves no microphone recordings, and does not use them for model training. OpenAI’s own processing and retention settings apply separately. Check transcription, especially medical terms and numbers. <a href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy details</a>.</p></details>`;
+  const active = voiceState.active;
+  return `<div class="conversation-voice-panel"><div id="conversation-circle" class="conversation-circle-host"></div><div class="conversation-voice-guidance"><strong>${active ? 'Speak naturally. You can interrupt Coach.' : 'Tap the circle to talk with Coach.'}</strong><span>${active ? voiceState.muted ? 'Microphone muted. Unmute to speak.' : voiceState.inputState === 'unavailable' ? 'Microphone unavailable. Type below, or end voice and try again.' : ['starting','off'].includes(voiceState.inputState) ? (voiceDownload ? voiceDownloadText() : 'Microphone is off while the session starts.') : 'Microphone on. Speak when you are ready.' : 'One tap starts a conversation, with source links kept in chat.'}</span></div></div>${deviceVoicePickerHtml(active)}<div class="voice-actions">${active ? `<button class="button secondary" data-action="voice-mute" aria-pressed="${voiceState.muted}">${voiceState.muted ? 'Unmute microphone' : 'Mute microphone'}</button><button class="button" data-action="voice-stop">End conversation</button><details class="voice-recovery"><summary>Audio controls</summary><button class="button secondary" data-action="voice-interrupt" ${voiceState.phase === 'starting' ? 'disabled' : ''}>Interrupt audio</button></details>` : ''}${premiumAudioControlsHtml()}</div><p class="reply-timing">${esc(replyTimingText())}</p><details class="voice-details"><summary>Voice, privacy and audio help</summary><p class="audio-output-hint">Hard to hear? Check your phone’s media volume and whether sound is routed to Bluetooth or headphones.</p><p class="voice-note">${voiceSupported() ? 'While unmuted, your speech is recognized on this device; no audio is uploaded or sent for transcription. The first conversation downloads the speech engine once (about 60 MB). Replies are spoken with your phone’s own voices, which your phone may provide over the internet. Keep this page visible; sessions end after 10 minutes.' : 'Hands-free voice needs HTTPS, microphone permission and supported browser audio. Use typing or your phone keyboard microphone if unavailable.'} Only replies that pass the app’s source check are spoken; others stay as text. The app saves no microphone recordings. Check what was heard, especially medical terms and numbers. <a href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy details</a>.</p></details>`;
 }
 function updateVoiceCircle() {
   const container = $('#conversation-circle');
@@ -352,7 +375,7 @@ function updateVoiceCircle() {
   }
   voiceCircle.update(voiceState);
   voiceCircle.button.disabled = startVoiceBusy || chatBusy || (!voiceState.active && (!voiceSupported() || !canChat()));
-  const select = $('#coach-voice'); if (select) select.disabled = voiceState.active || startVoiceBusy;
+  for (const id of ['#coach-voice','#coach-phone-voice']) { const select = $(id); if (select) select.disabled = voiceState.active || startVoiceBusy || (id==='#coach-phone-voice' && !deviceVoiceChoices.length); }
 }
 function updateVoiceUI(timingOnly = false) {
   if(timingOnly){updateAudioTiming();updateVoiceCircle();return;}
@@ -1287,6 +1310,7 @@ async function handleAction(button) {
     case 'voice-interrupt': return voiceCoach.interrupt();
     case 'voice-speaker': return voiceCoach.playAudio();
     case 'voice-preview': return previewVoice();
+    case 'phone-voice-preview': return onDeviceVoice.preview(deviceVoicePrefs.voiceId);
     case 'premium-stop': return stopPremiumAudio(false);
     case 'premium-resume': return premiumSpeech.resume();
     case 'dismiss-chat-error': chatError=''; return render();
@@ -1414,6 +1438,8 @@ document.addEventListener('change',async event=>{
     if(['board-mode','board-count','board-domain','board-feedback','board-timed'].includes(event.target.id)){const form=$('#board-start-form');const data=new FormData(form);boardMode=data.get('mode');boardCount=Number(data.get('count'));boardDomain=data.get('domain') || boardDomain;boardFeedback=data.get('feedback');boardTimed=data.get('timed')==='on';boardMinutes=Number(data.get('minutes') || boardMinutes);render();}
     if(event.target.id==='coach-voice') { const voiceId=event.target.value;await voiceCoach.stop();stopPremiumAudio();await mutate('/api/settings','PUT',{voiceId});state.settings.voiceId=voiceId;updateVoiceUI();notify('Your Coach voice is saved.'); }
     if(event.target.id==='settings-voice') { await voiceCoach.stop();stopPremiumAudio(); }
+    if(event.target.id==='coach-phone-voice') { deviceVoicePrefs.voiceId=event.target.value||null;onDeviceVoice.setVoice(deviceVoicePrefs.voiceId);saveDeviceVoicePrefs();notify('Your Coach voice is saved on this device.'); }
+    if(event.target.id==='coach-mic-sensitivity') { deviceVoicePrefs.sensitivity=event.target.value;onDeviceVoice.setSensitivity(deviceVoicePrefs.sensitivity);saveDeviceVoicePrefs(); }
     if(event.target.id==='condition-domain') {curriculumDomain=event.target.value;await loadCurriculum();}
     if(event.target.id==='topic-filter') {topicFilter=event.target.value;render();}
     if(event.target.id==='openai-model') { $('#model-profile').innerHTML=modelProfileHtml(event.target.value); $('#test-model-button').disabled=!status.aiConfigured || event.target.value!==status.model; }

@@ -2,7 +2,7 @@ import http from 'node:http';
 import { once } from 'node:events';
 import { DatabaseSync } from 'node:sqlite';
 import { randomBytes, randomUUID, timingSafeEqual, createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, existsSync, realpathSync, statSync } from 'node:fs';
+import { mkdirSync, readFileSync, existsSync, realpathSync, statSync, createReadStream } from 'node:fs';
 import { resolve, dirname, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createCard, scheduleReview } from '../shared/scheduler.js';
@@ -27,6 +27,8 @@ const DEFAULT_SETTINGS = Object.freeze({ focus: 'clinical-reasoning', coachStyle
 const SESSION_MS = 7 * 24 * 60 * 60 * 1000;
 const MAX_BACKUP_BYTES = 16 * 1024 * 1024;
 const MAX_STATE_BYTES = MAX_BACKUP_BYTES - 4096; // Reserve room for the backup envelope.
+// On-device speech engine and models (public/sherpa, fetched at build time).
+const SPEECH_MIME = { '.wasm': 'application/wasm', '.onnx': 'application/octet-stream', '.txt': 'text/plain; charset=utf-8' };
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.webmanifest': 'application/manifest+json; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon' };
 
 export class HttpError extends Error {
@@ -305,7 +307,7 @@ function secureHeaders(res) {
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'no-referrer');
   res.setHeader('Permissions-Policy', 'camera=(), geolocation=(), microphone=(self)');
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data:; media-src 'self' blob: mediastream:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'");
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data:; media-src 'self' blob: mediastream:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'");
 }
 
 /** A single-user, durable study app. Each deployment should have its own data directory. */
@@ -1084,9 +1086,19 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
         file = resolve(publicDir, `.${requested === '/' ? '/index.html' : requested}`);
         if (!file.startsWith(publicDir + sep)) fail(404, 'File not found.');
       }
-      if (!existsSync(file) || !statSync(file).isFile() || !MIME[extname(file)] || realpathSync(file) !== file) fail(404, 'File not found.');
+      const speechFile = requested.startsWith('/sherpa/') ? SPEECH_MIME[extname(file)] : undefined;
+      const type = MIME[extname(file)] || speechFile;
+      if (!existsSync(file) || !statSync(file).isFile() || !type || realpathSync(file) !== file) fail(404, 'File not found.');
+      if (requested.startsWith('/sherpa/')) {
+        // Large speech files are streamed; the browser keeps its own copy in Cache Storage.
+        const { size } = statSync(file);
+        res.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'public, max-age=86400', 'Content-Length': size });
+        if (req.method === 'HEAD') { res.end(); return; }
+        createReadStream(file).on('error', () => res.destroy()).pipe(res);
+        return;
+      }
       const body = readFileSync(file);
-      res.writeHead(200, { 'Content-Type': MIME[extname(file)], 'Cache-Control': 'no-cache', 'Content-Length': body.length });
+      res.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'no-cache', 'Content-Length': body.length });
       res.end(req.method === 'HEAD' ? undefined : body);
     } catch (error) {
       if (res.destroyed || req.aborted) return;

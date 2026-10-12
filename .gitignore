@@ -16,3 +16,4 @@ android/local.properties
 *.jks
 *.keystore
 qa-artifacts/
+public/sherpa/
