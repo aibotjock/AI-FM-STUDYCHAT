@@ -40,6 +40,7 @@ export function createAiProvider({ env = process.env, fetchImpl = globalThis.fet
   if (!model || model.length > 150 || /[\s\u0000-\u001f\u007f]/u.test(model)) throw new Error('Configure a valid AI model ID.');
   const profile = providerId === 'openai' ? getOpenAIModelProfile(model) : null;
   if (providerId === 'openai' && !profile) throw new Error('Configure a documented OpenAI text model. Unknown aliases are disabled.');
+  const nativeJsonSchema = providerId === 'openai' && ['gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano'].includes(profile?.canonicalId);
   const unavailableReason = profile?.shutdownDate && Date.parse(profile.shutdownDate) <= Date.now() ? 'This OpenAI model has reached its announced shutdown date. Choose another model in Study preferences.' : null;
   if (commercial && unavailableReason) throw new Error(unavailableReason);
   const known = providerId === 'anthropic' ? model === CLAUDE_DEFAULT : Boolean(profile?.rates);
@@ -55,7 +56,7 @@ export function createAiProvider({ env = process.env, fetchImpl = globalThis.fet
     if (!Array.isArray(messages) || !messages.length || messages.length > 100 || messages.some(message => !message || !['system', 'user', 'assistant'].includes(message.role) || typeof message.content !== 'string' || !message.content.trim() || message.content.length > 120000)) fail(400, 'Use a bounded text study conversation.');
     if (!Number.isInteger(maxOutputTokens) || maxOutputTokens < 1 || maxOutputTokens > 4096) fail(400, 'Use a supported AI output limit.');
     if (jsonSchema !== null && (!jsonSchema || typeof jsonSchema !== 'object' || Array.isArray(jsonSchema) || !/^[A-Za-z0-9_-]{1,64}$/.test(jsonSchema.name || '') || !jsonSchema.schema || jsonSchema.schema.type !== 'object')) fail(400, 'Use a named object schema for structured AI output.');
-    const strictSchema = jsonSchema && providerId === 'openai' && ['gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano'].includes(profile?.canonicalId) ? { name: jsonSchema.name, strict: true, schema: jsonSchema.schema } : null;
+    const strictSchema = jsonSchema && nativeJsonSchema ? { name: jsonSchema.name, strict: true, schema: jsonSchema.schema } : null;
     jsonMode = jsonMode || jsonSchema !== null;
     const cleaned = messages.map(({ role, content }) => ({ role, content }));
     if (providerId === 'anthropic' && model === CLAUDE_DEFAULT && Buffer.byteLength(JSON.stringify(cleaned), 'utf8') + 512 > 100000) fail(400, 'Shorten this study conversation before asking another question.');
@@ -137,5 +138,5 @@ export function createAiProvider({ env = process.env, fetchImpl = globalThis.fet
       fail(502, 'Unable to reach the AI provider. Check the server connection and retry.');
     } finally { clearTimeout(timeout); }
   }
-  return Object.freeze({ configured, label, providerId, model, rates, unavailableReason, complete });
+  return Object.freeze({ configured, label, providerId, model, rates, unavailableReason, nativeJsonSchema, complete });
 }

@@ -1,6 +1,7 @@
 import { getDueCards, previewIntervals, studyStats } from '/shared/scheduler.js';
 import { ABFM_BLUEPRINT } from '/shared/blueprint.js';
 import { SCENARIOS, COMPETENCIES } from '/shared/content.js';
+import { answerTimingText } from '/shared/answer-timing.js';
 import { createStudyConversationAgent, conversationAudioSupported, mountVoiceCircle } from '/conversation-agent-adapter.js';
 import { COACH_VOICES, DEFAULT_COACH_VOICE, createPremiumSpeechPlayer } from '/premium-speech.js';
 const voiceSupported = () => conversationAudioSupported() && voiceOptions?.conversationAgent?.enabled === true && premiumVoiceAvailable() && !window.FMNativeBilling;
@@ -868,7 +869,8 @@ function renderModelMetadata(message) {
   if(!metadata) return '';
   if (metadata.endpoint === 'realtime') return `<small class="model-metadata">${metadata.imported ? 'Imported voice record · ' : ''}${esc(metadata.returnedModel || metadata.requestedModel)} · Client-reported voice transcript · Usage and cost unverified${message.voiceInterrupted ? ' · Interrupted reply' : ''}</small>`;
   const totals=message.aiTotal?.calls===2 ? message.aiTotal : metadata;
-  return `<small class="model-metadata">${metadata.imported ? 'Imported model record · ' : ''}${esc(metadata.returnedModel || metadata.requestedModel)} · ${Number(totals.latencyMs/1000).toFixed(1)} s · ${totals.estimatedCostUsd===null ? 'Cost unknown' : `Estimated $${Number(totals.estimatedCostUsd).toFixed(6)}${totals===metadata ? '' : ' total'}`}${totals.usage ? ` · ${esc(totals.usage.prompt_tokens)} input / ${esc(totals.usage.completion_tokens)} billed output tokens` : ''}</small>`;
+  const phases=answerTimingText(message);
+  return `<small class="model-metadata">${metadata.imported ? 'Imported model record · ' : ''}${esc(metadata.returnedModel || metadata.requestedModel)} · ${phases ? esc(phases) : `${Number(totals.latencyMs/1000).toFixed(1)} s`} · ${totals.estimatedCostUsd===null ? 'Cost unknown' : `Estimated $${Number(totals.estimatedCostUsd).toFixed(6)}${totals===metadata ? '' : ' total'}`}${totals.usage ? ` · ${esc(totals.usage.prompt_tokens)} input / ${esc(totals.usage.completion_tokens)} billed output tokens` : ''}</small>`;
 }
 
 function cardDialog(card = null, preset = {}) {

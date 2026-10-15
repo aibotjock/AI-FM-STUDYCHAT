@@ -21,7 +21,9 @@ test('natural operator check exercises authenticated three-turn generation and r
     calls.push(body); assert.equal(body.store, false); assert.equal(body.max_tokens ?? body.max_completion_tokens, reviewing ? 2000 : 800);
     const prefix = reviewing ? 'NATURAL_REVIEW_DATA=' : 'NATURAL_TUTOR_CONTEXT=';
     const context = JSON.parse(body.messages.find(message => message.content.includes(prefix)).content.split(prefix)[1]);
-    assert.ok(context.history.some(message => message.content === NATURAL_CHECK_TURNS[turn].content));
+    // The current request is supplied once outside history; earlier turns
+    // retain the conversation continuity checked below.
+    assert.equal(reviewing ? context.learnerRequest : body.messages.at(-1).content, NATURAL_CHECK_TURNS[turn].content);
     if (turn > 0) assert.ok(context.history.some(message => message.content === NATURAL_CHECK_TURNS[0].content));
     let parsed;
     if (!reviewing) {

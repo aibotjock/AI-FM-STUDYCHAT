@@ -977,7 +977,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             if (!generated && studyReferences) {
               if (ai.configured) {
                 try {
-                  const tutorContext = { references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending, requireVersion3: true, voiceTurn: Boolean(voiceScope) };
+                  const tutorContext = { references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending, requireVersion3: true, voiceTurn: Boolean(voiceScope), inlineOutputSchema: !ai.nativeJsonSchema, deduplicateCurrentRequest: true };
                   const primaryPrompt = buildNaturalTutorPrompt(tutorContext);
                   const primarySchema = buildNaturalTutorSchema(tutorContext);
                   aiCalls++;
@@ -1078,7 +1078,7 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
       let requested;
       try { requested = decodeURIComponent(path); } catch { fail(400, 'Invalid path.'); }
       let file;
-      if (['/shared/scheduler.js', '/shared/content.js', '/shared/blueprint.js'].includes(requested)) file = resolve(ROOT, `.${requested}`);
+      if (['/shared/scheduler.js', '/shared/content.js', '/shared/blueprint.js', '/shared/answer-timing.js'].includes(requested)) file = resolve(ROOT, `.${requested}`);
       else {
         const publicDir = resolve(ROOT, 'public');
         file = resolve(publicDir, `.${requested === '/' ? '/index.html' : requested}`);

@@ -90,6 +90,54 @@ test('OpenAI remains available through the same adapter without request storage'
   assert.deepEqual(await provider.complete(messages, { jsonMode: true }), { content: '{"cards":[]}', usage: { prompt_tokens: 20, completion_tokens: 5 } });
 });
 
+test('native schema capability matches strict request enforcement for supported models and snapshots', async () => {
+  const jsonSchema = { name: 'fixture_output', schema: { type: 'object', additionalProperties: false, required: ['answer'], properties: { answer: { type: 'string' } } } };
+  for (const model of ['gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4.1-2025-04-14', 'gpt-4.1-mini-2025-04-14', 'gpt-4.1-nano-2025-04-14']) {
+    const requests = [];
+    const provider = createAiProvider({ env: { OPENAI_API_KEY: 'fixture-key', OPENAI_MODEL: model }, fetchImpl: async (_url, request) => {
+      requests.push(JSON.parse(request.body));
+      return Response.json({ choices: [{ message: { content: '{"answer":"fixture"}' }, finish_reason: 'stop' }], usage: { prompt_tokens: 20, completion_tokens: 5 } });
+    } });
+    assert.equal(provider.nativeJsonSchema, true, model);
+    assert.equal(Object.isFrozen(provider), true);
+    await provider.complete(messages, { jsonSchema });
+    assert.deepEqual(requests[0].response_format, { type: 'json_schema', json_schema: { name: jsonSchema.name, strict: true, schema: jsonSchema.schema } }, model);
+    assert.equal(requests[0].model, model);
+    assert.equal(requests[0].store, false);
+    await provider.complete(messages, { jsonMode: true });
+    assert.deepEqual(requests[1].response_format, { type: 'json_object' }, 'Capability alone must not activate a schema');
+  }
+});
+
+test('non-native profiles and Anthropic retain their existing schema fallback request shapes', async () => {
+  const jsonSchema = { name: 'fixture_output', schema: { type: 'object', additionalProperties: false, required: [], properties: {} } };
+  for (const model of ['gpt-4o-mini', 'gpt-4o-mini-2024-07-18', 'gpt-6-luna', 'gpt-5.5-pro']) {
+    let body;
+    const provider = createAiProvider({ env: { OPENAI_API_KEY: 'fixture-key', OPENAI_MODEL: model }, fetchImpl: async (url, request) => {
+      body = JSON.parse(request.body);
+      return url.endsWith('/responses')
+        ? Response.json({ status: 'completed', output: [{ type: 'message', role: 'assistant', content: [{ type: 'output_text', text: '{}' }] }] })
+        : Response.json({ choices: [{ message: { content: '{}' }, finish_reason: 'stop' }] });
+    } });
+    assert.equal(provider.nativeJsonSchema, false, model);
+    await provider.complete(messages, { jsonSchema });
+    assert.equal(body.response_format?.type === 'json_schema' || body.text?.format?.type === 'json_schema', false, model);
+    assert.equal(body.model, model);
+    assert.equal(body.store, false);
+    if (model === 'gpt-5.5-pro') assert.equal(body.text, undefined);
+    else assert.deepEqual(body.response_format, { type: 'json_object' });
+  }
+  const provider = createAiProvider({ env, fetchImpl: async (_url, request) => {
+    const body = JSON.parse(request.body);
+    assert.equal(body.response_format, undefined);
+    assert.equal(body.text, undefined);
+    assert.match(body.system, /valid JSON object/);
+    return Response.json(result());
+  } });
+  assert.equal(provider.nativeJsonSchema, false);
+  await provider.complete(messages, { jsonSchema });
+});
+
 test('personal inactive Claude adapter preserves reviewed natural replies through the mocked browser API', async t => {
   const dataDir = mkdtempSync(join(tmpdir(), 'personal-claude-test-'));
   let calls = 0;
