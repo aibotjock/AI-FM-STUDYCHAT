@@ -10,7 +10,6 @@ import { createAiProvider, AiProviderError } from '../server/ai-provider.js';
 import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
-import { sourceSpanSupport } from './fixtures/natural-review-v3.js';
 import { INGENIUM_TELEMETRY_ENDPOINT } from '../server/ingenium-telemetry.js';
 
 // Tests use only synthetic local fetch replacements. Never send study content
@@ -30,12 +29,11 @@ const reply = (model = MODEL, content = ANSWER, overrides = {}) => ({ model, cho
 const metadataKeys = ['provider', 'requestedModel', 'returnedModel', 'endpoint', 'usage', 'estimatedCostUsd', 'latencyMs', 'pricingBasis', 'recordedAt'].sort();
 
 function naturalContent(body) {
-  const schema = body.response_format?.json_schema?.name || (body.messages.some(message => message.content.includes('NATURAL_REVIEW_DATA')) ? 'family_medicine_natural_review_v3' : body.messages.some(message => message.content.includes('NATURAL_TUTOR_CONTEXT')) ? 'family_medicine_natural_tutor' : null);
-  assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review_v3'].includes(schema), `Unexpected generated contract ${schema}`);
-  assert.ok(body.messages.some(message => message.content.includes(schema === 'family_medicine_natural_review_v3' ? 'NATURAL_REVIEW_DATA' : 'NATURAL_TUTOR_CONTEXT')));
-  return JSON.stringify(schema === 'family_medicine_natural_review_v3'
-    ? { version: 3, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: MANAGEMENT_FACT, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [sourceSpanSupport(body, 'asthma:management')] }], flags: [], questions: [] }] }
-    : { segments: [{ id: 's1', text: MANAGEMENT_FACT, sourceChunkIds: ['asthma:management'] }] });
+  const schema = body.response_format?.json_schema?.name || (body.messages.some(message => message.content.includes('NATURAL_TUTOR_CONTEXT')) ? 'family_medicine_natural_tutor' : null);
+  assert.equal(schema, 'family_medicine_natural_tutor', `Unexpected generated contract ${schema}`);
+  assert.ok(body.messages.some(message => message.content.includes('NATURAL_TUTOR_CONTEXT')));
+  assert.ok(body.messages.every(message => !message.content.includes('NATURAL_REVIEW_DATA')));
+  return JSON.stringify({ segments: [{ id: 's1', text: MANAGEMENT_FACT, sourceChunkIds: ['asthma:management'] }] });
 }
 
 test('successful adapter completion invokes a metadata-only hook while the default browser contract stays unchanged', async () => {
@@ -144,16 +142,19 @@ function assertEventHasNoStudyContent(event) {
   assert.doesNotMatch(JSON.stringify(event), /Private|mock-provider-key|mock-owner-access|ia_x+|Mock management fact|asthma|inhaler/);
 }
 
-function assertReviewedReply(result) {
+function assertLibraryBoundReply(result) {
   assert.match(result.body.message.content, /Mock management fact: review inhaler technique/);
   assert.equal(result.body.message.sourceVerified, false);
   assert.equal(result.body.message.curriculum, undefined);
-  assert.equal(result.body.message.reviewedDialogue, true);
-  assert.equal(result.body.message.groundingReview.status, 'passed');
-  assert.equal(result.body.message.groundingReview.medicalClaimCount, 1);
-  assert.equal(result.body.message.aiTotal.calls, 2);
+  assert.equal(result.body.message.libraryGroundedDialogue, true);
+  assert.equal(result.body.message.libraryGrounding.status, 'bound');
+  assert.deepEqual(result.body.message.libraryGrounding.sourceChunkIds, ['asthma:management']);
+  assert.equal(result.body.message.libraryGrounding.sourceSpanBindings.length, 1);
+  assert.equal(result.body.message.reviewedDialogue, undefined);
+  assert.equal(result.body.message.groundingReview, undefined);
+  assert.equal(result.body.message.aiTotal.calls, 1);
   assert.equal(result.body.message.ai.provider, 'openai');
-  assert.equal(result.body.message.aiReview.provider, 'openai');
+  assert.equal(result.body.message.aiReview, undefined);
   assert.equal(result.body.message.citations[0].url, 'https://www.nhlbi.nih.gov/health/asthma');
   assert.equal(result.body.message.humanReview, false);
 }
@@ -163,26 +164,25 @@ test('real app provider wiring emits one bounded metadata event per completed re
   const chatRequest = { conversationId: app.conversation.id, content: STUDY_QUERY, requestId: 'wiring-chat-once' };
   const first = await app.request('/api/chat', 'POST', chatRequest);
   assert.equal(first.status, 200);
-  assertReviewedReply(first);
+  assertLibraryBoundReply(first);
   await app.server.flushIngeniumTelemetry();
-  assert.equal(app.providerCalls.length, 2);
-  assert.equal(app.events.length, 2);
+  assert.equal(app.providerCalls.length, 1);
+  assert.equal(app.events.length, 1);
   for (const event of app.events) { assertEventHasNoStudyContent(event); assert.equal(event.requestedModel, MODEL); }
-  assert.notEqual(app.events[0].requestId, app.events[1].requestId);
   assert.equal((await app.request('/api/chat', 'POST', chatRequest)).body.message.id, first.body.message.id);
-  assert.equal(app.providerCalls.length, 2);
-  assert.equal(app.events.length, 2);
+  assert.equal(app.providerCalls.length, 1);
+  assert.equal(app.events.length, 1);
   const check = await app.request('/api/model-test', 'POST', { requestId: 'wiring-model-check-once' });
   assert.equal(check.status, 200);
   assert.equal(check.body.instructionPassed, true);
   await app.server.flushIngeniumTelemetry();
-  assert.equal(app.providerCalls.length, 3);
-  assert.equal(app.events.length, 3);
-  assertEventHasNoStudyContent(app.events[2]);
-  assert.equal(new Set(app.events.map(event => event.requestId)).size, 3);
+  assert.equal(app.providerCalls.length, 2);
+  assert.equal(app.events.length, 2);
+  assertEventHasNoStudyContent(app.events[1]);
+  assert.equal(new Set(app.events.map(event => event.requestId)).size, 2);
   assert.equal((await app.request('/api/model-test', 'POST', { requestId: 'wiring-model-check-new-id' })).body.cached, true);
-  assert.equal(app.providerCalls.length, 3);
-  assert.equal(app.events.length, 3);
+  assert.equal(app.providerCalls.length, 2);
+  assert.equal(app.events.length, 2);
   assert.equal(app.catalogCalls.length, 1);
 });
 
@@ -190,13 +190,13 @@ test('metadata receiver failure preserves the app answer and all exposed status 
   const app = await fixture(t, { telemetryFails: true });
   const completed = await app.request('/api/chat', 'POST', { conversationId: app.conversation.id, content: STUDY_QUERY, requestId: 'receiver-failure-once' });
   assert.equal(completed.status, 200);
-  assertReviewedReply(completed);
+  assertLibraryBoundReply(completed);
   await app.server.flushIngeniumTelemetry();
-  assert.equal(app.providerCalls.length, 2);
+  assert.equal(app.providerCalls.length, 1);
   assert.ok(app.events.length >= 1);
   for (const event of app.events) assertEventHasNoStudyContent(event);
   const pending = await app.request('/api/ingenium-status');
-  assert.equal(pending.body.pending, 2);
+  assert.equal(pending.body.pending, 1);
   assert.equal(pending.body.delivered, 0);
   const status = await app.request('/api/status');
   assert.equal(status.status, 200);
@@ -209,12 +209,12 @@ test('selecting an owner model retains the metadata observer and reports the sel
   assert.equal((await app.request('/api/model', 'PUT', { model: MODEL_TWO })).status, 200);
   const completed = await app.request('/api/chat', 'POST', { conversationId: app.conversation.id, content: STUDY_QUERY, requestId: 'selected-model-observer' });
   assert.equal(completed.status, 200);
-  assertReviewedReply(completed);
+  assertLibraryBoundReply(completed);
   assert.equal(completed.body.message.ai.requestedModel, MODEL_TWO);
-  assert.equal(completed.body.message.aiReview.requestedModel, MODEL_TWO);
+  assert.equal(completed.body.message.aiReview, undefined);
   await app.server.flushIngeniumTelemetry();
-  assert.equal(app.providerCalls.length, 2);
-  assert.equal(app.events.length, 2);
+  assert.equal(app.providerCalls.length, 1);
+  assert.equal(app.events.length, 1);
   for (const event of app.events) {
     assertEventHasNoStudyContent(event);
     assert.equal(event.requestedModel, MODEL_TWO);
@@ -263,21 +263,21 @@ test('durable metadata outbox survives restart and retries the same event UUID w
   const chatRequest = { conversationId: conversation.id, content: STUDY_QUERY, requestId: 'durable-single-inference' };
   const completed = await first.request('/api/chat', 'POST', chatRequest);
   assert.equal(completed.status, 200);
-  assertReviewedReply(completed);
+  assertLibraryBoundReply(completed);
   await first.server.flushIngeniumTelemetry();
-  assert.equal(providerCalls, 2);
+  assert.equal(providerCalls, 1);
   assert.ok(events.length >= 1);
   assert.equal(new Set(events.map(event => event.requestId)).size, 1);
   const eventId = events[0].requestId;
   const pending = (await first.request('/api/ingenium-status')).body;
-  assert.equal(pending.pending, 2);
+  assert.equal(pending.pending, 1);
   assert.equal(pending.delivered, 0);
   assert.equal(pending.lastResult.reason, 'delivery_failed');
   assert.doesNotMatch(JSON.stringify(pending), /mock-provider-key|mock-owner-access|ia_x+|Private/);
   const database = new DatabaseSync(join(dataDir, 'studychat.sqlite'));
   const stored = database.prepare('SELECT request_id,metadata,status FROM owner_telemetry_outbox').all();
   database.close();
-  assert.equal(stored.length, 2);
+  assert.equal(stored.length, 1);
   assert.ok(stored.some(row => row.request_id === eventId));
   for (const row of stored) {
     assert.equal(row.status, 'pending');
@@ -288,21 +288,21 @@ test('durable metadata outbox survives restart and retries the same event UUID w
   receiverAvailable = true;
   const restarted = await start();
   await restarted.server.flushIngeniumTelemetry();
-  assert.equal(events.length, attemptsBeforeRestart + 2);
+  assert.equal(events.length, attemptsBeforeRestart + 1);
   assert.deepEqual(new Set(events.slice(attemptsBeforeRestart).map(event => event.requestId)), new Set(stored.map(row => row.request_id)));
   assert.deepEqual(events.slice(attemptsBeforeRestart).find(event => event.requestId === eventId), events[0]);
-  assert.equal(providerCalls, 2);
+  assert.equal(providerCalls, 1);
   assert.equal((await restarted.request('/api/ingenium-status')).status, 401);
   assert.equal((await restarted.request('/api/login', 'POST', { token: ACCESS_TOKEN })).status, 200);
   const delivered = (await restarted.request('/api/ingenium-status')).body;
   assert.equal(delivered.pending, 0);
-  assert.equal(delivered.delivered, 2);
+  assert.equal(delivered.delivered, 1);
   assert.equal(delivered.lastResult.accepted, true);
   assert.doesNotMatch(JSON.stringify(delivered), /mock-provider-key|mock-owner-access|ia_x+|Private/);
   assert.equal((await restarted.request('/api/chat', 'POST', chatRequest)).body.message.id, completed.body.message.id);
   await restarted.server.flushIngeniumTelemetry();
-  assert.equal(providerCalls, 2);
-  assert.equal(events.length, attemptsBeforeRestart + 2);
+  assert.equal(providerCalls, 1);
+  assert.equal(events.length, attemptsBeforeRestart + 1);
 });
 
 test('a full metadata outbox stays capped at 500 pending events while the app preserves its paid answer', async t => {
@@ -316,8 +316,8 @@ test('a full metadata outbox stays capped at 500 pending events while the app pr
   database.close();
   const completed = await app.request('/api/chat', 'POST', { conversationId: app.conversation.id, content: STUDY_QUERY, requestId: 'full-outbox-single-inference' });
   assert.equal(completed.status, 200);
-  assertReviewedReply(completed);
-  assert.equal(app.providerCalls.length, 2);
+  assertLibraryBoundReply(completed);
+  assert.equal(app.providerCalls.length, 1);
   const status = await app.request('/api/ingenium-status');
   assert.equal(status.status, 200);
   assert.equal(status.body.pending, 500);

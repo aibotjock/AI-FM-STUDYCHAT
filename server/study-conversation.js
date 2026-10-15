@@ -77,6 +77,11 @@ function trusted(message) {
 function reviewed(message) {
   return message?.role === 'assistant' && message.reviewedDialogue === true && message.sourceVerified === false && message.groundingReview?.version === 1 && message.groundingReview.status === 'passed' && !message.importedEvidence && !message.voiceTranscript;
 }
+// Source bindings identify library passages, never an independent review of prose.
+function libraryLinked(message) {
+  const binding = message?.libraryGrounding;
+  return message?.role === 'assistant' && message.libraryGroundedDialogue === true && message.sourceVerified === false && message.humanReview === false && message.canonicalSpokenText === false && binding?.version === 1 && binding.status === 'bound' && Array.isArray(binding.sourceChunkIds) && binding.sourceChunkIds.length <= 4 && binding.sourceChunkIds.every(key => typeof key === 'string') && new Set(binding.sourceChunkIds).size === binding.sourceChunkIds.length && !message.importedEvidence && !message.importedReview && !message.voiceTranscript && !message.ai?.imported;
+}
 
 /** A quiz remains pending across reflective turns, but never across grading or evidence/topic boundaries. */
 export function pendingStudyQuestion(conversation, conditionIds = []) {
@@ -84,7 +89,7 @@ export function pendingStudyQuestion(conversation, conditionIds = []) {
     if (message.role === 'user' && message.studyRequestedConditionIds?.length && conditionIds.length && message.studyRequestedConditionIds.some(id => !conditionIds.includes(id))) return null;
     if (message.role !== 'assistant') continue;
     if (message.unsupported || message.studyAnswer) return null;
-    if (reviewed(message) && Object.hasOwn(message, 'pendingStudyQuestion')) {
+    if ((reviewed(message) || libraryLinked(message)) && Object.hasOwn(message, 'pendingStudyQuestion')) {
       const pending = message.pendingStudyQuestion;
       return pending && (!conditionIds.length || conditionIds.includes(pending.key.split(':')[0])) ? { ...pending } : null;
     }
@@ -93,7 +98,7 @@ export function pendingStudyQuestion(conversation, conditionIds = []) {
       if (conditionIds.length && !conditionIds.includes(conditionId)) return null;
       return { ...message.studyQuestion };
     }
-    if ((message.curriculum || reviewed(message)) && conditionIds.length && message.conditionIds?.some(id => !conditionIds.includes(id))) return null;
+    if ((message.curriculum || reviewed(message) || libraryLinked(message)) && conditionIds.length && message.conditionIds?.some(id => !conditionIds.includes(id))) return null;
   }
   return null;
 }
@@ -114,9 +119,13 @@ export function conversationalEvidence(references, conversation, content, option
   for (const message of [...conversation.messages].reverse()) {
     if (message.role !== 'assistant') continue;
     if (message.unsupported) break;
-    const keys = reviewed(message) ? message.groundingReview.sourceChunkIds : trusted(message) && message.curriculum === true ? message.studySelection?.chunkIds : null;
+    const keys = reviewed(message) ? message.groundingReview.sourceChunkIds : libraryLinked(message) ? message.libraryGrounding.sourceChunkIds : trusted(message) && message.curriculum === true ? message.studySelection?.chunkIds : null;
     if (!Array.isArray(keys)) continue;
-    if (!keys.length && reviewed(message)) return retrieved;
+    // A follow-up to a reply with no cited point must not revive an older topic
+    // merely because that topic is selected. A live canonical quiz retains its
+    // own scope across a nonfactual planning turn.
+    if (!keys.length && libraryLinked(message) && !message.pendingStudyQuestion) return [];
+    if (!keys.length && (reviewed(message) || libraryLinked(message))) return retrieved;
     const prior = keys.map(key => currentChunk(references, key)).filter(item => item && (!allowed.length || allowed.includes(item.conditionId)));
     if (!prior.length) break;
     return [...new Map([...prior, ...retrieved].map(item => [item.key, item])).values()].slice(0, 6);

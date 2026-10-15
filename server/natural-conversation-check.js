@@ -1,7 +1,7 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadStudyCurriculum } from './study-curriculum.js';
-import { renderReviewedTutor, NaturalTutorError } from './natural-tutor.js';
+import { renderNaturalTutor, renderReviewedTutor, NaturalTutorError } from './natural-tutor.js';
 
 export const NATURAL_CHECK_TITLE = 'Operator natural conversation check · synthetic study';
 export const LEGACY_NATURAL_STUDY_TURN = Object.freeze({ requestId: 'natural-dialogue-v1-study-gpt-4.1-mini', content: 'Ready to study. For the family medicine board exam, explain one source-linked point about atrial fibrillation in your own words, then ask one recall question.' });
@@ -25,13 +25,21 @@ function usage(ai) {
     estimatedCostUsd: Number.isFinite(ai?.estimatedCostUsd) && ai.estimatedCostUsd >= 0 ? ai.estimatedCostUsd : null };
 }
 function validateReply(message, index, references, conversation) {
-  if (!object(message) || message.role !== 'assistant' || message.reviewedDialogue !== true || message.sourceVerified !== false || message.canonicalSpokenText !== false || message.humanReview !== false || message.importedEvidence || message.unsupported || message.offline || !trustedAi(message.ai) || !trustedAi(message.aiReview) || message.aiTotal?.calls !== 2 || message.groundingReview?.version !== 1 || message.groundingReview.status !== 'passed') return false;
+  if (!object(message) || message.role !== 'assistant' || message.sourceVerified !== false || message.canonicalSpokenText !== false || message.humanReview !== false || message.importedEvidence || message.unsupported || message.offline || !trustedAi(message.ai)) return false;
+  const singlePass = message.libraryGroundedDialogue === true;
+  if (singlePass ? (message.reviewedDialogue !== undefined || message.groundingReview !== undefined || message.aiReview !== undefined || message.aiTotal?.calls !== 1 || message.libraryGrounding?.version !== 1 || message.libraryGrounding.status !== 'bound') : (message.reviewedDialogue !== true || !trustedAi(message.aiReview) || message.aiTotal?.calls !== 2 || message.groundingReview?.version !== 1 || message.groundingReview.status !== 'passed')) return false;
   const evidence = index === 2 ? references.retrieve(NATURAL_CHECK_TURNS[2].content, { conditionIds: ['atrial-fibrillation'] }) : [];
   let rendered;
   try {
-    rendered = renderReviewedTutor({ segments: message.naturalSegments }, { approved: true, segments: message.groundingReview.segments }, { references, evidence, conversation, now: message.groundingReview.reviewedAt, sourceSpanBindings: message.groundingReview.sourceSpanBindings });
+    rendered = singlePass
+      ? renderNaturalTutor({ segments: message.naturalSegments }, { references, evidence, conversation, sourceSpanBindings: message.libraryGrounding.sourceSpanBindings })
+      : renderReviewedTutor({ segments: message.naturalSegments }, { approved: true, segments: message.groundingReview.segments }, { references, evidence, conversation, now: message.groundingReview.reviewedAt, sourceSpanBindings: message.groundingReview.sourceSpanBindings });
   } catch { return false; }
-  if (message.content !== rendered.content || message.spokenText !== rendered.spokenText || JSON.stringify(message.citations) !== JSON.stringify(rendered.citations) || JSON.stringify(message.groundingReview) !== JSON.stringify(rendered.groundingReview)) return false;
+  if (message.content !== rendered.content || message.spokenText !== rendered.spokenText || JSON.stringify(message.citations) !== JSON.stringify(rendered.citations) || JSON.stringify(singlePass ? message.libraryGrounding : message.groundingReview) !== JSON.stringify(singlePass ? rendered.libraryGrounding : rendered.groundingReview)) return false;
+  if (singlePass) {
+    if (index < 2) return rendered.libraryGrounding.sourceChunkIds.length === 0 && rendered.citations.length === 0 && (index !== 1 || (/\bMorgan\b/i.test(rendered.spokenText) && rendered.spokenText.includes('?')));
+    return message.current === true && message.grounded === true && rendered.libraryGrounding.sourceChunkIds.length > 0 && rendered.citations.length > 0 && rendered.conditionIds.length === 1 && rendered.conditionIds[0] === 'atrial-fibrillation' && rendered.spokenText.includes('?');
+  }
   if (index < 2) return rendered.groundingReview.externalClaimCount === 0 && rendered.citations.length === 0 && (index !== 1 || (/\bMorgan\b/i.test(rendered.spokenText) && rendered.spokenText.includes('?')));
   return message.current === true && message.grounded === true && rendered.groundingReview.medicalClaimCount > 0 && rendered.citations.length > 0 && rendered.conditionIds.length === 1 && rendered.conditionIds[0] === 'atrial-fibrillation' && rendered.spokenText.includes('?');
 }
@@ -43,7 +51,7 @@ export async function runNaturalConversationCheck({ baseUrl, env = process.env, 
   const base = new URL(baseUrl);
   if (base.protocol !== 'http:' || base.hostname !== '127.0.0.1' || base.pathname !== '/' || base.search || base.hash || base.username || base.password) throw new Error('Natural conversation checks require the local app listener.');
   if (!(env.STUDY_ACCESS_TOKEN || '').trim() || !(env.OPENAI_API_KEY || '').trim()) return { skipped: true, reason: 'server_credentials_not_configured' };
-  let cookie = '', authenticated = false, submitted = 0;
+  let cookie = '', authenticated = false, submitted = 0, providerCalls = 0;
   let receipt = { failed: true, stage: 'natural_conversation_check' };
   const request = (path, body) => fetchImpl(new URL(path, base), { method: body === undefined ? 'GET' : 'POST', redirect: 'error', signal: AbortSignal.timeout(110000), headers: { 'Content-Type': 'application/json', ...(cookie ? { Cookie: cookie } : {}) }, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
   try {
@@ -94,10 +102,12 @@ export async function runNaturalConversationCheck({ baseUrl, env = process.env, 
       const userIndex = conversation.messages.findIndex(item => item.role === 'user' && item.requestId === turn.requestId);
       const context = { ...conversation, messages: conversation.messages.slice(0, userIndex + 1) };
       const passed = validateReply(message, index, curriculum, context);
-      turns.push({ turn: index + 1, passed, cached, generation: usage(message?.ai), review: usage(message?.aiReview), externalClaimCount: count(message?.groundingReview?.externalClaimCount) ? message.groundingReview.externalClaimCount : null });
+      const singlePass = message?.libraryGroundedDialogue === true;
+      turns.push({ turn: index + 1, passed, cached, generation: usage(message?.ai), ...(singlePass ? { independentReview: false, sourceBindingCount: Array.isArray(message?.libraryGrounding?.sourceChunkIds) ? message.libraryGrounding.sourceChunkIds.length : null } : { review: usage(message?.aiReview), externalClaimCount: count(message?.groundingReview?.externalClaimCount) ? message.groundingReview.externalClaimCount : null }) });
       if (!passed) return receipt = { failed: true, stage: 'natural_reply_validation', turn: index + 1, submitted, turns, rejectionReasonId: [101,201,202,203,301,302,303,304,305,306,307,400,499].includes(message?.studyRejection?.reasonId) ? message.studyRejection.reasonId : null, ...([302, 305].includes(message?.studyRejection?.reasonId) ? { reviewDiagnostics: new NaturalTutorError(message.studyRejection.reasonId, message.studyRejection.diagnostics).diagnostics || null } : {}) };
+      if (!cached) providerCalls += message.aiTotal.calls;
     }
-    return receipt = { naturalConversationPassed: true, contextRecallPassed: true, citedStudyTransitionPassed: true, submitted, providerCalls: submitted * 2, turns };
+    return receipt = { naturalConversationPassed: true, contextRecallPassed: true, citedStudyTransitionPassed: true, submitted, providerCalls, turns };
   } catch {
     return receipt = { failed: true, stage: 'natural_conversation_check', ...(submitted ? { uncertain: true } : {}), submitted };
   } finally {

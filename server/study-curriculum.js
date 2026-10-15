@@ -192,7 +192,10 @@ export function createStudyCurriculum({ records = [], now = Date.now } = {}) {
   }
   function retrieve(query, { conditionIds = [], previousQueries = [], maxChunks = 5 } = {}) {
     if (typeof query !== 'string' || query.length > 12000 || !Array.isArray(conditionIds) || conditionIds.length > 3 || conditionIds.some(item => typeof item !== 'string') || !Number.isInteger(maxChunks) || maxChunks < 1 || maxChunks > 6) throw new TypeError('Use a bounded study query and at most three condition IDs.');
-    if (!needsStudyEvidence(query) && !isStudyFollowup(query)) return [];
+    // A host-selected topic supplies the scope for a short request to begin it.
+    // Do not extend this to unknown clinical names or incidental keyword hits.
+    const selectedTopicStart = conditionIds.some(id => byId.has(id)) && /^(?:please\s+)?(?:start|begin|teach me|review this topic|start this topic|begin this topic)[\s?.!]*$/i.test(query.trim());
+    if (!needsStudyEvidence(query) && !isStudyFollowup(query) && !selectedTopicStart) return [];
     let matched = accepted.filter(condition => phraseMatches(query, condition, conditionIds).length);
     // Prefer a named subtype to a broad alias contained wholly inside that subtype.
     matched = matched.filter(condition => !phraseMatches(query, condition, conditionIds).every(phrase => matched.some(other => other.id !== condition.id && phraseMatches(query, other, conditionIds).some(longer => normalized(longer).length > normalized(phrase).length && ` ${normalized(longer)} `.includes(` ${normalized(phrase)} `)))));
@@ -210,7 +213,7 @@ export function createStudyCurriculum({ records = [], now = Date.now } = {}) {
     if (!ids.size) return [];
     const wanted = tokens(effectiveQuery);
     const dosingRequest = /\b(?:dose|dosage|dosing|how many|how much|puffs?|tablet strength|capsule strength|mg|mcg|infusion rate)\b/i.test(query);
-    const genericFollowup = isStudyFollowup(query);
+    const genericFollowup = isStudyFollowup(query) || selectedTopicStart;
     return documents.filter(doc => ids.has(doc.condition.id) && currency(doc.condition, now).current && (!dosingRequest || /\b\d+(?:\.\d+)?\s*(?:mg|mcg|micrograms?|milligrams?|units?|mL)\b/i.test(doc.chunk.text))).map(doc => {
       // Once the condition is selected, rank the requested concept rather than
       // repeated condition names in broad background headings. Canonical quiz
@@ -284,6 +287,12 @@ export function createStudyCurriculum({ records = [], now = Date.now } = {}) {
     const conditions = accepted.filter(condition => !domain || condition.domain === domain).map(condition => ({ condition, score: phraseMatches(q, condition).length * 10 + queryWords.filter(word => new Set(tokens(`${condition.title} ${condition.aliases.join(' ')} ${condition.summary}`)).has(word)).length })).filter(item => !q.trim() || item.score > 0).sort((a, b) => b.score - a.score || a.condition.title.localeCompare(b.condition.title)).map(item => summary(item.condition, now));
     return { conditions, total: accepted.length, diseaseConditions: accepted.filter(record => studyRecordType(record) === 'condition').length, studyTopics: accepted.filter(record => studyRecordType(record) === 'study-topic').length, matched: conditions.length, currentCount: accepted.filter(condition => currency(condition, now).current).length, questionCount: accepted.reduce((sum, condition) => sum + condition.questions.length, 0), domains: [...new Set(accepted.map(condition => condition.domain))].sort(), disclaimer: STUDY_DISCLAIMER };
   }
+  function inventory() {
+    // Metadata only: never copy passages, quiz stems, choices or answer keys.
+    return accepted.map(condition => ({ id: condition.id, title: condition.title, recordType: studyRecordType(condition), current: currency(condition, now).current,
+      publishers: [...new Set(condition.sources.map(source => source.organization))].sort(),
+      sourceKinds: [...new Set(condition.sources.map(source => source.kind))].sort() })).sort((a, b) => a.title.localeCompare(b.title));
+  }
   function prompt(evidence) {
     if (!Array.isArray(evidence) || evidence.length > 6) throw new Error('Invalid study evidence.');
     evidence = evidence.map(item => documentsByKey.get(item.key)).filter(document => document && currency(document.condition, now).current).map(canonicalEvidence);
@@ -324,7 +333,7 @@ export function createStudyCurriculum({ records = [], now = Date.now } = {}) {
     if (citations.length > 10) throw new Error('Selected evidence exceeds the bounded conversation reference limit.');
     return { content: `${content}\n\nStudy reference only; source checks are not clinician approval or patient-care advice.`, citations, grounded: true, curriculum: true, sourceVerified: true, humanReview: false, current: true, conditionIds: selectedIds, ...(studyQuestion ? { studyQuestion } : {}), ...(studySelection ? { studySelection } : {}) };
   }
-  const curriculum = { list, get, retrieve, answer, card, prompt, render, gradeQuestion, boardQuestions, gradeBoardQuestion, quiz, rejected, count: accepted.length };
+  const curriculum = { list, inventory, get, retrieve, answer, card, prompt, render, gradeQuestion, boardQuestions, gradeBoardQuestion, quiz, rejected, count: accepted.length };
   CURRICULUM_DATA.set(curriculum, { records: records.filter(record => byId.has(record.id)).map(record => structuredClone(record)), now });
   return curriculum;
 }

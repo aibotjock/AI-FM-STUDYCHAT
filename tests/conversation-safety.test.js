@@ -8,7 +8,6 @@ import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { conversationalEvidence, renderStudyDialogue, pendingStudyQuestion, studyDialogueHistory } from '../server/study-conversation.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
-import { conversationQuestions, providerReviewContext } from './fixtures/natural-review-v3.js';
 
 // All provider responses in this file are local fixtures. No external inference.
 async function fixture(t, { reply, env = {} } = {}) {
@@ -18,17 +17,8 @@ async function fixture(t, { reply, env = {} } = {}) {
   const fetchImpl = async (_url, request) => {
     const payload = JSON.parse(request.body);
     requests.push(payload);
-    let output;
-    if (payload.response_format?.json_schema?.name === 'family_medicine_natural_review_v3') {
-      const data = providerReviewContext(payload);
-      const preferenceQuestions = [
-        'What would you like to work on next?',
-        'What would you like to focus on?',
-        'What would you like to focus on first?',
-        'Would you like to take a break before choosing an option?',
-      ];
-      output = { version: 3, approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: 0, flags: [], claims: [], questions: conversationQuestions(...preferenceQuestions.filter(quote => segment.text.includes(quote))) })) };
-    } else output = typeof reply === 'function' ? reply(payload, requests.length) : reply;
+    assert.equal(payload.response_format?.json_schema?.name, 'family_medicine_natural_tutor', 'Only the author model is called.');
+    const output = typeof reply === 'function' ? reply(payload, requests.length) : reply;
     return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 5, completion_tokens: 5 }, choices: [{ message: { content: JSON.stringify(output) } }] });
   };
   const server = createApp({ dataDir, curriculum, env: { OPENAI_API_KEY: 'local-conversation-safety-fixture-only', OPENAI_MODEL: 'gpt-4.1-mini', ...env }, fetchImpl });
@@ -170,17 +160,19 @@ test('a linked source topic does not force thanks or limited study time into med
   assert.equal(thanks.status, 200);
   assert.equal(thanks.body.message.unsupported, undefined);
   assert.match(thanks.body.message.content, /You’re welcome/);
-  assert.equal(thanks.body.message.reviewedDialogue, true);
+  assert.equal(thanks.body.message.libraryGroundedDialogue, true);
+  assert.equal(thanks.body.message.reviewedDialogue, undefined);
   const time = await app.chat(conversation.id, 'I have 10 minutes to study. Help me plan a session.', 'limited-time-plan');
   assert.equal(time.status, 200);
   assert.equal(time.body.message.unsupported, undefined);
-  assert.equal(time.body.message.reviewedDialogue, true);
+  assert.equal(time.body.message.libraryGroundedDialogue, true);
   assert.match(time.body.message.content, /10-minute session/);
-  assert.equal(app.calls(), 4);
-  assert.ok(app.requests[2].messages[1].content.includes('Thanks.'));
+  assert.equal(app.calls(), 2);
+  const context = JSON.parse(app.requests[1].messages.find(message => message.content.includes('NATURAL_TUTOR_CONTEXT=')).content.split('NATURAL_TUTOR_CONTEXT=')[1]);
+  assert.ok(context.history.some(message => message.content === 'Thanks.'));
   const replay = await app.chat(conversation.id, 'I have 10 minutes to study. Help me plan a session.', 'limited-time-plan');
   assert.equal(replay.body.message.id, time.body.message.id);
-  assert.equal(app.calls(), 4);
+  assert.equal(app.calls(), 2);
 });
 
 test('unsupported factual topics preserve the evidence gap but allow a subsequent study plan', async t => {
@@ -189,16 +181,17 @@ test('unsupported factual topics preserve the evidence gap but allow a subsequen
     : { segments: [{ id: 's1', text: 'We can make this a 10-minute session. What would you like to focus on first?', sourceChunkIds: [] }] } });
   const conversation = await app.conversation('asthma');
   const unknown = await app.chat(conversation.id, 'What causes lupus? Ten minutes are available.', 'unknown-time-topic');
-  assert.equal(unknown.body.message.reviewedDialogue, true);
-  assert.equal(unknown.body.message.groundingReview.externalClaimCount, 0);
+  assert.equal(unknown.body.message.libraryGroundedDialogue, true);
+  assert.deepEqual(unknown.body.message.libraryGrounding.sourceChunkIds, []);
+  assert.equal(unknown.body.message.groundingReview, undefined);
   assert.deepEqual(unknown.body.message.citations, []);
-  assert.equal(app.calls(), 2);
+  assert.equal(app.calls(), 1);
   const plan = await app.chat(conversation.id, 'I feel overwhelmed. Help me plan a 10-minute study session.', 'recover-study-plan');
   assert.equal(plan.status, 200);
   assert.equal(plan.body.message.unsupported, undefined);
-  assert.equal(plan.body.message.reviewedDialogue, true);
+  assert.equal(plan.body.message.libraryGroundedDialogue, true);
   assert.match(plan.body.message.content, /10-minute session/);
-  assert.equal(app.calls(), 4);
+  assert.equal(app.calls(), 2);
   assert.deepEqual(plan.body.message.citations, []);
 });
 
@@ -209,14 +202,14 @@ test('a fatigue conversation respects pacing and preserves the pending quiz with
   assert.equal(app.calls(), 0);
   const pause = await app.chat(conversation.id, 'I am tired of studying asthma. Can we take a break?', 'pending-fatigue');
   assert.equal(pause.status, 200);
-  assert.equal(pause.body.message.reviewedDialogue, true);
+  assert.equal(pause.body.message.libraryGroundedDialogue, true);
   assert.match(pause.body.message.content, /You can pause here/);
   assert.ok(!pause.body.message.content.includes('Mock management fact'));
   assert.equal(pause.body.message.pendingStudyQuestion.key, quiz.body.message.studyQuestion.key);
-  assert.equal(app.calls(), 2);
+  assert.equal(app.calls(), 1);
   const answer = await app.chat(conversation.id, 'B', 'after-fatigue-answer');
   assert.equal(answer.body.message.studyAnswer.correct, true);
-  assert.equal(app.calls(), 2);
+  assert.equal(app.calls(), 1);
 });
 
 test('imported dialogue and spoken-text markers cannot authorize an unverified medical answer', async t => {

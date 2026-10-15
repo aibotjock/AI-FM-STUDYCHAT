@@ -15,7 +15,7 @@ import { createVoiceService, sanitizeVoiceEvents, VoiceError } from './voice.js'
 import { loadStudyCurriculum, loadStudyFoundations, combineStudyCurricula, needsStudyEvidence, isStudyQuizRequest, isActualCareRequest, studyChoice, STUDY_DISCLAIMER, STUDY_NO_EVIDENCE, STUDY_REAL_CARE_REDIRECT } from './study-curriculum.js';
 import { createBoardPractice, BoardPracticeError } from './board-practice.js';
 import { isCoachingTurn, isDialogueFollowup, conversationalEvidence, pendingStudyQuestion } from './study-conversation.js';
-import { buildNaturalTutorPrompt, buildNaturalTutorSchema, validateNaturalDraft, buildNaturalReviewPrompt, buildNaturalReviewSchema, renderReviewedTutor, aggregateTutorUsage, naturalTutorFailure } from './natural-tutor.js';
+import { buildNaturalTutorPrompt, buildNaturalTutorSchema, renderNaturalTutor, aggregateTutorUsage, naturalTutorFailure } from './natural-tutor.js';
 import { isOperatorTitle, learnerState, preserveOperatorConversations } from './operator-conversations.js';
 import { createPremiumSpeechService, premiumSpeechText, splitPremiumSpeech, premiumVoice, PREMIUM_PREVIEW_TEXT, PremiumSpeechError } from './premium-speech.js';
 import { createConversationAudioService, conversationAudioId, CONVERSATION_AUDIO_LIMITS, ConversationAudioError } from './conversation-audio.js';
@@ -954,7 +954,6 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             else if (voiceScope) save();
             let generated = generateReply ? await generateReply({ conversation, settings: state.settings, reviews: state.reviews, cards: state.cards, requestId: requestId || user.id }) : null;
             let completion = null;
-            let reviewCompletion = null;
             let aiCalls = 0;
             if (!generated && studyReferences && isActualCareRequest(content)) generated = { content: STUDY_REAL_CARE_REDIRECT, scripted: true, unsupported: true, citations: [] };
             const previousQueries = conversation.messages.filter(message => message.role === 'user' && message.id !== user.id).slice(-3).map(message => message.content);
@@ -977,19 +976,13 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             if (!generated && studyReferences) {
               if (ai.configured) {
                 try {
-                  const tutorContext = { references: studyReferences, evidence, conversation, settings: state.settings, pendingQuestion: pending, requireVersion3: true, voiceTurn: Boolean(voiceScope), inlineOutputSchema: !ai.nativeJsonSchema, deduplicateCurrentRequest: true };
+                  const tutorContext = { references: studyReferences, referenceDirectory, evidence, conversation, settings: state.settings, pendingQuestion: pending, voiceTurn: Boolean(voiceScope), inlineOutputSchema: !ai.nativeJsonSchema, deduplicateCurrentRequest: true };
                   const primaryPrompt = buildNaturalTutorPrompt(tutorContext);
                   const primarySchema = buildNaturalTutorSchema(tutorContext);
                   aiCalls++;
                   completion = await complete([{ role: 'system', content: primaryPrompt }, { role: 'user', content }], { jsonMode: true, jsonSchema: primarySchema, maxOutputTokens: 800, signal: controller?.signal });
                   ensureVoiceActive();
-                  const draft = validateNaturalDraft(JSON.parse(completion.content), tutorContext);
-                  const reviewPrompt = buildNaturalReviewPrompt(draft, tutorContext);
-                  const reviewSchema = buildNaturalReviewSchema(draft, tutorContext);
-                  aiCalls++;
-                  reviewCompletion = await complete([{ role: 'system', content: reviewPrompt }, { role: 'user', content: 'Review the complete candidate in NATURAL_REVIEW_DATA. Return the required review JSON.' }], { jsonMode: true, jsonSchema: reviewSchema, maxOutputTokens: 2000, signal: controller?.signal });
-                  ensureVoiceActive();
-                  generated = renderReviewedTutor(draft, JSON.parse(reviewCompletion.content), tutorContext);
+                  generated = renderNaturalTutor(JSON.parse(completion.content), tutorContext);
                 } catch (error) {
                   // Generated questions never establish their own medical answer keys.
                   // Reuse a current canonical quiz only when requested; otherwise show
@@ -1008,11 +1001,11 @@ export function createApp({ dataDir = resolve(process.cwd(), 'data'), env = proc
             const answer = generated ? generated.content : completion ? completion.content : offlineReply(conversation);
             if (typeof answer !== 'string' || !answer.trim() || answer.length > 20000) fail(502, 'The coach returned an unusable answer.');
             const connected = Boolean(generateReply || completion || generated?.grounded || generated?.unsupported || generated?.scripted);
-            const processMetadata = studyReferences && !generated?.reviewedDialogue && (generated?.unsupported || generated?.scripted) ? { sourceVerified: true, canonicalStudyProcess: true } : {};
+            const processMetadata = studyReferences && !generated?.libraryGroundedDialogue && !generated?.reviewedDialogue && (generated?.unsupported || generated?.scripted) ? { sourceVerified: true, canonicalStudyProcess: true } : {};
             const studyMetadata = generated?.curriculum ? { grounded: true, curriculum: true, sourceVerified: true, humanReview: false, current: true, conditionIds: generated.conditionIds, ...(generated.studyQuestion ? { studyQuestion: generated.studyQuestion } : {}), ...(generated.studyAnswer ? { studyAnswer: generated.studyAnswer } : {}), ...(generated.studySelection ? { studySelection: generated.studySelection } : {}) } : {};
-            if ((generated?.curriculum || generated?.reviewedDialogue) && generated.conditionIds?.length === 1) conversation.curriculumConditionId = generated.conditionIds[0];
-            const naturalMetadata = generated?.reviewedDialogue ? { reviewedDialogue: true, groundingReview: generated.groundingReview, naturalSegments: generated.naturalSegments, spokenText: generated.spokenText, canonicalSpokenText: false, sourceVerified: false, humanReview: false, pendingStudyQuestion: generated.pendingStudyQuestion, ...(generated.current ? { current: true, grounded: true, conditionIds: generated.conditionIds } : {}) } : {};
-            const message = { id: randomUUID(), role: 'assistant', content: answer, createdAt: Date.now(), responseTo: user.id, ...(completion?.metadata ? { ai: completion.metadata } : {}), ...(reviewCompletion?.metadata ? { aiReview: reviewCompletion.metadata } : {}), ...(aiCalls ? { aiTotal: aggregateTutorUsage(completion?.metadata, reviewCompletion?.metadata, aiCalls) } : {}), ...(generated?.citations ? { citations: generated.citations } : {}), ...(generated?.unsupported ? { unsupported: true } : {}), ...(generated?.scripted ? { scripted: true } : {}), ...(generated?.studyRejection ? { studyRejection: generated.studyRejection } : {}), ...processMetadata, ...studyMetadata, ...naturalMetadata, ...(connected ? {} : { offline: true }) };
+            if ((generated?.curriculum || generated?.libraryGroundedDialogue || generated?.reviewedDialogue) && generated.conditionIds?.length === 1) conversation.curriculumConditionId = generated.conditionIds[0];
+            const naturalMetadata = generated?.libraryGroundedDialogue ? { libraryGroundedDialogue: true, libraryGrounding: generated.libraryGrounding, naturalSegments: generated.naturalSegments, spokenText: generated.spokenText, canonicalSpokenText: false, sourceVerified: false, humanReview: false, pendingStudyQuestion: generated.pendingStudyQuestion, ...(generated.current ? { current: true, grounded: true, conditionIds: generated.conditionIds } : {}) } : {};
+            const message = { id: randomUUID(), role: 'assistant', content: answer, createdAt: Date.now(), responseTo: user.id, ...(completion?.metadata ? { ai: completion.metadata } : {}), ...(aiCalls ? { aiTotal: aggregateTutorUsage(completion?.metadata, null, aiCalls) } : {}), ...(generated?.citations ? { citations: generated.citations } : {}), ...(generated?.unsupported ? { unsupported: true } : {}), ...(generated?.scripted ? { scripted: true } : {}), ...(generated?.studyRejection ? { studyRejection: generated.studyRejection } : {}), ...processMetadata, ...studyMetadata, ...naturalMetadata, ...(connected ? {} : { offline: true }) };
             if (voiceUser) voiceUser.voiceRequestStatus = 'completed';
             conversation.messages.push(message);
             if (voiceScope) {

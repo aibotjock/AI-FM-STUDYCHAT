@@ -8,13 +8,13 @@ import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
 
-async function fixture(t, { question = 'Which antibiotic is first-line for this disease?', kind = 'medical-assessment', omitAudit = false } = {}) {
+async function fixture(t, { question = 'Which antibiotic is first-line for this disease?' } = {}) {
   const dataDir = mkdtempSync(join(tmpdir(), 'answerability-route-'));
   const requests = [];
   const fetchImpl = async (_url, request) => {
     const body = JSON.parse(request.body); requests.push(body);
-    const review = body.response_format?.json_schema?.name === 'family_medicine_natural_review_v3';
-    const response = review ? { version: 3, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 0, claims: [], flags: [], questions: omitAudit ? [] : [{ quote: question, kind, recallSpanId: null }] }] } : { segments: [{ id: 's1', text: question, sourceChunkIds: [] }] };
+    assert.equal(body.response_format?.json_schema?.name, 'family_medicine_natural_tutor');
+    const response = { segments: [{ id: 's1', text: question, sourceChunkIds: [] }] };
     return Response.json({ model: 'gpt-4.1-mini', usage: { prompt_tokens: 10, completion_tokens: 10 }, choices: [{ message: { content: JSON.stringify(response) } }] });
   };
   const curriculum = createStudyCurriculum({ records: [studyCondition()], now: STUDY_NOW });
@@ -26,7 +26,7 @@ async function fixture(t, { question = 'Which antibiotic is first-line for this 
   return { post, requests };
 }
 
-test('an approved but unanswerable generated medical question is replaced by a cited point with no new call', async t => {
+test('an unanswerable generated medical question is replaced by a cited point with no second call', async t => {
   const app = await fixture(t);
   const conversation = await app.post('/api/conversations', { mode: 'coach', conditionId: 'asthma' });
   const { message } = await app.post('/api/chat', { conversationId: conversation.id, content: 'Help me study asthma treatment.' });
@@ -34,18 +34,18 @@ test('an approved but unanswerable generated medical question is replaced by a c
   assert.ok(message.citations.length);
   assert.doesNotMatch(message.content, /Which antibiotic|\?/);
   assert.equal(message.studyQuestion, undefined);
-  assert.equal(app.requests.length, 2);
-  assert.equal(app.requests[1].max_completion_tokens, 2000);
+  assert.equal(app.requests.length, 1);
 });
 
-test('a false-zero question audit cannot release an obvious unsupported assessment', async t => {
-  const app = await fixture(t, { omitAudit: true });
+test('the deterministic question gate cannot release an obvious unsupported assessment without evidence', async t => {
+  const app = await fixture(t);
   const conversation = await app.post('/api/conversations', { mode: 'coach' });
   const { message } = await app.post('/api/chat', { conversationId: conversation.id, content: 'Study an unknown fictional disease.' });
   assert.equal(message.unsupported, true);
   assert.equal(message.studyRejection.reasonId, 308);
   assert.deepEqual(message.citations, []);
   assert.doesNotMatch(message.content, /Which antibiotic/);
+  assert.equal(app.requests.length, 1);
 });
 
 test('an explicit study quiz uses a current canonical key and can be graded without a provider call', async t => {
@@ -62,10 +62,12 @@ test('an explicit study quiz uses a current canonical key and can be graded with
 
 test('ordinary preference questions remain conversational after the stricter medical-question gate', async t => {
   const question = 'Would you like to take a break?';
-  const app = await fixture(t, { question, kind: 'conversation' });
+  const app = await fixture(t, { question });
   const conversation = await app.post('/api/conversations', { mode: 'coach' });
   const { message } = await app.post('/api/chat', { conversationId: conversation.id, content: 'I feel tired of studying.' });
-  assert.equal(message.reviewedDialogue, true);
+  assert.equal(message.libraryGroundedDialogue, true);
+  assert.equal(message.reviewedDialogue, undefined);
   assert.match(message.content, /Would you like to take a break/);
-  assert.equal(message.groundingReview.segments[0].questions[0].kind, 'conversation');
+  assert.deepEqual(message.libraryGrounding.sourceChunkIds, []);
+  assert.equal(app.requests.length, 1);
 });

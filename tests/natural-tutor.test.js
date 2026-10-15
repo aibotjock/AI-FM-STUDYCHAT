@@ -83,7 +83,7 @@ test('two-completion usage shows actual combined cost and leaves partial unknown
   assert.equal(partial.estimatedCostUsd, null);
 });
 
-test('a nonnative selected model receives complete privacy-safe author and reviewer schemas in its prompts', async t => {
+test('a nonnative selected model receives one complete privacy-safe generation schema', async t => {
   const dataDir = mkdtempSync(join(tmpdir(), 'natural-json-contract-'));
   const calls = [];
   const learnerName = 'PRIVATE_LEARNER_NAME_174';
@@ -97,16 +97,14 @@ test('a nonnative selected model receives complete privacy-safe author and revie
     const schema = JSON.parse(compiled);
     assert.doesNotMatch(compiled, /PRIVATE_LEARNER_NAME_174|What would you like to chat about/);
     assert.equal(schema.additionalProperties, false);
-    const reviewing = prompt.includes('NATURAL_REVIEW_DATA=');
-    if (!reviewing) {
-      assert.match(prompt, /within 80 words unless the learner asks for detail/);
-      assert.match(prompt, /answer a request for detail fully within the output limits/);
-      assert.match(prompt, /Preserve every clinically necessary qualifier and exception/);
-    }
-    assert.deepEqual(schema.required, reviewing ? ['version', 'approved', 'segments'] : ['segments']);
-    assert.deepEqual(schema.properties.segments.items.required, reviewing ? ['id', 'approved', 'externalFactCount', 'claims', 'flags', 'questions'] : ['id', 'text', 'sourceChunkIds']);
+    assert.equal(prompt.includes('NATURAL_REVIEW_DATA='), false);
+    assert.match(prompt, /within 80 words unless the learner asks for detail/);
+    assert.match(prompt, /answer a request for detail fully within the output limits/);
+    assert.match(prompt, /Preserve every clinically necessary qualifier and exception/);
+    assert.deepEqual(schema.required, ['segments']);
+    assert.deepEqual(schema.properties.segments.items.required, ['id', 'text', 'sourceChunkIds']);
     assert.equal(schema.properties.segments.items.additionalProperties, false);
-    const response = reviewing ? { version: 3, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 0, claims: [], flags: [], questions: [{ quote: 'What would you like to chat about?', kind: 'conversation', recallSpanId: null }] }] } : { segments: [{ id: 's1', text: authoredText, sourceChunkIds: [] }] };
+    const response = { segments: [{ id: 's1', text: authoredText, sourceChunkIds: [] }] };
     return Response.json({ model: 'gpt-6-luna', usage: { prompt_tokens: 30, completion_tokens: 10 }, choices: [{ message: { content: JSON.stringify(response) } }] });
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
@@ -119,8 +117,10 @@ test('a nonnative selected model receives complete privacy-safe author and revie
   }
   const conversation = await post('/api/conversations', { mode: 'coach' }, 201);
   const reply = await post('/api/chat', { conversationId: conversation.id, content: `Call me ${learnerName}. I'd like to chat about my day.`, requestId: 'nonnative-schema-contract' });
-  assert.equal(calls.length, 2);
-  assert.equal(reply.message.reviewedDialogue, true);
+  assert.equal(calls.length, 1);
+  assert.equal(reply.message.libraryGroundedDialogue, true);
+  assert.equal(reply.message.reviewedDialogue, undefined);
+  assert.equal(reply.message.aiReview, undefined);
   assert.equal(reply.message.spokenText, authoredText);
   assert.equal(reply.message.ai.returnedModel, 'gpt-6-luna');
 });

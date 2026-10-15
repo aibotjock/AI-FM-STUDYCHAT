@@ -15,6 +15,12 @@ test('saved author and reviewer durations remain distinguishable without implyin
   assert.doesNotMatch(answerTimingText(message), /audio|verified|first token/i);
 });
 
+test('single-call answers show only the measured writing duration', () => {
+  assert.equal(answerTimingText({ ai: message.ai }), 'Writing 2.1 s');
+  assert.equal(answerTimingText({ ai: { latencyMs: 0 } }), 'Writing 0.0 s');
+  assert.doesNotMatch(answerTimingText({ ai: message.ai }), /checking|review/i);
+});
+
 test('the browser timing module is served and included in the installed app shell', async t => {
   const dataDir = mkdtempSync(join(tmpdir(), 'fm-answer-timing-'));
   const server = createApp({ dataDir, env: {}, fetchImpl: async () => { throw new Error('No provider request allowed.'); } });
@@ -30,7 +36,7 @@ test('the browser timing module is served and included in the installed app shel
 });
 
 test('missing, imported, client-reported and invalid timings never become measured stage labels', () => {
-  for (const value of [null, {}, { ai: message.ai }, { ...message, importedEvidence: true },
+  for (const value of [null, {}, { ...message, importedEvidence: true },
     { ...message, ai: { ...message.ai, imported: true } }, { ...message, aiReview: { ...message.aiReview, clientReported: true } },
     { ...message, ai: { ...message.ai, endpoint: 'realtime' } },
     ...[null, '100', -1, NaN, Infinity, 86400001].map(latencyMs => ({ ...message, aiReview: { latencyMs } }))]) {

@@ -7,7 +7,6 @@ import { join } from 'node:path';
 import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
-import { providerReviewContext } from './fixtures/natural-review-v3.js';
 
 async function fixture(t, options = {}) {
   const dataDir = mkdtempSync(join(tmpdir(), 'study-routes-'));
@@ -20,10 +19,7 @@ async function fixture(t, options = {}) {
     requests.push(payload);
     let response;
     if (options.reply) response = options.reply;
-    else if (payload.response_format?.json_schema?.name === 'family_medicine_natural_review_v3') {
-      const data = providerReviewContext(payload);
-      response = { version: 3, approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: segment.sourceChunkIds.length ? 1 : 0, flags: [], questions: [], claims: segment.sourceChunkIds.length ? [{ quote: segment.text, type: 'medical', sourceChunkIds: segment.sourceChunkIds, supports: segment.sourceChunkIds.map(chunkId => ({ chunkId, spanId: data.sourceSpans.find(source => source.chunkId === chunkId).spanId })) }] : [] })) };
-    } else {
+    else {
       const data = JSON.parse(payload.messages.find(message => message.content.includes('NATURAL_TUTOR_CONTEXT=')).content.split('NATURAL_TUTOR_CONTEXT=')[1]);
       const source = data.sources.find(source => source.key === 'asthma:management') || data.sources[0];
       response = { segments: [{ id: 's1', text: source ? source.text : 'I cannot verify that fact from the current references. You can choose an available study topic or open its cited source.', sourceChunkIds: source ? [source.key] : [] }] };
@@ -80,11 +76,12 @@ test('expired content stays visible but cannot grade, save cards or ground chat'
   for (const route of ['answer', 'card']) assert.equal((await app.request(`/api/curriculum/asthma/${route}`, 'POST', { questionId: 'asthma-q1', choiceId: 'B' })).status, 409);
   const conversation = await app.conversation();
   const reply = await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Study asthma' });
-  assert.equal(reply.body.message.reviewedDialogue, true);
-  assert.equal(reply.body.message.groundingReview.externalClaimCount, 0);
+  assert.equal(reply.body.message.libraryGroundedDialogue, true);
+  assert.equal(reply.body.message.reviewedDialogue, undefined);
+  assert.deepEqual(reply.body.message.libraryGrounding.sourceChunkIds, []);
   assert.equal(reply.body.message.grounded, undefined);
   assert.deepEqual(reply.body.message.citations, []);
-  assert.equal(app.calls(), 2);
+  assert.equal(app.calls(), 1);
 });
 
 test('canonical cards save idempotently with source dates and existing spaced repetition', async t => {
@@ -135,25 +132,30 @@ test('condition conversation linkage survives backup and invalid references are 
   assert.equal((await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Study asthma', conditionIds: ['missing'] })).status, 400);
 });
 
-test('connected study chat releases source-reviewed natural text with canonical citations', async t => {
+test('connected study chat releases one generated reply with current library bindings and canonical citations', async t => {
   const app = await fixture(t, { env: { OPENAI_API_KEY: 'mock-key' } });
   const conversation = await app.conversation();
   const payload = { conversationId: conversation.id, content: 'Study asthma inhaler technique', requestId: 'one-study-request' };
   const result = await app.request('/api/chat', 'POST', payload);
   assert.equal(result.status, 200);
   assert.equal(result.body.message.sourceVerified, false);
-  assert.equal(result.body.message.reviewedDialogue, true);
-  assert.equal(result.body.message.groundingReview.status, 'passed');
+  assert.equal(result.body.message.libraryGroundedDialogue, true);
+  assert.equal(result.body.message.libraryGrounding.status, 'bound');
+  assert.deepEqual(result.body.message.libraryGrounding.sourceChunkIds, ['asthma:management']);
+  assert.equal(result.body.message.reviewedDialogue, undefined);
+  assert.equal(result.body.message.groundingReview, undefined);
+  assert.equal(result.body.message.aiReview, undefined);
+  assert.equal(result.body.message.aiTotal.calls, 1);
   assert.equal(result.body.message.humanReview, false);
   assert.equal(result.body.message.grounded, true);
   assert.match(result.body.message.content, /Mock management fact: review inhaler technique/);
   assert.equal(result.body.message.citations[0].url, 'https://www.nhlbi.nih.gov/health/asthma');
   assert.equal(app.requests[0].response_format.type, 'json_schema');
   assert.equal(app.requests[0].response_format.json_schema.name, 'family_medicine_natural_tutor');
-  assert.equal(app.requests[1].response_format.json_schema.name, 'family_medicine_natural_review_v3');
-  assert.ok(app.requests[0].messages.some(message => /Automated review is not qualified clinical approval/.test(message.content)));
+  assert.equal(app.requests.length, 1);
+  assert.ok(app.requests[0].messages.some(message => /Source bindings do not establish factual correctness; technical validation is not qualified clinical approval/.test(message.content)));
   assert.equal((await app.request('/api/chat', 'POST', payload)).body.message.id, result.body.message.id);
-  assert.equal(app.calls(), 2);
+  assert.equal(app.calls(), 1);
 });
 
 test('undeclared answer bodies cannot bypass natural draft validation or acquire citations', async t => {
@@ -166,17 +168,30 @@ test('undeclared answer bodies cannot bypass natural draft validation or acquire
   assert.equal(app.calls(), 1);
 });
 
+test('a generated reply cannot bind an invented library chunk or trigger a review retry', async t => {
+  const app = await fixture(t, { env: { OPENAI_API_KEY: 'mock-key' }, reply: { segments: [{ id: 's1', text: 'A fabricated source claims this treatment works.', sourceChunkIds: ['asthma:not-in-the-library'] }] } });
+  const conversation = await app.conversation();
+  const result = await app.request('/api/chat', 'POST', { conversationId: conversation.id, content: 'Study asthma' });
+  assert.equal(result.body.message.unsupported, true);
+  assert.equal(result.body.message.studyRejection.reasonId, 202);
+  assert.deepEqual(result.body.message.citations, []);
+  assert.doesNotMatch(result.body.message.content, /fabricated source/);
+  assert.equal(result.body.message.aiReview, undefined);
+  assert.equal(app.calls(), 1);
+});
+
 test('unsupported clinical and dosing questions offer neutral study navigation without releasing factual teaching', async t => {
   const app = await fixture(t, { env: { OPENAI_API_KEY: 'mock-key' } });
   const conversation = await app.conversation();
   for (const content of ['What insulin dose?', 'What insulin dose for asthma?']) {
     const result = await app.request('/api/chat', 'POST', { conversationId: conversation.id, content });
-    assert.equal(result.body.message.reviewedDialogue, true);
-    assert.equal(result.body.message.groundingReview.externalClaimCount, 0);
+    assert.equal(result.body.message.libraryGroundedDialogue, true);
+    assert.equal(result.body.message.reviewedDialogue, undefined);
+    assert.deepEqual(result.body.message.libraryGrounding.sourceChunkIds, []);
     assert.deepEqual(result.body.message.citations, []);
     assert.equal(result.body.message.content.includes('?'), false);
   }
-  assert.equal(app.calls(), 4);
+  assert.equal(app.calls(), 2);
 });
 
 test('sourced draft cards use canonical answers, carry dates and remain unsaved until chosen', async t => {

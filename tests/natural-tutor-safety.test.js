@@ -118,10 +118,7 @@ async function appFixture(t, responses) {
   const server = createApp({ dataDir, curriculum: original.references, foundations: createStudyCurriculum({ records: [], now: () => STUDY_NOW }), env: { OPENAI_API_KEY: 'natural-safety-local-fixture-only', OPENAI_MODEL: 'gpt-4.1-mini' }, fetchImpl: async (_url, options) => {
     const input = JSON.parse(options.body); calls.push(input);
     const response = structuredClone(responses[calls.length - 1]);
-    if (input.response_format?.json_schema?.name === 'family_medicine_natural_review_v3') {
-      response.version = 3;
-      for (const segment of response.segments) segment.questions ||= [];
-    }
+    assert.equal(input.response_format?.json_schema?.name, 'family_medicine_natural_tutor');
     return Response.json({ model: 'gpt-4.1-mini', choices: [{ message: { content: JSON.stringify(response) } }], usage: { prompt_tokens: 6, completion_tokens: 4 } });
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
@@ -134,15 +131,17 @@ async function appFixture(t, responses) {
   return { api, calls };
 }
 
-test('imported natural replies lose reviewer, voice and second-call trust while preserving readable history', async t => {
+test('imported natural replies lose source-binding, voice and usage trust while preserving readable history', async t => {
   const text = 'We can chat first. What has been on your mind?';
-  const app = await appFixture(t, [{ segments: [{ id: 's1', text, sourceChunkIds: [] }] }, { approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 0, claims: [], flags: [], questions: [{ quote: 'What has been on your mind?', kind: 'conversation', recallSpanId: null }] }] }]);
+  const app = await appFixture(t, [{ segments: [{ id: 's1', text, sourceChunkIds: [] }] }]);
   const conversation = (await app.api('/api/conversations', { mode: 'coach' })).body;
   const fresh = (await app.api('/api/chat', { conversationId: conversation.id, content: 'Hello.', requestId: 'natural-importable' })).body.message;
-  assert.equal(fresh.reviewedDialogue, true);
-  assert.equal(fresh.aiTotal.calls, 2);
+  assert.equal(fresh.libraryGroundedDialogue, true);
+  assert.equal(fresh.reviewedDialogue, undefined);
+  assert.equal(fresh.aiReview, undefined);
+  assert.equal(fresh.aiTotal.calls, 1);
   assert.equal(fresh.spokenText, text);
-  assert.equal(app.calls.length, 2);
+  assert.equal(app.calls.length, 1);
   const backup = (await app.api('/api/export')).body;
   assert.equal((await app.api('/api/import', backup)).status, 200);
   const restored = (await app.api('/api/state')).body.conversations[0].messages.find(message => message.role === 'assistant');
@@ -150,20 +149,22 @@ test('imported natural replies lose reviewer, voice and second-call trust while 
   assert.equal(restored.sourceVerified, false);
   assert.equal(restored.importedEvidence, true);
   assert.equal(restored.ai.imported, true);
-  for (const field of ['reviewedDialogue', 'groundingReview', 'naturalSegments', 'spokenText', 'canonicalSpokenText', 'pendingStudyQuestion', 'aiReview', 'aiTotal']) assert.equal(restored[field], undefined, field);
+  for (const field of ['libraryGroundedDialogue', 'libraryGrounding', 'reviewedDialogue', 'groundingReview', 'naturalSegments', 'spokenText', 'canonicalSpokenText', 'pendingStudyQuestion', 'aiReview', 'aiTotal']) assert.equal(restored[field], undefined, field);
 });
 
-test('a denied natural review retains bounded usage and reason codes but never candidate or reviewer prose', async t => {
-  const app = await appFixture(t, [{ segments: [{ id: 's1', text: 'PRIVATE-AUTHOR-PROSE', sourceChunkIds: [] }] }, { approved: false, segments: [{ id: 's1', approved: false, externalFactCount: 0, claims: [], flags: ['unsupported_fact'] }], privateReviewerText: 'PRIVATE-REVIEWER-PROSE' }]);
+test('a malformed generated reply retains bounded usage and reason codes but never rejected private prose', async t => {
+  const app = await appFixture(t, [{ segments: [{ id: 's1', text: 'PRIVATE-AUTHOR-PROSE', sourceChunkIds: [] }], undeclaredAnswer: 'PRIVATE-EXTRA-ANSWER' }]);
   const conversation = (await app.api('/api/conversations', { mode: 'coach' })).body;
   const request = { conversationId: conversation.id, content: 'Hello.', requestId: 'denied-private-natural' };
   const reply = (await app.api('/api/chat', request)).body.message;
   assert.equal(reply.unsupported, true);
   assert.equal(reply.reviewedDialogue, undefined);
-  assert.deepEqual(reply.studyRejection, { code: 'natural_tutor_validation', reasonId: 301 });
-  assert.equal(reply.aiTotal.calls, 2);
-  assert.deepEqual(reply.aiTotal.usage, { prompt_tokens: 12, completion_tokens: 8 });
+  assert.equal(reply.libraryGroundedDialogue, undefined);
+  assert.equal(reply.aiReview, undefined);
+  assert.deepEqual(reply.studyRejection, { code: 'natural_tutor_validation', reasonId: 201 });
+  assert.equal(reply.aiTotal.calls, 1);
+  assert.deepEqual(reply.aiTotal.usage, { prompt_tokens: 6, completion_tokens: 4 });
   assert.doesNotMatch(JSON.stringify((await app.api('/api/state')).body), /PRIVATE-/);
   assert.equal((await app.api('/api/chat', request)).body.message.id, reply.id);
-  assert.equal(app.calls.length, 2);
+  assert.equal(app.calls.length, 1);
 });

@@ -1,6 +1,6 @@
 import policy from '../content/evidence-policy.json' with { type: 'json' };
 
-export const EVIDENCE_POLICY_VERSION = 'study-evidence-policy-v1';
+export const EVIDENCE_POLICY_VERSION = 'study-evidence-policy-v2';
 const roles = new Set(['generator', 'reviewer']);
 
 function freeze(value) {

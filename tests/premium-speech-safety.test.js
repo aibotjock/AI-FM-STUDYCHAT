@@ -7,10 +7,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
-import { validateNaturalDraft, renderReviewedTutor } from '../server/natural-tutor.js';
+import { validateNaturalDraft, renderNaturalTutor, renderReviewedTutor } from '../server/natural-tutor.js';
 import { premiumSpeechText } from '../server/premium-speech.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
-import { sourceSpanSupport } from './fixtures/natural-review-v3.js';
 
 const fact = 'Mock management fact: review inhaler technique.';
 const draft = { segments: [{ id: 's1', text: fact, sourceChunkIds: ['asthma:management'] }] };
@@ -34,6 +33,56 @@ function storedReviewedContext() {
   context.conversation.messages.push(context.message);
   return context;
 }
+
+function storedLibraryContext() {
+  const context = sourceContext();
+  context.message = { id: randomUUID(), role: 'assistant', responseTo: context.conversation.messages.at(-1).id, createdAt: STUDY_NOW, ...renderNaturalTutor(draft, context) };
+  context.conversation.messages.push(context.message);
+  return context;
+}
+
+test('single-generation speech uses current library bindings without claiming an independent review', () => {
+  const context = storedLibraryContext();
+  assert.equal(premiumSpeechText(context), fact);
+  assert.equal(context.message.sourceVerified, false);
+  assert.equal(context.message.humanReview, false);
+  assert.equal(context.message.reviewedDialogue, undefined);
+  assert.equal(context.message.groundingReview, undefined);
+  assert.equal(context.message.aiReview, undefined);
+  assert.deepEqual(context.message.libraryGrounding.sourceChunkIds, ['asthma:management']);
+  assert.equal(context.message.libraryGrounding.sourceSpanBindings.length, 1);
+  context.expire();
+  assert.throws(() => premiumSpeechText(context), { status: 409 });
+});
+
+test('single-generation speech rejects imported metadata, detached messages and changed source bindings', () => {
+  for (const mutate of [
+    message => { message.importedEvidence = true; },
+    message => { message.importedReview = true; },
+    message => { message.ai = { imported: true }; },
+    message => { message.voiceTranscript = true; },
+    message => { message.content += '\nPRIVATE_UNCHECKED_FACT'; },
+    message => { message.spokenText += '\nPRIVATE_UNCHECKED_FACT'; },
+    message => { message.citations[0].url = 'https://private.invalid/forged'; },
+    message => { message.libraryGrounding.sourceSpanBindings[0].spanId = 'span_forged'; },
+    message => { message.libraryGrounding.sourceChunkIds = []; },
+    message => { message.sourceVerified = true; },
+    message => { message.humanReview = true; },
+    message => { message.canonicalSpokenText = true; },
+  ]) {
+    const context = storedLibraryContext(); mutate(context.message);
+    assert.throws(() => premiumSpeechText(context), { status: 409 });
+  }
+  const context = storedLibraryContext();
+  assert.throws(() => premiumSpeechText({ ...context, message: structuredClone(context.message) }), { status: 409 });
+});
+
+test('single-generation speech cannot use a later reveal request to authorize an earlier pending quiz reply', () => {
+  const context = storedLibraryContext();
+  context.message.pendingStudyQuestion = context.references.quiz(context.evidence).studyQuestion;
+  context.conversation.messages.push({ id: randomUUID(), role: 'user', content: 'Please reveal the answer.', createdAt: STUDY_NOW + 1 });
+  assert.throws(() => premiumSpeechText(context), { status: 409 });
+});
 
 test('AI speech rejects imported review provenance and detached same-ID messages', () => {
   const original = storedReviewedContext();
@@ -84,6 +133,7 @@ async function fixture(t, { env = {}, authenticateRequest, isActive, speechRespo
   const dataDir = mkdtempSync(join(tmpdir(), 'premium-speech-safety-'));
   const context = sourceContext();
   const speechCalls = [];
+  const authorCalls = [];
   let speechStarted;
   const started = new Promise(resolve => { speechStarted = resolve; });
   const server = createApp({ dataDir, curriculum: context.references, foundations: createStudyCurriculum({ records: [], now: () => STUDY_NOW }), authenticateRequest, isActive, env: { HOST: '127.0.0.1', OPENAI_API_KEY: 'local-speech-safety-fixture-only', OPENAI_MODEL: 'gpt-4.1-mini', ...env }, fetchImpl: async (url, options) => {
@@ -93,10 +143,9 @@ async function fixture(t, { env = {}, authenticateRequest, isActive, speechRespo
       speechStarted();
       return speechResponse ? await speechResponse({ url, options, input }) : new Response(new Uint8Array([73, 68, 51, 1]), { headers: { 'Content-Type': 'audio/mpeg' } });
     }
-    const output = input.response_format?.json_schema?.name === 'family_medicine_natural_review_v3'
-      ? { version: 3, approved: true, segments: review.segments.map(segment => ({ ...segment, questions: [], claims: segment.claims.map(claim => ({ ...claim, supports: claim.sourceChunkIds.map(chunkId => sourceSpanSupport(input, chunkId)) })) })) }
-      : draft;
-    return Response.json({ model: 'gpt-4.1-mini', choices: [{ message: { content: JSON.stringify(output) } }], usage: { prompt_tokens: 6, completion_tokens: 4 } });
+    authorCalls.push(input);
+    assert.equal(input.response_format?.json_schema?.name, 'family_medicine_natural_tutor');
+    return Response.json({ model: 'gpt-4.1-mini', choices: [{ message: { content: JSON.stringify(draft) } }], usage: { prompt_tokens: 6, completion_tokens: 4 } });
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   const base = `http://127.0.0.1:${server.address().port}`;
@@ -109,14 +158,21 @@ async function fixture(t, { env = {}, authenticateRequest, isActive, speechRespo
     return { status: response.status, body: await response.json() };
   }
   async function makeStudyMessage() {
+    const priorCalls = authorCalls.length;
     const created = await api('/api/conversations', { mode: 'coach', title: 'Speech safety study', curriculumConditionId: 'asthma' });
     assert.equal(created.status, 201);
     const chat = await api('/api/chat', { conversationId: created.body.id, content: 'Help me study asthma inhaler technique.', requestId: randomUUID() });
     assert.equal(chat.status, 200);
-    assert.equal(chat.body.message.reviewedDialogue, true);
+    assert.equal(chat.body.message.libraryGroundedDialogue, true);
+    assert.equal(chat.body.message.libraryGrounding.status, 'bound');
+    assert.equal(chat.body.message.reviewedDialogue, undefined);
+    assert.equal(chat.body.message.groundingReview, undefined);
+    assert.equal(chat.body.message.aiReview, undefined);
+    assert.equal(chat.body.message.aiTotal.calls, 1);
+    assert.equal(authorCalls.length, priorCalls + 1);
     return { conversationId: created.body.id, messageId: chat.body.message.id, message: chat.body.message };
   }
-  return { ...context, api, request, server, base, started, speechCalls, makeStudyMessage };
+  return { ...context, api, request, server, base, started, speechCalls, authorCalls, makeStudyMessage };
 }
 
 function delayedAudio(t) {
@@ -168,6 +224,8 @@ test('imported client captions and forged review metadata cannot gain AI speech 
   assert.equal(restored.importedEvidence, true);
   assert.equal(restored.reviewedDialogue, undefined);
   assert.equal(restored.groundingReview, undefined);
+  assert.equal(restored.libraryGroundedDialogue, undefined);
+  assert.equal(restored.libraryGrounding, undefined);
   assert.equal(restored.spokenText, undefined);
   assert.equal((await app.api('/api/voice/speech', speechBody(message))).status, 409);
   assert.equal(app.speechCalls.length, 0);

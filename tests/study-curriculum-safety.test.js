@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { createStudyCurriculum, loadStudyCurriculum, needsStudyEvidence, STUDY_CONDITION_FILES } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
-import { providerReviewContext } from './fixtures/natural-review-v3.js';
 
 function actualCurrentCurriculum() {
   const contentUrl = new URL('../content/conditions/', import.meta.url);
@@ -42,9 +41,8 @@ test('unlinked unknown-topic chat can clarify naturally without releasing unsour
   const server=createApp({dataDir:dir,curriculum,env:{STUDY_ACCESS_TOKEN:'qa-safety-token-never-production-123456789',OPENAI_API_KEY:'qa-mock-key-only',OPENAI_MODEL:'gpt-4.1-mini'},fetchImpl:async(_url,request)=>{
     providerCalls++;
     const body=JSON.parse(request.body);
-    const output=body.response_format.json_schema.name==='family_medicine_natural_review_v3'
-      ? {version:3,approved:true,segments:[{id:'s1',approved:true,externalFactCount:0,claims:[],flags:[],questions:[]}]}
-      : {segments:[{id:'s1',text:'I cannot verify a factual answer from the current study sources. You can choose an available study topic or open its cited source.',sourceChunkIds:[]}]};
+    assert.equal(body.response_format.json_schema.name,'family_medicine_natural_tutor');
+    const output={segments:[{id:'s1',text:'I cannot verify a factual answer from the current study sources. You can choose an available study topic or open its cited source.',sourceChunkIds:[]}]};
     return new Response(JSON.stringify({model:'gpt-4.1-mini',choices:[{finish_reason:'stop',message:{content:JSON.stringify(output)}}],usage:{prompt_tokens:10,completion_tokens:12}}),{status:200,headers:{'Content-Type':'application/json'}});
   }});
   server.listen(0,'127.0.0.1');await once(server,'listening');
@@ -57,11 +55,13 @@ test('unlinked unknown-topic chat can clarify naturally without releasing unsour
   const conversation=await post('/api/conversations',{title:'New safety test'});
   for(const [index,content] of ['Tell me about lupus','Explain myoclonus','What is sarcoidosis?'].entries()){
     const response=await post('/api/chat',{conversationId:conversation.id,content,requestId:`qa-new-safety-${index}`});
-    assert.equal(response.message.reviewedDialogue,true,content);
-    assert.equal(response.message.groundingReview.externalClaimCount,0,content);
+    assert.equal(response.message.libraryGroundedDialogue,true,content);
+    assert.deepEqual(response.message.libraryGrounding.sourceChunkIds,[],content);
+    assert.equal(response.message.groundingReview,undefined,content);
+    assert.equal(response.message.aiTotal.calls,1,content);
     assert.deepEqual(response.message.citations,[],content);
   }
-  assert.equal(providerCalls,6);
+  assert.equal(providerCalls,3);
 });
 
 test('generic follow-up follows the latest named topic rather than the original linked-condition anchor',()=>{
@@ -85,10 +85,7 @@ test('a generic follow-up after an unsupported answer cannot reactivate an old t
     providerCalls++;
     const unrelated='Mock follow-up fact: reassess control and adherence.';
     const output=providerCalls===1?{segments:[{id:'s1',text:'I cannot establish a lupus-specific answer from these sources. You can choose an available study topic or open its cited source.',sourceChunkIds:[]}]}:
-      providerCalls===2?{version:3,approved:true,segments:[{id:'s1',approved:true,externalFactCount:0,claims:[],flags:[],questions:[]}]}:
-      providerCalls===3?{segments:[{id:'s1',text:unrelated,sourceChunkIds:['asthma:follow-up']}]}:
-      {version:3,approved:false,segments:[{id:'s1',approved:false,externalFactCount:1,claims:[{quote:unrelated,type:'medical',sourceChunkIds:['asthma:follow-up'],supports:[]}],flags:['unsupported_fact'],questions:[]}]};
-    if(providerCalls===4){const body=JSON.parse(request.body);const data=providerReviewContext(body);const span=data.sourceSpans.find(item=>item.chunkId==='asthma:follow-up');output.segments[0].claims[0].supports=[{chunkId:'asthma:follow-up',spanId:span.spanId}];}
+      {segments:[{id:'s1',text:unrelated,sourceChunkIds:['asthma:follow-up']}]};
     return new Response(JSON.stringify({model:'gpt-4.1-mini',choices:[{finish_reason:'stop',message:{content:JSON.stringify(output)}}],usage:{prompt_tokens:10,completion_tokens:12}}),{status:200,headers:{'Content-Type':'application/json'}});
   }});
   server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${server.address().port}`;
@@ -96,9 +93,9 @@ test('a generic follow-up after an unsupported answer cannot reactivate an old t
   const login=await fetch(base+'/api/login',{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:JSON.stringify({token:'qa-followup-token-not-production-123456789'})});assert.equal(login.status,200);const cookie=login.headers.get('set-cookie').split(';')[0];
   const post=async(path,body)=>{const response=await fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json',Origin:base,Cookie:cookie},body:JSON.stringify(body)});assert.equal(response.status,path==='/api/conversations'?201:200);return response.json();};
   const conversation=await post('/api/conversations',{title:'Unsupported follow-up',conditionId:'asthma'});
-  const unsupported=await post('/api/chat',{conversationId:conversation.id,content:'Tell me about medication adherence in lupus',requestId:'qa-unsupported-topic',conditionIds:['asthma']});assert.equal(unsupported.message.reviewedDialogue,true);assert.equal(unsupported.message.groundingReview.externalClaimCount,0);assert.equal(providerCalls,2);
+  const unsupported=await post('/api/chat',{conversationId:conversation.id,content:'Tell me about medication adherence in lupus',requestId:'qa-unsupported-topic',conditionIds:['asthma']});assert.equal(unsupported.message.libraryGroundedDialogue,true);assert.deepEqual(unsupported.message.libraryGrounding.sourceChunkIds,[]);assert.equal(unsupported.message.groundingReview,undefined);assert.equal(providerCalls,1);
   const followup=await post('/api/chat',{conversationId:conversation.id,content:'Why?',requestId:'qa-after-abstention',conditionIds:['asthma']});
-  assert.equal(followup.message.unsupported,true);assert.deepEqual(followup.message.citations,[]);assert.equal(followup.message.content.includes('Mock follow-up fact'),false);assert.equal(providerCalls,4);
+  assert.equal(followup.message.unsupported,true);assert.deepEqual(followup.message.citations,[]);assert.equal(followup.message.content.includes('Mock follow-up fact'),false);assert.equal(providerCalls,2);
 });
 
 test('actual AF stroke-risk and prevention requests cannot collide with the generic acute-stroke alias',()=>{

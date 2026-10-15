@@ -115,9 +115,9 @@ test('persisted v2 approval rejects an additive canonical source change despite 
   assert.throws(() => premiumSpeechText({ ...updated, conversation: original.conversation, message }), { status: 409 });
 });
 
-async function fixture(t, { legacy = false, model = 'gpt-4.1-mini' } = {}) {
+async function fixture(t, { reply = draft, model = 'gpt-4.1-mini' } = {}) {
   const dataDir = mkdtempSync(join(tmpdir(), 'natural-spans-safety-'));
-  const current = context(); const calls = [], speechCalls = [], reviewReplies = [];
+  const current = context(); const calls = [], speechCalls = [];
   const server = createApp({ dataDir, curriculum: current.references, foundations: createStudyCurriculum({ records: [], now: () => STUDY_NOW }), env: { OPENAI_API_KEY: 'local-source-span-fixture-only', OPENAI_MODEL: model }, fetchImpl: async (url, options) => {
     const input = JSON.parse(options.body);
     if (String(url).endsWith('/audio/speech')) {
@@ -125,20 +125,9 @@ async function fixture(t, { legacy = false, model = 'gpt-4.1-mini' } = {}) {
       return new Response(new Uint8Array([73, 68, 51, 1]), { headers: { 'Content-Type': 'audio/mpeg' } });
     }
     calls.push(input);
-    const system = input.messages?.find(message => typeof message.content === 'string' && message.content.includes('NATURAL_REVIEW_DATA='))?.content || '';
-    let output = draft;
-    if (system.includes('NATURAL_REVIEW_DATA=')) {
-      const data = JSON.parse(system.split('NATURAL_REVIEW_DATA=')[1]);
-      output = legacy ? legacyReview : { version: 3, ...structuredClone(legacyReview) };
-      if (!legacy) for (const segment of output.segments) segment.questions = [];
-      if (!legacy) {
-        const span = data.sourceSpans.find(item => item.chunkId === 'asthma:management');
-        assert.ok(span);
-        output.segments[0].claims[0].supports = [{ chunkId: span.chunkId, spanId: span.spanId }];
-      }
-      reviewReplies.push(structuredClone(output));
-    }
-    return Response.json({ model, choices: [{ message: { content: JSON.stringify(output) } }], usage: { prompt_tokens: 6, completion_tokens: 4 } });
+    assert.ok(input.messages.some(message => message.content.includes('NATURAL_TUTOR_CONTEXT=')));
+    assert.ok(input.messages.every(message => !message.content.includes('NATURAL_REVIEW_DATA=')));
+    return Response.json({ model, choices: [{ message: { content: JSON.stringify(reply) } }], usage: { prompt_tokens: 6, completion_tokens: 4 } });
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   const base = `http://127.0.0.1:${server.address().port}`;
@@ -147,26 +136,29 @@ async function fixture(t, { legacy = false, model = 'gpt-4.1-mini' } = {}) {
   async function api(path, body) { const response = await request(path, body); return { status: response.status, body: await response.json() }; }
   const created = await api('/api/conversations', { title: 'Source span study', mode: 'coach', curriculumConditionId: 'asthma' });
   assert.equal(created.status, 201);
-  return { api, request, calls, speechCalls, reviewReplies, conversationId: created.body.id };
+  return { api, request, calls, speechCalls, current, conversationId: created.body.id };
 }
 
-test('fresh v3 HTTP generation persists canonical v1 evidence and premium speech reads the exact checked text', async t => {
+test('single-pass HTTP generation persists immutable library bindings and premium speech reads the complete reply', async t => {
   const app = await fixture(t);
   const chatBody = { conversationId: app.conversationId, content: 'Help me study asthma inhaler technique.', requestId: randomUUID() };
   const answer = await app.api('/api/chat', chatBody);
   assert.equal(answer.status, 200);
   const message = answer.body.message;
-  assert.equal(message.reviewedDialogue, true, JSON.stringify({ rejection: message.studyRejection, calls: app.calls.map(call => call.response_format?.json_schema?.name) }));
+  assert.equal(message.libraryGroundedDialogue, true, JSON.stringify({ rejection: message.studyRejection, calls: app.calls.map(call => call.response_format?.json_schema?.name) }));
+  assert.equal(message.reviewedDialogue, undefined);
+  assert.equal(message.aiReview, undefined);
   assert.equal(message.sourceVerified, false);
-  assert.equal(message.groundingReview.version, 1);
-  assert.deepEqual(message.groundingReview.segments[0].claims[0].supports, [{ chunkId: 'asthma:management', excerpt: fact }]);
-  assert.equal(message.groundingReview.segments[0].claims[0].supports[0].spanId, undefined);
-  assert.equal(message.groundingReview.sourceSpanBindings[0].chunkId, 'asthma:management');
+  assert.equal(message.libraryGrounding.version, 1);
+  assert.equal(message.libraryGrounding.status, 'bound');
+  assert.deepEqual(message.libraryGrounding.sourceChunkIds, ['asthma:management']);
+  const span = buildNaturalSourceSpans(app.current).find(item => item.chunkId === 'asthma:management');
+  assert.deepEqual(message.libraryGrounding.sourceSpanBindings, [{ chunkId: span.chunkId, spanId: span.spanId }]);
   assert.equal(message.spokenText, fact);
   assert.equal(message.content, `${fact} [1]`);
-  assert.equal(app.calls[1].response_format.json_schema.name, 'family_medicine_natural_review_v3');
+  assert.equal(app.calls[0].response_format.json_schema.name, 'family_medicine_natural_tutor');
   assert.equal((await app.api('/api/chat', chatBody)).body.message.id, message.id);
-  assert.equal(app.calls.length, 2);
+  assert.equal(app.calls.length, 1);
   const audio = await app.request('/api/voice/speech', { conversationId: app.conversationId, messageId: message.id, voice: 'marin', chunkIndex: 0, requestId: randomUUID() });
   assert.equal(audio.status, 200);
   assert.equal(audio.headers.get('Content-Type'), 'audio/mpeg');
@@ -179,18 +171,19 @@ test('fresh v3 HTTP generation persists canonical v1 evidence and premium speech
   assert.equal(app.speechCalls.length, 1);
 });
 
-test('JSON fallback providers cannot submit the old excerpt protocol for a fresh reply', async t => {
-  const app = await fixture(t, { legacy: true, model: 'gpt-4o-mini' });
+test('JSON fallback providers cannot submit a reviewer object as the one generated reply', async t => {
+  const app = await fixture(t, { reply: legacyReview, model: 'gpt-4o-mini' });
   const body = { conversationId: app.conversationId, content: 'Help me study asthma inhaler technique.', requestId: randomUUID() };
   const answer = await app.api('/api/chat', body);
   assert.equal(answer.status, 200);
   assert.equal(answer.body.message.reviewedDialogue, undefined);
+  assert.equal(answer.body.message.libraryGroundedDialogue, undefined);
   assert.equal(answer.body.message.unsupported, true);
   assert.equal(answer.body.message.studyRejection.code, 'natural_tutor_validation');
   assert.deepEqual(answer.body.message.citations, []);
-  assert.equal(app.calls[1].response_format.type, 'json_object');
-  assert.deepEqual(app.reviewReplies, [legacyReview]);
+  assert.equal(answer.body.message.studyRejection.reasonId, 201);
+  assert.equal(app.calls[0].response_format.type, 'json_object');
   assert.equal((await app.api('/api/chat', body)).body.message.id, answer.body.message.id);
-  assert.equal(app.calls.length, 2);
+  assert.equal(app.calls.length, 1);
   assert.equal(app.speechCalls.length, 0);
 });

@@ -401,7 +401,17 @@ function reviewedConversationSpeech(message) {
   if(review.externalClaimCount===0) return review.medicalClaimCount===0;
   return message.current===true && Array.isArray(review.sourceChunkIds) && review.sourceChunkIds.length>0 && Array.isArray(message.citations) && message.citations.length>0 && message.citations.every(source=>typeof source.expiresAt==='string' && Date.parse(`${source.expiresAt.slice(0,10)}T00:00:00Z`)>Date.now());
 }
-function readoutMessageAllowed(message) { return !message?.studyRejection && !message?.internalCheck && (reviewedConversationSpeech(message) || trustedStudySpeech(message)); }
+function libraryConversationSpeech(message) {
+  const binding=message?.libraryGrounding;
+  if(!message || message.role!=='assistant' || message.libraryGroundedDialogue!==true || message.sourceVerified!==false || message.humanReview!==false || message.canonicalSpokenText!==false || message.importedEvidence || message.importedReview || message.voiceTranscript || message.ai?.imported || binding?.version!==1 || binding.status!=='bound') return false;
+  if(typeof message.spokenText!=='string' || !message.spokenText.trim() || message.spokenText.length>24000 || !Array.isArray(message.naturalSegments) || !message.naturalSegments.length || message.naturalSegments.length>6 || message.naturalSegments.some(segment=>typeof segment?.text!=='string' || !Array.isArray(segment.sourceChunkIds) || segment.sourceChunkIds.some(key=>typeof key!=='string'))) return false;
+  if(message.naturalSegments.map(segment=>segment.text).join('\n\n')!==message.spokenText) return false;
+  const keys=[...new Set(message.naturalSegments.flatMap(segment=>segment.sourceChunkIds))];
+  if(keys.length>4 || JSON.stringify(keys)!==JSON.stringify(binding.sourceChunkIds) || !Array.isArray(binding.sourceSpanBindings) || binding.sourceSpanBindings.length!==keys.length || binding.sourceSpanBindings.some((span,index)=>span?.chunkId!==keys[index] || !/^span_[a-f0-9]{64}$/.test(span.spanId))) return false;
+  if(!keys.length) return Array.isArray(message.citations) && message.citations.length===0;
+  return message.current===true && Array.isArray(message.citations) && message.citations.length>0 && message.citations.every(source=>typeof source.expiresAt==='string' && Date.parse(`${source.expiresAt.slice(0,10)}T00:00:00Z`)>Date.now());
+}
+function readoutMessageAllowed(message) { return !message?.studyRejection && !message?.internalCheck && (libraryConversationSpeech(message) || reviewedConversationSpeech(message) || trustedStudySpeech(message)); }
 function studySpokenText(message) {
   if (!readoutMessageAllowed(message)) return '';
   return typeof message.spokenText === 'string' ? message.spokenText : message.content || '';
@@ -1005,7 +1015,7 @@ async function previewVoice() {
 async function readMessage(id) {
   const message = conversation()?.messages?.find(item => item.id === id);
   if (!message || !premiumVoiceAvailable()) return;
-  if (!readoutMessageAllowed(message)) return notify('AI readout requires a checked conversation or current source-linked learning point.');
+  if (!readoutMessageAllowed(message)) return notify('AI readout requires an eligible conversation or current source-linked learning point.');
   if (voiceCoach.active()) await voiceCoach.stop('Conversation ended for Read aloud. Tap the circle to start another voice session.');
   stopDictation();
   await premiumSpeech.play({ conversationId: currentConversationId, messageId: message.id, onError: error=>notify(error.message) });
@@ -1092,12 +1102,13 @@ function renderAnswerEvidence(message) {
   const imported = message.importedEvidence === true;
   const currentStudyText=readoutMessageAllowed(message);
   const reviewed=message.reviewedDialogue===true && message.groundingReview?.version===1 && message.groundingReview.status==='passed' && !imported && !message.importedReview;
-  const legacyWarning=!currentStudyText ? reviewed ? '<small class="evidence-status unverified-study-text">Source checks are needed before this study explanation can be read aloud.</small>' : '<small class="evidence-status unverified-study-text">Unverified AI, imported or historical study text. Use current source-linked questions for guideline facts; not for clinical use.</small>' : '';
-  const explanation = imported ? 'Imported references have not been reverified against the current corpus.' : reviewed ? 'Sources linked to this study explanation. Automated source check; not clinician reviewed.' : curriculum ? `${grounded ? 'Retrieved summaries support this study reply.' : 'Source-linked study response.'} ${humanReviewed ? 'Clinician review recorded.' : 'Clinician review pending; a citation does not guarantee correctness.'}` : 'References support educational review. Verify their applicability and currency.';
+  const libraryLinked=message.libraryGroundedDialogue===true && message.libraryGrounding?.version===1 && message.libraryGrounding.status==='bound' && !imported;
+  const legacyWarning=!currentStudyText ? reviewed || libraryLinked ? '<small class="evidence-status unverified-study-text">Current source bindings are needed before this study explanation can be read aloud.</small>' : '<small class="evidence-status unverified-study-text">Unverified AI, imported or historical study text. Use current source-linked questions for guideline facts; not for clinical use.</small>' : '';
+  const explanation = imported ? 'Imported references have not been reverified against the current corpus.' : libraryLinked ? 'AI explanation using the supplied study library. No independent model or clinician review; citations do not guarantee correctness.' : reviewed ? 'Sources linked to this study explanation. Automated source check; not clinician reviewed.' : curriculum ? `${grounded ? 'Retrieved summaries support this study reply.' : 'Source-linked study response.'} ${humanReviewed ? 'Clinician review recorded.' : 'Clinician review pending; a citation does not guarantee correctness.'}` : 'References support educational review. Verify their applicability and currency.';
   const dialogue=message.studyDialogue?.version===1 && !imported;
   const dialogueStatus=dialogue ? '<small class="study-dialogue-status">Conversational study coaching · Medical learning points use cited summaries.</small>' : '';
   const quoteStatus=dialogue && (message.studyDialogue.learnerQuotePresent===true || message.studyDialogue.learnerQuote===true) ? '<small class="learner-quote-status">Your quoted reasoning is unverified. Compare it with the cited learning points; readout skips learner quotes.</small>' : '';
-  const conversationStatus=reviewed ? `<small class="evidence-status ai-conversation-status">${sources.length ? 'Source-linked study explanation · Automated source check; not clinician reviewed.' : 'AI conversation'}</small>` : '';
+  const conversationStatus=libraryLinked ? `<small class="evidence-status ai-conversation-status">${sources.length ? 'Study library explanation · No independent model or clinician review.' : 'AI conversation · No independent model review.'}</small>` : reviewed ? `<small class="evidence-status ai-conversation-status">${sources.length ? 'Source-linked study explanation · Automated source check; not clinician reviewed.' : 'AI conversation'}</small>` : '';
   return `${legacyWarning}${conversationStatus}${dialogueStatus}${quoteStatus}${message.unsupported === true ? '<div class="answer-abstention">The available study evidence does not support an answer. Check a current official source. <button class="text-button" data-action="reference-directory-open">Find references</button></div>' : ''}${curriculum && !reviewed ? `<small class="evidence-status">${grounded ? 'Grounded in retrieved study summaries' : 'Evidence coverage limited'} · ${humanReviewed ? 'Clinician review recorded' : 'Clinician review pending'}</small>` : ''}${sourceList ? `<small class="evidence-status">Official source material is available free at the linked sites. Referenced agencies, including CDC/HHS and the U.S. Government, do not endorse this app.</small><details class="answer-sources"><summary>${imported ? 'Imported' : 'Source-linked'} study references (${sources.length})</summary><ul>${sourceList}</ul><p>${esc(explanation)} Study only; no medical advice or clinical use.</p></details>${renderSourceComparison(sources)}` : ''}`;
 }
 

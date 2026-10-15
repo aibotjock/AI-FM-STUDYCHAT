@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "policyVersion": "study-evidence-policy-v1",
+  "policyVersion": "study-evidence-policy-v2",
   "title": "Evidence and ethical tutoring policy",
   "intendedUse": "Independent family medicine board study and original reasoning practice only",
   "clinicalUseAllowed": false,
@@ -22,8 +22,8 @@
       "instruction": "When supplied sources disagree on a factual recommendation, explicitly identify each source and cite both positions. Preserve the actual difference in recommendation, threshold, strength, population, setting, jurisdiction and edition where supplied. Distinguish a true disagreement from recommendations for different populations or a reference summary versus a formal guideline. Do not silently blend positions, invent consensus, pick solely by date, or call a missing recommendation a disagreement. If evidence cannot establish a comparison, say so and retain separate external reference links."
     },
     {
-      "id": "independent-review",
-      "instruction": "Release text or audio only after separate whole-reply evidence/safety review and deterministic span/freshness validation. Generator assertions, client approval flags and self-review cannot authorize release. Automated review is not qualified clinical approval."
+      "id": "library-first-validation",
+      "instruction": "Use the app library first: the catalogue describes available topics and reference links, while only supplied current source passages support factual answers. Finish the complete answer before text or audio release, then apply deterministic span/freshness validation in server code. The active answer path makes one model call without a separate reviewer. Source bindings do not establish factual correctness; technical validation is not qualified clinical approval."
     },
     {
       "id": "untrusted-context",
@@ -62,7 +62,10 @@
   "publicMetadata": {
     "purpose": "A conversational study tutor with source-linked teaching and explicit evidence limits",
     "medicalClaimsRequireCurrentExactSupport": true,
-    "wholeReplyAutomatedReviewRequired": true,
+    "wholeReplyAutomatedReviewRequired": false,
+    "libraryFirst": true,
+    "answerModelCalls": 1,
+    "deterministicSourceBindingRequired": true,
     "automatedReviewIsClinicalApproval": false,
     "learnerMemoryIsAuthoritativeEvidence": false,
     "guaranteedAccuracy": false,
@@ -70,7 +73,7 @@
     "competenceOrExamPassPredictionsAllowed": false,
     "commercialReleaseRequiresSeparateRightsAndQualifiedClinicalReview": true,
     "limitations": [
-      "Automated reviewers can miss claims or misunderstand source support.",
+      "Answers have no separate model review. Source binding validates references and freshness, not whether each statement follows from its source.",
       "A source or retrieval gap remains possible; citations do not prove an answer is complete or correct.",
       "Source checks and technical validation do not confer qualified clinical approval or commercial rights.",
       "These instructions require server integration with the existing validators; a prompt alone cannot enforce accuracy."

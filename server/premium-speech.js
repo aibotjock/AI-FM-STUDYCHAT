@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { renderReviewedTutor } from './natural-tutor.js';
+import { renderNaturalTutor, renderReviewedTutor } from './natural-tutor.js';
 import { STUDY_NO_EVIDENCE, STUDY_REAL_CARE_REDIRECT } from './study-curriculum.js';
 
 export const PREMIUM_SPEECH_MODEL = 'gpt-4o-mini-tts';
@@ -91,7 +91,12 @@ export function premiumSpeechText({ conversation, message, references, settings 
   if (index < 1 || user?.role !== 'user' || message.responseTo !== user.id) fail(409, 'The speech response does not match a trusted conversation turn.', 'speech_message_untrusted');
   let reconstructed;
   try {
-    if (message.reviewedDialogue === true && message.groundingReview?.version === 1 && message.groundingReview.status === 'passed' && message.sourceVerified === false && message.canonicalSpokenText === false) {
+    if (message.libraryGroundedDialogue === true && message.libraryGrounding?.version === 1 && message.libraryGrounding.status === 'bound' && message.sourceVerified === false && message.humanReview === false && message.canonicalSpokenText === false) {
+      const keys = [...new Set((message.naturalSegments || []).flatMap(segment => segment.sourceChunkIds || []))];
+      const evidence = evidenceFor(references, keys);
+      reconstructed = renderNaturalTutor({ segments: message.naturalSegments }, { references, evidence, conversation: { ...conversation, messages: conversation.messages.slice(0, index) }, settings, pendingQuestion: message.pendingStudyQuestion, sourceSpanBindings: message.libraryGrounding.sourceSpanBindings });
+      if (!same(reconstructed.libraryGrounding, message.libraryGrounding)) fail(409, 'The stored library source bindings have changed.', 'speech_message_untrusted');
+    } else if (message.reviewedDialogue === true && message.groundingReview?.version === 1 && message.groundingReview.status === 'passed' && message.sourceVerified === false && message.canonicalSpokenText === false) {
       const keys = [...new Set((message.naturalSegments || []).flatMap(segment => segment.sourceChunkIds || []))];
       const evidence = evidenceFor(references, keys);
       reconstructed = renderReviewedTutor({ segments: message.naturalSegments }, { approved: true, segments: message.groundingReview.segments }, { references, evidence, conversation: { ...conversation, messages: conversation.messages.slice(0, index) }, settings, pendingQuestion: message.pendingStudyQuestion, now: message.groundingReview.reviewedAt, sourceSpanBindings: message.groundingReview.sourceSpanBindings });

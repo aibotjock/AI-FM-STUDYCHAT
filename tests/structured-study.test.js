@@ -9,7 +9,6 @@ import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { buildStudyDialogueSchema, buildStudyDialoguePrompt } from '../server/study-conversation.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
-import { providerReviewContext } from './fixtures/natural-review-v3.js';
 
 const bank = () => createStudyCurriculum({ records: [studyCondition()], now: () => STUDY_NOW });
 const turns = [{ role: 'user', content: 'Explain one cited study point.' }];
@@ -81,11 +80,6 @@ async function appFixture(t, completion) {
     calls++; const body = JSON.parse(request.body);
     assert.equal(body.response_format.type, 'json_schema');
     assert.equal(body.response_format.json_schema.strict, true);
-    if (body.response_format.json_schema.name === 'family_medicine_natural_review_v3') {
-      assert.equal(body.max_completion_tokens, 2000);
-      const data = providerReviewContext(body);
-      return reply(JSON.stringify({ version: 3, approved: true, segments: data.candidate.map(segment => ({ id: segment.id, approved: true, externalFactCount: segment.sourceChunkIds.length ? 1 : 0, flags: [], questions: [], claims: segment.sourceChunkIds.length ? [{ quote: segment.text, type: 'medical', sourceChunkIds: segment.sourceChunkIds, supports: segment.sourceChunkIds.map(chunkId => ({ chunkId, spanId: data.sourceSpans.find(source => source.chunkId === chunkId).spanId })) }] : [] })) }));
-    }
     assert.equal(body.response_format.json_schema.name, 'family_medicine_natural_tutor');
     assert.equal(body.max_completion_tokens, 800);
     return reply(completion);
@@ -98,18 +92,24 @@ async function appFixture(t, completion) {
   return { api, calls: () => calls, chat: requestId => api('/api/chat', { conversationId: conversation.id, content: 'Explain asthma management for board study.', requestId }) };
 }
 
-test('HTTP strict natural response retains canonical citations and replay avoids repeating either completion', async t => {
+test('HTTP strict natural response retains canonical citations and replay avoids repeating its single completion', async t => {
   const app = await appFixture(t, JSON.stringify({ segments: [{ id: 's1', text: 'Mock management fact: review inhaler technique.', sourceChunkIds: ['asthma:management'] }] }));
   const result = await app.chat('strict-valid');
-  assert.equal(result.message.reviewedDialogue, true);
-  assert.equal(result.message.groundingReview.status, 'passed');
+  assert.equal(result.message.libraryGroundedDialogue, true);
+  assert.equal(result.message.libraryGrounding.status, 'bound');
+  assert.deepEqual(result.message.libraryGrounding.sourceChunkIds, ['asthma:management']);
+  assert.match(result.message.libraryGrounding.sourceSpanBindings[0].spanId, /^span_[a-f0-9]{64}$/);
+  assert.equal(result.message.reviewedDialogue, undefined);
+  assert.equal(result.message.groundingReview, undefined);
+  assert.equal(result.message.aiReview, undefined);
+  assert.equal(result.message.aiTotal.calls, 1);
   assert.equal(result.message.grounded, true);
   assert.equal(result.message.sourceVerified, false);
   assert.equal(result.message.studyRejection, undefined);
   assert.match(result.message.content, /Mock management fact: review inhaler technique/);
   assert.equal(result.message.citations[0].url, 'https://www.nhlbi.nih.gov/health/asthma');
   assert.equal((await app.chat('strict-valid')).message.id, result.message.id);
-  assert.equal(app.calls(), 2);
+  assert.equal(app.calls(), 1);
 });
 
 test('malformed JSON or invented natural fields produce safe rejection codes without retaining raw model output or retrying', async t => {

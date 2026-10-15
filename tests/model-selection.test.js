@@ -8,7 +8,6 @@ import { DatabaseSync } from 'node:sqlite';
 import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
-import { sourceSpanSupport } from './fixtures/natural-review-v3.js';
 
 const ACCESS_TOKEN = 'owner-model-test-token-at-least-24-characters';
 const API_KEY = 'mock-provider-key-must-never-be-exported';
@@ -18,11 +17,10 @@ const MANAGEMENT_FACT = studyCondition().sections.find(section => section.id ===
 
 function naturalContent(body) {
   const schema = body.response_format?.json_schema?.name;
-  assert.ok(['family_medicine_natural_tutor', 'family_medicine_natural_review_v3'].includes(schema), `Unexpected generated contract ${schema}`);
-  assert.ok(body.messages.some(message => message.content.includes(schema === 'family_medicine_natural_review_v3' ? 'NATURAL_REVIEW_DATA' : 'NATURAL_TUTOR_CONTEXT')));
-  const reply = schema === 'family_medicine_natural_review_v3'
-    ? { version: 3, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: MANAGEMENT_FACT, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [sourceSpanSupport(body, 'asthma:management')] }], flags: [], questions: [] }] }
-    : { segments: [{ id: 's1', text: MANAGEMENT_FACT, sourceChunkIds: ['asthma:management'] }] };
+  assert.equal(schema, 'family_medicine_natural_tutor', `Unexpected generated contract ${schema}`);
+  assert.ok(body.messages.some(message => message.content.includes('NATURAL_TUTOR_CONTEXT')));
+  assert.ok(body.messages.every(message => !message.content.includes('NATURAL_REVIEW_DATA')));
+  const reply = { segments: [{ id: 's1', text: MANAGEMENT_FACT, sourceChunkIds: ['asthma:management'] }] };
   return JSON.stringify(reply);
 }
 
@@ -172,8 +170,10 @@ test('model changes during active chat are rejected and chat provenance includes
   assert.equal(completed.status, 200);
   assert.match(completed.body.message.content, /Mock management fact: review inhaler technique/);
   assert.equal(completed.body.message.sourceVerified, false);
-  assert.equal(completed.body.message.reviewedDialogue, true);
-  assert.equal(completed.body.message.groundingReview.status, 'passed');
+  assert.equal(completed.body.message.libraryGroundedDialogue, true);
+  assert.equal(completed.body.message.reviewedDialogue, undefined);
+  assert.equal(completed.body.message.groundingReview, undefined);
+  assert.equal(completed.body.message.libraryGrounding.status, 'bound');
   const metadata = completed.body.message.ai;
   assert.equal(metadata.provider, 'openai');
   assert.equal(metadata.endpoint, 'chat');
@@ -183,13 +183,12 @@ test('model changes during active chat are rejected and chat provenance includes
   assert.equal(metadata.estimatedCostUsd, .00056);
   assert.ok(Number.isFinite(metadata.latencyMs) && metadata.latencyMs >= 0);
   assert.ok(Number.isFinite(metadata.recordedAt));
-  assert.equal(completed.body.message.aiReview.requestedModel, metadata.requestedModel);
-  assert.equal(completed.body.message.aiReview.returnedModel, metadata.returnedModel);
-  assert.deepEqual(completed.body.message.aiTotal.usage, { prompt_tokens: 2000, completion_tokens: 200 });
-  assert.equal(completed.body.message.aiTotal.estimatedCostUsd, .00112);
-  assert.equal(completed.body.message.aiTotal.calls, 2);
+  assert.equal(completed.body.message.aiReview, undefined);
+  assert.deepEqual(completed.body.message.aiTotal.usage, metadata.usage);
+  assert.equal(completed.body.message.aiTotal.estimatedCostUsd, metadata.estimatedCostUsd);
+  assert.equal(completed.body.message.aiTotal.calls, 1);
   assert.equal((await app.request('/api/state')).body.conversations[0].messages[1].ai.requestedModel, 'gpt-4.1-mini');
-  assert.equal(mock.inferenceCalls().length, 2);
+  assert.equal(mock.inferenceCalls().length, 1);
 });
 
 test('persisted model selection keeps documented model prices after restart rather than original server overrides', async t => {

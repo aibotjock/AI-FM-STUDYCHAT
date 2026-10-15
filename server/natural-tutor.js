@@ -1,6 +1,7 @@
 import { studyDialogueHistory } from './study-conversation.js';
 import { createHash } from 'node:crypto';
 import { evidencePolicyInstructions } from '../shared/evidence-policy.js';
+import { buildLibraryContext } from './library-context.js';
 
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const ids = ['s1', 's2', 's3', 's4', 's5', 's6'];
@@ -124,10 +125,11 @@ function promptHistory(conversation, separatelySuppliedRequest, deduplicateCurre
   return history;
 }
 
-export function buildNaturalTutorPrompt({ references, evidence, conversation, settings, pendingQuestion = null, voiceTurn = false, inlineOutputSchema = true, deduplicateCurrentRequest = false }) {
+export function buildNaturalTutorPrompt({ references, evidence, conversation, settings, pendingQuestion = null, voiceTurn = false, inlineOutputSchema = true, deduplicateCurrentRequest = false, referenceDirectory }) {
   const latest = conversation.messages.findLast(message => message.role === 'user')?.content || '';
   return `You are a conversational companion and tutor for an independent family medicine board-study app. Respond naturally to the learner and recent conversation. ${voiceTurn ? 'This is a spoken conversation. Aim for 40–60 words and one or two short paragraphs per routine turn, keeping the first sentence directly useful.' : 'Usually keep the reply within 80 words'} unless the learner asks for detail; answer a request for detail fully within the output limits. Preserve every clinically necessary qualifier and exception rather than shortening a fact inaccurately. Avoid canned navigation, routine narration and forced questions. Ask at most one useful question; do not request information already provided.
 ${evidencePolicyInstructions('generator')}
+Library first: Consult the supplied current library passages in sources before formulating any clinical teaching. The compact library inventory uses its column legends to list loaded topics, record types and currency; it contains no clinical evidence or answer keys. Source publishers accompany actual passages in sources. A listed topic or directory link does not mean its text was supplied or the publisher's full document was read. Support clinical claims only with the exact supplied current passage text and sourceChunkIds, never a catalogue title, publisher reputation, model memory or user statement. If a matching topic is listed but its needed passage is absent, identify that retrieval or coverage gap; do not claim the entire topic or library is unavailable. Teach the supported portion and state specific limits. Do not invent access to unseen passages or treat every record as a formal guideline.
 Evidence availability: The current sources below supersede historical statements about missing references. When they support part of the request, teach that supported part with sourceChunkIds and identify only the specific remaining gap. Never claim there are no sources for a topic when sources are supplied. A source title alone does not establish a treatment, dose or cutoff.
 Conversation pacing: presentation.status=interrupted or pending contains only completely presented audio segments, if any. Address the interruption and clarify or resume when requested.
 Study strategy: During study practice, invite the learner to commit to an answer and their reasoning before explaining. Accept uncertainty, a pass or a request for explanation without pressure. Ask one useful question at a time. Distinguish self-reported recall difficulty from interpretation confusion and next-step confusion using what the learner actually says or answers; clarify briefly only when needed, without presenting an inferred weakness as demonstrated.
@@ -135,7 +137,7 @@ After a committed answer or a request for explanation, explain the cited decisiv
 Offer a short neutral teach-back, then later retrieval or mixed practice as optional next steps; do not force questions or exercises on ordinary chat. Do not invent reasoning scores, validated competence scores or clinical-competence claims from self-reports or conversation.
 Question answerability: Do not compose medical assessment questions, new hypothetical cases, medication-choice questions or requests to name a diagnosis, treatment, dose or next step. The server owns original study questions and their current cited answer keys. Ask the learner whether they want an original question when appropriate; do not invent one. A source-backed neutral teach-back may ask the learner to summarize a cited point already delivered in this conversation or explained with source support in this reply. Declare that point's sourceChunkIds on the teach-back paragraph. A topic title, user claim or retrieved source never establishes that a point was delivered. Keep ordinary conversation, preferences and clarifying study-process questions natural.
 Return only one JSON object matching ${inlineOutputSchema === false ? 'the externally supplied structured-output schema' : 'OUTPUT_SCHEMA'} exactly, with every required field and no extras. Each segment is a short paragraph with a unique ID s1..s6. Declare supporting sourceChunkIds on every factual paragraph, including questions. The server owns source links. If an original quiz is pending, do not reveal its answer or give new factual hints until an option is selected or an affirmative reveal is requested; nonfactual reflection and planning remain allowed.
-${inlineOutputSchema === false ? '' : `OUTPUT_SCHEMA=${JSON.stringify(buildNaturalTutorSchema({ references, evidence }).schema)}\n`}NATURAL_TUTOR_CONTEXT=${JSON.stringify({ mode: conversation.mode, preferences: { coachStyle: settings.coachStyle, dailyMinutes: settings.dailyMinutes, focus: settings.focus }, history: promptHistory(conversation, latest, deduplicateCurrentRequest), pendingQuestion: publicPending(references, pendingQuestion), revealRequested: explicitAnswerReveal(latest), sources: [...currentEvidence(references, evidence).values()] })}`;
+${inlineOutputSchema === false ? '' : `OUTPUT_SCHEMA=${JSON.stringify(buildNaturalTutorSchema({ references, evidence }).schema)}\n`}NATURAL_TUTOR_CONTEXT=${JSON.stringify({ mode: conversation.mode, preferences: { coachStyle: settings.coachStyle, dailyMinutes: settings.dailyMinutes, focus: settings.focus }, history: promptHistory(conversation, latest, deduplicateCurrentRequest), pendingQuestion: publicPending(references, pendingQuestion), revealRequested: explicitAnswerReveal(latest), library: buildLibraryContext(references, { referenceDirectory }), sources: [...currentEvidence(references, evidence).values()] })}`;
 }
 
 export function buildNaturalReviewSchema(draft, { references, evidence, requireVersion3 = false }) {
@@ -162,6 +164,70 @@ Review every original segment ID exactly once. Each external assertion needs a c
 ${requireVersion3 ? 'Separately list EVERY question and request for an answer in questions, quoting its complete exact wording. Include imperatives (Name, Choose, Tell me, Explain), indirect requests and other languages; lack of a question mark or factual assertion is not an exemption. kind=medical-assessment includes requests for diagnosis, treatment, first-line choices, medication/dose, clinical next step or other medical knowledge. These are prohibited in generated prose even if a premise has citations: only server-selected canonical questions have authorized answer keys. kind=source-recall is limited to a neutral summary or teach-back of one exact cited point already delivered in trusted conversation or explained in this candidate; bind its current recallSpanId. It must not ask a new specific medical question or grade reasoning. kind=conversation covers ordinary social conversation, preferences and study-process clarification, with recallSpanId=null. A user-provided fact, condition title or retrieved but undelivered passage cannot authorize source-recall. Questions with no known answer cannot be approved. Questions=[] means the segment requests no answer of any kind.' : 'Neutral recall requests assert no new external fact.'}
 Presentation metadata records client-reported playback, not hearing or understanding. When a canonical quiz is pending without an affirmative reveal request, reject new factual hints or answer reveals; nonfactual planning and reflection remain allowed.
 ${inlineOutputSchema === false ? '' : `OUTPUT_SCHEMA=${JSON.stringify(buildNaturalReviewSchema(draft, { references, evidence, requireVersion3 }).schema)}\n`}NATURAL_REVIEW_DATA=${JSON.stringify({ learnerRequest: latest, preferences: { coachStyle: settings.coachStyle, dailyMinutes: settings.dailyMinutes, focus: settings.focus }, history: promptHistory(conversation, latest, deduplicateCurrentRequest), candidate: draft.segments, sources: [...currentEvidence(references, evidence).values()].map(({ text: _excerpt, ...metadata }) => metadata), sourceSpans: buildNaturalSourceSpans({ references, evidence }), pendingQuestion: publicPending(references, pendingQuestion), revealRequested: explicitAnswerReveal(latest) })}`;
+}
+
+// Lexical guards catch common missing bindings and prohibited generated tests;
+// they do not establish entailment, factual completeness, or medical accuracy.
+function obviousUnboundMedicalProse(value, conditionNames) {
+  return value.split(/(?<=[.!?])\s+|\n+/).some(sentence => {
+    const availability = /^(.{1,120}?) (?:is|are) (?:available|listed|included) in (?:the|this|our) (?:study )?library[.!?]?$/i.exec(sentence.trim());
+    if (availability && conditionNames.includes(availability[1].toLowerCase())) return false;
+    const invitation = sentence.replace(/\b(?:when|whenever) you(?:'re| are) ready[.!?]?$/i, '');
+    if (/^(?:would you like|do you want|would you prefer|want to study|prefer to study|which part would you like|we can|let's|let us|i can help you)\b/i.test(sentence.trim())
+      && /\b(?:study|discuss|review|explore|talk about|work on|focus on)\b/i.test(sentence)
+      && !/\d|\b(?:is|are|causes?|requires?|increases?|reduces?|improves?|affects?|take|start|stop|increase|decrease|recommend|prescribe)\b/i.test(invitation)) return false;
+    const sourceGap = /^(?:i|we) (?:cannot|can't|could not|couldn't|do not|don't|did not|didn't) (?:verify|find|confirm|support|provide|answer|have|give|locate|check)\b/i.test(sentence.trim())
+      || /^(?:the|this) (?:current |available |supplied )?(?:library|sources?|references?|evidence) (?:do not|don't|does not|doesn't|cannot|can't|lack|lacks)\b/i.test(sentence.trim());
+    if (sourceGap && /\b(?:sources?|references?|evidence|library|guidelines?)\b/i.test(sentence) && !/[;]|\b(?:but|however)\b|\d\s*(?:mg|mcg|ml|units?)\b/i.test(sentence)) return false;
+    const medical = /\b(?:diagnos\w*|symptoms?|diseases?|treat(?:ment|s|ing|ed)?|therap(?:y|ies)|medications?|drugs?|antibiotics?|anticoagulat\w*|contraindicat\w*|prescrib\w*|dos(?:e|es|age|ing)|first[- ]line|risk factors?|side effects?|screening|prophylaxis|inhaler|vaccin\w*|mmhg)\b|\b\d+(?:\.\d+)?\s*(?:mg|mcg|ml|units?)\b/i.test(sentence);
+    // A bare topic mention or a study preference is not a medical assertion.
+    const namesAnAssertion = conditionNames.some(name => sentence.toLowerCase().includes(name))
+      && /\b(?:is|are|causes?|requires?|increases?|reduces?|improves?|affects?|responds?)\b/i.test(sentence);
+    return medical || namesAnAssertion;
+  });
+}
+
+/** Single generation with deterministic source bindings only, no model review.
+ * Current source IDs and hashes prove provenance, not that the prose is true.
+ * Passing saved sourceSpanBindings rechecks the same canonical source revisions.
+ */
+export function renderNaturalTutor(draft, { references, evidence, conversation = { messages: [] }, pendingQuestion = null, sourceSpanBindings } = {}) {
+  draft = validateNaturalDraft(draft, { references, evidence });
+  const available = currentEvidence(references, evidence);
+  const spans = new Map(buildNaturalSourceSpans({ references, evidence }).map(span => [span.chunkId, span]));
+  const conditions = typeof references.inventory === 'function' ? references.inventory()
+    : typeof references.list === 'function' ? references.list().conditions : [...available.values()];
+  const conditionNames = [...new Set(conditions.flatMap(condition => [condition.title || condition.conditionTitle, ...(condition.aliases || [])]).filter(name => typeof name === 'string' && name.length >= 3).map(name => name.toLowerCase()))];
+  const sourceChunkIds = [...new Set(draft.segments.flatMap(segment => segment.sourceChunkIds))];
+  if (sourceChunkIds.length > 4) reject(307);
+  for (const segment of draft.segments) {
+    if (obviousMedicalAssessment(segment.text)
+      || /\b(?:tell me|name|identify|choose|select)\b[^?\n]{0,180}\b(?:diagnos\w*|treat(?:ment)?|medications?|dos(?:e|age)|next (?:best )?step)\b/i.test(segment.text)
+      || /\b(?:a|the|this) \d{1,3}[- ]year[- ]old(?: (?:man|woman|patient|person|child))? (?:presents|has|develops)\b|\b(?:a|the|this) patient (?:presents|has|develops)\b/i.test(segment.text)) reject(308);
+    if (/\b(?:your|that|this) (?:answer|diagnosis|treatment|choice) (?:is|was) (?:correct|right|clinically sound)\b|\byou (?:should|must|need to) (?:take|stop|start|increase|decrease)\b/i.test(segment.text)) reject(306);
+    if (!segment.sourceChunkIds.length && obviousUnboundMedicalProse(segment.text, conditionNames)) reject(303);
+  }
+  const latest = conversation.messages.findLast(message => message.role === 'user')?.content || '';
+  if (pendingQuestion && !explicitAnswerReveal(latest) && sourceChunkIds.length) reject(306);
+  const bindings = sourceChunkIds.map(chunkId => ({ chunkId, spanId: spans.get(chunkId).spanId }));
+  if (sourceSpanBindings !== undefined) {
+    if (!Array.isArray(sourceSpanBindings) || sourceSpanBindings.length !== bindings.length
+      || sourceSpanBindings.some(binding => !exactKeys(binding, ['chunkId', 'spanId']))
+      || new Set(sourceSpanBindings.map(binding => binding.chunkId)).size !== bindings.length
+      || bindings.some(binding => !sourceSpanBindings.some(saved => saved.chunkId === binding.chunkId && saved.spanId === binding.spanId))) reject(305, { subcode: 'support_span_unknown' });
+  }
+  const citationByChunk = new Map(sourceChunkIds.map(key => [key, references.render({ chunkIds: [key], questionId: null, unsupported: false }, evidence).citations]));
+  const citations = [...new Map([...citationByChunk.values()].flat().map(source => [`${source.id}|${source.url}`, source])).values()];
+  if (citations.length > 10) reject(307);
+  const citationNumbers = new Map(citations.map((source, index) => [`${source.id}|${source.url}`, index + 1]));
+  const content = draft.segments.map(segment => {
+    const numbers = [...new Set(segment.sourceChunkIds.flatMap(key => citationByChunk.get(key).map(source => citationNumbers.get(`${source.id}|${source.url}`))))];
+    return `${segment.text}${numbers.length ? ` [${numbers.join(', ')}]` : ''}`;
+  }).join('\n\n');
+  return { content, spokenText: draft.segments.map(segment => segment.text).join('\n\n'), canonicalSpokenText: false, sourceVerified: false, humanReview: false,
+    libraryGroundedDialogue: true, libraryGrounding: { version: 1, status: 'bound', sourceChunkIds, sourceSpanBindings: bindings },
+    citations, naturalSegments: draft.segments, pendingStudyQuestion: pendingQuestion ? { ...pendingQuestion } : null,
+    ...(sourceChunkIds.length ? { current: true, grounded: true, conditionIds: [...new Set(sourceChunkIds.map(key => available.get(key).conditionId))] } : {}) };
 }
 
 export function renderReviewedTutor(draft, review, { references, evidence, conversation, pendingQuestion = null, now = Date.now, requireVersion2 = false, requireVersion3 = false, sourceSpanBindings }) {

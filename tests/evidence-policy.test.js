@@ -17,7 +17,7 @@ test('canonical policy binds every rule and role to its supported explicit versi
 });
 
 test('unknown versions or roles cannot silently weaken the active policy', () => {
-  for (const version of [undefined, null, '', 1, {}, 'study-evidence-policy-v0', 'study-evidence-policy-v2', 'PRIVATE-UNKNOWN-VERSION']) {
+  for (const version of [undefined, null, '', 1, {}, 'study-evidence-policy-v0', 'study-evidence-policy-v1', 'study-evidence-policy-v3', 'PRIVATE-UNKNOWN-VERSION']) {
     assert.throws(() => assertEvidencePolicyVersion(version), /Unsupported evidence policy version\./);
     assert.throws(() => evidencePolicyInstructions('generator', { version }), /Unsupported evidence policy version\./);
     assert.throws(() => publicEvidencePolicy({ version }), /Unsupported evidence policy version\./);
@@ -32,7 +32,7 @@ test('instruction builders reject client approvals, source replacements and priv
   }
 });
 
-test('generator and independent reviewer preserve exact support, context, abstention and natural social chat', () => {
+test('single-call generator policy preserves support, context, abstention and natural social chat', () => {
   const generator = evidencePolicyInstructions('generator');
   const reviewer = evidencePolicyInstructions('reviewer');
   for (const instructions of [generator, reviewer]) {
@@ -40,6 +40,9 @@ test('generator and independent reviewer preserve exact support, context, absten
     assert.match(instructions, /Failure to find support does not prove a claim false/);
   }
   assert.match(generator, /Empty evidence permits nonfactual conversation/);
+  assert.match(generator, /Use the app library first/);
+  assert.match(generator, /one model call without a separate reviewer/);
+  assert.doesNotMatch(generator, /Release text or audio only after separate whole-reply/);
   assert.match(reviewer, /every original segment, external claim and implicit premise/);
   assert.match(reviewer, /never rewrite or invent support/);
   assert.match(reviewer, /any failing claim rejects the whole reply/);
@@ -49,6 +52,10 @@ test('public metadata is context-free and refuses accuracy, competence, rights o
   const metadata = publicEvidencePolicy();
   assert.equal(metadata.policyVersion, EVIDENCE_POLICY_VERSION);
   assert.equal(metadata.clinicalUseAllowed, false);
+  assert.equal(metadata.wholeReplyAutomatedReviewRequired, false);
+  assert.equal(metadata.libraryFirst, true);
+  assert.equal(metadata.answerModelCalls, 1);
+  assert.equal(metadata.deterministicSourceBindingRequired, true);
   assert.equal(metadata.automatedReviewIsClinicalApproval, false);
   assert.equal(metadata.learnerMemoryIsAuthoritativeEvidence, false);
   assert.equal(metadata.guaranteedAccuracy, false);

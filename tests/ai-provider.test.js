@@ -8,7 +8,6 @@ import { createAiProvider, AiProviderError } from '../server/ai-provider.js';
 import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
-import { sourceSpanSupport } from './fixtures/natural-review-v3.js';
 
 const key = 'server-only-claude-test-key';
 const env = { AI_PROVIDER: 'anthropic', CLAUDE_API_KEY: key };
@@ -138,7 +137,7 @@ test('non-native profiles and Anthropic retain their existing schema fallback re
   await provider.complete(messages, { jsonSchema });
 });
 
-test('personal inactive Claude adapter preserves reviewed natural replies through the mocked browser API', async t => {
+test('personal inactive Claude adapter preserves one-call library-bound replies through the mocked browser API', async t => {
   const dataDir = mkdtempSync(join(tmpdir(), 'personal-claude-test-'));
   let calls = 0;
   const curriculum = createStudyCurriculum({ records: [studyCondition()], now: () => STUDY_NOW });
@@ -146,13 +145,12 @@ test('personal inactive Claude adapter preserves reviewed natural replies throug
   const server = createApp({ dataDir, env, curriculum, foundations, fetchImpl: async (_url, request) => {
     calls++; const body = JSON.parse(request.body);
     const factualText = 'Mock management fact: review inhaler technique.';
-    assert.match(body.system, /NATURAL_(?:TUTOR_CONTEXT|REVIEW_DATA)=/);
-    const primary = body.system.includes('NATURAL_TUTOR_CONTEXT=');
-    // The Claude adapter appends a JSON-format instruction after this data line.
-    const reviewData = body.system.split('\n').find(line => line.startsWith('NATURAL_REVIEW_DATA='));
-    if (!primary) assert.ok(reviewData);
-    const payload = primary ? { segments: [{ id: 's1', text: factualText, sourceChunkIds: ['asthma:management'] }] }
-      : { version: 3, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: factualText, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [sourceSpanSupport({ system: reviewData }, 'asthma:management')] }], questions: [], flags: [] }] };
+    assert.match(body.system, /NATURAL_TUTOR_CONTEXT=/);
+    assert.doesNotMatch(body.system, /NATURAL_REVIEW_DATA=/);
+    assert.match(body.system, /EVIDENCE_POLICY_VERSION=study-evidence-policy-v2/);
+    assert.match(body.system, /one model call without a separate reviewer/);
+    assert.match(body.system, /OUTPUT_SCHEMA=/, 'Nonnative adapters must retain the complete inline schema');
+    const payload = { segments: [{ id: 's1', text: factualText, sourceChunkIds: ['asthma:management'] }] };
     return Response.json(result({ content: [{ type: 'thinking', thinking: 'private thinking' }, { type: 'text', text: JSON.stringify(payload) }] }));
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
@@ -166,11 +164,15 @@ test('personal inactive Claude adapter preserves reviewed natural replies throug
   const reply = await api('/api/chat', { conversationId: conversation.id, content: 'Explain asthma management for board study.', requestId: 'claude-chat' });
   assert.equal(reply.offline, false); assert.equal(reply.conversation.messages.length, 2);
   assert.match(reply.message.content, /Mock management fact: review inhaler technique/);
-  assert.equal(reply.message.reviewedDialogue, true);
+  assert.equal(reply.message.libraryGroundedDialogue, true);
+  assert.equal(reply.message.reviewedDialogue, undefined);
   assert.equal(reply.message.sourceVerified, false);
   assert.equal(reply.message.canonicalSpokenText, false);
-  assert.equal(reply.message.groundingReview.status, 'passed');
-  assert.equal(reply.message.aiTotal.calls, 2);
+  assert.equal(reply.message.groundingReview, undefined);
+  assert.equal(reply.message.aiReview, undefined);
+  assert.equal(reply.message.libraryGrounding.status, 'bound');
+  assert.deepEqual(reply.message.libraryGrounding.sourceChunkIds, ['asthma:management']);
+  assert.equal(reply.message.aiTotal.calls, 1);
   assert.equal(reply.message.ai.provider, 'anthropic');
   const drafts = await api('/api/chat/cards', { conversationId: conversation.id });
   assert.equal(drafts.cards[0].verified, false);
@@ -179,5 +181,5 @@ test('personal inactive Claude adapter preserves reviewed natural replies throug
   assert.equal(drafts.cards[0].humanReview, false);
   assert.equal(drafts.sourceLinked, true);
   assert.equal(JSON.stringify(await api('/api/state')).includes('private thinking'), false);
-  assert.equal(calls, 2, 'Only mocked author and reviewer calls run; canonical card drafts make no further provider request.');
+  assert.equal(calls, 1, 'Only the mocked generation runs; canonical card drafts make no further provider request.');
 });

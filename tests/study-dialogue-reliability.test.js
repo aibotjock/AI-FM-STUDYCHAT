@@ -8,7 +8,6 @@ import { createApp } from '../server/index.js';
 import { createStudyCurriculum } from '../server/study-curriculum.js';
 import { buildStudyDialogueSchema, renderStudyDialogue, projectStudyDialoguePlan, studyDialogueRejection } from '../server/study-conversation.js';
 import { studyCondition, STUDY_NOW } from './fixtures/study-condition.js';
-import { sourceSpanSupport } from './fixtures/natural-review-v3.js';
 
 const settings = { coachStyle: 'socratic', dailyMinutes: 18, focus: 'exam' };
 const dialogue = { intent: 'explain', acknowledgment: 'none', followup: 'attempt-recall', focusChunkId: 'asthma:management', learnerQuote: null, minutes: null };
@@ -75,7 +74,7 @@ test('failed plan projection contains only known IDs, fixed enums, counts and bo
   assert.deepEqual(studyDialogueRejection(new Error(secret)), { code: 'invalid_dialogue_plan', reasonId: 399 });
 });
 
-test('HTTP natural explanation is reviewed and idempotent before a canonical quiz and grade without further AI calls', async t => {
+test('HTTP natural explanation binds current library sources once before an idempotent canonical quiz and grade', async t => {
   const context = fixture();
   const dataDir = mkdtempSync(join(tmpdir(), 'fm-dual-dialogue-'));
   let calls = 0;
@@ -83,9 +82,9 @@ test('HTTP natural explanation is reviewed and idempotent before a canonical qui
   const server = createApp({ dataDir, curriculum: context.references, foundations: createStudyCurriculum({ records: [], now: () => STUDY_NOW }), env: { OPENAI_API_KEY: 'mock-only', OPENAI_MODEL: 'gpt-4.1-mini' }, fetchImpl: async (_url, request) => {
     calls++;
     const body = JSON.parse(request.body);
-    const primary = body.messages.some(message => message.content.includes('NATURAL_TUTOR_CONTEXT='));
-    const payload = primary ? { segments: [{ id: 's1', text: factualText, sourceChunkIds: ['asthma:management'] }] }
-      : { version: 3, approved: true, segments: [{ id: 's1', approved: true, externalFactCount: 1, claims: [{ quote: factualText, type: 'medical', sourceChunkIds: ['asthma:management'], supports: [sourceSpanSupport(body, 'asthma:management')] }], flags: [], questions: [] }] };
+    assert.ok(body.messages.some(message => message.content.includes('NATURAL_TUTOR_CONTEXT=')));
+    assert.equal(body.response_format.json_schema.name, 'family_medicine_natural_tutor');
+    const payload = { segments: [{ id: 's1', text: factualText, sourceChunkIds: ['asthma:management'] }] };
     return Response.json({ model: 'gpt-4.1-mini', choices: [{ message: { content: JSON.stringify(payload) } }], usage: { prompt_tokens: 10, completion_tokens: 10 } });
   } });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
@@ -96,12 +95,14 @@ test('HTTP natural explanation is reviewed and idempotent before a canonical qui
   const request = { conversationId: conversation.id, content: 'Explain asthma management for board study.', requestId: 'natural-explanation' };
   const explanation = await api('/api/chat', request);
   assert.equal(explanation.message.studyRejection, undefined);
-  assert.equal(explanation.message.reviewedDialogue, true);
+  assert.equal(explanation.message.libraryGroundedDialogue, true);
+  assert.equal(explanation.message.reviewedDialogue, undefined);
+  assert.equal(explanation.message.aiReview, undefined);
   assert.equal(explanation.message.canonicalSpokenText, false);
   assert.equal(explanation.message.spokenText, factualText);
-  assert.deepEqual(explanation.message.groundingReview.sourceChunkIds, ['asthma:management']);
+  assert.deepEqual(explanation.message.libraryGrounding.sourceChunkIds, ['asthma:management']);
   assert.equal((await api('/api/chat', request)).message.id, explanation.message.id);
-  assert.equal(calls, 2, 'Reusing the natural reply does not repeat author or reviewer calls.');
+  assert.equal(calls, 1, 'Reusing the natural reply does not repeat the generation call.');
   const quiz = await api('/api/chat', { conversationId: conversation.id, content: 'Quiz me on asthma.', requestId: 'canonical-original' });
   assert.equal(quiz.message.studyQuestion.key, 'asthma:asthma-q1');
   assert.equal(quiz.message.sourceVerified, true);
@@ -111,5 +112,5 @@ test('HTTP natural explanation is reviewed and idempotent before a canonical qui
   assert.equal(quiz.message.reviewedDialogue, undefined);
   const graded = await api('/api/chat', { conversationId: conversation.id, content: 'B', requestId: 'dual-grade' });
   assert.equal(graded.message.studyAnswer.correct, true);
-  assert.equal(calls, 2, 'Original quiz selection and answer-key grading make no AI call.');
+  assert.equal(calls, 1, 'Original quiz selection and answer-key grading make no AI call.');
 });
